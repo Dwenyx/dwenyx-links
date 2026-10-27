@@ -1,7 +1,14 @@
 // Accès à Upstash Redis via son API REST (aucune dépendance).
 // Variables posées automatiquement par l'intégration Vercel ↔ Upstash.
-const URL_ = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL || "";
-const TOKEN = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN || "";
+// Le préfixe choisi dans Vercel peut varier (KV_, STORAGE_, UPSTASH_REDIS_…) : on cherche la bonne paire.
+function findEnv(suffix) {
+  const env = process.env;
+  for (const k of ["KV_" + suffix, "UPSTASH_REDIS_" + suffix]) if (env[k]) return env[k];
+  const key = Object.keys(env).find((k) => k.endsWith("_" + suffix) && !k.includes("READ_ONLY"));
+  return key ? env[key] : "";
+}
+const URL_ = findEnv("REST_API_URL") || findEnv("REST_URL");
+const TOKEN = findEnv("REST_API_TOKEN") || findEnv("REST_TOKEN");
 
 export const hasRedis = Boolean(URL_ && TOKEN);
 
