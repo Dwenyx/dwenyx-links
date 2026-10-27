@@ -1,4 +1,4 @@
-<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="description" content="Dwenyx — Content Creator. YouTube, TikTok, jeux Roblox et collabs."><meta property="og:title" content="Dwenyx"><meta property="og:description" content="Content Creator — YouTube, TikTok, jeux Roblox et collabs."><style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body><title>Dwenyx V2</title>
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="description" content="Dwenyx — Créateur de contenu Roblox sur YouTube et TikTok. Partenariats et collaborations : contactdwenyx@gmail.com"><meta property="og:title" content="Dwenyx"><meta property="og:description" content="Créateur de contenu Roblox sur YouTube et TikTok."><style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body><title>Dwenyx V2</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Outfit:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap">
@@ -295,6 +295,40 @@ footer{font-family:var(--f-mono);font-size:11px;color:var(--muted);display:flex;
   box-shadow:0 4px 0 var(--accent);transition:.2s;pointer-events:none}
 #toast.on{opacity:1;transform:translate(-50%,0)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.intro .d{stroke-dashoffset:0;fill-opacity:1}#gate p{opacity:1}}
+
+/* ===== Survol et clic ===== */
+.lnk,.folder,.tab,.btn,.pj,.snd-btn{position:relative;overflow:hidden;isolation:isolate}
+.lnk,.folder,.pj{transition:transform .35s cubic-bezier(.2,.9,.25,1.25),border-color .25s,box-shadow .35s,background .25s}
+.lnk:hover,.lnk:focus-visible,.folder:hover,.folder:focus-visible{transform:translateY(-3px) scale(1.012);
+  box-shadow:0 10px 26px -12px var(--c,var(--accent)),0 0 0 1px var(--c,var(--accent)) inset;background:#271d40}
+.lnk::before,.folder::before,.pj::before,.btn::before{content:"";position:absolute;z-index:2;top:0;bottom:0;left:-60%;width:40%;pointer-events:none;
+  background:linear-gradient(105deg,transparent,rgba(255,255,255,.16),transparent);transform:skewX(-18deg);transition:left .7s ease}
+.lnk:hover::before,.folder:hover::before,.pj:hover::before,.btn:hover::before{left:130%}
+.lnk .ic,.folder .fi{transition:transform .4s cubic-bezier(.3,1.7,.5,1)}
+.lnk:hover .ic,.folder:hover .fi{transform:rotate(-10deg) scale(1.15)}
+.lnk .go,.folder .go{transition:transform .3s,color .3s}
+.lnk:hover .go,.folder:hover .go{transform:translateX(3px);color:var(--white)}
+.lnk:active,.folder:active{transform:translateY(0) scale(.97);transition-duration:.08s}
+.pj:hover{transform:translateY(-4px);border-color:var(--accent);box-shadow:0 16px 34px -14px rgba(155,92,255,.8)}
+.pj .shot img{transition:transform .6s cubic-bezier(.2,.8,.2,1)}
+.pj:hover .shot img{transform:scale(1.06)}
+.btn{transition:transform .15s,filter .2s,box-shadow .15s}
+.btn:hover{filter:brightness(1.12);transform:translateY(-2px);box-shadow:0 6px 0 var(--accent-deep)}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--accent-deep)}
+.tab{transition:transform .2s cubic-bezier(.3,1.6,.5,1),color .2s,background .2s,border-color .2s}
+.tab:hover{transform:translateY(-2px)}
+.tab[aria-selected="true"]{animation:tabOn .35s cubic-bezier(.3,1.6,.5,1)}
+@keyframes tabOn{0%{transform:scale(.9)}100%{transform:scale(1)}}
+.snd-btn:hover{transform:scale(1.1)}
+/* onde au point de clic */
+.rip{position:absolute;z-index:3;border-radius:50%;pointer-events:none;transform:translate(-50%,-50%) scale(0);
+  background:radial-gradient(circle,rgba(255,255,255,.45) 0,rgba(216,198,255,.25) 40%,transparent 70%);animation:rip .6s ease-out forwards}
+@keyframes rip{to{transform:translate(-50%,-50%) scale(1);opacity:0}}
+.pj .ttl{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.role-tag{font-family:var(--f-mono);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--white);
+  background:linear-gradient(90deg,var(--accent-deep),var(--accent));padding:3px 8px;border-radius:6px;white-space:nowrap}
+.lnk.copied,.lnk.copied:hover{border-color:var(--ok);background:rgba(124,232,176,.16);box-shadow:0 0 0 1px var(--ok) inset,0 10px 26px -12px var(--ok)}
+@media (prefers-reduced-motion:reduce){.lnk:hover,.folder:hover,.pj:hover{transform:none}.rip{display:none}}
 </style>
 
 <!-- Modèle du logo (réutilisé partout) -->
@@ -384,7 +418,7 @@ footer{font-family:var(--f-mono);font-size:11px;color:var(--muted);display:flex;
 const PROFILE = {
   name:"Dwenyx", handle:"@Dwenyx_783", avatar:"",
   status:"Content Creator",
-  about:"Influenceur Roblox sur YouTube et TikTok. Je crée aussi mes propres jeux en Luau. Toujours partant pour une collab.",
+  about:"Créateur de contenu passionné, je partage l'univers Roblox avec ma communauté sur YouTube et TikTok. En parallèle, je conçois mes propres jeux. Ouvert aux partenariats et collaborations de marque.",
 
   /* Tes stats : mets les chiffres de chaque compte, la page fait le total toute seule */
   updated:"27/10/2026",
@@ -403,13 +437,13 @@ const PROFILE = {
   /* Dossiers de projets. Pour chaque projet : name, desc, status ("live" / "dev" / ""), link (optionnel), img (optionnel) */
   folders:[
     {name:"Projets Roblox", items:[
-      {name:"Dynamite Spleef", desc:"Fais sauter les blocs sous les autres, dernier debout gagne.", status:"live", visits:"loading",
+      {name:"Dynamite Spleef", desc:"Fais sauter les blocs sous les autres, dernier debout gagne.", status:"live", role:"Solo Dev", visits:"loading",
        link:"https://www.roblox.com/fr/games/93715439719200/Dynamite-Spleef", img:"img/dynamite-spleef.jpg"},
-      {name:"Dodge to Survive!", desc:"Esquive les murs qui foncent sur toi pour rester en vie.", status:"live", visits:"130K+",
+      {name:"Dodge to Survive!", desc:"Esquive les murs qui foncent sur toi pour rester en vie.", status:"live", role:"Solo Dev", visits:"130K+",
        link:"https://www.roblox.com/fr/games/93885728521060/Dodge-to-Survive", img:"img/dodge-to-survive.jpg"}
     ]},
     {name:"Applications", items:[
-      {name:"FlipZik", desc:"Mon application.", status:""}
+      {name:"FlipZik", desc:"Mon application.", status:"", role:""}
     ]}
   ]
 };
@@ -451,7 +485,7 @@ function openFolder(i){
       const st=p.status?`<span class="st ${p.status}">${p.status==="live"?"En ligne":"En dev"}</span>`:"";
       return `<article class="pj">
         ${p.img?`<div class="shot"><img src="${p.img}" alt="${p.name}" loading="lazy">${st}${p.visits!=null?`<span class="visits"><svg viewBox="0 0 24 24"><path d="M12 5c-7 0-10 7-10 7s3 7 10 7 10-7 10-7-3-7-10-7zm0 11a4 4 0 110-8 4 4 0 010 8z"/></svg>${p.visits==="loading"?`<span class="ld" aria-label="Chargement des visites"><i></i><i></i><i></i></span> visites`:typeof p.visits==="string"?p.visits+" visites":new Intl.NumberFormat("fr-FR",{notation:"compact",maximumFractionDigits:1}).format(p.visits)+" visite"+(p.visits>1?"s":"")}</span>`:""}</div>`:""}
-        <div class="info">${p.img?"":st}<b>${p.name}</b><span class="d">${p.desc}</span>
+        <div class="info">${p.img?"":st}<div class="ttl"><b>${p.name}</b>${p.role?`<span class="role-tag">${p.role}</span>`:""}</div><span class="d">${p.desc}</span>
         ${p.link?`<a class="btn play" href="${p.link}" target="_blank" rel="noopener">${f.name.includes("Roblox")?"▶ Jouer sur Roblox":"Ouvrir ↗"}</a>`:""}</div>
       </article>`}).join("")}</div>`;
 }
@@ -631,7 +665,7 @@ $("musicVol").addEventListener("input",e=>{musicVol=+e.target.value;musicOn=musi
 $("sfxBtn").addEventListener("click",()=>{sfxOn=!sfxOn;store.set("sfxOn",sfxOn);applySfx();if(sfxOn)SFX.toggle()});
 
 /* Un son pour chaque survol et chaque clic */
-const HOVERABLE=".lnk,.tab,.folder,.btn,.back,.avatar,.snd-btn,.pj .shot";
+const HOVERABLE=".lnk,.tab,.folder,.btn,.back,.avatar,.snd-btn";
 let hovered=null,lastHover=0;
 document.addEventListener("pointerover",e=>{
   if(e.pointerType==="touch")return;
@@ -651,6 +685,14 @@ document.addEventListener("click",e=>{
   if(t.closest("button,.avatar"))return SFX.click();
 },true);
 
+
+/* Onde au point de clic sur les éléments cliquables */
+document.addEventListener("pointerdown",e=>{
+  const el=e.target.closest(".lnk,.folder,.tab,.btn,.pj,.snd-btn");if(!el||reduceMotion)return;
+  const r=el.getBoundingClientRect(),size=Math.max(r.width,r.height)*2.2,d=document.createElement("span");
+  d.className="rip";d.style.width=d.style.height=size+"px";d.style.left=(e.clientX-r.left)+"px";d.style.top=(e.clientY-r.top)+"px";
+  el.append(d);setTimeout(()=>d.remove(),650);
+});
 /* ===== Entrée ===== */
 const gate=$("gate");
 const enter=e=>{
