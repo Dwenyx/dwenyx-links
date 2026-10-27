@@ -801,7 +801,11 @@ likeBtn.addEventListener("click",async()=>{
   liked=true;store.set("liked",true);setLikedUI();
   likeBtn.classList.remove("pop");likeBtn.offsetWidth;likeBtn.classList.add("pop");burst();SFX.like();
   if(likes!=null)showLikes(likes+1,true);
-  try{if(likeApi)await likeApi.like()}catch(e){liked=false;store.set("liked",false);setLikedUI();if(likes!=null)showLikes(likes-1,true);toast("Le like n'a pas pu être enregistré, réessaie")}
+  try{
+    const r=likeApi?await likeApi.like():null;
+    if(r&&typeof r.count==="number")showLikes(r.count,true);
+    if(r&&r.already){toast("Tu avais déjà liké ce profil 💜");if(typeof r.count!=="number"&&likes!=null)showLikes(likes-1,true)}
+  }catch(e){liked=false;store.set("liked",false);setLikedUI();if(likes!=null)showLikes(likes-1,true);toast("Le like n'a pas pu être enregistré, réessaie")}
   likeBusy=false;
 });
 setLikedUI();
@@ -810,7 +814,12 @@ setLikedUI();
   const db=window.claude?await window.claude.use("db"):null;
   if(db){
     const user=await window.claude.use("user");const uid=user?await user.id():null;
-    likeApi={like:async()=>{if(!uid)throw new Error("no user");await db.doc("likes/"+uid).set({at:Date.now()})}};
+    likeApi={like:async()=>{
+      if(!uid)throw new Error("no user");
+      const ref=db.doc("likes/"+uid),snap=await ref.get();
+      if(snap.exists)return {already:true};
+      await ref.set({at:Date.now()});return null;
+    }};
     db.collection("likes").onSnapshot(q=>{
       if(uid&&q.docs.some(d=>d.id===uid)){liked=true;store.set("liked",true);setLikedUI()}
       if(!likeBusy)showLikes(q.size,likes!=null);
@@ -819,8 +828,16 @@ setLikedUI();
   }
   /* Sur ton site (Vercel) : petite API /api/like */
   if(location.protocol.startsWith("http")&&!/claude\.ai|claudeusercontent/.test(location.hostname)){
-    const get=()=>fetch("/api/like",{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{if(d&&typeof d.count==="number"&&!likeBusy)showLikes(Math.max(d.count,likes||0),likes!=null)}).catch(()=>{});
-    likeApi={like:()=>fetch("/api/like",{method:"POST"}).then(r=>{if(!r.ok)throw new Error("like failed");return r.json()}).then(d=>{if(d&&typeof d.count==="number")showLikes(Math.max(d.count,likes||0),true)})};
+    const get=()=>fetch("/api/like",{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+      if(!d||likeBusy)return;
+      if(d.liked&&!liked){liked=true;store.set("liked",true);setLikedUI()}
+      if(typeof d.count==="number")showLikes(d.count,likes!=null);
+    }).catch(()=>{});
+    likeApi={like:()=>fetch("/api/like",{method:"POST",cache:"no-store"}).then(async r=>{
+      if(r.status===409){const d=await r.json().catch(()=>({}));return {count:d.count,already:true}}
+      if(!r.ok)throw new Error("like failed");
+      return r.json();
+    })};
     get();setInterval(get,60000);
   }
 })();
@@ -843,7 +860,13 @@ const cv=$("studs"),cx=cv.getContext("2d");let W,H,mx=.5,my=.5,fx=.5,fy=.5,fx2=.
 const DPR=Math.min(devicePixelRatio||1,1.5);
 const still=matchMedia("(prefers-reduced-motion:reduce)").matches;
 function size(){W=cv.width=Math.round(innerWidth*DPR);H=cv.height=Math.round(innerHeight*DPR);if(still)draw()}
-addEventListener("resize",size);addEventListener("pointermove",e=>{mx=e.clientX/innerWidth;my=e.clientY/innerHeight;if(!mouseSeen){mouseSeen=true;fx=fx2=mx;fy=fy2=my}},{passive:true});
+addEventListener("resize",size);const TRAIL=[],TRAIL_MS=420;
+addEventListener("pointermove",e=>{
+  mx=e.clientX/innerWidth;my=e.clientY/innerHeight;mouseSeen=true;
+  const now=performance.now(),evs=e.getCoalescedEvents?e.getCoalescedEvents():[e];
+  for(const c of (evs.length?evs:[e]))TRAIL.push({x:c.clientX*DPR,y:c.clientY*DPR,t:now});
+  if(TRAIL.length>80)TRAIL.splice(0,TRAIL.length-80);
+},{passive:true});
 /* Lueurs qui flottent lentement et éclairent les carrés */
 const GLOWS=[
   {x:.15,y:.2,r:.38,c:"155,92,255",sx:.00011,sy:.00008,p:0},
@@ -854,24 +877,28 @@ const GLOWS=[
 function draw(t=0){
   const d=DPR,g=24*d,r=3.5*d;cx.clearRect(0,0,W,H);
   const M=Math.max(W,H);
-  /* la lueur suit la souris avec un léger retard, deux couches pour un rendu doux */
-  fx+=(mx-fx)*.09;fy+=(my-fy)*.09;fx2+=(mx-fx2)*.035;fy2+=(my-fy2)*.035;
-  const cxp=fx*W,cyp=fy*H,cx2=fx2*W,cy2=fy2*H;
+  /* traînée lumineuse : la tête est collée au curseur, la queue s'efface en 0,4 s */
+  const now=performance.now(),cxp=mx*W,cyp=my*H;
+  while(TRAIL.length&&now-TRAIL[0].t>TRAIL_MS)TRAIL.shift();
   const gl=GLOWS.map(o=>({x:(o.x+Math.sin(t*o.sx+o.p)*.18)*W,y:(o.y+Math.cos(t*o.sy+o.p)*.15)*H,r:o.r*M*(1+Math.sin(t*.0006+o.p)*.12),c:o.c}));
   cx.globalCompositeOperation="lighter";
   for(const o of gl){const gr=cx.createRadialGradient(o.x,o.y,0,o.x,o.y,o.r);
     gr.addColorStop(0,`rgba(${o.c},.2)`);gr.addColorStop(.5,`rgba(${o.c},.06)`);gr.addColorStop(1,`rgba(${o.c},0)`);
     cx.fillStyle=gr;cx.fillRect(o.x-o.r,o.y-o.r,o.r*2,o.r*2)}
   if(mouseSeen){
-    const R2=M*.32,g2=cx.createRadialGradient(cx2,cy2,0,cx2,cy2,R2);
-    g2.addColorStop(0,"rgba(123,60,240,.30)");g2.addColorStop(.5,"rgba(123,60,240,.09)");g2.addColorStop(1,"rgba(123,60,240,0)");
-    cx.fillStyle=g2;cx.fillRect(cx2-R2,cy2-R2,R2*2,R2*2);
-    const R1=M*.13,g1=cx.createRadialGradient(cxp,cyp,0,cxp,cyp,R1);
-    g1.addColorStop(0,"rgba(235,225,255,.26)");g1.addColorStop(.35,"rgba(178,128,255,.16)");g1.addColorStop(1,"rgba(155,92,255,0)");
-    cx.fillStyle=g1;cx.fillRect(cxp-R1,cyp-R1,R1*2,R1*2);
+    const base=34*d;
+    for(let i=0;i<TRAIL.length;i++){
+      const p=TRAIL[i],k=1-(now-p.t)/TRAIL_MS;if(k<=0)continue;
+      const R=base*(.35+.65*k),gr=cx.createRadialGradient(p.x,p.y,0,p.x,p.y,R);
+      gr.addColorStop(0,`rgba(205,170,255,${.22*k})`);gr.addColorStop(.45,`rgba(155,92,255,${.12*k})`);gr.addColorStop(1,"rgba(155,92,255,0)");
+      cx.fillStyle=gr;cx.fillRect(p.x-R,p.y-R,R*2,R*2);
+    }
+    const R0=M*.16,g0=cx.createRadialGradient(cxp,cyp,0,cxp,cyp,R0);
+    g0.addColorStop(0,"rgba(245,238,255,.30)");g0.addColorStop(.2,"rgba(178,128,255,.18)");g0.addColorStop(1,"rgba(123,60,240,0)");
+    cx.fillStyle=g0;cx.fillRect(cxp-R0,cyp-R0,R0*2,R0*2);
   }
   cx.globalCompositeOperation="source-over";
-  const ox=(fx-.5)*g*.6,oy=(fy-.5)*g*.6,RL=M*.22;
+  const ox=(mx-.5)*g*.6,oy=(my-.5)*g*.6,RL=M*.2;
   for(let y=-g;y<H+g;y+=g)for(let x=-g;x<W+g;x+=g){
     const px=x+ox,py=y+oy;
     let lit=0;for(const o of gl){const k=1-Math.hypot(px-o.x,py-o.y)/o.r;if(k>0)lit+=k*k*.18}
