@@ -23,12 +23,12 @@
 }
 *{box-sizing:border-box}
 html,body{height:100%}
-html{overflow-y:scroll;scrollbar-gutter:stable;scrollbar-width:thin;scrollbar-color:var(--accent) transparent}
+html{overflow-y:scroll;overflow-x:hidden;scrollbar-gutter:stable;scrollbar-width:thin;scrollbar-color:var(--accent) transparent}
 html::-webkit-scrollbar{width:8px}
 html::-webkit-scrollbar-thumb{background:var(--accent);border-radius:8px}
 html::-webkit-scrollbar-track{background:transparent}
 body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;
-  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));overflow-x:hidden}
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));overflow-x:clip}
 #studs{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
 
 /* ===== Logo Dwenyx ===== */
@@ -104,9 +104,12 @@ main{position:relative;z-index:1;min-height:100%;display:flex;flex-direction:col
   box-shadow:0 6px 0 var(--line-solid),0 30px 70px -20px rgba(91,42,209,.45)}
 
 .banner{position:relative;overflow:hidden;background:var(--accent-deep);padding:14px 20px 60px;display:flex;flex-direction:column;gap:12px}
-.banner{background:linear-gradient(120deg,#3b1690,var(--accent-deep),var(--accent),#7a3cf0,#3b1690);background-size:300% 300%;animation:bannerShift 12s ease-in-out infinite}
-@keyframes bannerShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
-.banner::before,.banner::after{content:"";position:absolute;border-radius:50%;pointer-events:none;filter:blur(28px)}
+.banner{background:#3b1690}
+.banner{isolation:isolate}
+.banner .bgshift{position:absolute;z-index:-1;top:0;bottom:0;left:0;width:300%;pointer-events:none;will-change:transform;
+  background:linear-gradient(120deg,#3b1690,var(--accent-deep),var(--accent),#7a3cf0,#3b1690,var(--accent-deep),var(--accent));animation:bannerShift 12s ease-in-out infinite}
+@keyframes bannerShift{0%,100%{transform:translateX(0)}50%{transform:translateX(-50%)}}
+.banner::before,.banner::after{content:"";position:absolute;z-index:0;border-radius:50%;pointer-events:none;filter:blur(28px);will-change:transform}
 .banner::before{width:220px;height:220px;left:-60px;top:-90px;background:rgba(255,255,255,.35);animation:blobA 9s ease-in-out infinite}
 .banner::after{width:260px;height:260px;right:-80px;bottom:-140px;background:rgba(216,198,255,.45);animation:blobB 11s ease-in-out infinite}
 @keyframes blobA{0%,100%{transform:translate(0,0)}50%{transform:translate(180px,60px)}}
@@ -115,7 +118,7 @@ main{position:relative;z-index:1;min-height:100%;display:flex;flex-direction:col
 .banner .shine::before{content:"";position:absolute;top:-50%;bottom:-50%;width:60px;left:-30%;transform:rotate(20deg);
   background:linear-gradient(90deg,transparent,rgba(255,255,255,.28),transparent);animation:sweep 5s ease-in-out infinite}
 @keyframes sweep{0%,55%{left:-30%}100%{left:130%}}
-.banner > :not(.shine){position:relative;z-index:1}
+.banner > :not(.shine):not(.bgshift){position:relative;z-index:1}
 .banner .top{display:flex;justify-content:space-between;align-items:center;gap:8px;font-family:var(--f-mono);font-size:10px;color:var(--lilac);text-transform:uppercase;letter-spacing:.12em}
 .badge-lv{font-family:var(--f-mono);font-size:11px;font-weight:700;background:rgba(14,10,23,.45);
   color:var(--white);padding:4px 8px;border-radius:6px;border:1px solid rgba(216,198,255,.45);letter-spacing:0}
@@ -130,8 +133,11 @@ main{position:relative;z-index:1;min-height:100%;display:flex;flex-direction:col
 .who .wordmark{font-size:26px}
 .who .wordmark span{text-shadow:0 2px 0 var(--accent),0 4px 0 var(--accent-deep)}
 .who .wordmark span,.who .wordmark span.v{color:var(--white);text-shadow:0 2px 0 var(--accent),0 4px 0 var(--accent-deep),0 0 12px rgba(155,92,255,.85)}
-.who .wordmark{animation:nameGlow 2.6s ease-in-out infinite}
-@keyframes nameGlow{0%,100%{filter:drop-shadow(0 0 4px rgba(155,92,255,.5))}50%{filter:drop-shadow(0 0 14px rgba(178,128,255,1))}}
+.who .wordmark{filter:drop-shadow(0 0 5px rgba(155,92,255,.6))}
+.nameline{position:relative;isolation:isolate}
+.nameline::before{content:"";position:absolute;left:-14px;right:20px;top:-10px;bottom:-12px;z-index:-1;pointer-events:none;border-radius:40%;
+  background:radial-gradient(ellipse at 40% 50%,rgba(178,128,255,.55),transparent 70%);opacity:.35;will-change:opacity;animation:nameGlow 2.6s ease-in-out infinite}
+@keyframes nameGlow{0%,100%{opacity:.3}50%{opacity:.9}}
 .who .h{font-family:var(--f-mono);font-size:12px;color:var(--muted);margin-top:6px}
 .role svg{width:14px;height:14px;fill:var(--white);flex:none}
 .role{display:inline-flex;align-items:center;gap:6px;margin-top:8px;padding:4px 10px;border-radius:999px;background:var(--accent);color:var(--white);
@@ -189,8 +195,8 @@ main{position:relative;z-index:1;min-height:100%;display:flex;flex-direction:col
 
 /* Contrôle du son */
 .sound{position:fixed;z-index:15;right:max(16px,calc(env(safe-area-inset-right,0px) + 12px));bottom:calc(16px + env(safe-area-inset-bottom,0px));
-  display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:999px;background:rgba(23,17,40,.9);border:2px solid var(--line-solid);
-  box-shadow:0 4px 0 var(--line-solid),0 12px 30px -10px rgba(0,0,0,.6);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:999px;background:rgba(23,17,40,.97);border:2px solid var(--line-solid);
+  box-shadow:0 4px 0 var(--line-solid),0 12px 30px -10px rgba(0,0,0,.6);
   animation:popIn .5s .9s cubic-bezier(.3,1.6,.5,1) both}
 .sound[hidden]{display:none}
 .snd-btn{width:34px;height:34px;border-radius:50%;border:0;display:grid;place-items:center;cursor:pointer;background:var(--accent);color:var(--white);flex:none;
@@ -449,7 +455,7 @@ footer{font-family:var(--f-mono);font-size:11px;color:var(--muted);display:flex;
 <main>
   <article class="card">
     <section class="banner" aria-label="Stats cumulées">
-      <div class="shine" aria-hidden="true"></div>
+      <div class="bgshift" aria-hidden="true"></div><div class="shine" aria-hidden="true"></div>
       <span class="live" id="live" hidden><i></i>En direct</span>
       <div class="tgrid">
         <div class="tnum"><b data-total="subs">0</b><span>Abonnés</span></div>
@@ -935,53 +941,74 @@ gate.addEventListener("click",enter);addEventListener("keydown",e=>{if(!gate.cla
 applySfx();audioInit();applyMusic();
 
 /* Fond : grille de studs violets qui suit la souris */
-const cv=$("studs"),cx=cv.getContext("2d");let W,H,mx=.5,my=.5,fx=.5,fy=.5,fx2=.5,fy2=.5,mouseSeen=false;
-const DPR=Math.min(devicePixelRatio||1,1.5);
+const cv=$("studs"),cx=cv.getContext("2d",{alpha:true,desynchronized:true});let W,H,mx=.5,my=.5,mouseSeen=false;
+const DPR=Math.min(devicePixelRatio||1,1.25);
 const still=matchMedia("(prefers-reduced-motion:reduce)").matches;
 let CR={left:0,top:0,width:innerWidth,height:innerHeight};
-function size(){CR=cv.getBoundingClientRect();W=cv.width=Math.round(CR.width*DPR);H=cv.height=Math.round(CR.height*DPR);if(still)draw()}
-addEventListener("resize",size);const TRAIL=[],TRAIL_MS=190;
+const TRAIL=[],TRAIL_MS=190;
+
+/* Lueurs pré-dessinées une seule fois (sprites), puis simplement copiées à chaque image : beaucoup plus léger */
+function sprite(stops,size=256){
+  const c=document.createElement("canvas");c.width=c.height=size;const g=c.getContext("2d"),r=size/2;
+  const gr=g.createRadialGradient(r,r,0,r,r,r);stops.forEach(([o,col])=>gr.addColorStop(o,col));
+  g.fillStyle=gr;g.fillRect(0,0,size,size);return c;
+}
+const GLOWS=[
+  {x:.15,y:.2,r:.38,s:sprite([[0,"rgba(155,92,255,.2)"],[.5,"rgba(155,92,255,.06)"],[1,"rgba(155,92,255,0)"]]),sx:.00011,sy:.00008,p:0},
+  {x:.85,y:.75,r:.42,s:sprite([[0,"rgba(123,60,240,.2)"],[.5,"rgba(123,60,240,.06)"],[1,"rgba(123,60,240,0)"]]),sx:.00009,sy:.00012,p:2},
+  {x:.6,y:.15,r:.28,s:sprite([[0,"rgba(230,215,255,.2)"],[.5,"rgba(230,215,255,.06)"],[1,"rgba(230,215,255,0)"]]),sx:.00013,sy:.0001,p:4},
+  {x:.3,y:.85,r:.32,s:sprite([[0,"rgba(178,128,255,.2)"],[.5,"rgba(178,128,255,.06)"],[1,"rgba(178,128,255,0)"]]),sx:.0001,sy:.00009,p:1}
+];
+const HALO=sprite([[0,"rgba(245,238,255,.30)"],[.2,"rgba(178,128,255,.18)"],[1,"rgba(123,60,240,0)"]]);
+
+/* Grille de points : dessinée une fois dans un calque, puis décalée (parallaxe) */
+let GRID=null,GSTEP=24;
+function buildGrid(){
+  const d=DPR,g=GSTEP*d,r=3.5*d;GRID=document.createElement("canvas");
+  GRID.width=W+g*2;GRID.height=H+g*2;const c=GRID.getContext("2d");
+  c.fillStyle="rgba(155,92,255,.13)";
+  for(let y=0;y<GRID.height;y+=g)for(let x=0;x<GRID.width;x+=g){c.beginPath();c.arc(x,y,r,0,7);c.fill()}
+  c.fillStyle="rgba(255,255,255,.035)";
+  for(let y=0;y<GRID.height;y+=g)for(let x=0;x<GRID.width;x+=g){c.beginPath();c.arc(x-r*.25,y-r*.25,r*.45,0,7);c.fill()}
+}
+function size(){
+  CR=cv.getBoundingClientRect();W=cv.width=Math.round(CR.width*DPR);H=cv.height=Math.round(CR.height*DPR);
+  buildGrid();if(still)draw();
+}
+addEventListener("resize",size);
 addEventListener("pointermove",e=>{
   const sx=W/CR.width,sy=H/CR.height;
   mx=(e.clientX-CR.left)/CR.width;my=(e.clientY-CR.top)/CR.height;mouseSeen=true;
   const now=performance.now(),evs=e.getCoalescedEvents?e.getCoalescedEvents():[e];
   for(const c of (evs.length?evs:[e]))TRAIL.push({x:(c.clientX-CR.left)*sx,y:(c.clientY-CR.top)*sy,t:now});
-  if(TRAIL.length>80)TRAIL.splice(0,TRAIL.length-80);
+  if(TRAIL.length>60)TRAIL.splice(0,TRAIL.length-60);
 },{passive:true});
-/* Lueurs qui flottent lentement et éclairent les carrés */
-const GLOWS=[
-  {x:.15,y:.2,r:.38,c:"155,92,255",sx:.00011,sy:.00008,p:0},
-  {x:.85,y:.75,r:.42,c:"123,60,240",sx:.00009,sy:.00012,p:2},
-  {x:.6,y:.15,r:.28,c:"230,215,255",sx:.00013,sy:.0001,p:4},
-  {x:.3,y:.85,r:.32,c:"178,128,255",sx:.0001,sy:.00009,p:1}
-];
+
 function draw(t=0){
-  const d=DPR,g=24*d,r=3.5*d;cx.clearRect(0,0,W,H);
-  const M=Math.max(W,H);
-  /* traînée lumineuse : la tête est collée au curseur, la queue s'efface en 0,4 s */
-  const now=performance.now(),cxp=mx*W,cyp=my*H;
+  if(document.hidden){if(!still)requestAnimationFrame(draw);return}
+  const d=DPR,g=GSTEP*d,r=3.5*d,M=Math.max(W,H),now=performance.now(),cxp=mx*W,cyp=my*H;
   while(TRAIL.length&&now-TRAIL[0].t>TRAIL_MS)TRAIL.shift();
-  const gl=GLOWS.map(o=>({x:(o.x+Math.sin(t*o.sx+o.p)*.18)*W,y:(o.y+Math.cos(t*o.sy+o.p)*.15)*H,r:o.r*M*(1+Math.sin(t*.0006+o.p)*.12),c:o.c}));
+  cx.clearRect(0,0,W,H);
+  /* lueurs qui flottent */
   cx.globalCompositeOperation="lighter";
-  for(const o of gl){const gr=cx.createRadialGradient(o.x,o.y,0,o.x,o.y,o.r);
-    gr.addColorStop(0,`rgba(${o.c},.2)`);gr.addColorStop(.5,`rgba(${o.c},.06)`);gr.addColorStop(1,`rgba(${o.c},0)`);
-    cx.fillStyle=gr;cx.fillRect(o.x-o.r,o.y-o.r,o.r*2,o.r*2)}
-  if(mouseSeen){
-    const base=34*d;
-    const R0=M*.16,g0=cx.createRadialGradient(cxp,cyp,0,cxp,cyp,R0);
-    g0.addColorStop(0,"rgba(245,238,255,.30)");g0.addColorStop(.2,"rgba(178,128,255,.18)");g0.addColorStop(1,"rgba(123,60,240,0)");
-    cx.fillStyle=g0;cx.fillRect(cxp-R0,cyp-R0,R0*2,R0*2);
+  for(const o of GLOWS){
+    const x=(o.x+Math.sin(t*o.sx+o.p)*.18)*W,y=(o.y+Math.cos(t*o.sy+o.p)*.15)*H,R=o.r*M*(1+Math.sin(t*.0006+o.p)*.12);
+    cx.drawImage(o.s,x-R,y-R,R*2,R*2);
   }
+  if(mouseSeen){const R0=M*.16;cx.drawImage(HALO,cxp-R0,cyp-R0,R0*2,R0*2)}
   cx.globalCompositeOperation="source-over";
-  const ox=(mx-.5)*g*.6,oy=(my-.5)*g*.6,RL=M*.2;
-  for(let y=-g;y<H+g;y+=g)for(let x=-g;x<W+g;x+=g){
-    const px=x+ox,py=y+oy;
-    let lit=0;for(const o of gl){const k=1-Math.hypot(px-o.x,py-o.y)/o.r;if(k>0)lit+=k*k*.18}
-    let m=0;if(mouseSeen){const k=1-Math.hypot(px-cxp,py-cyp)/RL;if(k>0)m=k*k}
-    const a=.03+Math.min(.22,lit)+m*.5;
-    const rr=r*(1+m*.55);
-    cx.beginPath();cx.arc(px,py,rr,0,7);cx.fillStyle=`rgba(${155+m*80|0},${92+m*120|0},255,${Math.min(.9,a)})`;cx.fill();
-    cx.beginPath();cx.arc(px-rr*.25,py-rr*.25,rr*.45,0,7);cx.fillStyle=`rgba(255,255,255,${Math.min(.8,a*.4+m*.3)})`;cx.fill();
+  /* grille (calque) avec parallaxe */
+  const ox=(mx-.5)*g*.6,oy=(my-.5)*g*.6;
+  cx.drawImage(GRID,ox-g,oy-g);
+  /* seuls les points proches de la souris sont redessinés, éclairés */
+  if(mouseSeen){
+    const RL=M*.2,x0=Math.floor((cxp-RL-ox)/g)*g,x1=cxp+RL,y0=Math.floor((cyp-RL-oy)/g)*g,y1=cyp+RL;
+    for(let y=y0;y<=y1;y+=g)for(let x=x0;x<=x1;x+=g){
+      const px=x+ox,py=y+oy,k=1-Math.hypot(px-cxp,py-cyp)/RL;if(k<=0)continue;
+      const m=k*k,rr=r*(1+m*.55);
+      cx.beginPath();cx.arc(px,py,rr,0,7);cx.fillStyle=`rgba(${155+m*80|0},${92+m*120|0},255,${Math.min(.9,.13+m*.5)})`;cx.fill();
+      cx.beginPath();cx.arc(px-rr*.25,py-rr*.25,rr*.45,0,7);cx.fillStyle=`rgba(255,255,255,${Math.min(.8,.05+m*.3)})`;cx.fill();
+    }
   }
   drawTrail(now,cxp,cyp,d);
   if(!still)requestAnimationFrame(draw);
