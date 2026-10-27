@@ -329,6 +329,70 @@ footer{font-family:var(--f-mono);font-size:11px;color:var(--muted);display:flex;
   background:linear-gradient(90deg,var(--accent-deep),var(--accent));padding:3px 8px;border-radius:6px;white-space:nowrap}
 .lnk.copied,.lnk.copied:hover{border-color:var(--ok);background:rgba(124,232,176,.16);box-shadow:0 0 0 1px var(--ok) inset,0 10px 26px -12px var(--ok)}
 @media (prefers-reduced-motion:reduce){.lnk:hover,.folder:hover,.pj:hover{transform:none}.rip{display:none}}
+
+/* ===== Badge certifié ===== */
+.nameline{display:flex;align-items:center;gap:8px;min-width:0}
+.verified{display:inline-grid;place-items:center;width:24px;height:24px;flex:none;position:relative;filter:drop-shadow(0 0 6px rgba(155,92,255,.8))}
+.verified svg{width:100%;height:100%;overflow:visible}
+.verified .seal{fill:var(--accent);stroke:var(--white);stroke-width:1.2;transform-origin:12px 12px;animation:sealSpin 12s linear infinite}
+.verified .tick{stroke:var(--white);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:16;stroke-dashoffset:16;animation:tickDraw .5s 1s ease-out forwards}
+@keyframes sealSpin{to{transform:rotate(360deg)}}
+@keyframes tickDraw{to{stroke-dashoffset:0}}
+.verified::after{content:"";position:absolute;inset:-3px;border-radius:50%;border:2px solid var(--lilac);opacity:0;animation:sealPing 3s 1.6s ease-out infinite}
+@keyframes sealPing{0%{opacity:.8;transform:scale(.7)}60%,100%{opacity:0;transform:scale(1.5)}}
+
+/* ===== Like ===== */
+.head{align-items:flex-end}
+.like{margin-left:auto;padding-bottom:6px;display:flex;flex-direction:column;align-items:center;gap:4px;position:relative;flex:none}
+.like-count{font-family:var(--f-display);font-size:17px;line-height:1;color:var(--white);font-variant-numeric:tabular-nums;min-width:2ch;text-align:center;
+  text-shadow:0 2px 0 var(--accent-deep)}
+.like-btn{width:48px;height:48px;border-radius:50%;border:2px solid var(--line-solid);background:var(--surface-2);display:grid;place-items:center;cursor:pointer;
+  position:relative;z-index:1;transition:transform .25s cubic-bezier(.3,1.7,.5,1),border-color .2s,background .3s,box-shadow .3s}
+.like-btn svg{width:24px;height:24px;fill:none;stroke:var(--lilac);stroke-width:2;transition:fill .25s,stroke .25s,transform .3s cubic-bezier(.3,1.7,.5,1)}
+.like-btn:hover{transform:scale(1.08);border-color:#ff5ea8;box-shadow:0 0 18px -4px #ff5ea8}
+.like-btn:hover svg{transform:scale(1.08)}
+.like-btn:active{transform:scale(.9)}
+.like-btn:focus-visible{outline:2px solid var(--white);outline-offset:3px}
+.like-btn.on{background:linear-gradient(135deg,#ff5ea8,var(--accent));border-color:transparent;box-shadow:0 4px 0 var(--accent-deep),0 0 22px -4px #ff5ea8}
+.like-btn.on svg{fill:var(--white);stroke:var(--white)}
+.like-btn.pop{animation:likePop .6s cubic-bezier(.3,1.8,.4,1)}
+.like-btn.pop svg{animation:heartBeat .6s ease-out}
+@keyframes likePop{0%{transform:scale(1)}20%{transform:scale(.75)}55%{transform:scale(1.25)}100%{transform:scale(1)}}
+@keyframes heartBeat{0%{transform:scale(.3) rotate(-15deg)}60%{transform:scale(1.3) rotate(6deg)}100%{transform:scale(1)}}
+.like-btn.nope{animation:nope .4s ease}
+@keyframes nope{20%{transform:translateX(-4px) rotate(-6deg)}40%{transform:translateX(4px) rotate(6deg)}60%{transform:translateX(-3px)}80%{transform:translateX(2px)}}
+.like .spark{position:absolute;left:50%;bottom:24px;width:7px;height:7px;margin:-3.5px;border-radius:50%;pointer-events:none;z-index:2;
+  background:var(--lilac);animation:spark .8s cubic-bezier(.2,.8,.3,1) forwards}
+.like .spark:nth-child(2n){background:#ff5ea8}.like .spark:nth-child(5n){background:var(--white)}
+.like .spark.heart{width:12px;height:12px;margin:-6px;border-radius:0;background:#ff5ea8;
+  clip-path:path("M6 11S0 7.3 0 3.6C0 1.6 1.4 0 3.2 0 4.4 0 5.4.7 6 1.7 6.6.7 7.6 0 8.8 0 10.6 0 12 1.6 12 3.6 12 7.3 6 11 6 11z")}
+@keyframes spark{0%{transform:translate(0,0) scale(.3) rotate(0)}70%{opacity:1}100%{transform:translate(var(--dx),var(--dy)) scale(1) rotate(var(--rot));opacity:0}}
+.like .ring{position:absolute;left:50%;bottom:24px;width:48px;height:48px;margin:-24px;border-radius:50%;border:3px solid #ff5ea8;pointer-events:none;
+  animation:ring .6s ease-out forwards}
+@keyframes ring{from{transform:scale(.6);opacity:1}to{transform:scale(1.9);opacity:0;border-width:1px}}
+
+/* ===== Dossiers ===== */
+.fhead{display:flex;align-items:center;gap:10px;padding-bottom:4px;border-bottom:1px solid var(--line-solid);margin-bottom:2px;padding-block:0 10px}
+.fhead .back{display:inline-flex;align-items:center;gap:4px;flex:none;padding:7px 12px 7px 8px;border-radius:999px;background:var(--surface-2);
+  border:2px solid var(--line-solid);color:var(--ink);font-family:var(--f-mono);font-size:12px;font-weight:700;text-decoration:none;
+  transition:transform .2s cubic-bezier(.3,1.6,.5,1),border-color .2s,background .2s}
+.fhead .back svg{width:16px;height:16px;fill:currentColor;transition:transform .25s}
+.fhead .back:hover,.fhead .back:focus-visible{border-color:var(--accent);background:#271d40;color:var(--white);text-decoration:none;outline:none}
+.fhead .back:hover svg{transform:translateX(-3px)}
+.fhead .back:active{transform:scale(.94)}
+.fname{display:flex;align-items:center;gap:8px;min-width:0;flex:1}
+.fname svg{width:18px;height:18px;fill:var(--accent);flex:none}
+.fname b{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fname .cnt{margin-left:auto;flex:none;font-family:var(--f-mono);font-size:10px;color:var(--lilac);background:rgba(155,92,255,.16);padding:3px 8px;border-radius:999px}
+.folder .thumbs{display:flex;flex:none}
+.folder .thumbs img{width:38px;height:28px;object-fit:cover;border-radius:6px;border:2px solid var(--surface-2);margin-left:-12px;box-shadow:0 2px 6px rgba(0,0,0,.4);
+  transition:transform .3s cubic-bezier(.3,1.6,.5,1)}
+.folder .thumbs img:first-child{margin-left:0}
+.folder:hover .thumbs img{transform:translateY(-2px) rotate(-4deg)}
+.folder:hover .thumbs img:nth-child(2){transform:translateY(-3px) rotate(3deg)}
+@media (max-width:380px){.folder .thumbs{display:none}}
+.st.beta{background:rgba(255,94,168,.18);color:#ffb3d6}
+.pj .shot .st.beta{background:rgba(14,10,23,.8);color:#ffb3d6}
 </style>
 
 <!-- Modèle du logo (réutilisé partout) -->
@@ -369,8 +433,16 @@ footer{font-family:var(--f-mono);font-size:11px;color:var(--muted);display:flex;
     <div class="head">
       <div class="avatar" id="avatar"></div>
       <div class="who">
-        <h1 class="wordmark wave" id="name" aria-label="Dwenyx"></h1>
+        <div class="nameline"><h1 class="wordmark wave" id="name" aria-label="Dwenyx"></h1>
+          <span class="verified" title="Compte certifié" aria-label="Compte certifié"><svg viewBox="0 0 24 24"><path class="seal" d="M12 1.5l2.4 1.8 3-.2 1 2.8 2.6 1.6-.7 2.9 1.2 2.8-2.2 2 -.3 3-2.9.8-1.7 2.5-2.9-.9-2.8 1.2-2-2.2-3-.3-.8-2.9L.7 13.6l1-2.8-1-2.9L3.4 6.4l.6-3 3-.2L9.4 1.5z"/><path class="tick" d="M7.5 12.3l3 3 6-6.2" fill="none"/></svg></span>
+        </div>
         <div class="role"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6.5A2.5 2.5 0 015.5 4h8A2.5 2.5 0 0116 6.5v1.6l4.4-2.6A1 1 0 0122 6.4v11.2a1 1 0 01-1.6.9L16 15.9v1.6a2.5 2.5 0 01-2.5 2.5h-8A2.5 2.5 0 013 17.5v-11z"/></svg><span id="status">Content Creator</span></div>
+      </div>
+      <div class="like">
+        <span class="like-count" id="likeCount" aria-live="polite">–</span>
+        <button class="like-btn" id="likeBtn" type="button" aria-pressed="false" aria-label="Liker le profil">
+          <svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.6-9.3C.9 8.2 3 4.5 6.6 4.5c2.1 0 3.5 1.1 4.4 2.5.9-1.4 2.3-2.5 4.4-2.5 3.6 0 5.7 3.7 4.2 7.2C19.5 16.4 12 21 12 21z"/></svg>
+        </button>
       </div>
     </div>
     <p class="bio" id="about"></p>
@@ -443,7 +515,8 @@ const PROFILE = {
        link:"https://www.roblox.com/fr/games/93885728521060/Dodge-to-Survive", img:"img/dodge-to-survive.jpg"}
     ]},
     {name:"Applications", items:[
-      {name:"FlipZik", desc:"Mon application.", status:"", role:""}
+      {name:"FlipZik", desc:"Le Tinder de la musique : écoute 30 s, swipe, découvre ta prochaine musique préférée.", status:"beta", role:"Co-Builder",
+       link:"https://flipzik.vercel.app/discover", cta:"Découvrir FlipZik ↗", img:"img/flipzik.jpg"}
     ]}
   ]
 };
@@ -473,20 +546,23 @@ $("about").textContent=PROFILE.about;
 if(PROFILE.avatar)$("avatar").innerHTML=`<img src="${PROFILE.avatar}" alt="${PROFILE.name}">`;else $("avatar").innerHTML=`<span class="letter">${PROFILE.name[0].toUpperCase()}</span>`;
 /* Projets en dossiers */
 const FOLDER='<svg viewBox="0 0 24 24"><path d="M2 5a2 2 0 012-2h5l2 2h9a2 2 0 012 2v11a2 2 0 01-2 2H4a2 2 0 01-2-2V5z"/></svg>';
+const STATUS={live:"En ligne",dev:"En dev",beta:"Bêta privée"};
+const nProj=n=>n+" projet"+(n>1?"s":"");
 function showFolders(){
   $("proj").innerHTML=`<div class="folders">${PROFILE.folders.map((f,i)=>
-    `<button class="folder" type="button" data-folder="${i}"><span class="fi">${FOLDER}</span><span class="t"><b>${f.name}</b><small>${f.items.length} projet${f.items.length>1?"s":""}</small></span><span class="go">ouvrir →</span></button>`).join("")}</div>`;
+    `<button class="folder" type="button" data-folder="${i}"><span class="fi">${FOLDER}</span><span class="t"><b>${f.name}</b><small>${nProj(f.items.length)}</small></span>
+      <span class="thumbs">${f.items.filter(p=>p.img).slice(0,3).map(p=>`<img src="${p.img}" alt="">`).join("")}</span><span class="go">→</span></button>`).join("")}</div>`;
 }
 function openFolder(i){
   const f=PROFILE.folders[i];
-  $("proj").innerHTML=`<button class="back" type="button" id="back">← Dossiers</button>
-    <div class="crumb">${FOLDER}<b>${f.name}</b></div>
+  $("proj").innerHTML=`<div class="fhead"><button class="back" type="button" id="back" aria-label="Retour aux dossiers"><svg viewBox="0 0 24 24"><path d="M15.4 5.4 14 4l-8 8 8 8 1.4-1.4L8.8 12z"/></svg>Retour</button>
+      <div class="fname">${FOLDER}<b>${f.name}</b><span class="cnt">${nProj(f.items.length)}</span></div></div>
     <div class="pjs">${f.items.map(p=>{
-      const st=p.status?`<span class="st ${p.status}">${p.status==="live"?"En ligne":"En dev"}</span>`:"";
+      const st=p.status?`<span class="st ${p.status}">${STATUS[p.status]||p.status}</span>`:"";
       return `<article class="pj">
         ${p.img?`<div class="shot"><img src="${p.img}" alt="${p.name}" loading="lazy">${st}${p.visits!=null?`<span class="visits"><svg viewBox="0 0 24 24"><path d="M12 5c-7 0-10 7-10 7s3 7 10 7 10-7 10-7-3-7-10-7zm0 11a4 4 0 110-8 4 4 0 010 8z"/></svg>${p.visits==="loading"?`<span class="ld" aria-label="Chargement des visites"><i></i><i></i><i></i></span> visites`:typeof p.visits==="string"?p.visits+" visites":new Intl.NumberFormat("fr-FR",{notation:"compact",maximumFractionDigits:1}).format(p.visits)+" visite"+(p.visits>1?"s":"")}</span>`:""}</div>`:""}
         <div class="info">${p.img?"":st}<div class="ttl"><b>${p.name}</b>${p.role?`<span class="role-tag">${p.role}</span>`:""}</div><span class="d">${p.desc}</span>
-        ${p.link?`<a class="btn play" href="${p.link}" target="_blank" rel="noopener">${f.name.includes("Roblox")?"▶ Jouer sur Roblox":"Ouvrir ↗"}</a>`:""}</div>
+        ${p.link?`<a class="btn play" href="${p.link}" target="_blank" rel="noopener">${p.cta||(f.name.includes("Roblox")?"▶ Jouer sur Roblox":"Ouvrir ↗")}</a>`:""}</div>
       </article>`}).join("")}</div>`;
 }
 function resizePanes(fn){
@@ -498,6 +574,9 @@ showFolders();
 $("proj").addEventListener("click",e=>{
   const f=e.target.closest("[data-folder]");if(f){resizePanes(()=>openFolder(+f.dataset.folder));return}
   if(e.target.closest("#back"))resizePanes(showFolders);
+});
+addEventListener("keydown",e=>{
+  if(e.key==="Escape"&&$("back")&&!$("p-projets").hidden){SFX.close();resizePanes(showFolders)}
 });
 
 const L=[
@@ -624,7 +703,7 @@ function audioInit(){
   try{AC=new (window.AudioContext||window.webkitAudioContext)();sfxGain=AC.createGain();sfxGain.gain.value=.8;sfxGain.connect(AC.destination);loadSfx()}catch(e){AC=null}
 }
 /* Effets sonores : tes fichiers, joués via Web Audio */
-const SFX_FILES={tap:"sfx/tap.mp3",click:"sfx/click.mp3",success:"sfx/success.mp3",open:"sfx/open.mp3"};
+const SFX_FILES={tap:"sfx/tap.mp3",click:"sfx/click.mp3",success:"sfx/success.mp3",open:"sfx/open.mp3",like:"sfx/like.mp3"};
 const BUF={};
 function loadSfx(){
   Object.entries(SFX_FILES).forEach(([k,u])=>fetch(u).then(r=>r.arrayBuffer()).then(a=>AC.decodeAudioData(a)).then(b=>{BUF[k]=b}).catch(()=>{}));
@@ -637,7 +716,7 @@ function play(name,{vol=.6,rate=1,delay=0}={}){
   s.connect(g);g.connect(sfxGain);s.start(AC.currentTime+delay);
 }
 const SFX={
-  hover:()=>play("tap",{vol:.22,rate:1.15}),
+  hover:()=>play("tap",{vol:.07,rate:1.15}),
   click:()=>play("click",{vol:.6}),
   tab:()=>play("click",{vol:.7,rate:1.12}),
   open:()=>play("open",{vol:.55}),
@@ -648,7 +727,8 @@ const SFX={
   up:()=>play("success",{vol:.45,rate:1.2}),
   down:()=>play("click",{vol:.5,rate:.7}),
   tick:()=>play("tap",{vol:.18,rate:1.4}),
-  toggle:()=>play("click",{vol:.55,rate:1.05})
+  toggle:()=>play("click",{vol:.55,rate:1.05}),
+  like:()=>play("like",{vol:.75})
 };
 function applyMusic(){
   bgm.volume=Math.min(1,Math.max(0,musicVol/100));
@@ -676,7 +756,7 @@ document.addEventListener("pointerout",e=>{const el=e.target.closest(HOVERABLE);
 document.addEventListener("click",e=>{
   if(!gate.classList.contains("gone"))return;
   const t=e.target;
-  if(t.closest(".sound"))return;
+  if(t.closest(".sound,.like-btn"))return;
   if(t.closest("[data-copy]"))return SFX.copy();
   if(t.closest(".tab"))return SFX.tab();
   if(t.closest("[data-folder]"))return SFX.open();
@@ -693,6 +773,57 @@ document.addEventListener("pointerdown",e=>{
   d.className="rip";d.style.width=d.style.height=size+"px";d.style.left=(e.clientX-r.left)+"px";d.style.top=(e.clientY-r.top)+"px";
   el.append(d);setTimeout(()=>d.remove(),650);
 });
+
+/* ===== Likes du profil ===== */
+const likeBtn=$("likeBtn"),likeCount=$("likeCount");
+let likes=null,liked=store.get("liked",false),likeApi=null,likeBusy=false;
+const likeFmt=n=>n>=10000?compact(n):fr(n);
+function showLikes(n,animate){
+  if(n==null){likeCount.textContent="–";return}
+  const from=likes==null?n:likes;likes=n;
+  tween(likeCount,from,n,likeFmt,animate?700:0);
+}
+function setLikedUI(){likeBtn.classList.toggle("on",liked);likeBtn.setAttribute("aria-pressed",liked);likeBtn.setAttribute("aria-label",liked?"Tu as liké ce profil":"Liker le profil")}
+function burst(){
+  if(reduceMotion)return;
+  const wrap=likeBtn.parentElement;
+  for(let i=0;i<14;i++){
+    const a=(Math.PI*2*i/14)+Math.random()*.4,dist=34+Math.random()*28,el=document.createElement("i");
+    el.className="spark"+(i%3===0?" heart":"");el.style.setProperty("--dx",Math.cos(a)*dist+"px");el.style.setProperty("--dy",Math.sin(a)*dist+"px");
+    el.style.setProperty("--rot",(Math.random()*120-60)+"deg");el.style.animationDelay=(Math.random()*.06)+"s";
+    wrap.append(el);setTimeout(()=>el.remove(),900);
+  }
+  const ring=document.createElement("i");ring.className="ring";wrap.append(ring);setTimeout(()=>ring.remove(),700);
+}
+likeBtn.addEventListener("click",async()=>{
+  if(liked){likeBtn.classList.remove("nope");likeBtn.offsetWidth;likeBtn.classList.add("nope");SFX.click();toast("Tu as déjà liké ce profil 💜");return}
+  if(likeBusy)return;likeBusy=true;
+  liked=true;store.set("liked",true);setLikedUI();
+  likeBtn.classList.remove("pop");likeBtn.offsetWidth;likeBtn.classList.add("pop");burst();SFX.like();
+  if(likes!=null)showLikes(likes+1,true);
+  try{if(likeApi)await likeApi.like()}catch(e){liked=false;store.set("liked",false);setLikedUI();if(likes!=null)showLikes(likes-1,true);toast("Le like n'a pas pu être enregistré, réessaie")}
+  likeBusy=false;
+});
+setLikedUI();
+(async()=>{
+  /* Sur claude.ai : un document par personne dans la base de la page */
+  const db=window.claude?await window.claude.use("db"):null;
+  if(db){
+    const user=await window.claude.use("user");const uid=user?await user.id():null;
+    likeApi={like:async()=>{if(!uid)throw new Error("no user");await db.doc("likes/"+uid).set({at:Date.now()})}};
+    db.collection("likes").onSnapshot(q=>{
+      if(uid&&q.docs.some(d=>d.id===uid)){liked=true;store.set("liked",true);setLikedUI()}
+      if(!likeBusy)showLikes(q.size,likes!=null);
+    },()=>{});
+    return;
+  }
+  /* Sur ton site (Vercel) : petite API /api/like */
+  if(location.protocol.startsWith("http")&&!/claude\.ai|claudeusercontent/.test(location.hostname)){
+    const get=()=>fetch("/api/like",{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{if(d&&typeof d.count==="number"&&!likeBusy)showLikes(Math.max(d.count,likes||0),likes!=null)}).catch(()=>{});
+    likeApi={like:()=>fetch("/api/like",{method:"POST"}).then(r=>{if(!r.ok)throw new Error("like failed");return r.json()}).then(d=>{if(d&&typeof d.count==="number")showLikes(Math.max(d.count,likes||0),true)})};
+    get();setInterval(get,60000);
+  }
+})();
 /* ===== Entrée ===== */
 const gate=$("gate");
 const enter=e=>{
@@ -708,10 +839,11 @@ gate.addEventListener("click",enter);addEventListener("keydown",e=>{if(!gate.cla
 applySfx();audioInit();applyMusic();
 
 /* Fond : grille de studs violets qui suit la souris */
-const cv=$("studs"),cx=cv.getContext("2d");let W,H,mx=.5,my=.5;
+const cv=$("studs"),cx=cv.getContext("2d");let W,H,mx=.5,my=.5,fx=.5,fy=.5,fx2=.5,fy2=.5,mouseSeen=false;
+const DPR=Math.min(devicePixelRatio||1,1.5);
 const still=matchMedia("(prefers-reduced-motion:reduce)").matches;
-function size(){W=cv.width=innerWidth*devicePixelRatio;H=cv.height=innerHeight*devicePixelRatio;if(still)draw()}
-addEventListener("resize",size);addEventListener("pointermove",e=>{mx=e.clientX/innerWidth;my=e.clientY/innerHeight});
+function size(){W=cv.width=Math.round(innerWidth*DPR);H=cv.height=Math.round(innerHeight*DPR);if(still)draw()}
+addEventListener("resize",size);addEventListener("pointermove",e=>{mx=e.clientX/innerWidth;my=e.clientY/innerHeight;if(!mouseSeen){mouseSeen=true;fx=fx2=mx;fy=fy2=my}},{passive:true});
 /* Lueurs qui flottent lentement et éclairent les carrés */
 const GLOWS=[
   {x:.15,y:.2,r:.38,c:"155,92,255",sx:.00011,sy:.00008,p:0},
@@ -720,22 +852,34 @@ const GLOWS=[
   {x:.3,y:.85,r:.32,c:"178,128,255",sx:.0001,sy:.00009,p:1}
 ];
 function draw(t=0){
-  const d=devicePixelRatio,g=24*d,r=3.5*d;cx.clearRect(0,0,W,H);
+  const d=DPR,g=24*d,r=3.5*d;cx.clearRect(0,0,W,H);
   const M=Math.max(W,H);
+  /* la lueur suit la souris avec un léger retard, deux couches pour un rendu doux */
+  fx+=(mx-fx)*.09;fy+=(my-fy)*.09;fx2+=(mx-fx2)*.035;fy2+=(my-fy2)*.035;
+  const cxp=fx*W,cyp=fy*H,cx2=fx2*W,cy2=fy2*H;
   const gl=GLOWS.map(o=>({x:(o.x+Math.sin(t*o.sx+o.p)*.18)*W,y:(o.y+Math.cos(t*o.sy+o.p)*.15)*H,r:o.r*M*(1+Math.sin(t*.0006+o.p)*.12),c:o.c}));
   cx.globalCompositeOperation="lighter";
   for(const o of gl){const gr=cx.createRadialGradient(o.x,o.y,0,o.x,o.y,o.r);
-    gr.addColorStop(0,`rgba(${o.c},.22)`);gr.addColorStop(.5,`rgba(${o.c},.07)`);gr.addColorStop(1,`rgba(${o.c},0)`);
+    gr.addColorStop(0,`rgba(${o.c},.2)`);gr.addColorStop(.5,`rgba(${o.c},.06)`);gr.addColorStop(1,`rgba(${o.c},0)`);
     cx.fillStyle=gr;cx.fillRect(o.x-o.r,o.y-o.r,o.r*2,o.r*2)}
+  if(mouseSeen){
+    const R2=M*.32,g2=cx.createRadialGradient(cx2,cy2,0,cx2,cy2,R2);
+    g2.addColorStop(0,"rgba(123,60,240,.30)");g2.addColorStop(.5,"rgba(123,60,240,.09)");g2.addColorStop(1,"rgba(123,60,240,0)");
+    cx.fillStyle=g2;cx.fillRect(cx2-R2,cy2-R2,R2*2,R2*2);
+    const R1=M*.13,g1=cx.createRadialGradient(cxp,cyp,0,cxp,cyp,R1);
+    g1.addColorStop(0,"rgba(235,225,255,.26)");g1.addColorStop(.35,"rgba(178,128,255,.16)");g1.addColorStop(1,"rgba(155,92,255,0)");
+    cx.fillStyle=g1;cx.fillRect(cxp-R1,cyp-R1,R1*2,R1*2);
+  }
   cx.globalCompositeOperation="source-over";
-  const ox=(mx-.5)*g*.6,oy=(my-.5)*g*.6;
+  const ox=(fx-.5)*g*.6,oy=(fy-.5)*g*.6,RL=M*.22;
   for(let y=-g;y<H+g;y+=g)for(let x=-g;x<W+g;x+=g){
     const px=x+ox,py=y+oy;
-    const dist=Math.hypot(px-mx*W,py-my*H)/(M*.5);
     let lit=0;for(const o of gl){const k=1-Math.hypot(px-o.x,py-o.y)/o.r;if(k>0)lit+=k*k*.18}
-    const a=Math.max(0,.24-dist*.2)+Math.min(.22,lit);
-    cx.beginPath();cx.arc(px,py,r,0,7);cx.fillStyle=`rgba(155,92,255,${a+.035})`;cx.fill();
-    cx.beginPath();cx.arc(px-r*.25,py-r*.25,r*.45,0,7);cx.fillStyle=`rgba(255,255,255,${a*.35})`;cx.fill();
+    let m=0;if(mouseSeen){const k=1-Math.hypot(px-cxp,py-cyp)/RL;if(k>0)m=k*k}
+    const a=.03+Math.min(.22,lit)+m*.5;
+    const rr=r*(1+m*.55);
+    cx.beginPath();cx.arc(px,py,rr,0,7);cx.fillStyle=`rgba(${155+m*80|0},${92+m*120|0},255,${Math.min(.9,a)})`;cx.fill();
+    cx.beginPath();cx.arc(px-rr*.25,py-rr*.25,rr*.45,0,7);cx.fillStyle=`rgba(255,255,255,${Math.min(.8,a*.4+m*.3)})`;cx.fill();
   }
   if(!still)requestAnimationFrame(draw);
 }
