@@ -172,7 +172,8 @@ main{position:relative;z-index:1;min-height:100%;display:flex;flex-direction:col
 @keyframes deltaUp{0%{opacity:0;transform:translate(-50%,6px)}15%{opacity:1;transform:translate(-50%,-6px)}75%{opacity:1}100%{opacity:0;transform:translate(-50%,-22px)}}
 .banner .live{position:absolute;left:14px;top:12px;display:inline-flex;align-items:center;gap:6px;font-family:var(--f-mono);font-size:10px;font-weight:700;
   text-transform:uppercase;letter-spacing:.1em;color:var(--white);background:rgba(14,10,23,.45);padding:3px 8px;border-radius:6px}
-.banner .live[hidden]{display:none}
+.banner > .live{position:absolute;z-index:2;left:14px;top:12px}
+.banner > .live[hidden]{display:none}
 .banner .live i{width:7px;height:7px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 0 var(--ok);animation:ping 2s infinite}
 .banner{padding-top:46px}
 
@@ -422,6 +423,7 @@ footer{font-family:var(--f-mono);font-size:11px;color:var(--muted);display:flex;
 .visits-f{display:inline-flex;align-items:center;gap:5px}
 .visits-f svg{width:13px;height:13px;fill:var(--lilac)}
 .visits-f #views{color:var(--white);font-variant-numeric:tabular-nums}
+main{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
 </style>
 
 <!-- Modèle du logo (réutilisé partout) -->
@@ -1031,20 +1033,6 @@ function drawTrail(now,hx,hy,d){
       STARS.push({x:head.x+(Math.random()-.5)*14*d,y:head.y+(Math.random()-.5)*14*d,vx:(Math.random()-.5)*.6*d,vy:(-.2-Math.random()*.5)*d,
         r:(5+Math.random()*5)*d,rot:Math.random()*6,vr:(Math.random()-.5)*.12,t:now,c:c<.5?"#ffffff":c<.8?"#d8c6ff":"#ff9bd0"})}}
   lastPt=head;
-  if(pts.length>1){
-    cx.lineCap="round";cx.lineJoin="round";
-    const W0=20*d,passes=[["#1d0c44",7*d,1],["#9b5cff",0,1],["#c7a4ff",-W0*.35,1],["#ffffff",-W0*.68,.95]];
-    for(const [col,add,al] of passes){
-      cx.strokeStyle=col;
-      for(let i=1;i<pts.length;i++){
-        const p0=pts[i-1],p1=pts[i],k=Math.max(0,1-(now-p1.t)/TRAIL_MS);if(k<=0)continue;
-        const w=W0*Math.pow(k,.8)+add*k;if(w<=.5)continue;
-        const a=i>1?mid(pts[i-2],p0):p0,b=i===pts.length-1?p1:mid(p0,p1);
-        cx.globalAlpha=al;cx.lineWidth=w;cx.beginPath();cx.moveTo(a.x,a.y);cx.quadraticCurveTo(p0.x,p0.y,b.x,b.y);cx.stroke();
-      }
-    }
-    cx.globalAlpha=1;
-  }
   /* étoiles : pop, rotation, petite chute, avec contour */
   for(let i=STARS.length-1;i>=0;i--){
     const s=STARS[i],age=(now-s.t)/700;if(age>=1){STARS.splice(i,1);continue}
