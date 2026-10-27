@@ -118,7 +118,7 @@ main{position:relative;z-index:1;min-height:100%;display:flex;flex-direction:col
 .banner .shine::before{content:"";position:absolute;top:-50%;bottom:-50%;width:60px;left:-30%;transform:rotate(20deg);
   background:linear-gradient(90deg,transparent,rgba(255,255,255,.28),transparent);animation:sweep 5s ease-in-out infinite}
 @keyframes sweep{0%,55%{left:-30%}100%{left:130%}}
-.banner > :not(.shine):not(.bgshift){position:relative;z-index:1}
+.banner > :not(.shine):not(.bgshift):not(.live){position:relative;z-index:1}
 .banner .top{display:flex;justify-content:space-between;align-items:center;gap:8px;font-family:var(--f-mono);font-size:10px;color:var(--lilac);text-transform:uppercase;letter-spacing:.12em}
 .badge-lv{font-family:var(--f-mono);font-size:11px;font-weight:700;background:rgba(14,10,23,.45);
   color:var(--white);padding:4px 8px;border-radius:6px;border:1px solid rgba(216,198,255,.45);letter-spacing:0}
@@ -172,7 +172,7 @@ main{position:relative;z-index:1;min-height:100%;display:flex;flex-direction:col
 @keyframes deltaUp{0%{opacity:0;transform:translate(-50%,6px)}15%{opacity:1;transform:translate(-50%,-6px)}75%{opacity:1}100%{opacity:0;transform:translate(-50%,-22px)}}
 .banner .live{position:absolute;left:14px;top:12px;display:inline-flex;align-items:center;gap:6px;font-family:var(--f-mono);font-size:10px;font-weight:700;
   text-transform:uppercase;letter-spacing:.1em;color:var(--white);background:rgba(14,10,23,.45);padding:3px 8px;border-radius:6px}
-.banner > .live{position:absolute;z-index:2;left:14px;top:12px}
+.banner > .live{position:absolute;z-index:2;left:14px;top:12px;right:auto;width:auto}
 .banner > .live[hidden]{display:none}
 .banner .live i{width:7px;height:7px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 0 var(--ok);animation:ping 2s infinite}
 .banner{padding-top:46px}
