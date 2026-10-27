@@ -1,78 +1,45 @@
-// Compteur de likes du profil : 1 like maximum par visiteur.
-// Chaque like est un fichier "likes/<empreinte>.txt" dans le Blob store "dwenyx-likes".
-// L'empreinte est un hash de l'adresse IP du visiteur (avec un sel secret),
-// donc pas de doublon possible même en vidant le navigateur ou en revenant plus tard,
-// et aucune adresse IP n'est stockée en clair.
-import { createHash } from "node:crypto";
-import { put, head, list, BlobNotFoundError } from "@vercel/blob";
+// Likes du profil : 1 like maximum par visiteur (empreinte anonyme de l'IP).
+import { head, put, BlobNotFoundError } from "@vercel/blob";
+import { visitorKey, fromOwnSite, rateLimited, readCounter, bumpCounter, countFiles, send } from "./_lib.js";
 
-const SALT = process.env.LIKE_SALT || "";
-
-function visitorKey(req) {
-  const fwd = String(req.headers["x-forwarded-for"] || "");
-  const ip = (fwd.split(",")[0] || req.headers["x-real-ip"] || req.socket?.remoteAddress || "").trim();
-  if (!ip) return null;
-  return createHash("sha256").update(SALT + "|" + ip).digest("hex").slice(0, 40);
-}
+const COUNTER = "counters/likes.json";
+const initial = () => countFiles("likes/");
 
 async function hasLiked(key) {
-  if (!key) return false;
-  try {
-    await head(`likes/${key}.txt`);
-    return true;
-  } catch (err) {
-    if (err instanceof BlobNotFoundError) return false;
-    throw err;
-  }
-}
-
-async function countLikes() {
-  let count = 0;
-  let cursor;
-  do {
-    const page = await list({ prefix: "likes/", limit: 1000, cursor });
-    count += page.blobs.length;
-    cursor = page.hasMore ? page.cursor : undefined;
-  } while (cursor);
-  return count;
+  try { await head(`likes/${key}.txt`); return true; }
+  catch (err) { if (err instanceof BlobNotFoundError) return false; throw err; }
 }
 
 export default async function handler(req, res) {
-  res.setHeader("Cache-Control", "no-store");
   try {
-    const key = visitorKey(req);
-
     if (req.method === "GET") {
-      const [count, liked] = await Promise.all([countLikes(), hasLiked(key)]);
-      return res.status(200).json({ count, liked });
+      let { count } = await readCounter(COUNTER);
+      if (count === null) count = await initial();
+      // Réponse identique pour tout le monde : mise en cache 30 s par Vercel pour économiser le stockage
+      return send(res, 200, { count }, "public, s-maxage=30, stale-while-revalidate=120");
     }
-
     if (req.method === "POST") {
-      if (!key) return res.status(400).json({ error: "Visiteur non identifié" });
+      if (!fromOwnSite(req)) return send(res, 403, { error: "Requête refusée" });
+      if (rateLimited(req, 5)) return send(res, 429, { error: "Trop de tentatives, attends un peu" });
+      const key = visitorKey(req);
+      if (!key) return send(res, 400, { error: "Visiteur non identifié" });
       if (await hasLiked(key)) {
-        return res.status(409).json({ count: await countLikes(), liked: true, already: true });
+        const { count } = await readCounter(COUNTER);
+        return send(res, 409, { count: count ?? undefined, liked: true, already: true });
       }
       try {
-        await put(`likes/${key}.txt`, "1", {
-          access: "private",
-          addRandomSuffix: false,
-          allowOverwrite: false,
-          contentType: "text/plain",
-        });
+        await put(`likes/${key}.txt`, "1", { access: "private", addRandomSuffix: false, allowOverwrite: false, contentType: "text/plain" });
       } catch (err) {
-        // Deux clics simultanés : le fichier existe déjà, le like est déjà compté
-        if (await hasLiked(key)) {
-          return res.status(409).json({ count: await countLikes(), liked: true, already: true });
-        }
+        if (await hasLiked(key)) return send(res, 409, { liked: true, already: true });
         throw err;
       }
-      return res.status(200).json({ count: await countLikes(), liked: true });
+      const count = await bumpCounter(COUNTER, async () => Math.max(0, (await initial()) - 1));
+      return send(res, 200, { count, liked: true });
     }
-
     res.setHeader("Allow", "GET, POST");
-    return res.status(405).json({ error: "Méthode non autorisée" });
+    return send(res, 405, { error: "Méthode non autorisée" });
   } catch (err) {
     console.error(err);
-    return res.status(500).json({ error: "Compteur indisponible" });
+    return send(res, 500, { error: "Compteur indisponible" });
   }
 }

@@ -740,8 +740,9 @@ $("views").textContent="–";
     return;
   }
   if(location.protocol.startsWith("http")&&!/claude\.ai|claudeusercontent/.test(location.hostname)){
-    fetch("/api/visits",{method:"POST",cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{if(d&&typeof d.count==="number")showVisits(d.count)}).catch(()=>{});
-    setInterval(()=>fetch("/api/visits",{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{if(d&&typeof d.count==="number")showVisits(d.count)}).catch(()=>{}),60000);
+    /* +1 une fois par ouverture du site (un simple rechargement de la page ne recompte pas) */
+    let first=true;try{first=!sessionStorage.getItem("visitCounted");sessionStorage.setItem("visitCounted","1")}catch(e){}
+    fetch("/api/visits",first?{method:"POST",cache:"no-store"}:{}).then(r=>r.ok?r.json():null).then(d=>{if(d&&typeof d.count==="number")showVisits(d.count)}).catch(()=>{});
   }
 })();
 const clock=()=>$("clock").textContent=new Date().toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit",timeZone:"Europe/Paris"})+" Paris";
@@ -904,9 +905,8 @@ setLikedUI();
   }
   /* Sur ton site (Vercel) : petite API /api/like */
   if(location.protocol.startsWith("http")&&!/claude\.ai|claudeusercontent/.test(location.hostname)){
-    const get=()=>fetch("/api/like",{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+    const get=()=>fetch("/api/like").then(r=>r.ok?r.json():null).then(d=>{
       if(!d||likeBusy)return;
-      if(d.liked&&!liked){liked=true;store.set("liked",true);setLikedUI()}
       if(typeof d.count==="number")showLikes(d.count,likes!=null);
     }).catch(()=>{});
     likeApi={like:()=>fetch("/api/like",{method:"POST",cache:"no-store"}).then(async r=>{
@@ -914,7 +914,7 @@ setLikedUI();
       if(!r.ok)throw new Error("like failed");
       return r.json();
     })};
-    get();setInterval(get,60000);
+    get();
   }
 })();
 /* Gouttes qui tombent du bord liquide pendant l'ouverture */
