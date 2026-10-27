@@ -393,6 +393,22 @@ footer{font-family:var(--f-mono);font-size:11px;color:var(--muted);display:flex;
 @media (max-width:380px){.folder .thumbs{display:none}}
 .st.beta{background:rgba(255,94,168,.18);color:#ffb3d6}
 .pj .shot .st.beta{background:rgba(14,10,23,.8);color:#ffb3d6}
+
+/* ===== Like v2 : rond parfait ===== */
+.like-btn{width:50px;height:50px;min-width:50px;aspect-ratio:1;padding:0;border-radius:50%;flex:none;overflow:visible;
+  border:2px solid rgba(216,198,255,.35);background:radial-gradient(circle at 35% 30%,#2e2350,#1b1430 70%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 6px 18px -8px rgba(0,0,0,.6)}
+.like-btn svg{width:24px;height:24px;stroke-width:2.2;filter:drop-shadow(0 1px 0 rgba(0,0,0,.25))}
+.like-btn:hover{border-color:#ff7ab8;box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 0 0 4px rgba(255,94,168,.18),0 0 22px -4px #ff5ea8}
+.like-btn.on{border:2px solid rgba(255,255,255,.55);
+  background:radial-gradient(circle at 32% 28%,#ffb0d6 0,#ff5ea8 38%,#b04dff 78%,#7a3cf0 100%);
+  box-shadow:inset 0 2px 3px rgba(255,255,255,.35),inset 0 -3px 6px rgba(70,20,140,.45),0 0 0 4px rgba(255,94,168,.22),0 0 26px -2px rgba(255,94,168,.75)}
+.like-btn.on svg{fill:#fff;stroke:#fff}
+.like-count{font-size:18px;letter-spacing:.02em}
+.like .ring,.like .spark{bottom:25px}
+.visits-f{display:inline-flex;align-items:center;gap:5px}
+.visits-f svg{width:13px;height:13px;fill:var(--lilac)}
+.visits-f #views{color:var(--white);font-variant-numeric:tabular-nums}
 </style>
 
 <!-- Modèle du logo (réutilisé partout) -->
@@ -466,7 +482,7 @@ footer{font-family:var(--f-mono);font-size:11px;color:var(--muted);display:flex;
     </div>
   </article>
 
-  <footer><span><span id="views">0</span> visites</span><span id="clock">--:--</span><span>© Dwenyx</span></footer>
+  <footer><span class="visits-f"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5c-7 0-10 7-10 7s3 7 10 7 10-7 10-7-3-7-10-7zm0 11a4 4 0 110-8 4 4 0 010 8z"/></svg><span id="views">–</span> visites</span><span id="clock">--:--</span><span>© Dwenyx</span></footer>
 </main>
 
 <div id="toast"></div>
@@ -688,7 +704,21 @@ document.addEventListener("click",e=>{const b=e.target.closest("[data-copy]");if
 
 
 /* Visites locales + heure */
-try{const v=(+localStorage.getItem("v2views")||0)+1;localStorage.setItem("v2views",v);$("views").textContent=v}catch(e){$("views").textContent="1"}
+/* Visites : un compteur commun à tout le monde, +1 à chaque ouverture de la page */
+$("views").textContent="–";
+(async()=>{
+  const showVisits=n=>{const el=$("views");const from=+el.dataset.v||0;el.dataset.v=n;tween(el,from,n,fr,900)};
+  const db=window.claude?await window.claude.use("db"):null;
+  if(db){
+    try{await db.collection("visits").add({at:Date.now()})}catch(e){}
+    db.collection("visits").onSnapshot(q=>showVisits(q.size),()=>{});
+    return;
+  }
+  if(location.protocol.startsWith("http")&&!/claude\.ai|claudeusercontent/.test(location.hostname)){
+    fetch("/api/visits",{method:"POST",cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{if(d&&typeof d.count==="number")showVisits(d.count)}).catch(()=>{});
+    setInterval(()=>fetch("/api/visits",{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{if(d&&typeof d.count==="number")showVisits(d.count)}).catch(()=>{}),60000);
+  }
+})();
 const clock=()=>$("clock").textContent=new Date().toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit",timeZone:"Europe/Paris"})+" Paris";
 clock();setInterval(clock,10000);
 
@@ -860,7 +890,7 @@ const cv=$("studs"),cx=cv.getContext("2d");let W,H,mx=.5,my=.5,fx=.5,fy=.5,fx2=.
 const DPR=Math.min(devicePixelRatio||1,1.5);
 const still=matchMedia("(prefers-reduced-motion:reduce)").matches;
 function size(){W=cv.width=Math.round(innerWidth*DPR);H=cv.height=Math.round(innerHeight*DPR);if(still)draw()}
-addEventListener("resize",size);const TRAIL=[],TRAIL_MS=420;
+addEventListener("resize",size);const TRAIL=[],TRAIL_MS=300;
 addEventListener("pointermove",e=>{
   mx=e.clientX/innerWidth;my=e.clientY/innerHeight;mouseSeen=true;
   const now=performance.now(),evs=e.getCoalescedEvents?e.getCoalescedEvents():[e];
@@ -887,12 +917,6 @@ function draw(t=0){
     cx.fillStyle=gr;cx.fillRect(o.x-o.r,o.y-o.r,o.r*2,o.r*2)}
   if(mouseSeen){
     const base=34*d;
-    for(let i=0;i<TRAIL.length;i++){
-      const p=TRAIL[i],k=1-(now-p.t)/TRAIL_MS;if(k<=0)continue;
-      const R=base*(.35+.65*k),gr=cx.createRadialGradient(p.x,p.y,0,p.x,p.y,R);
-      gr.addColorStop(0,`rgba(205,170,255,${.22*k})`);gr.addColorStop(.45,`rgba(155,92,255,${.12*k})`);gr.addColorStop(1,"rgba(155,92,255,0)");
-      cx.fillStyle=gr;cx.fillRect(p.x-R,p.y-R,R*2,R*2);
-    }
     const R0=M*.16,g0=cx.createRadialGradient(cxp,cyp,0,cxp,cyp,R0);
     g0.addColorStop(0,"rgba(245,238,255,.30)");g0.addColorStop(.2,"rgba(178,128,255,.18)");g0.addColorStop(1,"rgba(123,60,240,0)");
     cx.fillStyle=g0;cx.fillRect(cxp-R0,cyp-R0,R0*2,R0*2);
@@ -908,7 +932,50 @@ function draw(t=0){
     cx.beginPath();cx.arc(px,py,rr,0,7);cx.fillStyle=`rgba(${155+m*80|0},${92+m*120|0},255,${Math.min(.9,a)})`;cx.fill();
     cx.beginPath();cx.arc(px-rr*.25,py-rr*.25,rr*.45,0,7);cx.fillStyle=`rgba(255,255,255,${Math.min(.8,a*.4+m*.3)})`;cx.fill();
   }
+  drawTrail(now,cxp,cyp,d);
   if(!still)requestAnimationFrame(draw);
+}
+/* Traînée façon cartoon : ruban épais avec contour, reflet blanc, et petites étoiles */
+const STARS=[];let travel=0,lastPt=null;
+const mid=(a,b)=>({x:(a.x+b.x)/2,y:(a.y+b.y)/2});
+function star(x,y,r,rot){
+  cx.beginPath();
+  for(let i=0;i<8;i++){const a=rot+i*Math.PI/4,rr=i%2?r*.42:r;cx.lineTo(x+Math.cos(a)*rr,y+Math.sin(a)*rr)}
+  cx.closePath();
+}
+function drawTrail(now,hx,hy,d){
+  if(!mouseSeen)return;
+  const pts=TRAIL.filter(p=>now-p.t<TRAIL_MS);pts.push({x:hx,y:hy,t:now});
+  /* étoiles semées en route */
+  const head=pts[pts.length-1];
+  if(lastPt){travel+=Math.hypot(head.x-lastPt.x,head.y-lastPt.y);
+    while(travel>46*d){travel-=46*d;const c=Math.random();
+      STARS.push({x:head.x+(Math.random()-.5)*14*d,y:head.y+(Math.random()-.5)*14*d,vx:(Math.random()-.5)*.6*d,vy:(-.2-Math.random()*.5)*d,
+        r:(5+Math.random()*5)*d,rot:Math.random()*6,vr:(Math.random()-.5)*.12,t:now,c:c<.5?"#ffffff":c<.8?"#d8c6ff":"#ff9bd0"})}}
+  lastPt=head;
+  if(pts.length>1){
+    cx.lineCap="round";cx.lineJoin="round";
+    const W0=13*d,passes=[["#1d0c44",7*d,1],["#9b5cff",0,1],["#c7a4ff",-W0*.35,1],["#ffffff",-W0*.68,.95]];
+    for(const [col,add,al] of passes){
+      cx.strokeStyle=col;
+      for(let i=1;i<pts.length;i++){
+        const p0=pts[i-1],p1=pts[i],k=Math.max(0,1-(now-p1.t)/TRAIL_MS);if(k<=0)continue;
+        const w=W0*Math.pow(k,.8)+add*k;if(w<=.5)continue;
+        const a=i>1?mid(pts[i-2],p0):p0,b=i===pts.length-1?p1:mid(p0,p1);
+        cx.globalAlpha=al;cx.lineWidth=w;cx.beginPath();cx.moveTo(a.x,a.y);cx.quadraticCurveTo(p0.x,p0.y,b.x,b.y);cx.stroke();
+      }
+    }
+    cx.globalAlpha=1;
+  }
+  /* étoiles : pop, rotation, petite chute, avec contour */
+  for(let i=STARS.length-1;i>=0;i--){
+    const s=STARS[i],age=(now-s.t)/700;if(age>=1){STARS.splice(i,1);continue}
+    s.x+=s.vx;s.y+=s.vy;s.vy+=.03*d;s.rot+=s.vr;
+    const sc=age<.2?age/.2*1.2:1.2-(age-.2)/.8*1.2,r=s.r*Math.max(0,sc);if(r<=.3)continue;
+    star(s.x,s.y,r+2.5*d,s.rot);cx.fillStyle="#1d0c44";cx.fill();
+    star(s.x,s.y,r,s.rot);cx.fillStyle=s.c;cx.fill();
+  }
+  if(STARS.length>40)STARS.splice(0,STARS.length-40);
 }
 size();if(!still)draw();
 </script>
