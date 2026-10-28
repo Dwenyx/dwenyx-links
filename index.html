@@ -644,9 +644,42 @@ input,textarea,select{-webkit-user-select:text;user-select:text;-webkit-touch-ca
   background:radial-gradient(ellipse 80% 70% at 50% 40%,rgba(14,10,23,.5),rgba(14,10,23,.86) 75%)}
 /* carte : petit fondu au tout premier mouvement après le retournement */
 .egg.ease .egg-card{transition:transform .25s ease-out!important}
+/* ===== Fond en calques GPU ===== */
+.fx{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;contain:strict}
+.glo{position:absolute;border-radius:50%;will-change:transform}
+.glo.g1{width:76vmax;height:76vmax;left:calc(15vw - 38vmax);top:calc(20vh - 38vmax);background:radial-gradient(circle closest-side,rgba(155,92,255,.2),rgba(155,92,255,.06) 50%,rgba(155,92,255,0));animation:gloA 57s ease-in-out infinite}
+.glo.g2{width:84vmax;height:84vmax;left:calc(85vw - 42vmax);top:calc(75vh - 42vmax);background:radial-gradient(circle closest-side,rgba(123,60,240,.2),rgba(123,60,240,.06) 50%,rgba(123,60,240,0));animation:gloB 70s ease-in-out infinite -20s}
+.glo.g3{width:56vmax;height:56vmax;left:calc(60vw - 28vmax);top:calc(15vh - 28vmax);background:radial-gradient(circle closest-side,rgba(230,215,255,.2),rgba(230,215,255,.06) 50%,rgba(230,215,255,0));animation:gloA 48s ease-in-out infinite -31s}
+.glo.g4{width:64vmax;height:64vmax;left:calc(30vw - 32vmax);top:calc(85vh - 32vmax);background:radial-gradient(circle closest-side,rgba(178,128,255,.2),rgba(178,128,255,.06) 50%,rgba(178,128,255,0));animation:gloB 63s ease-in-out infinite -9s}
+@keyframes gloA{0%,100%{transform:translate3d(0,15vh,0) scale(1)}25%{transform:translate3d(18vw,0,0) scale(1.12)}50%{transform:translate3d(0,-15vh,0) scale(1)}75%{transform:translate3d(-18vw,0,0) scale(.88)}}
+@keyframes gloB{0%,100%{transform:translate3d(18vw,0,0) scale(.9)}25%{transform:translate3d(0,-15vh,0) scale(1.1)}50%{transform:translate3d(-18vw,0,0) scale(.95)}75%{transform:translate3d(0,15vh,0) scale(1.08)}}
+.halo{position:absolute;left:0;top:0;width:32vmax;height:32vmax;margin:-16vmax 0 0 -16vmax;border-radius:50%;opacity:0;transition:opacity .5s;will-change:transform;
+  background:radial-gradient(circle closest-side,rgba(245,238,255,.3),rgba(178,128,255,.18) 20%,rgba(123,60,240,0))}
+.halo.on{opacity:1}
+.grid{position:absolute;inset:-24px;will-change:transform;
+  background:radial-gradient(circle at 12px 12px,rgba(155,92,255,.13) 3.25px,rgba(155,92,255,0) 3.85px) 12px 12px/24px 24px}
+@media (prefers-reduced-motion:reduce){.glo{animation:none}}
+/* ===== Animations sans repeinture (transform/opacity uniquement) ===== */
+.banner .shine::before{left:0!important;animation:sweepT 5s ease-in-out infinite!important;will-change:transform}
+@keyframes sweepT{0%,55%{transform:translateX(-170px) rotate(20deg)}100%{transform:translateX(640px) rotate(20deg)}}
+.xp .bar b{position:relative;overflow:hidden;background:linear-gradient(90deg,var(--accent-deep),var(--accent))!important;animation:none!important}
+.xp .bar b::after{content:"";position:absolute;top:0;bottom:0;left:0;width:45%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.75),transparent);
+  animation:xpT 2.6s linear infinite;will-change:transform}
+@keyframes xpT{from{transform:translateX(-110%)}to{transform:translateX(330%)}}
+.banner .live i,.lkick i{position:relative;box-shadow:none!important;animation:none!important}
+.banner .live i::after,.lkick i::after{content:"";position:absolute;inset:0;border-radius:50%;background:inherit;animation:pingT 2s ease-out infinite}
+@keyframes pingT{0%{transform:scale(1);opacity:.7}70%,100%{transform:scale(2.8);opacity:0}}
+.verified{isolation:isolate}
+.verified svg{position:absolute;inset:0}
+.verified .vseal{animation:sealSpin 12s linear infinite;will-change:transform}
+.verified .seal{animation:none!important}
+.like-btn:not(.on){animation:none!important}
+.like-btn:not(.on)::before{content:"";position:absolute;inset:-2px;border-radius:50%;border:2px solid #ff5ea8;pointer-events:none;animation:likeRing 2s ease-out infinite}
+@keyframes likeRing{0%{transform:scale(1);opacity:.85}70%,100%{transform:scale(1.6);opacity:0}}
 </style>
 
 <div class="bgv" aria-hidden="true"><video id="bgv" src="video/bg.mp4" poster="video/poster.webp" autoplay muted loop playsinline preload="auto" disablepictureinpicture disableremoteplayback></video></div>
+<div class="fx" aria-hidden="true"><i class="glo g1"></i><i class="glo g2"></i><i class="glo g3"></i><i class="glo g4"></i><i class="halo" id="halo"></i><div class="grid" id="grid"></div></div>
 <canvas id="studs"></canvas>
 
 <div id="gate" class="intro" role="button" tabindex="0" aria-label="Entrer">
@@ -676,7 +709,7 @@ input,textarea,select{-webkit-user-select:text;user-select:text;-webkit-touch-ca
       <div class="avatar" id="avatar"></div>
       <div class="who">
         <div class="nameline"><h1 class="wordmark wave" id="name" aria-label="Dwenyx"></h1>
-          <span class="verified" title="Compte certifié" aria-label="Compte certifié"><svg viewBox="0 0 24 24"><path class="seal" d="M12 1.5l2.4 1.8 3-.2 1 2.8 2.6 1.6-.7 2.9 1.2 2.8-2.2 2 -.3 3-2.9.8-1.7 2.5-2.9-.9-2.8 1.2-2-2.2-3-.3-.8-2.9L.7 13.6l1-2.8-1-2.9L3.4 6.4l.6-3 3-.2L9.4 1.5z"/><path class="tick" d="M7.5 12.3l3 3 6-6.2" fill="none"/></svg></span>
+          <span class="verified" title="Compte certifié" aria-label="Compte certifié"><svg class="vseal" viewBox="0 0 24 24"><path class="seal" d="M12 1.5l2.4 1.8 3-.2 1 2.8 2.6 1.6-.7 2.9 1.2 2.8-2.2 2 -.3 3-2.9.8-1.7 2.5-2.9-.9-2.8 1.2-2-2.2-3-.3-.8-2.9L.7 13.6l1-2.8-1-2.9L3.4 6.4l.6-3 3-.2L9.4 1.5z"/></svg><svg class="vtick" viewBox="0 0 24 24"><path class="tick" d="M7.5 12.3l3 3 6-6.2" fill="none"/></svg></span>
         </div>
         <div class="role"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6.5A2.5 2.5 0 015.5 4h8A2.5 2.5 0 0116 6.5v1.6l4.4-2.6A1 1 0 0122 6.4v11.2a1 1 0 01-1.6.9L16 15.9v1.6a2.5 2.5 0 01-2.5 2.5h-8A2.5 2.5 0 013 17.5v-11z"/></svg><span id="status">Content Creator</span></div>
       </div>
@@ -1353,7 +1386,7 @@ $("cform").addEventListener("submit",async e=>{
   function hide(){
     if(!open)return;timers.forEach(clearTimeout);timers=[];open=false;busy=true;
     egg.classList.add("closing");egg.classList.remove("open");SFX.close();
-    later(()=>{document.documentElement.style.overflow="";window.eggOpen=false;egg.hidden=true;egg.className="egg";egg.setAttribute("aria-hidden","true");busy=false},380);
+    later(()=>{document.documentElement.style.overflow="";window.eggOpen=false;if(typeof wake==="function")wake();egg.hidden=true;egg.className="egg";egg.setAttribute("aria-hidden","true");busy=false},380);
   }
   if(matchMedia("(hover:none)").matches)egg.querySelector(".egg-hint").textContent="Appuie sur la carte pour la bouger · touche à côté pour fermer";
   av.setAttribute("role","button");av.tabIndex=0;av.setAttribute("aria-label","Photo de profil");
@@ -1422,30 +1455,8 @@ const DPR=Math.min(devicePixelRatio||1,LITE?1:1.25);
 const still=matchMedia("(prefers-reduced-motion:reduce)").matches;
 let CR={left:0,top:0,width:innerWidth,height:innerHeight};
 
-/* Lueurs pré-dessinées une seule fois (sprites), puis simplement copiées à chaque image : beaucoup plus léger */
-function sprite(stops,size=256){
-  const c=document.createElement("canvas");c.width=c.height=size;const g=c.getContext("2d"),r=size/2;
-  const gr=g.createRadialGradient(r,r,0,r,r,r);stops.forEach(([o,col])=>gr.addColorStop(o,col));
-  g.fillStyle=gr;g.fillRect(0,0,size,size);return c;
-}
-const GLOWS=[
-  {x:.15,y:.2,r:.38,s:sprite([[0,"rgba(155,92,255,.2)"],[.5,"rgba(155,92,255,.06)"],[1,"rgba(155,92,255,0)"]]),sx:.00011,sy:.00008,p:0},
-  {x:.85,y:.75,r:.42,s:sprite([[0,"rgba(123,60,240,.2)"],[.5,"rgba(123,60,240,.06)"],[1,"rgba(123,60,240,0)"]]),sx:.00009,sy:.00012,p:2},
-  {x:.6,y:.15,r:.28,s:sprite([[0,"rgba(230,215,255,.2)"],[.5,"rgba(230,215,255,.06)"],[1,"rgba(230,215,255,0)"]]),sx:.00013,sy:.0001,p:4},
-  {x:.3,y:.85,r:.32,s:sprite([[0,"rgba(178,128,255,.2)"],[.5,"rgba(178,128,255,.06)"],[1,"rgba(178,128,255,0)"]]),sx:.0001,sy:.00009,p:1}
-];
-const HALO=sprite([[0,"rgba(245,238,255,.30)"],[.2,"rgba(178,128,255,.18)"],[1,"rgba(123,60,240,0)"]]);
-
-/* Grille de points : dessinée une fois dans un calque, puis décalée (parallaxe) */
-let GRID=null,GSTEP=24;
-function buildGrid(){
-  const d=DPR,g=GSTEP*d,r=3.5*d;GRID=document.createElement("canvas");
-  GRID.width=W+g*2;GRID.height=H+g*2;const c=GRID.getContext("2d");
-  c.fillStyle="rgba(155,92,255,.13)";
-  for(let y=0;y<GRID.height;y+=g)for(let x=0;x<GRID.width;x+=g){c.beginPath();c.arc(x,y,r,0,7);c.fill()}
-  c.fillStyle="rgba(255,255,255,.035)";
-  for(let y=0;y<GRID.height;y+=g)for(let x=0;x<GRID.width;x+=g){c.beginPath();c.arc(x-r*.25,y-r*.25,r*.45,0,7);c.fill()}
-}
+/* Grille, lueurs et halo sont des calques CSS déplacés par la carte graphique : le canvas ne dessine plus que ce qui bouge */
+const GSTEP=24,gridEl=$("grid"),haloEl=$("halo");
 /* Points éclairés pré-dessinés (32 niveaux) : un simple drawImage au lieu de 2 cercles + couleur calculée */
 const LV=32;let MDOT=[],WDOT=[];
 function dotSprite(rr,col,a,ha){
@@ -1463,43 +1474,35 @@ function buildDots(){
   }
 }
 /* Les lueurs sont floues : on les dessine en 1/4 de résolution puis on agrandit (16× moins de pixels) */
-const GL=document.createElement("canvas"),gx=GL.getContext("2d");
 function size(){
   CR=cv.getBoundingClientRect();W=cv.width=Math.round(CR.width*DPR);H=cv.height=Math.round(CR.height*DPR);
-  GL.width=Math.ceil(W/4);GL.height=Math.ceil(H/4);
-  buildGrid();buildDots();if(still)draw();
+  buildDots();dirty=true;wake();
 }
 addEventListener("resize",size);
 addEventListener("pointermove",e=>{
   if(e.pointerType&&e.pointerType!=="mouse")return; /* pas de lumière ni de traînée au doigt */
-  mx=(e.clientX-CR.left)/CR.width;my=(e.clientY-CR.top)/CR.height;mouseSeen=true;
+  mx=(e.clientX-CR.left)/CR.width;my=(e.clientY-CR.top)/CR.height;
+  if(!mouseSeen){mouseSeen=true;haloEl.classList.add("on")}
+  dirty=true;wake();
 },{passive:true});
 
-let lastFrame=0,lastInput=0;
-["pointermove","pointerdown","scroll","keydown"].forEach(ev=>addEventListener(ev,()=>{lastInput=performance.now()},{passive:true}));
+/* La boucle ne tourne que quand il y a quelque chose à animer (souris qui bouge, vagues, étoiles), sinon elle s'arrête : 0 calcul au repos */
+let lastFrame=0,running=false,dirty=true,lastGrid="";
+function wake(){if(!running&&!still&&!window.eggOpen){running=true;requestAnimationFrame(draw)}}
 function draw(t=0){
-  if(document.hidden||window.eggOpen){if(!still)requestAnimationFrame(draw);return}
-  /* cadence : 60 i/s max (écrans 120/144 Hz), 30 i/s quand rien ne bouge, ~25 i/s sur mobile */
-  const busy=WAVES.length||HOLD.on||STARS.length||t-lastInput<1500;
-  const minGap=LITE?40:busy?14:31;
+  if(document.hidden||window.eggOpen){running=false;return}
+  const minGap=LITE?33:14; /* 60 i/s max (écrans 120/144 Hz), ~30 i/s sur mobile */
   if(t-lastFrame<minGap){requestAnimationFrame(draw);return}
   lastFrame=t;
   const d=DPR,g=GSTEP*d,r=3.5*d,M=Math.max(W,H),now=performance.now(),cxp=mx*W,cyp=my*H;
-  /* lueurs qui flottent, en basse résolution */
-  const q=GL.width/W;
-  gx.clearRect(0,0,GL.width,GL.height);gx.globalCompositeOperation="lighter";
-  for(const o of GLOWS){
-    const x=(o.x+Math.sin(t*o.sx+o.p)*.18)*W,y=(o.y+Math.cos(t*o.sy+o.p)*.15)*H,R=o.r*M*(1+Math.sin(t*.0006+o.p)*.12);
-    gx.drawImage(o.s,(x-R)*q,(y-R)*q,R*2*q,R*2*q);
-  }
-  if(mouseSeen){const R0=M*.16;gx.drawImage(HALO,(cxp-R0)*q,(cyp-R0)*q,R0*2*q,R0*2*q)}
+  /* calques CSS : parallaxe de la grille + halo sous la souris (simples transform) */
+  const oxc=(mx-.5)*GSTEP*.6,oyc=(my-.5)*GSTEP*.6,gt=`translate3d(${oxc.toFixed(2)}px,${oyc.toFixed(2)}px,0)`;
+  if(gt!==lastGrid){gridEl.style.transform=gt;lastGrid=gt}
+  if(mouseSeen)haloEl.style.transform=`translate3d(${(mx*CR.width).toFixed(1)}px,${(my*CR.height).toFixed(1)}px,0)`;
+  const ox=oxc*d,oy=oyc*d;
   cx.clearRect(0,0,W,H);
-  cx.drawImage(GL,0,0,W,H);
-  /* grille (calque) avec parallaxe */
-  const ox=(mx-.5)*g*.6,oy=(my-.5)*g*.6;
-  cx.drawImage(GRID,ox-g,oy-g);
-  /* seuls les points proches de la souris sont redessinés, éclairés */
-  if(mouseSeen){
+  /* points proches de la souris, éclairés */
+  if(mouseSeen&&!LITE){
     const RL=M*.2,RL2=RL*RL,x0=Math.floor((cxp-RL-ox)/g)*g,x1=cxp+RL,y0=Math.floor((cyp-RL-oy)/g)*g,y1=cyp+RL;
     for(let y=y0;y<=y1;y+=g)for(let x=x0;x<=x1;x+=g){
       const px=x+ox,py=y+oy,ddx=px-cxp,ddy=py-cyp,d2=ddx*ddx+ddy*ddy;if(d2>=RL2)continue;
@@ -1508,7 +1511,8 @@ function draw(t=0){
   }
   drawWaves(now,ox,oy,g,r,M);
   drawTrail(now,cxp,cyp,d);
-  if(!still)requestAnimationFrame(draw);
+  dirty=false;
+  if(WAVES.length||HOLD.on||STARS.length)requestAnimationFrame(draw);else running=false;
 }
 /* Vague de points au clic : un anneau qui grossit, fait gonfler les points puis se dissipe */
 const WAVES=[],WAVE_MS=1700;
@@ -1519,7 +1523,7 @@ const HOLD={on:false,id:null,x:0,y:0,last:0,moved:0};
 addEventListener("pointerdown",e=>{
   if(still||e.button>0)return;
   const pt=toCanvas(e);addWave(pt,1,1,WAVE_MS);
-  Object.assign(HOLD,{on:true,id:e.pointerId,x:pt.x,y:pt.y,last:performance.now(),moved:0});
+  Object.assign(HOLD,{on:true,id:e.pointerId,x:pt.x,y:pt.y,last:performance.now(),moved:0});wake();
 },{passive:true});
 addEventListener("pointermove",e=>{
   if(!HOLD.on||e.pointerId!==HOLD.id)return;
@@ -1584,6 +1588,7 @@ function drawTrail(now,hx,hy,d){
   }
   if(STARS.length>40)STARS.splice(0,STARS.length-40);
 }
-size();if(!still)draw();
+size();
+document.addEventListener("visibilitychange",()=>{if(!document.hidden){dirty=true;wake()}});
 </script>
 </body></html>
