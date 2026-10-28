@@ -35,9 +35,11 @@ export async function overLimit(kind, who, max) {
 }
 
 /* Reprise unique des anciens chiffres (stockage Blob) au premier passage sur Redis */
+let migrated = false; // gardé en mémoire : évite une requête Redis inutile à chaque visite
 export async function migrateOnce() {
+  if (migrated) return;
   const [done] = await redis(["GET", "migrated:v1"]);
-  if (done) return;
+  if (done) { migrated = true; return; }
   const [lock] = await redis(["SET", "migrating:v1", "1", "NX", "EX", "60"]);
   if (lock !== "OK") return;
   try {

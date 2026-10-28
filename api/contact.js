@@ -35,8 +35,9 @@ export default async function handler(req, res) {
     b = b || {};
     // Piège à robots : ce champ est invisible pour les humains
     if (clean(b.website, 200)) return send(res, 200, { ok: true });
+    const oneLine = (x, max) => clean(x, max).replace(/[\r\n\t]+/g, " ").replace(/\s{2,}/g, " ");
     const m = {
-      name: clean(b.name, 60), email: clean(b.email, 254).toLowerCase(),
+      name: oneLine(b.name, 60), email: oneLine(b.email, 254).toLowerCase(),
       type: TYPES[b.type] ? b.type : "autre", message: clean(b.message, 2000),
     };
     if (m.name.length < 2) return send(res, 400, { error: "Indique ton nom ou pseudo" });

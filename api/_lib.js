@@ -3,7 +3,11 @@ import { createHash } from "node:crypto";
 import { get, put, list, BlobPreconditionFailedError } from "@vercel/blob";
 
 const SALT = process.env.LIKE_SALT || "";
-const SITE_HOSTS = (process.env.SITE_HOSTS || "dwenyx.vercel.app").split(",").map((h) => h.trim()).filter(Boolean);
+/* Seules les adresses exactes de TON site sont acceptées (production + déploiement en cours) */
+const SITE_HOSTS = [
+  ...(process.env.SITE_HOSTS || "dwenyx.vercel.app").split(","),
+  process.env.VERCEL_URL, process.env.VERCEL_BRANCH_URL, process.env.VERCEL_PROJECT_PRODUCTION_URL,
+].map((h) => String(h || "").trim().toLowerCase()).filter(Boolean);
 
 /* Adresse IP du visiteur : on prend les en-têtes posés par Vercel lui-même, pas ceux que le navigateur pourrait inventer */
 export function clientIp(req) {
@@ -27,7 +31,7 @@ export function fromOwnSite(req) {
   if (!origin) return true;
   try {
     const host = new URL(origin).hostname;
-    return SITE_HOSTS.includes(host) || host.endsWith("-dwenyx.vercel.app") || host === "localhost";
+    return SITE_HOSTS.includes(host.toLowerCase());
   } catch { return false; }
 }
 
