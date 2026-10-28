@@ -6,7 +6,7 @@ import { hasRedis, redis, overLimit, dayKey } from "./_redis.js";
 const TO = process.env.CONTACT_TO || "contactdwenyx@gmail.com";
 const RESEND = process.env.RESEND_API_KEY || "";
 const FROM = process.env.CONTACT_FROM || "Dwenyx · Page <onboarding@resend.dev>";
-const TYPES = { marque: "Partenariat de marque", createur: "Collab entre créateurs", jeu: "Jeu Roblox", autre: "Autre" };
+const TYPES = { marque: "Partenariat de marque", createur: "Collab entre créateurs", autre: "Autre" };
 
 const clean = (s, max) => String(s ?? "").replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, "").trim().slice(0, max);
 const isEmail = (s) => /^[^\s@<>()"',;:]{1,64}@[^\s@<>()"',;:]{1,190}\.[a-z]{2,24}$/i.test(s);
