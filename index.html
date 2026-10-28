@@ -578,14 +578,16 @@ input,textarea,select{-webkit-user-select:text;user-select:text;-webkit-touch-ca
 .avatar{cursor:pointer}
 .egg{position:fixed;inset:0;z-index:50;display:grid;place-items:center;perspective:1400px;touch-action:none;overscroll-behavior:contain;-webkit-user-select:none;user-select:none}
 .egg[hidden]{display:none}
-.egg-bg{position:absolute;inset:0;background:radial-gradient(circle at 50% 45%,rgba(91,42,209,.55),rgba(8,5,16,.92) 70%);opacity:0;transition:opacity .4s;backdrop-filter:blur(3px)}
+.egg-bg{position:absolute;inset:0;background:radial-gradient(circle at 50% 45%,rgba(70,30,160,.82),rgba(8,5,16,.97) 70%);opacity:0;transition:opacity .4s}
 .egg.open .egg-bg{opacity:1}
 .egg-move{position:relative;perspective:1400px;--cw:min(360px,78vw,calc((100vh - 140px)*.716));width:var(--cw);aspect-ratio:63/88;transform-origin:50% 50%;will-change:transform}
 .egg.zoom .egg-move{transition:transform .6s cubic-bezier(.2,.9,.25,1.15)}
 .egg-card{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .9s cubic-bezier(.3,1.25,.4,1);
   transform:rotateY(var(--ry,0deg)) rotateX(var(--rx,0deg))}
 .egg.flip .egg-card{transform:rotateY(calc(180deg + var(--ry,0deg))) rotateX(var(--rx,0deg))}
-.egg.tilting .egg-card{transition:transform .12s linear}
+.egg.tilting .egg-card{transition:none}
+.egg-card{will-change:transform}
+@media (hover:none){.tc-spark{display:none}}
 .egg.tilting .egg-move{transform:scale(1.04);transition:transform .3s}
 .face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden}
 .face.f-front{display:grid;place-items:center}
@@ -1312,6 +1314,7 @@ $("cform").addEventListener("submit",async e=>{
 /* ===== Easter egg : clic sur la photo → zoom → elle se retourne → carte shiny ===== */
 (()=>{
   const egg=$("egg"),mv=$("eggMove"),card=$("eggCard"),av=$("avatar");let busy=false,open=false,timers=[];
+  const TILT_Y=1*56,TILT_X=1*44;
   const later=(f,ms)=>timers.push(setTimeout(f,ms));
   function show(){
     if(busy||open)return;busy=true;open=true;timers.forEach(clearTimeout);timers=[];
@@ -1320,7 +1323,7 @@ $("cform").addEventListener("submit",async e=>{
     const a=av.getBoundingClientRect(),c=mv.getBoundingClientRect();
     const sc=a.width/c.width,dx=a.left+a.width/2-(c.left+c.width/2),dy=a.top+a.height/2-(c.top+c.height/2);
     mv.style.transform=`translate(${dx}px,${dy}px) scale(${sc})`;mv.offsetWidth;
-    document.documentElement.style.overflow="hidden";
+    document.documentElement.style.overflow="hidden";window.eggOpen=true;
     egg.classList.add("open","zoom");mv.style.transform="";SFX.open();
     later(()=>{egg.classList.add("flip");SFX.copy()},650);
     later(()=>{busy=false},1500);
@@ -1328,35 +1331,44 @@ $("cform").addEventListener("submit",async e=>{
   function hide(){
     if(!open)return;timers.forEach(clearTimeout);timers=[];open=false;busy=true;
     egg.classList.add("closing");egg.classList.remove("open");SFX.close();
-    later(()=>{document.documentElement.style.overflow="";egg.hidden=true;egg.className="egg";egg.setAttribute("aria-hidden","true");busy=false},380);
+    later(()=>{document.documentElement.style.overflow="";window.eggOpen=false;egg.hidden=true;egg.className="egg";egg.setAttribute("aria-hidden","true");busy=false},380);
   }
-  if(matchMedia("(hover:none)").matches)egg.querySelector(".egg-hint").textContent="Glisse pour la bouger · touche pour fermer";
+  if(matchMedia("(hover:none)").matches)egg.querySelector(".egg-hint").textContent="Appuie sur la carte pour la bouger · touche à côté pour fermer";
   av.setAttribute("role","button");av.tabIndex=0;av.setAttribute("aria-label","Photo de profil");
   av.addEventListener("click",show);
   av.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();show()}});
   /* glisser le doigt fait bouger la carte ; seul un vrai tap la ferme */
   let downAt=null,dragged=false;
-  egg.addEventListener("pointerdown",e=>{downAt={x:e.clientX,y:e.clientY};dragged=false});
+  let downType="mouse";
+  egg.addEventListener("pointerdown",e=>{downAt={x:e.clientX,y:e.clientY};dragged=false;downType=e.pointerType});
   egg.addEventListener("touchmove",e=>e.preventDefault(),{passive:false});
-  egg.addEventListener("click",e=>{if(dragged){dragged=false;return}if(!busy)hide()});
+  /* au doigt, toucher la carte sert à la bouger : on ferme en touchant à côté */
+  egg.addEventListener("click",e=>{if(dragged){dragged=false;return}if(downType!=="mouse"&&e.target.closest(".egg-move"))return;if(!busy)hide()});
   addEventListener("keydown",e=>{if(e.key==="Escape"&&open)hide()});
-  /* inclinaison + reflets qui suivent la souris (ou le doigt) */
-  egg.addEventListener("pointermove",e=>{
-    if(downAt&&Math.hypot(e.clientX-downAt.x,e.clientY-downAt.y)>10)dragged=true;
+  /* inclinaison : le coin où l'on appuie s'enfonce, comme si on tenait la carte. Calculé une fois par image (fluide) */
+  const tc=card.querySelector(".tc");let want=null,raf=0;
+  function apply(){
+    raf=0;if(!want)return;const {px,py}=want;
+    const ry=(px-.5)*TILT_Y,rx=(.5-py)*TILT_X;
+    card.style.transform=`rotateY(${(180+ry).toFixed(2)}deg) rotateX(${rx.toFixed(2)}deg)`;
+    const gx=(px*100).toFixed(1)+"%",gy=(py*100).toFixed(1)+"%";
+    tc.style.setProperty("--gx",gx);tc.style.setProperty("--gy",gy);tc.style.setProperty("--hx",gx);tc.style.setProperty("--hy",gy);
+  }
+  function aim(e){
     if(!egg.classList.contains("flip"))return;
     const r=mv.getBoundingClientRect(),cl=v=>Math.min(1,Math.max(0,v));
-    let px,py;
-    if(e.pointerType==="touch"&&downAt){ /* au doigt : on suit le glissement depuis le point de départ */
-      px=cl(.5+(e.clientX-downAt.x)/(r.width*.7));py=cl(.5+(e.clientY-downAt.y)/(r.height*.6));
-    }else{px=cl((e.clientX-r.left)/r.width);py=cl((e.clientY-r.top)/r.height)}
-    egg.classList.add("tilting");
-    card.style.setProperty("--ry",((.5-px)*52).toFixed(2)+"deg");card.style.setProperty("--rx",((py-.5)*-40).toFixed(2)+"deg");
-    const tc=card.querySelector(".tc");
-    tc.style.setProperty("--gx",(100-px*100).toFixed(1)+"%");tc.style.setProperty("--gy",(py*100).toFixed(1)+"%");
-    tc.style.setProperty("--hx",(100-px*100).toFixed(1)+"%");tc.style.setProperty("--hy",(py*100).toFixed(1)+"%");
+    want={px:cl((e.clientX-r.left)/r.width),py:cl((e.clientY-r.top)/r.height)};
+    egg.classList.add("tilting");if(!raf)raf=requestAnimationFrame(apply);
+  }
+  function rest(){want=null;egg.classList.remove("tilting");card.style.transform=""}
+  egg.addEventListener("pointerdown",e=>{if(e.pointerType!=="mouse")aim(e)});
+  egg.addEventListener("pointermove",e=>{
+    if(downAt&&Math.hypot(e.clientX-downAt.x,e.clientY-downAt.y)>10)dragged=true;
+    aim(e);
   });
-  egg.addEventListener("pointerup",()=>{downAt=null});
-  egg.addEventListener("pointerleave",()=>{egg.classList.remove("tilting");card.style.removeProperty("--rx");card.style.removeProperty("--ry")});
+  egg.addEventListener("pointerup",e=>{downAt=null;if(e.pointerType!=="mouse")rest()});
+  egg.addEventListener("pointercancel",rest);
+  egg.addEventListener("pointerleave",rest);
 })();
 
 /* ===== Protection des images ===== */
@@ -1443,7 +1455,7 @@ addEventListener("pointermove",e=>{
 let lastFrame=0,lastInput=0;
 ["pointermove","pointerdown","scroll","keydown"].forEach(ev=>addEventListener(ev,()=>{lastInput=performance.now()},{passive:true}));
 function draw(t=0){
-  if(document.hidden){if(!still)requestAnimationFrame(draw);return}
+  if(document.hidden||window.eggOpen){if(!still)requestAnimationFrame(draw);return}
   /* cadence : 60 i/s max (écrans 120/144 Hz), 30 i/s quand rien ne bouge, ~25 i/s sur mobile */
   const busy=WAVES.length||HOLD.on||STARS.length||t-lastInput<1500;
   const minGap=LITE?40:busy?14:31;
