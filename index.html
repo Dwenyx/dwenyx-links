@@ -535,6 +535,35 @@ img{-webkit-user-drag:none;user-select:none;-webkit-user-select:none;-webkit-tou
 .bwave .w2{animation:bwave 4.5s linear infinite reverse}
 @keyframes bwave{to{transform:translateX(-50%)}}
 @media (prefers-reduced-motion:reduce){.bwave svg{animation:none}}
+
+/* ===== PC : dossier ouvert à droite ===== */
+.stage{display:flex;justify-content:center;align-items:flex-start;width:100%}
+.col{display:flex;flex-direction:column;align-items:center;gap:14px;width:100%;max-width:480px;flex:none}
+.side{display:none}
+@media (min-width:1060px) and (hover:hover) and (pointer:fine){
+  .side{display:block;flex:none;width:0;margin-left:0;opacity:0;overflow:hidden;position:sticky;top:40px;align-self:flex-start;
+    transition:width .5s cubic-bezier(.2,.85,.25,1),margin-left .5s cubic-bezier(.2,.85,.25,1),opacity .35s}
+  .side[hidden]{display:none!important}
+  .stage.duo .side{width:520px;margin-left:24px;opacity:1}
+  .side-in{width:520px;max-width:none;max-height:calc(100vh - 140px);display:flex;flex-direction:column;overflow:hidden}
+  .stage.duo .side-in{animation:sideIn .5s cubic-bezier(.2,.85,.25,1)}
+  @keyframes sideIn{from{transform:translateX(40px)}}
+  .side-h{display:flex;align-items:center;gap:10px;padding:16px 18px;border-bottom:2px solid var(--line-solid);background:var(--surface-2)}
+  .side-h .fi{width:36px;height:36px;flex:none;border-radius:10px;display:grid;place-items:center;background:var(--accent)}
+  .side-h .fi svg{width:20px;height:20px;fill:var(--white)}
+  .side-h b{font-size:16px;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .side-h .cnt{flex:none;font-family:var(--f-mono);font-size:10px;color:var(--lilac);background:rgba(155,92,255,.16);padding:3px 8px;border-radius:999px}
+  .side-x{flex:none;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;cursor:pointer;color:var(--ink);font-size:14px;
+    background:var(--surface);border:2px solid var(--line-solid);transition:transform .25s cubic-bezier(.3,1.6,.5,1),border-color .2s,color .2s}
+  .side-x:hover,.side-x:focus-visible{border-color:var(--accent);color:var(--white);transform:rotate(90deg);outline:none}
+  .side-b{padding:18px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--accent) transparent}
+  .side-b .pjs{gap:14px}
+  .side-b .pj{animation:paneIn .4s ease-out backwards}
+  .side-b .pj:nth-child(2){animation-delay:.07s}.side-b .pj:nth-child(3){animation-delay:.14s}.side-b .pj:nth-child(4){animation-delay:.21s}
+  .folder.on{border-color:var(--accent);background:#271d40;box-shadow:inset 4px 0 0 var(--accent)}
+  .folder.on .go{color:var(--white);transform:rotate(180deg)}
+}
+@media (prefers-reduced-motion:reduce){.side,.stage.duo .side-in{transition:none;animation:none}}
 </style>
 
 <!-- Modèle du logo (réutilisé partout) -->
@@ -566,6 +595,8 @@ img{-webkit-user-drag:none;user-select:none;-webkit-user-select:none;-webkit-tou
 </div>
 
 <main>
+<div class="stage" id="stage">
+<div class="col">
   <article class="card">
     <section class="banner" aria-label="Stats cumulées">
       <div class="bgshift" aria-hidden="true"></div><div class="bwave" aria-hidden="true"><svg class="w1" viewBox="0 0 2400 40" preserveAspectRatio="none"><path d="M0 18 Q75 9 150 18 T300 18 Q375 9 450 18 T600 18 Q675 9 750 18 T900 18 Q975 9 1050 18 T1200 18 Q1275 9 1350 18 T1500 18 Q1575 9 1650 18 T1800 18 Q1875 9 1950 18 T2100 18 Q2175 9 2250 18 T2400 18 V40 H0 Z"/></svg><svg class="w2" viewBox="0 0 2400 40" preserveAspectRatio="none"><path d="M0 24 Q75 17 150 24 T300 24 Q375 17 450 24 T600 24 Q675 17 750 24 T900 24 Q975 17 1050 24 T1200 24 Q1275 17 1350 24 T1500 24 Q1575 17 1650 24 T1800 24 Q1875 17 1950 24 T2100 24 Q2175 17 2250 24 T2400 24 V40 H0 Z"/></svg></div><div class="shine" aria-hidden="true"></div>
@@ -615,6 +646,9 @@ img{-webkit-user-drag:none;user-select:none;-webkit-user-select:none;-webkit-tou
 
   <p class="thanks"><span class="th-heart" aria-hidden="true">💜</span>Merci à vous tous de me suivre, c'est grâce à vous que tout ça existe !</p>
   <footer><span class="visits-f"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5c-7 0-10 7-10 7s3 7 10 7 10-7 10-7-3-7-10-7zm0 11a4 4 0 110-8 4 4 0 010 8z"/></svg><span id="views">–</span> visites</span><span id="clock">--:--</span><span id="copyMark">© Dwenyx</span></footer>
+</div>
+  <aside class="side" id="side" aria-label="Dossier ouvert" hidden><div class="side-in card" id="sideIn"></div></aside>
+</div>
 </main>
 
 <div id="toast"></div>
@@ -740,8 +774,10 @@ function showFolders(){
 function openFolder(i){
   const f=PROFILE.folders[i];
   $("proj").innerHTML=`<div class="fhead"><button class="back" type="button" id="back" aria-label="Retour aux dossiers"><svg viewBox="0 0 24 24"><path d="M15.4 5.4 14 4l-8 8 8 8 1.4-1.4L8.8 12z"/></svg>Retour</button>
-      <div class="fname">${FOLDER}<b>${f.name}</b><span class="cnt">${nProj(f.items.length)}</span></div></div>
-    <div class="pjs">${f.items.map(p=>{
+      <div class="fname">${FOLDER}<b>${f.name}</b><span class="cnt">${nProj(f.items.length)}</span></div></div>`+folderBody(f);
+}
+function folderBody(f){
+  return `<div class="pjs">${f.items.map(p=>{
       const st=p.status?`<span class="st ${p.status}">${STATUS[p.status]||p.status}</span>`:"";
       return `<article class="pj">
         ${p.img?`<div class="shot"><img src="${p.img}" alt="${p.name}" loading="lazy">${st}${p.visits!=null?`<span class="visits"><svg viewBox="0 0 24 24"><path d="M12 5c-7 0-10 7-10 7s3 7 10 7 10-7 10-7-3-7-10-7zm0 11a4 4 0 110-8 4 4 0 010 8z"/></svg>${p.visits==="loading"?`<span class="ld" aria-label="Chargement des visites"><i></i><i></i><i></i></span> visites`:typeof p.visits==="string"?p.visits+" visites":new Intl.NumberFormat("fr-FR",{notation:"compact",maximumFractionDigits:1}).format(p.visits)+" visite"+(p.visits>1?"s":"")}</span>`:""}</div>`:""}
@@ -749,6 +785,26 @@ function openFolder(i){
         ${p.link?`<a class="btn play" href="${p.link}" target="_blank" rel="noopener">${p.cta||(f.name.includes("Roblox")?"▶ Jouer sur Roblox":"Ouvrir ↗")}</a>`:""}</div>
       </article>`}).join("")}</div>`;
 }
+/* PC : le dossier s'ouvre dans un panneau à droite */
+const WIDE=matchMedia("(min-width:1060px) and (hover:hover) and (pointer:fine)");
+let sideOpen=-1;
+function openSide(i){
+  const f=PROFILE.folders[i],st=$("stage"),side=$("side"),was=sideOpen>=0;
+  sideOpen=i;
+  document.querySelectorAll("[data-folder]").forEach(b=>{const on=+b.dataset.folder===i;b.classList.toggle("on",on);b.setAttribute("aria-expanded",on)});
+  $("sideIn").innerHTML=`<div class="side-h"><span class="fi">${FOLDER}</span><b>${f.name}</b><span class="cnt">${nProj(f.items.length)}</span>
+    <button class="side-x" id="sideX" type="button" aria-label="Fermer le dossier">✕</button></div><div class="side-b">${folderBody(f)}</div>`;
+  if(was)return;
+  side.hidden=false;side.offsetWidth;st.classList.add("duo");
+}
+function closeSide(){
+  if(sideOpen<0)return;sideOpen=-1;
+  document.querySelectorAll("[data-folder]").forEach(b=>{b.classList.remove("on");b.setAttribute("aria-expanded","false")});
+  const st=$("stage"),side=$("side");st.classList.remove("duo");
+  clearTimeout(side._t);side._t=setTimeout(()=>{if(sideOpen<0){side.hidden=true;$("sideIn").innerHTML=""}},520);
+}
+WIDE.addEventListener("change",()=>{if(!WIDE.matches)closeSide()});
+$("side").addEventListener("click",e=>{if(e.target.closest("#sideX"))closeSide()});
 function resizePanes(fn){
   const p=$("panes"),from=p.offsetHeight;fn();
   p.style.height="auto";const to=p.offsetHeight;p.style.height=from+"px";p.offsetHeight;p.style.height=to+"px";
@@ -756,10 +812,13 @@ function resizePanes(fn){
 }
 showFolders();
 $("proj").addEventListener("click",e=>{
-  const f=e.target.closest("[data-folder]");if(f){resizePanes(()=>openFolder(+f.dataset.folder));return}
+  const f=e.target.closest("[data-folder]");if(f){const i=+f.dataset.folder;
+    if(WIDE.matches){sideOpen===i?closeSide():openSide(i);return}
+    resizePanes(()=>openFolder(i));return}
   if(e.target.closest("#back"))resizePanes(showFolders);
 });
 addEventListener("keydown",e=>{
+  if(e.key==="Escape"&&sideOpen>=0&&$("sheet").hidden){SFX.close();closeSide();return}
   if(e.key==="Escape"&&$("back")&&!$("p-projets").hidden){SFX.close();resizePanes(showFolders)}
 });
 
@@ -853,6 +912,7 @@ function applyRemote(d){
 const tabs=[...document.querySelectorAll(".tab")];
 const panes=$("panes");
 function select(tab,instant){
+  if(tab.id!=="t-projets")closeSide();
   const from=panes.offsetHeight;
   tabs.forEach(t=>{const on=t===tab;t.setAttribute("aria-selected",on);t.tabIndex=on?0:-1;$(t.getAttribute("aria-controls")).hidden=!on});
   if(instant){panes.style.height="";return}
@@ -983,8 +1043,8 @@ document.addEventListener("click",e=>{
   if(t.closest(".sound,.like-btn"))return;
   if(t.closest("[data-copy]"))return SFX.copy();
   if(t.closest(".tab"))return SFX.tab();
-  if(t.closest("[data-folder]"))return SFX.open();
-  if(t.closest("#back"))return SFX.close();
+  if(t.closest("[data-folder]"))return t.closest(".folder.on")?SFX.close():SFX.open();
+  if(t.closest("#back,#sideX"))return SFX.close();
   if(t.closest("a[href]"))return SFX.link();
   if(t.closest("button,.avatar"))return SFX.click();
 },true);
