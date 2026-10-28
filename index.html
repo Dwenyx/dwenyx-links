@@ -1285,15 +1285,32 @@ function draw(t=0){
 }
 /* Vague de points au clic : un anneau qui grossit, fait gonfler les points puis se dissipe */
 const WAVES=[],WAVE_MS=1700;
+const toCanvas=e=>({x:(e.clientX-CR.left)*W/CR.width,y:(e.clientY-CR.top)*H/CR.height});
+function addWave(pt,sc,am,dur){WAVES.push({x:pt.x,y:pt.y,t:performance.now(),sc,am,dur});if(WAVES.length>16)WAVES.shift()}
+/* appui maintenu : des vagues plus petites suivent le doigt / la souris, comme en marchant dans l'eau */
+const HOLD={on:false,id:null,x:0,y:0,last:0,moved:0};
 addEventListener("pointerdown",e=>{
   if(still||e.button>0)return;
-  WAVES.push({x:(e.clientX-CR.left)*W/CR.width,y:(e.clientY-CR.top)*H/CR.height,t:performance.now()});
-  if(WAVES.length>4)WAVES.shift();
+  const pt=toCanvas(e);addWave(pt,1,1,WAVE_MS);
+  Object.assign(HOLD,{on:true,id:e.pointerId,x:pt.x,y:pt.y,last:performance.now(),moved:0});
 },{passive:true});
+addEventListener("pointermove",e=>{
+  if(!HOLD.on||e.pointerId!==HOLD.id)return;
+  const pt=toCanvas(e);HOLD.moved+=Math.hypot(pt.x-HOLD.x,pt.y-HOLD.y);HOLD.x=pt.x;HOLD.y=pt.y;
+},{passive:true});
+["pointerup","pointercancel","blur"].forEach(ev=>addEventListener(ev,e=>{if(!e||!e.pointerId||e.pointerId===HOLD.id)HOLD.on=false},{passive:true}));
+function holdWaves(now){
+  if(!HOLD.on)return;
+  const g=GSTEP*DPR,moving=HOLD.moved>g*.9,gap=moving?120:380;
+  if(now-HOLD.last<gap)return;
+  addWave({x:HOLD.x,y:HOLD.y},moving?.45:.6,moving?.75:.85,moving?1100:1400);
+  HOLD.last=now;HOLD.moved=0;
+}
 function drawWaves(now,ox,oy,g,r,M){
+  holdWaves(now);
   for(let i=WAVES.length-1;i>=0;i--){
-    const w=WAVES[i],p=(now-w.t)/WAVE_MS;if(p>=1){WAVES.splice(i,1);continue}
-    const ease=1-Math.pow(1-p,2),rad=ease*M*.36,band=g*(1.3+p*1.2),amp=Math.pow(1-p,1.3)*Math.min(1,p*8),reach=rad+band*2.2;
+    const w=WAVES[i],p=(now-w.t)/w.dur;if(p>=1){WAVES.splice(i,1);continue}
+    const ease=1-Math.pow(1-p,2),rad=ease*M*.36*w.sc,band=g*(1.3+p*1.2)*(.6+.4*w.sc),amp=Math.pow(1-p,1.3)*Math.min(1,p*8)*w.am,reach=rad+band*2.2;
     const x0=Math.floor((w.x-reach-ox)/g)*g,x1=w.x+reach,y0=Math.floor((w.y-reach-oy)/g)*g,y1=w.y+reach;
     for(let y=y0;y<=y1;y+=g)for(let x=x0;x<=x1;x+=g){
       let px=x+ox,py=y+oy;const dx=px-w.x,dy=py-w.y,dist=Math.hypot(dx,dy),off=(dist-rad)/band;
