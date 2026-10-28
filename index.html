@@ -1002,10 +1002,12 @@ function overlayLive(){
   if(!LIVE)return;
   for(const [u,i] of Object.entries(LIVE_IDX)){const v=LIVE[u],P=PROFILE.platforms[i];if(!v||!P)continue;
     if(v.followers>0)P.subs=v.followers;if(v.likes>0)P.likes=v.likes}
+  const y=LIVE.youtube,Y=PROFILE.platforms[0];
+  if(y&&Y){if(y.subs>0)Y.subs=y.subs;if(y.views>0)Y.views=y.views;if(y.likes>0)Y.likes=y.likes}
 }
 function applyLive(d){
-  if(!d||!d.tiktok||!Object.keys(d.tiktok).length)return;
-  LIVE=d.tiktok;overlayLive();tot=sumStats(PROFILE.platforms);$("live").hidden=false;if(entered)renderTotals(tot,true);
+  if(!d||((!d.tiktok||!Object.keys(d.tiktok).length)&&!d.youtube))return;
+  LIVE=Object.assign({},d.tiktok||{});if(d.youtube)LIVE.youtube=d.youtube;overlayLive();tot=sumStats(PROFILE.platforms);$("live").hidden=false;if(entered)renderTotals(tot,true);
 }
 function applyRemote(d){
   if(!d||!Array.isArray(d.platforms))return;
