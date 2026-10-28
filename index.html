@@ -537,17 +537,21 @@ img{-webkit-user-drag:none;user-select:none;-webkit-user-select:none;-webkit-tou
 @media (prefers-reduced-motion:reduce){.bwave svg{animation:none}}
 
 /* ===== PC : dossier ouvert à droite ===== */
-.stage{display:flex;justify-content:center;align-items:flex-start;width:100%}
+.stage{position:relative;display:flex;justify-content:center;align-items:flex-start;width:100%}
 .col{display:flex;flex-direction:column;align-items:center;gap:14px;width:100%;max-width:480px;flex:none}
 .side{display:none}
 @media (min-width:1060px) and (hover:hover) and (pointer:fine){
-  .side{display:block;flex:none;width:0;margin-left:0;opacity:0;overflow:hidden;position:sticky;top:40px;align-self:flex-start;
-    transition:width .5s cubic-bezier(.2,.85,.25,1),margin-left .5s cubic-bezier(.2,.85,.25,1),opacity .35s}
+  /* tout en transform/opacity : aucune remise en page pendant l'animation */
+  .col{transition:transform .55s cubic-bezier(.2,.85,.25,1)}
+  .stage.duo .col{transform:translateX(-272px)}
+  .side{display:block;position:absolute;top:0;bottom:0;left:calc(50% - 8px);width:520px;pointer-events:none}
   .side[hidden]{display:none!important}
-  .stage.duo .side{width:520px;margin-left:24px;opacity:1}
-  .side-in{width:520px;max-width:none;max-height:calc(100vh - 140px);display:flex;flex-direction:column;overflow:hidden}
-  .stage.duo .side-in{animation:sideIn .5s cubic-bezier(.2,.85,.25,1)}
-  @keyframes sideIn{from{transform:translateX(40px)}}
+  .side-in{position:sticky;top:40px;width:520px;max-width:none;max-height:calc(100vh - 140px);display:flex;flex-direction:column;overflow:hidden;
+    opacity:0;transform:translateX(60px) scale(.97);transform-origin:left center;
+    transition:transform .55s cubic-bezier(.2,.85,.25,1),opacity .3s ease}
+  .stage.duo .side{pointer-events:auto}
+  .stage.duo .side-in{opacity:1;transform:none}
+  .stage.moving .col,.stage.moving .side-in{will-change:transform}
   .side-h{display:flex;align-items:center;gap:10px;padding:16px 18px;border-bottom:2px solid var(--line-solid);background:var(--surface-2)}
   .side-h .fi{width:36px;height:36px;flex:none;border-radius:10px;display:grid;place-items:center;background:var(--accent)}
   .side-h .fi svg{width:20px;height:20px;fill:var(--white)}
@@ -563,7 +567,7 @@ img{-webkit-user-drag:none;user-select:none;-webkit-user-select:none;-webkit-tou
   .folder.on{border-color:var(--accent);background:#271d40;box-shadow:inset 4px 0 0 var(--accent)}
   .folder.on .go{color:var(--white);transform:rotate(180deg)}
 }
-@media (prefers-reduced-motion:reduce){.side,.stage.duo .side-in{transition:none;animation:none}}
+@media (prefers-reduced-motion:reduce){.col,.side-in{transition:none!important}}
 </style>
 
 <!-- Modèle du logo (réutilisé partout) -->
@@ -780,7 +784,7 @@ function folderBody(f){
   return `<div class="pjs">${f.items.map(p=>{
       const st=p.status?`<span class="st ${p.status}">${STATUS[p.status]||p.status}</span>`:"";
       return `<article class="pj">
-        ${p.img?`<div class="shot"><img src="${p.img}" alt="${p.name}" loading="lazy">${st}${p.visits!=null?`<span class="visits"><svg viewBox="0 0 24 24"><path d="M12 5c-7 0-10 7-10 7s3 7 10 7 10-7 10-7-3-7-10-7zm0 11a4 4 0 110-8 4 4 0 010 8z"/></svg>${p.visits==="loading"?`<span class="ld" aria-label="Chargement des visites"><i></i><i></i><i></i></span> visites`:typeof p.visits==="string"?p.visits+" visites":new Intl.NumberFormat("fr-FR",{notation:"compact",maximumFractionDigits:1}).format(p.visits)+" visite"+(p.visits>1?"s":"")}</span>`:""}</div>`:""}
+        ${p.img?`<div class="shot"><img src="${p.img}" alt="${p.name}" loading="lazy" decoding="async">${st}${p.visits!=null?`<span class="visits"><svg viewBox="0 0 24 24"><path d="M12 5c-7 0-10 7-10 7s3 7 10 7 10-7 10-7-3-7-10-7zm0 11a4 4 0 110-8 4 4 0 010 8z"/></svg>${p.visits==="loading"?`<span class="ld" aria-label="Chargement des visites"><i></i><i></i><i></i></span> visites`:typeof p.visits==="string"?p.visits+" visites":new Intl.NumberFormat("fr-FR",{notation:"compact",maximumFractionDigits:1}).format(p.visits)+" visite"+(p.visits>1?"s":"")}</span>`:""}</div>`:""}
         <div class="info">${p.img?"":st}<b class="pname">${p.name}</b>${p.role?`<span class="myrole"><span class="mini">D</span>Mon rôle sur ce projet : <strong>${p.role}</strong></span>`:""}<span class="d">${p.desc}</span>
         ${p.link?`<a class="btn play" href="${p.link}" target="_blank" rel="noopener">${p.cta||(f.name.includes("Roblox")?"▶ Jouer sur Roblox":"Ouvrir ↗")}</a>`:""}</div>
       </article>`}).join("")}</div>`;
@@ -795,13 +799,14 @@ function openSide(i){
   $("sideIn").innerHTML=`<div class="side-h"><span class="fi">${FOLDER}</span><b>${f.name}</b><span class="cnt">${nProj(f.items.length)}</span>
     <button class="side-x" id="sideX" type="button" aria-label="Fermer le dossier">✕</button></div><div class="side-b">${folderBody(f)}</div>`;
   if(was)return;
-  side.hidden=false;side.offsetWidth;st.classList.add("duo");
+  side.hidden=false;moving(st);requestAnimationFrame(()=>requestAnimationFrame(()=>st.classList.add("duo")));
 }
+function moving(st){st.classList.add("moving");clearTimeout(st._m);st._m=setTimeout(()=>st.classList.remove("moving"),650)}
 function closeSide(){
   if(sideOpen<0)return;sideOpen=-1;
   document.querySelectorAll("[data-folder]").forEach(b=>{b.classList.remove("on");b.setAttribute("aria-expanded","false")});
-  const st=$("stage"),side=$("side");st.classList.remove("duo");
-  clearTimeout(side._t);side._t=setTimeout(()=>{if(sideOpen<0){side.hidden=true;$("sideIn").innerHTML=""}},520);
+  const st=$("stage"),side=$("side");moving(st);st.classList.remove("duo");
+  clearTimeout(side._t);side._t=setTimeout(()=>{if(sideOpen<0){side.hidden=true;$("sideIn").innerHTML=""}},600);
 }
 WIDE.addEventListener("change",()=>{if(!WIDE.matches)closeSide()});
 $("side").addEventListener("click",e=>{if(e.target.closest("#sideX"))closeSide()});
