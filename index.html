@@ -118,7 +118,7 @@ main{position:relative;z-index:1;min-height:100%;display:flex;flex-direction:col
 .banner .shine::before{content:"";position:absolute;top:-50%;bottom:-50%;width:60px;left:-30%;transform:rotate(20deg);
   background:linear-gradient(90deg,transparent,rgba(255,255,255,.28),transparent);animation:sweep 5s ease-in-out infinite}
 @keyframes sweep{0%,55%{left:-30%}100%{left:130%}}
-.banner > :not(.shine):not(.bgshift):not(.live):not(.share){position:relative;z-index:1}
+.banner > :not(.shine):not(.bgshift):not(.live):not(.share):not(.bwave){position:relative;z-index:1}
 .banner .top{display:flex;justify-content:space-between;align-items:center;gap:8px;font-family:var(--f-mono);font-size:10px;color:var(--lilac);text-transform:uppercase;letter-spacing:.12em}
 .badge-lv{font-family:var(--f-mono);font-size:11px;font-weight:700;background:rgba(14,10,23,.45);
   color:var(--white);padding:4px 8px;border-radius:6px;border:1px solid rgba(216,198,255,.45);letter-spacing:0}
@@ -526,6 +526,15 @@ main{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
 /* ===== Images protégées (pas de glisser, d'enregistrer ni de menu « Enregistrer l'image ») ===== */
 img{-webkit-user-drag:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;pointer-events:none}
 .avatar,.shot,.lthumb{-webkit-touch-callout:none;user-select:none}
+/* ===== Vague au bas de la bannière ===== */
+.banner > .bwave{position:absolute;left:0;right:0;bottom:-1px;height:26px;z-index:1;pointer-events:none;overflow:hidden}
+.bwave svg{position:absolute;bottom:0;left:0;width:200%;height:100%;display:block}
+.bwave .w1 path{fill:rgba(23,17,40,.45)}
+.bwave .w2 path{fill:var(--surface)}
+.bwave .w1{animation:bwave 7s linear infinite}
+.bwave .w2{animation:bwave 4.5s linear infinite reverse}
+@keyframes bwave{to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){.bwave svg{animation:none}}
 </style>
 
 <!-- Modèle du logo (réutilisé partout) -->
@@ -559,7 +568,7 @@ img{-webkit-user-drag:none;user-select:none;-webkit-user-select:none;-webkit-tou
 <main>
   <article class="card">
     <section class="banner" aria-label="Stats cumulées">
-      <div class="bgshift" aria-hidden="true"></div><div class="shine" aria-hidden="true"></div>
+      <div class="bgshift" aria-hidden="true"></div><div class="bwave" aria-hidden="true"><svg class="w1" viewBox="0 0 2400 40" preserveAspectRatio="none"><path d="M0 18 Q75 9 150 18 T300 18 Q375 9 450 18 T600 18 Q675 9 750 18 T900 18 Q975 9 1050 18 T1200 18 Q1275 9 1350 18 T1500 18 Q1575 9 1650 18 T1800 18 Q1875 9 1950 18 T2100 18 Q2175 9 2250 18 T2400 18 V40 H0 Z"/></svg><svg class="w2" viewBox="0 0 2400 40" preserveAspectRatio="none"><path d="M0 24 Q75 17 150 24 T300 24 Q375 17 450 24 T600 24 Q675 17 750 24 T900 24 Q975 17 1050 24 T1200 24 Q1275 17 1350 24 T1500 24 Q1575 17 1650 24 T1800 24 Q1875 17 1950 24 T2100 24 Q2175 17 2250 24 T2400 24 V40 H0 Z"/></svg></div><div class="shine" aria-hidden="true"></div>
       <span class="live" id="live"><i></i>En direct</span>
       <button class="share" id="shareBtn" type="button" aria-label="Partager la page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16a3 3 0 00-2.4 1.2l-6.7-3.4a3 3 0 000-1.6l6.7-3.4A3 3 0 1015 7a3 3 0 00.1.8L8.4 11.2a3 3 0 100 1.6l6.7 3.4A3 3 0 1018 16z"/></svg><span>Partager</span></button>
       <div class="tgrid">
