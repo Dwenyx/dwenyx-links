@@ -571,6 +571,29 @@ img{-webkit-user-drag:none;user-select:none;-webkit-user-select:none;-webkit-tou
 /* ===== Pas de surlignage du texte (sauf dans le formulaire) ===== */
 html,body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
 input,textarea,select{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
+/* ===== Bouton Écrire : mêmes effets que les autres boutons ===== */
+.write{position:relative;overflow:hidden;isolation:isolate;
+  transition:transform .35s cubic-bezier(.2,.9,.25,1.25),box-shadow .35s,filter .25s,background .25s,color .25s}
+.write::before{content:"";position:absolute;z-index:2;top:0;bottom:0;left:-60%;width:40%;pointer-events:none;
+  background:linear-gradient(105deg,transparent,rgba(255,255,255,.3),transparent);transform:skewX(-18deg);transition:left .7s ease}
+@media (hover:hover){.write:hover::before{left:130%}}
+.write svg{transition:transform .4s cubic-bezier(.3,1.7,.5,1),fill .25s}
+.write:focus-visible{outline:2px solid var(--white);outline-offset:3px}
+@media (hover:hover){.write:hover{transform:translateY(-3px) scale(1.04);filter:brightness(1.1);
+  box-shadow:0 7px 0 var(--accent-deep),0 14px 28px -10px var(--accent)}
+.write:hover svg{transform:rotate(-12deg) scale(1.15)}}
+.write:active{transform:translateY(2px) scale(.96);box-shadow:0 1px 0 var(--accent-deep);transition-duration:.08s}
+.write.on{background:var(--white);color:var(--accent-deep);border-color:var(--white);box-shadow:0 4px 0 var(--lilac)}
+.write.on svg{fill:var(--accent-deep)}
+@media (prefers-reduced-motion:reduce){.write:hover{transform:none}}
+/* ===== Formulaire dans la carte (mobile) et dans le panneau (PC) ===== */
+#p-liens.cmode > :not(#contactView){display:none!important}
+#contactView{display:flex;flex-direction:column;gap:12px}
+#contactView[hidden]{display:none}
+.cwrap .sheet-sub{margin:0 0 12px}
+.cwrap .done h2{font-family:var(--f-display);font-weight:400;font-size:22px;margin:6px 0 0;text-shadow:0 3px 0 var(--accent-deep)}
+.cwrap .done .btn{margin-top:6px;min-width:140px}
+.side-h .fi.mail svg{width:20px;height:20px}
 </style>
 
 <!-- Modèle du logo (réutilisé partout) -->
@@ -660,12 +683,8 @@ input,textarea,select{-webkit-user-select:text;user-select:text;-webkit-touch-ca
 
 <div id="toast"></div>
 
-<div class="sheet" id="sheet" hidden>
-  <div class="sheet-bg" data-close></div>
-  <section class="sheet-card" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
-    <button class="sheet-x" type="button" data-close aria-label="Fermer">✕</button>
+<div id="formHome" hidden><div class="cwrap" id="cwrap">
     <div id="sheetForm">
-      <h2 id="sheetTitle">M'écrire</h2>
       <p class="sheet-sub">Ton message arrive directement dans ma boîte mail. Je te réponds sur l'adresse que tu indiques.</p>
       <form id="cform" novalidate>
         <div class="two">
@@ -685,10 +704,9 @@ input,textarea,select{-webkit-user-select:text;user-select:text;-webkit-touch-ca
       <div class="check"><svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="24"/><path d="M15 27l7 7 15-16"/></svg></div>
       <h2>Message envoyé !</h2>
       <p class="sheet-sub">Merci, je te réponds dès que possible sur ton adresse e-mail.</p>
-      <button class="btn" type="button" data-close>Fermer</button>
+      <button class="btn" type="button" data-cclose>Fermer</button>
     </div>
-  </section>
-</div>
+</div></div>
 
 <audio id="bgm" src="audio/palace.mp3" loop preload="none"></audio>
 <div class="sound" id="sound" hidden>
@@ -796,20 +814,40 @@ function folderBody(f){
 const WIDE=matchMedia("(min-width:1060px) and (hover:hover) and (pointer:fine)");
 let sideOpen=-1;
 function openSide(i){
-  const f=PROFILE.folders[i],st=$("stage"),side=$("side"),was=sideOpen>=0;
+  const f=PROFILE.folders[i],st=$("stage"),side=$("side"),was=sideOpen!==-1;
   sideOpen=i;
-  document.querySelectorAll("[data-folder]").forEach(b=>{const on=+b.dataset.folder===i;b.classList.toggle("on",on);b.setAttribute("aria-expanded",on)});
-  $("sideIn").innerHTML=`<div class="side-h"><span class="fi">${FOLDER}</span><b>${f.name}</b><span class="cnt">${nProj(f.items.length)}</span>
-    <button class="side-x" id="sideX" type="button" aria-label="Fermer le dossier">✕</button></div><div class="side-b">${folderBody(f)}</div>`;
+  parkForm();markOpen();
+  $("sideIn").innerHTML=sideHead(FOLDER,f.name,nProj(f.items.length),"Fermer le dossier")+`<div class="side-b">${folderBody(f)}</div>`;
+  if(was)return;
+  side.hidden=false;moving(st);requestAnimationFrame(()=>requestAnimationFrame(()=>st.classList.add("duo")));
+}
+function sideHead(icon,title,cnt,closeLbl){
+  return `<div class="side-h"><span class="fi">${icon}</span><b>${title}</b>${cnt?`<span class="cnt">${cnt}</span>`:""}
+    <button class="side-x" id="sideX" type="button" aria-label="${closeLbl}">✕</button></div>`;
+}
+/* surligne ce qui est ouvert (dossier ou bouton Écrire) */
+function markOpen(){
+  document.querySelectorAll("[data-folder]").forEach(b=>{const on=+b.dataset.folder===sideOpen;b.classList.toggle("on",on);b.setAttribute("aria-expanded",on)});
+  document.querySelectorAll(".write").forEach(b=>{const on=sideOpen==="contact"||$("p-liens").classList.contains("cmode");b.classList.toggle("on",on);b.setAttribute("aria-expanded",on)});
+}
+/* le formulaire est unique : on le range quand il n'est plus affiché */
+function parkForm(){const w=$("cwrap");if(w&&w.parentElement!==$("formHome"))$("formHome").append(w)}
+function resetForm(){$("sheetForm").hidden=false;$("sheetDone").hidden=true;$("c-err").textContent=""}
+function openSideContact(){
+  const st=$("stage"),side=$("side"),was=sideOpen!==-1;
+  if(sideOpen==="contact")return;
+  parkForm();sideOpen="contact";markOpen();resetForm();
+  $("sideIn").innerHTML=sideHead(SVG.mail,"M'écrire","","Fermer")+`<div class="side-b" id="sideForm"></div>`;
+  $("sideForm").append($("cwrap"));
+  setTimeout(()=>$("c-name").focus({preventScroll:true}),was?50:450);
   if(was)return;
   side.hidden=false;moving(st);requestAnimationFrame(()=>requestAnimationFrame(()=>st.classList.add("duo")));
 }
 function moving(st){st.classList.add("moving");clearTimeout(st._m);st._m=setTimeout(()=>st.classList.remove("moving"),650)}
 function closeSide(){
-  if(sideOpen<0)return;sideOpen=-1;
-  document.querySelectorAll("[data-folder]").forEach(b=>{b.classList.remove("on");b.setAttribute("aria-expanded","false")});
+  if(sideOpen===-1)return;sideOpen=-1;markOpen();
   const st=$("stage"),side=$("side");moving(st);st.classList.remove("duo");
-  clearTimeout(side._t);side._t=setTimeout(()=>{if(sideOpen<0){side.hidden=true;$("sideIn").innerHTML=""}},600);
+  clearTimeout(side._t);side._t=setTimeout(()=>{if(sideOpen===-1){parkForm();side.hidden=true;$("sideIn").innerHTML=""}},600);
 }
 WIDE.addEventListener("change",()=>{if(!WIDE.matches)closeSide()});
 $("side").addEventListener("click",e=>{if(e.target.closest("#sideX"))closeSide()});
@@ -826,7 +864,8 @@ $("proj").addEventListener("click",e=>{
   if(e.target.closest("#back"))resizePanes(showFolders);
 });
 addEventListener("keydown",e=>{
-  if(e.key==="Escape"&&sideOpen>=0&&$("sheet").hidden){SFX.close();closeSide();return}
+  if(e.key==="Escape"&&sideOpen!==-1){SFX.close();closeSide();return}
+  if(e.key==="Escape"&&$("p-liens").classList.contains("cmode")){SFX.close();closeCard();return}
   if(e.key==="Escape"&&$("back")&&!$("p-projets").hidden){SFX.close();resizePanes(showFolders)}
 });
 
@@ -920,7 +959,8 @@ function applyRemote(d){
 const tabs=[...document.querySelectorAll(".tab")];
 const panes=$("panes");
 function select(tab,instant){
-  if(tab.id!=="t-projets")closeSide();
+  if(sideOpen!==-1&&tab.id!==(sideOpen==="contact"?"t-liens":"t-projets"))closeSide();
+  if(tab.id!=="t-liens"&&$("p-liens").classList.contains("cmode")){$("p-liens").classList.remove("cmode");$("contactView").hidden=true;parkForm();markOpen()}
   const from=panes.offsetHeight;
   tabs.forEach(t=>{const on=t===tab;t.setAttribute("aria-selected",on);t.tabIndex=on?0:-1;$(t.getAttribute("aria-controls")).hidden=!on});
   if(instant){panes.style.height="";return}
@@ -1037,7 +1077,7 @@ document.addEventListener("visibilitychange",()=>{document.hidden?onHide():onSho
 addEventListener("pagehide",onHide);addEventListener("pageshow",e=>{if(e.persisted)onShow()});
 
 /* Un son pour chaque survol et chaque clic */
-const HOVERABLE=".lnk,.tab,.folder,.btn,.back,.avatar,.snd-btn";
+const HOVERABLE=".lnk,.tab,.folder,.btn,.back,.avatar,.snd-btn,.write,.side-x";
 let hovered=null,lastHover=0;
 document.addEventListener("pointerover",e=>{
   if(e.pointerType==="touch")return;
@@ -1052,7 +1092,8 @@ document.addEventListener("click",e=>{
   if(t.closest("[data-copy]"))return SFX.copy();
   if(t.closest(".tab"))return SFX.tab();
   if(t.closest("[data-folder]"))return t.closest(".folder.on")?SFX.close():SFX.open();
-  if(t.closest("#back,#sideX"))return SFX.close();
+  if(t.closest("#openContact"))return t.closest(".write.on")?SFX.close():SFX.open();
+  if(t.closest("#back,#sideX,#cBack,[data-cclose]"))return SFX.close();
   if(t.closest("a[href]"))return SFX.link();
   if(t.closest("button,.avatar"))return SFX.click();
 },true);
@@ -1060,7 +1101,7 @@ document.addEventListener("click",e=>{
 
 /* Onde au point de clic sur les éléments cliquables */
 document.addEventListener("pointerdown",e=>{
-  const el=e.target.closest(".lnk,.folder,.tab,.btn,.pj,.snd-btn");if(!el||reduceMotion)return;
+  const el=e.target.closest(".lnk,.folder,.tab,.btn,.pj,.snd-btn,.write");if(!el||reduceMotion)return;
   const r=el.getBoundingClientRect(),size=Math.max(r.width,r.height)*2.2,d=document.createElement("span");
   d.className="rip";d.style.width=d.style.height=size+"px";d.style.left=(e.clientX-r.left)+"px";d.style.top=(e.clientY-r.top)+"px";
   el.append(d);setTimeout(()=>d.remove(),650);
@@ -1179,18 +1220,29 @@ $("shareBtn").addEventListener("click",async()=>{
 if(ON_SITE){fetch("/api/contact").then(r=>r.ok?r.json():null).then(d=>{if(d&&d.enabled)document.querySelectorAll(".write").forEach(b=>{b.hidden=false;b.closest(".contact-row").classList.add("has-write")})}).catch(()=>{})}
 
 /* ===== Formulaire de contact ===== */
-const sheet=$("sheet");let lastFocus=null;
-function openSheet(){
-  lastFocus=document.activeElement;$("sheetForm").hidden=false;$("sheetDone").hidden=true;$("c-err").textContent="";
-  sheet.hidden=false;requestAnimationFrame(()=>sheet.classList.add("open"));SFX.open();
-  setTimeout(()=>{if(!IS_MOBILE)$("c-name").focus()},250);
+/* PC : panneau à droite (comme les dossiers) · mobile : dans la carte avec « Retour » */
+$("p-liens").insertAdjacentHTML("beforeend",`<div id="contactView" hidden><div class="fhead"><button class="back" type="button" id="cBack" aria-label="Retour aux liens"><svg viewBox="0 0 24 24"><path d="M15.4 5.4 14 4l-8 8 8 8 1.4-1.4L8.8 12z"/></svg>Retour</button>
+  <div class="fname">${SVG.mail}<b>M'écrire</b></div></div><div id="cardForm"></div></div>`);
+function openCard(){
+  const pl=$("p-liens");if(pl.classList.contains("cmode"))return;
+  resetForm();
+  resizePanes(()=>{$("cardForm").append($("cwrap"));$("contactView").hidden=false;pl.classList.add("cmode")});
+  markOpen();
 }
-function closeSheet(){
-  sheet.classList.remove("open");SFX.close();setTimeout(()=>{sheet.hidden=true;if(lastFocus)lastFocus.focus()},280);
+function closeCard(){
+  const pl=$("p-liens");if(!pl.classList.contains("cmode"))return;
+  resizePanes(()=>{pl.classList.remove("cmode");$("contactView").hidden=true;parkForm()});
+  markOpen();
 }
-document.addEventListener("click",e=>{if(e.target.closest("#openContact")){e.preventDefault();openSheet()}});
-sheet.addEventListener("click",e=>{if(e.target.closest("[data-close]"))closeSheet()});
-addEventListener("keydown",e=>{if(e.key==="Escape"&&!sheet.hidden)closeSheet()});
+document.addEventListener("click",e=>{
+  if(e.target.closest("#openContact")){e.preventDefault();
+    if(WIDE.matches){sideOpen==="contact"?closeSide():openSideContact()}
+    else{$("p-liens").classList.contains("cmode")?closeCard():openCard()}
+    return}
+  if(e.target.closest("#cBack"))return closeCard();
+  if(e.target.closest("[data-cclose]")){WIDE.matches&&sideOpen==="contact"?closeSide():closeCard()}
+});
+WIDE.addEventListener("change",()=>{if(WIDE.matches)closeCard()});
 $("c-msg").addEventListener("input",e=>{$("c-count").textContent=e.target.value.length+" / 2000"});
 $("cform").addEventListener("submit",async e=>{
   e.preventDefault();
