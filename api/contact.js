@@ -1,5 +1,5 @@
-// Formulaire de contact : le message est enregistré (visible dans /admin)
-// et envoyé par e-mail à Dwenyx si une clé Resend est configurée.
+// Formulaire de contact : le message est envoyé par e-mail à Dwenyx (via Resend).
+// Tant qu'aucune clé Resend n'est configurée, le bouton « Écrire » reste caché sur la page.
 import { fromOwnSite, visitorKey, send } from "./_lib.js";
 import { hasRedis, redis, overLimit, dayKey } from "./_redis.js";
 
@@ -25,7 +25,9 @@ async function sendMail(m) {
 
 export default async function handler(req, res) {
   try {
-    if (req.method !== "POST") { res.setHeader("Allow", "POST"); return send(res, 405, { error: "Méthode non autorisée" }); }
+    if (req.method === "GET") return send(res, 200, { enabled: Boolean(RESEND) }, "public, s-maxage=300");
+    if (req.method !== "POST") { res.setHeader("Allow", "GET, POST"); return send(res, 405, { error: "Méthode non autorisée" }); }
+    if (!RESEND) return send(res, 503, { error: "Messagerie pas encore activée" });
     if (!fromOwnSite(req)) return send(res, 403, { error: "Requête refusée" });
     if (!hasRedis) return send(res, 503, { error: "Messagerie indisponible pour le moment" });
     let b = req.body;
@@ -49,7 +51,7 @@ export default async function handler(req, res) {
 
     const entry = { id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), at: new Date().toISOString(), ...m, mailed: false };
     entry.mailed = await sendMail(entry).catch(() => false);
-    await redis(["LPUSH", "msgs", JSON.stringify(entry)], ["LTRIM", "msgs", "0", "499"], ["INCR", "msgs:unread"]);
+    if (!entry.mailed) return send(res, 502, { error: "Envoi impossible pour le moment, réessaie plus tard" });
     return send(res, 200, { ok: true });
   } catch (err) {
     console.error(err);

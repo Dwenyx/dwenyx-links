@@ -2,7 +2,7 @@
 // Avec Upstash Redis : l'ensemble "likes:visitors" garantit l'unicité de façon atomique.
 import { head, put, BlobNotFoundError } from "@vercel/blob";
 import { visitorKey, fromOwnSite, rateLimited, readCounter, bumpCounter, countFiles, send } from "./_lib.js";
-import { hasRedis, redis, overLimit, migrateOnce, dayIncr } from "./_redis.js";
+import { hasRedis, redis, overLimit, migrateOnce } from "./_redis.js";
 
 /* ---------- Upstash Redis ---------- */
 async function redisHandler(req, res) {
@@ -18,7 +18,6 @@ async function redisHandler(req, res) {
     if (await overLimit("like", key, 5)) return send(res, 429, { error: "Trop de tentatives, attends un peu" });
     const [added, count] = await redis(["SADD", "likes:visitors", key], ["SCARD", "likes:visitors"]);
     if (Number(added) === 0) return send(res, 409, { count: Number(count) || 0, liked: true, already: true });
-    await redis(...dayIncr("d", "likes"));
     return send(res, 200, { count: Number(count) || 0, liked: true });
   }
   res.setHeader("Allow", "GET, POST");

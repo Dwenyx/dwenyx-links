@@ -462,7 +462,8 @@ main{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
 .write svg{width:20px;height:20px;fill:#fff}
 .write:active{transform:translateY(3px);box-shadow:0 1px 0 var(--accent-deep)}
 .write{display:flex;cursor:pointer}
-@media (pointer:coarse){.contact-row .lnk .go{display:none}}
+.write[hidden]{display:none}
+@media (pointer:coarse){.contact-row.has-write .lnk .go{display:none}}
 /* ===== En-tête sur petits écrans ===== */
 @media (max-width:440px){
   .banner{padding-left:14px;padding-right:14px}
@@ -549,7 +550,7 @@ main{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
     <section class="banner" aria-label="Stats cumulées">
       <div class="bgshift" aria-hidden="true"></div><div class="shine" aria-hidden="true"></div>
       <span class="live" id="live"><i></i>En direct</span>
-      <button class="share" id="shareBtn" type="button" data-track="share" aria-label="Partager la page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16a3 3 0 00-2.4 1.2l-6.7-3.4a3 3 0 000-1.6l6.7-3.4A3 3 0 1015 7a3 3 0 00.1.8L8.4 11.2a3 3 0 100 1.6l6.7 3.4A3 3 0 1018 16z"/></svg><span>Partager</span></button>
+      <button class="share" id="shareBtn" type="button" aria-label="Partager la page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16a3 3 0 00-2.4 1.2l-6.7-3.4a3 3 0 000-1.6l6.7-3.4A3 3 0 1015 7a3 3 0 00.1.8L8.4 11.2a3 3 0 100 1.6l6.7 3.4A3 3 0 1018 16z"/></svg><span>Partager</span></button>
       <div class="tgrid">
         <div class="tnum"><b data-total="subs">0</b><span>Abonnés</span></div>
         <div class="tnum"><b data-total="views">0</b><span>Vues</span></div>
@@ -645,7 +646,7 @@ main{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
 const IS_MOBILE=matchMedia("(pointer:coarse)").matches||/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 /* ======== À MODIFIER : tes infos ======== */
 const PROFILE = {
-  name:"Dwenyx", handle:"@Dwenyx_783", avatar:"",
+  name:"Dwenyx", handle:"@Dwenyx_783", avatar:"img/avatar.jpg",
   status:"Content Creator",
   about:"Créateur de contenu passionné, je partage l'univers Roblox avec ma communauté sur YouTube et TikTok. En parallèle, je conçois mes propres jeux. Ouvert aux partenariats et collaborations de marque.",
 
@@ -719,7 +720,7 @@ function openFolder(i){
       return `<article class="pj">
         ${p.img?`<div class="shot"><img src="${p.img}" alt="${p.name}" loading="lazy">${st}${p.visits!=null?`<span class="visits"><svg viewBox="0 0 24 24"><path d="M12 5c-7 0-10 7-10 7s3 7 10 7 10-7 10-7-3-7-10-7zm0 11a4 4 0 110-8 4 4 0 010 8z"/></svg>${p.visits==="loading"?`<span class="ld" aria-label="Chargement des visites"><i></i><i></i><i></i></span> visites`:typeof p.visits==="string"?p.visits+" visites":new Intl.NumberFormat("fr-FR",{notation:"compact",maximumFractionDigits:1}).format(p.visits)+" visite"+(p.visits>1?"s":"")}</span>`:""}</div>`:""}
         <div class="info">${p.img?"":st}<b class="pname">${p.name}</b>${p.role?`<span class="myrole"><span class="mini">D</span>Mon rôle sur ce projet : <strong>${p.role}</strong></span>`:""}<span class="d">${p.desc}</span>
-        ${p.link?`<a class="btn play" href="${p.link}" target="_blank" rel="noopener"${p.track?` data-track="${p.track}"`:""}>${p.cta||(f.name.includes("Roblox")?"▶ Jouer sur Roblox":"Ouvrir ↗")}</a>`:""}</div>
+        ${p.link?`<a class="btn play" href="${p.link}" target="_blank" rel="noopener">${p.cta||(f.name.includes("Roblox")?"▶ Jouer sur Roblox":"Ouvrir ↗")}</a>`:""}</div>
       </article>`}).join("")}</div>`;
 }
 function resizePanes(fn){
@@ -748,11 +749,11 @@ $("p-liens").innerHTML=L.map(x=>{
   const pill=subs!=null?`<span class="subs"><b data-psubs="${x.p}" data-v="${subs}">${new Intl.NumberFormat("fr-FR",{notation:"compact",maximumFractionDigits:1}).format(subs)}</b><i>abonné${subs>1?"s":""}</i></span>`:"";
   const inner=`<span class="ic">${x.i}</span><span class="t"><b>${x.t}</b><small>${x.s}</small></span>${pill}<span class="go">${x.copy?"copier":"↗"}</span>`;
   return x.copy
-    ?`<div class="contact-row"><button class="lnk" type="button" style="--c:${x.c}" data-copy="${x.copy}" data-msg="${x.m}" data-track="${x.id}">${inner}</button>
-       <button class="write" type="button" id="openContact" data-track="email-write" aria-label="M'écrire un message">${SVG.mail}<span>Écrire</span></button></div>`
-    :`<a class="lnk" style="--c:${x.c}" href="${x.a}" target="_blank" rel="noopener" data-track="${x.id}">${inner}</a>`;
+    ?`<div class="contact-row"><button class="lnk" type="button" style="--c:${x.c}" data-copy="${x.copy}" data-msg="${x.m}">${inner}</button>
+       <button class="write" type="button" id="openContact" aria-label="M'écrire un message" hidden>${SVG.mail}<span>Écrire</span></button></div>`
+    :`<a class="lnk" style="--c:${x.c}" href="${x.a}" target="_blank" rel="noopener">${inner}</a>`;
 }).join("");
-$("p-liens").insertAdjacentHTML("afterbegin",`<a class="latest" id="latest" target="_blank" rel="noopener" data-track="latest-video" hidden>
+$("p-liens").insertAdjacentHTML("afterbegin",`<a class="latest" id="latest" target="_blank" rel="noopener" hidden>
   <span class="lthumb"><img id="latestImg" alt="" width="480" height="360"><span class="lplay"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span></span>
   <span class="ltxt"><span class="lkick"><i></i>Dernière vidéo YouTube</span><b id="latestTitle"></b><small id="latestDate"></small></span></a>`);
 
@@ -862,16 +863,7 @@ $("views").textContent="–";
   if(location.protocol.startsWith("http")&&!/claude\.ai|claudeusercontent/.test(location.hostname)){
     /* +1 une fois par ouverture du site (un simple rechargement de la page ne recompte pas) */
     let first=true;try{first=!sessionStorage.getItem("visitCounted");sessionStorage.setItem("visitCounted","1")}catch(e){}
-    const ref=(()=>{
-      const q=new URLSearchParams(location.search),u=(q.get("utm_source")||q.get("src")||"").toLowerCase();
-      let h="";try{h=document.referrer?new URL(document.referrer).hostname:""}catch(e){}
-      const t=(u+" "+h).toLowerCase();
-      if(/tiktok/.test(t))return "tiktok";if(/youtu/.test(t))return "youtube";if(/discord/.test(t))return "discord";
-      if(/instagram|l\.instagram/.test(t))return "instagram";if(/snapchat/.test(t))return "snapchat";
-      if(/twitter|t\.co$|x\.com/.test(t))return "twitter";if(/google/.test(t))return "google";if(/roblox/.test(t))return "roblox";
-      if(!h&&!u)return "direct";if(h===location.hostname)return "direct";return "autre";
-    })();
-    fetch("/api/visits",first?{method:"POST",cache:"no-store",headers:{"Content-Type":"application/json"},body:JSON.stringify({src:ref,dev:IS_MOBILE?"mobile":"pc"})}:{}).then(r=>r.ok?r.json():null).then(d=>{if(d&&typeof d.count==="number")showVisits(d.count)}).catch(()=>{});
+    fetch("/api/visits",first?{method:"POST",cache:"no-store"}:{}).then(r=>r.ok?r.json():null).then(d=>{if(d&&typeof d.count==="number")showVisits(d.count)}).catch(()=>{});
   }
 })();
 const clock=()=>$("clock").textContent=new Date().toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit",timeZone:"Europe/Paris"})+" Paris";
@@ -1067,13 +1059,6 @@ function liquidDrops(){
 /* ===== Site public uniquement (pas dans l'aperçu claude.ai) ===== */
 const ON_SITE=location.protocol.startsWith("http")&&!/claude\.ai|claudeusercontent/.test(location.hostname);
 const SITE_URL="https://dwenyx.vercel.app";
-function track(id){
-  if(!ON_SITE)return;
-  try{const b=new Blob([JSON.stringify({id})],{type:"application/json"});
-    if(!(navigator.sendBeacon&&navigator.sendBeacon("/api/track",b)))fetch("/api/track",{method:"POST",keepalive:true,headers:{"Content-Type":"application/json"},body:JSON.stringify({id})})}catch(e){}
-}
-document.addEventListener("click",e=>{const t=e.target.closest("[data-track]");if(t&&t.id!=="shareBtn")track(t.dataset.track)},true);
-
 /* Dernière vidéo YouTube */
 function ago(iso){
   const d=(Date.now()-new Date(iso))/1000;if(!(d>=0))return "";
@@ -1091,15 +1076,13 @@ if(ON_SITE){
 
 /* Partager */
 $("shareBtn").addEventListener("click",async()=>{
-  track("share");
   const data={title:"Dwenyx · Page",text:"Mes vidéos, mes jeux Roblox et mes réseaux 💜",url:ON_SITE?location.origin:SITE_URL};
   if(navigator.share&&IS_MOBILE){try{await navigator.share(data);return}catch(e){if(e&&e.name==="AbortError")return}}
   copy(data.url,"Lien de la page copié");
 });
 
-/* Accès caché à mes stats : 3 clics rapides sur « © Dwenyx » */
-let cc=0,ct=0;
-$("copyMark").addEventListener("click",()=>{const n=Date.now();cc=n-ct<500?cc+1:1;ct=n;if(cc>=3&&ON_SITE)location.href="/admin"});
+/* Bouton « Écrire » visible seulement quand l'envoi par e-mail est activé */
+if(ON_SITE){fetch("/api/contact").then(r=>r.ok?r.json():null).then(d=>{if(d&&d.enabled)document.querySelectorAll(".write").forEach(b=>{b.hidden=false;b.closest(".contact-row").classList.add("has-write")})}).catch(()=>{})}
 
 /* ===== Formulaire de contact ===== */
 const sheet=$("sheet");let lastFocus=null;

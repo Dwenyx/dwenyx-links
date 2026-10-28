@@ -69,13 +69,3 @@ export async function migrateOnce() {
 export function dayKey(date = new Date()) {
   return new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Paris", year: "numeric", month: "2-digit", day: "2-digit" }).format(date);
 }
-const KEEP = String(60 * 60 * 24 * 400); // les stats journalières sont gardées ~13 mois
-
-/* Commandes pour ajouter +n à un champ d'une stat du jour */
-export function dayIncr(hash, field, n = 1) {
-  const key = `${hash}:${dayKey()}`;
-  return [["HINCRBY", key, field, String(n)], ["EXPIRE", key, KEEP]];
-}
-
-export const SOURCES = ["tiktok", "youtube", "discord", "instagram", "snapchat", "twitter", "google", "roblox", "direct", "autre"];
-export const LINKS = ["tiktok", "youtube", "tiktok2", "roblox", "email", "email-write", "share", "latest-video", "game-dynamite", "game-dodge", "flipzik"];
