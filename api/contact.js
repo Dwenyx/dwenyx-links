@@ -2,6 +2,7 @@
 // Tant qu'aucune clé Resend n'est configurée, le bouton « Écrire » reste caché sur la page.
 import { fromOwnSite, visitorKey, send } from "./_lib.js";
 import { hasRedis, redis, overLimit, dayKey } from "./_redis.js";
+import { buildMail } from "./_mail.js";
 
 const TO = process.env.CONTACT_TO || "contactdwenyx@gmail.com";
 const RESEND = process.env.RESEND_API_KEY || "";
@@ -13,11 +14,11 @@ const isEmail = (s) => /^[^\s@<>()"',;:]{1,64}@[^\s@<>()"',;:]{1,190}\.[a-z]{2,2
 
 async function sendMail(m) {
   if (!RESEND) return false;
-  const text = `Nouveau message depuis dwenyx.vercel.app\n\nDe : ${m.name}\nE-mail : ${m.email}\nSujet : ${TYPES[m.type]}\n\n${m.message}\n\n— Réponds directement à cet e-mail pour lui écrire.`;
+  const { html, text } = buildMail(m, TYPES[m.type]);
   const r = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: { Authorization: `Bearer ${RESEND}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ from: FROM, to: [TO], reply_to: m.email, subject: `💜 ${TYPES[m.type]} — ${m.name}`, text }),
+    body: JSON.stringify({ from: FROM, to: [TO], reply_to: m.email, subject: `${TYPES[m.type]} · ${m.name}`, html, text }),
   });
   if (!r.ok) console.error("Resend", r.status, await r.text().catch(() => ""));
   return r.ok;
