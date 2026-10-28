@@ -128,7 +128,10 @@ main{position:relative;z-index:1;min-height:100%;display:flex;flex-direction:col
   display:grid;place-items:center;overflow:hidden;position:relative;box-shadow:0 0 0 2px var(--accent),0 0 24px -4px var(--accent)}
 .avatar img{width:100%;height:100%;object-fit:cover}
 .avatar .letter{font-family:var(--f-display);font-size:48px;line-height:1;color:var(--white)}
-.bio{margin:0;padding:14px 20px 0;line-height:1.55;color:var(--ink);max-width:62ch}
+.bio{margin:0;padding:14px 20px 0;list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:6px 14px;color:var(--ink)}
+.bio li{position:relative;padding-left:16px;font-size:14px;line-height:1.35;min-width:0}
+.bio li::before{content:"";position:absolute;left:0;top:.45em;width:7px;height:7px;border-radius:2px;background:var(--accent);box-shadow:0 0 0 3px rgba(155,92,255,.2);transform:rotate(45deg)}
+@media (max-width:440px){.bio{grid-template-columns:1fr;gap:5px}}
 .who{min-width:0;padding-bottom:6px}
 .who .wordmark{font-size:26px}
 .who .wordmark span{text-shadow:0 2px 0 var(--accent),0 4px 0 var(--accent-deep)}
@@ -515,6 +518,14 @@ main{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
   .sheet-card{max-width:none;border-radius:22px 22px 0 0;border-bottom:0;padding-bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateY(100%)}
   .two{grid-template-columns:1fr}
 }
+/* ===== Merci ===== */
+.thanks{max-width:480px;width:100%;margin:2px 0 0;padding:12px 16px;border-radius:14px;text-align:center;font-size:14px;line-height:1.45;color:var(--ink);
+  background:linear-gradient(135deg,rgba(155,92,255,.18),rgba(255,94,168,.12));border:1px solid rgba(216,198,255,.25)}
+.th-heart{display:inline-block;margin-right:6px;animation:thBeat 1.6s ease-in-out infinite}
+@keyframes thBeat{0%,60%,100%{transform:scale(1)}20%{transform:scale(1.25)}40%{transform:scale(.95)}}
+/* ===== Images protégées (pas de glisser, d'enregistrer ni de menu « Enregistrer l'image ») ===== */
+img{-webkit-user-drag:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;pointer-events:none}
+.avatar,.shot,.lthumb{-webkit-touch-callout:none;user-select:none}
 </style>
 
 <!-- Modèle du logo (réutilisé partout) -->
@@ -572,7 +583,7 @@ main{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
         </button>
       </div>
     </div>
-    <p class="bio" id="about"></p>
+    <ul class="bio" id="about" aria-label="Présentation"></ul>
     <div class="xp">
       <div class="l"><span>Objectif : <strong id="goalLabel">10 000</strong> abonnés</span><span id="goalCount">0 / 10 000</span></div>
       <div class="bar" role="progressbar" aria-label="Objectif d'abonnés" aria-valuemin="0" aria-valuemax="100" id="goalBar"><b id="goalFill" style="width:0%"></b></div>
@@ -593,6 +604,7 @@ main{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
     </div>
   </article>
 
+  <p class="thanks"><span class="th-heart" aria-hidden="true">💜</span>Merci à vous tous de me suivre, c'est grâce à vous que tout ça existe !</p>
   <footer><span class="visits-f"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5c-7 0-10 7-10 7s3 7 10 7 10-7 10-7-3-7-10-7zm0 11a4 4 0 110-8 4 4 0 010 8z"/></svg><span id="views">–</span> visites</span><span id="clock">--:--</span><span id="copyMark">© Dwenyx</span></footer>
 </main>
 
@@ -648,7 +660,12 @@ const IS_MOBILE=matchMedia("(pointer:coarse)").matches||/Android|iPhone|iPad|iPo
 const PROFILE = {
   name:"Dwenyx", handle:"@Dwenyx_783", avatar:"img/avatar.jpg",
   status:"Content Creator",
-  about:"Créateur de contenu passionné, je partage l'univers Roblox avec ma communauté sur YouTube et TikTok. En parallèle, je conçois mes propres jeux. Ouvert aux partenariats et collaborations de marque.",
+  about:[
+    "Créateur de contenu Roblox passionné",
+    "Vidéos sur YouTube et TikTok",
+    "Je conçois mes propres jeux",
+    "Ouvert aux partenariats de marque"
+  ],
 
   /* Tes stats : mets les chiffres de chaque compte, la page fait le total toute seule */
   updated:"27/10/2026",
@@ -700,7 +717,7 @@ word($("gateWord"),PROFILE.name,0.15);
 word($("name"),PROFILE.name,0);
 
 $("status").textContent=PROFILE.status;
-$("about").textContent=PROFILE.about;
+$("about").innerHTML="";PROFILE.about.forEach(t=>{const li=document.createElement("li");li.textContent=t;$("about").append(li)});
 if(PROFILE.avatar)$("avatar").innerHTML=`<img src="${PROFILE.avatar}" alt="${PROFILE.name}">`;else $("avatar").innerHTML=`<span class="letter">${PROFILE.name[0].toUpperCase()}</span>`;
 /* Projets en dossiers */
 const FOLDER='<svg viewBox="0 0 24 24"><path d="M2 5a2 2 0 012-2h5l2 2h9a2 2 0 012 2v11a2 2 0 01-2 2H4a2 2 0 01-2-2V5z"/></svg>';
@@ -1115,6 +1132,12 @@ $("cform").addEventListener("submit",async e=>{
   }catch(x){err(x.message)}
   btn.disabled=false;btn.textContent="Envoyer le message";
 });
+
+/* ===== Protection des images ===== */
+document.addEventListener("contextmenu",e=>{if(e.target.closest("img,.avatar,.shot,.lthumb,canvas"))e.preventDefault()});
+document.addEventListener("dragstart",e=>{if(e.target.closest("img,canvas"))e.preventDefault()});
+const lockImgs=root=>root.querySelectorAll("img").forEach(i=>{i.draggable=false;i.setAttribute("draggable","false")});
+lockImgs(document);new MutationObserver(m=>m.forEach(x=>x.addedNodes.forEach(n=>{if(n.nodeType===1)lockImgs(n.tagName==="IMG"?n.parentNode:n)}))).observe(document.body,{childList:true,subtree:true});
 
 /* ===== Entrée ===== */
 const gate=$("gate");
