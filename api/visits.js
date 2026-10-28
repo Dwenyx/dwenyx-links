@@ -1,8 +1,13 @@
-// Visites : un compteur commun à tout le monde.
+// Visites : un compteur commun à tout le monde + stats journalières (source, appareil) pour le tableau de bord.
 import { fromOwnSite, rateLimited, readCounter, bumpCounter, visitorKey, send } from "./_lib.js";
-import { hasRedis, redis, overLimit, migrateOnce } from "./_redis.js";
+import { hasRedis, redis, overLimit, migrateOnce, dayIncr, SOURCES } from "./_redis.js";
 
 const COUNTER = "counters/visits.json";
+
+function body(req) {
+  if (req.body && typeof req.body === "object") return req.body;
+  try { return JSON.parse(req.body || "{}"); } catch { return {}; }
+}
 
 export default async function handler(req, res) {
   try {
@@ -19,8 +24,16 @@ export default async function handler(req, res) {
           const [count] = await redis(["GET", "visits"]);
           return send(res, 200, { count: Number(count) || 0, counted: false });
         }
-        const [count] = await redis(["INCR", "visits"]);
-        return send(res, 200, { count: Number(count) || 0, counted: true });
+        const b = body(req);
+        const src = SOURCES.includes(b.src) ? b.src : "autre";
+        const dev = b.dev === "mobile" ? "mobile" : "pc";
+        const out = await redis(
+          ["INCR", "visits"],
+          ...dayIncr("d", "visits"),
+          ...dayIncr("d", dev),
+          ...dayIncr("src", src),
+        );
+        return send(res, 200, { count: Number(out[0]) || 0, counted: true });
       }
     } else {
       if (req.method === "GET") {

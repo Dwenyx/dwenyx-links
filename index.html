@@ -1,4 +1,4 @@
-<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Dwenyx · Page</title><meta name="description" content="Dwenyx — Créateur de contenu Roblox sur YouTube et TikTok. Partenariats et collaborations : contactdwenyx@gmail.com"><meta property="og:title" content="Dwenyx · Page"><meta property="og:description" content="Créateur de contenu Roblox sur YouTube et TikTok."><style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body><meta name="claude:viewport-fit-sides" content="cover">
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Dwenyx · Page</title><meta name="description" content="Dwenyx — Créateur de contenu Roblox sur YouTube et TikTok. Vidéos, jeux Roblox et partenariats : contactdwenyx@gmail.com"><meta name="theme-color" content="#0e0a17"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="canonical" href="https://dwenyx.vercel.app/"><meta property="og:type" content="profile"><meta property="og:site_name" content="Dwenyx"><meta property="og:title" content="Dwenyx · Page"><meta property="og:description" content="Créateur de contenu Roblox sur YouTube et TikTok. Mes vidéos, mes jeux et mes réseaux."><meta property="og:url" content="https://dwenyx.vercel.app/"><meta property="og:image" content="https://dwenyx.vercel.app/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Dwenyx — Content Creator : 24 K abonnés, 5,3 M vues, 235 K likes"><meta property="og:locale" content="fr_FR"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Dwenyx · Page"><meta name="twitter:description" content="Créateur de contenu Roblox sur YouTube et TikTok."><meta name="twitter:image" content="https://dwenyx.vercel.app/og.png"><style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body><meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Outfit:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap">
 <style>
@@ -430,6 +430,56 @@ main{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
   font-family:var(--f-display);font-size:11px;line-height:1}
 .myrole strong{color:var(--white);font-weight:700}
 .pj .pname{font-size:15px}
+/* ===== Partager ===== */
+.banner > .share{position:absolute;z-index:2;right:12px;top:8px;display:inline-flex;align-items:center;gap:6px;padding:5px 10px 5px 8px;border-radius:999px;cursor:pointer;
+  font-family:var(--f-mono);font-size:11px;font-weight:700;color:#fff;background:rgba(14,10,23,.45);border:1px solid rgba(216,198,255,.4);
+  transition:transform .2s cubic-bezier(.3,1.6,.5,1),background .2s}
+.banner > .share svg{width:14px;height:14px;fill:currentColor}
+.banner > .share:hover{background:rgba(14,10,23,.7);transform:scale(1.05)}
+.banner > .share:active{transform:scale(.94)}
+.banner > .share:focus-visible{outline:2px solid #fff;outline-offset:2px}
+/* ===== Dernière vidéo ===== */
+.latest{display:flex;gap:12px;align-items:center;padding:10px;border-radius:14px;text-decoration:none;color:var(--ink);position:relative;overflow:hidden;
+  background:linear-gradient(135deg,rgba(230,33,23,.18),rgba(155,92,255,.14));border:2px solid rgba(230,33,23,.45);
+  transition:transform .35s cubic-bezier(.2,.9,.25,1.25),box-shadow .35s}
+.latest:hover,.latest:focus-visible{transform:translateY(-3px);box-shadow:0 12px 28px -12px rgba(230,33,23,.8);outline:none}
+.lthumb{position:relative;flex:none;width:132px;aspect-ratio:16/9;border-radius:10px;overflow:hidden;background:var(--bg)}
+.lthumb img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.latest:hover .lthumb img{transform:scale(1.08)}
+.lplay{position:absolute;inset:0;display:grid;place-items:center}
+.lplay svg{width:34px;height:34px;padding:7px;border-radius:50%;fill:#fff;background:rgba(230,33,23,.92);box-shadow:0 4px 12px rgba(0,0,0,.5)}
+.ltxt{display:flex;flex-direction:column;gap:4px;min-width:0}
+.lkick{display:inline-flex;align-items:center;gap:6px;font-family:var(--f-mono);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#ff8a80}
+.lkick i{width:7px;height:7px;border-radius:50%;background:#ff3b30;box-shadow:0 0 0 0 #ff3b30;animation:ping 2s infinite}
+.ltxt b{font-size:14px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ltxt small{font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+@media (max-width:400px){.lthumb{width:108px}}
+/* ===== Contact : bouton Écrire (mobile) ===== */
+.contact-row{display:flex;gap:8px;align-items:stretch}
+.contact-row .lnk{flex:1;min-width:0}
+.write{display:none;flex:none;flex-direction:column;align-items:center;justify-content:center;gap:3px;width:68px;border-radius:12px;text-decoration:none;
+  background:var(--accent);color:#fff;font-family:var(--f-mono);font-size:11px;font-weight:700;box-shadow:0 4px 0 var(--accent-deep);border:2px solid var(--accent)}
+.write svg{width:20px;height:20px;fill:#fff}
+.write:active{transform:translateY(3px);box-shadow:0 1px 0 var(--accent-deep)}
+@media (pointer:coarse){.write{display:flex}.contact-row .lnk .go{display:none}}
+/* ===== En-tête sur petits écrans ===== */
+@media (max-width:440px){
+  .banner{padding-left:14px;padding-right:14px}
+  .head{gap:10px;padding:0 14px;margin-top:-40px}
+  .avatar{width:78px;height:78px;border-radius:18px}
+  .avatar .letter{font-size:38px}
+  .who{flex:1;min-width:0}
+  .who .wordmark{font-size:21px}
+  .nameline{gap:6px}
+  .verified{width:20px;height:20px}
+  .role{font-size:10px;padding:4px 8px;margin-top:6px}
+  .like{padding-bottom:4px}
+  .like-btn{width:44px;height:44px;min-width:44px;min-height:44px}
+  .like-count{font-size:15px}
+  .bio,.xp,.tabs,.pane{padding-left:14px;padding-right:14px}
+  .tnum b{font-size:22px}
+}
+@media (max-width:360px){.who .wordmark{font-size:18px}.role span{max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}}
 </style>
 
 <!-- Modèle du logo (réutilisé partout) -->
@@ -465,6 +515,7 @@ main{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
     <section class="banner" aria-label="Stats cumulées">
       <div class="bgshift" aria-hidden="true"></div><div class="shine" aria-hidden="true"></div>
       <span class="live" id="live"><i></i>En direct</span>
+      <button class="share" id="shareBtn" type="button" data-track="share" aria-label="Partager la page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16a3 3 0 00-2.4 1.2l-6.7-3.4a3 3 0 000-1.6l6.7-3.4A3 3 0 1015 7a3 3 0 00.1.8L8.4 11.2a3 3 0 100 1.6l6.7 3.4A3 3 0 1018 16z"/></svg><span>Partager</span></button>
       <div class="tgrid">
         <div class="tnum"><b data-total="subs">0</b><span>Abonnés</span></div>
         <div class="tnum"><b data-total="views">0</b><span>Vues</span></div>
@@ -507,7 +558,7 @@ main{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
     </div>
   </article>
 
-  <footer><span class="visits-f"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5c-7 0-10 7-10 7s3 7 10 7 10-7 10-7-3-7-10-7zm0 11a4 4 0 110-8 4 4 0 010 8z"/></svg><span id="views">–</span> visites</span><span id="clock">--:--</span><span>© Dwenyx</span></footer>
+  <footer><span class="visits-f"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5c-7 0-10 7-10 7s3 7 10 7 10-7 10-7-3-7-10-7zm0 11a4 4 0 110-8 4 4 0 010 8z"/></svg><span id="views">–</span> visites</span><span id="clock">--:--</span><span id="copyMark">© Dwenyx</span></footer>
 </main>
 
 <div id="toast"></div>
@@ -527,6 +578,7 @@ main{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
 </div>
 
 <script>
+const IS_MOBILE=matchMedia("(pointer:coarse)").matches||/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 /* ======== À MODIFIER : tes infos ======== */
 const PROFILE = {
   name:"Dwenyx", handle:"@Dwenyx_783", avatar:"",
@@ -551,13 +603,13 @@ const PROFILE = {
   folders:[
     {name:"Projets Roblox", items:[
       {name:"Dynamite Spleef", desc:"Fais sauter les blocs sous les autres, dernier debout gagne.", status:"live", role:"Solo Dev", visits:"loading",
-       link:"https://www.roblox.com/fr/games/93715439719200/Dynamite-Spleef", img:"img/dynamite-spleef.jpg"},
+       link:"https://www.roblox.com/fr/games/93715439719200/Dynamite-Spleef", track:"game-dynamite", img:"img/dynamite-spleef.jpg"},
       {name:"Dodge to Survive!", desc:"Esquive les murs qui foncent sur toi pour rester en vie.", status:"live", role:"Solo Dev", visits:"130K+",
-       link:"https://www.roblox.com/fr/games/93885728521060/Dodge-to-Survive", img:"img/dodge-to-survive.jpg"}
+       link:"https://www.roblox.com/fr/games/93885728521060/Dodge-to-Survive", track:"game-dodge", img:"img/dodge-to-survive.jpg"}
     ]},
     {name:"Applications", items:[
       {name:"FlipZik", desc:"Le Tinder de la musique : écoute 30 s, swipe, découvre ta prochaine musique préférée.", status:"beta", role:"Co-Builder",
-       link:"https://flipzik.vercel.app/discover", cta:"Découvrir FlipZik ↗", img:"img/flipzik.jpg"}
+       link:"https://flipzik.vercel.app/discover", track:"flipzik", cta:"Découvrir FlipZik ↗", img:"img/flipzik.jpg"}
     ]}
   ]
 };
@@ -603,7 +655,7 @@ function openFolder(i){
       return `<article class="pj">
         ${p.img?`<div class="shot"><img src="${p.img}" alt="${p.name}" loading="lazy">${st}${p.visits!=null?`<span class="visits"><svg viewBox="0 0 24 24"><path d="M12 5c-7 0-10 7-10 7s3 7 10 7 10-7 10-7-3-7-10-7zm0 11a4 4 0 110-8 4 4 0 010 8z"/></svg>${p.visits==="loading"?`<span class="ld" aria-label="Chargement des visites"><i></i><i></i><i></i></span> visites`:typeof p.visits==="string"?p.visits+" visites":new Intl.NumberFormat("fr-FR",{notation:"compact",maximumFractionDigits:1}).format(p.visits)+" visite"+(p.visits>1?"s":"")}</span>`:""}</div>`:""}
         <div class="info">${p.img?"":st}<b class="pname">${p.name}</b>${p.role?`<span class="myrole"><span class="mini">D</span>Mon rôle sur ce projet : <strong>${p.role}</strong></span>`:""}<span class="d">${p.desc}</span>
-        ${p.link?`<a class="btn play" href="${p.link}" target="_blank" rel="noopener">${p.cta||(f.name.includes("Roblox")?"▶ Jouer sur Roblox":"Ouvrir ↗")}</a>`:""}</div>
+        ${p.link?`<a class="btn play" href="${p.link}" target="_blank" rel="noopener"${p.track?` data-track="${p.track}"`:""}>${p.cta||(f.name.includes("Roblox")?"▶ Jouer sur Roblox":"Ouvrir ↗")}</a>`:""}</div>
       </article>`}).join("")}</div>`;
 }
 function resizePanes(fn){
@@ -621,20 +673,24 @@ addEventListener("keydown",e=>{
 });
 
 const L=[
-  {a:PROFILE.youtube,c:"#e62117",i:SVG.youtube,t:"YouTube",s:short(PROFILE.youtube),p:0},
-  {a:PROFILE.tiktok,c:"#111",i:SVG.tiktok,t:"TikTok · Dwenyx",s:short(PROFILE.tiktok),p:1},
-  {a:PROFILE.tiktok2,c:"#111",i:SVG.tiktok,t:"TikTok · Dwenyx Games",s:short(PROFILE.tiktok2),p:2},
-  {a:PROFILE.roblox,c:"#3a3f45",i:SVG.roblox,t:"Profil Roblox",s:"Dwenyx_783"},
-  {copy:PROFILE.email,m:"E-mail copié",c:"#9b5cff",i:SVG.mail,t:"Contact & collabs",s:PROFILE.email}
+  {a:PROFILE.tiktok,c:"#111",i:SVG.tiktok,t:"TikTok · Dwenyx",s:short(PROFILE.tiktok),p:1,id:"tiktok"},
+  {a:PROFILE.youtube,c:"#e62117",i:SVG.youtube,t:"YouTube",s:short(PROFILE.youtube),p:0,id:"youtube"},
+  {a:PROFILE.tiktok2,c:"#111",i:SVG.tiktok,t:"TikTok · Dwenyx Games",s:short(PROFILE.tiktok2),p:2,id:"tiktok2"},
+  {a:PROFILE.roblox,c:"#3a3f45",i:SVG.roblox,t:"Profil Roblox",s:"Dwenyx_783",id:"roblox"},
+  {copy:PROFILE.email,m:"E-mail copié",c:"#9b5cff",i:SVG.mail,t:"Contact & collabs",s:PROFILE.email,id:"email"}
 ];
 $("p-liens").innerHTML=L.map(x=>{
   const subs=x.p!=null?PROFILE.platforms[x.p].subs:null;
   const pill=subs!=null?`<span class="subs"><b data-psubs="${x.p}" data-v="${subs}">${new Intl.NumberFormat("fr-FR",{notation:"compact",maximumFractionDigits:1}).format(subs)}</b><i>abonné${subs>1?"s":""}</i></span>`:"";
   const inner=`<span class="ic">${x.i}</span><span class="t"><b>${x.t}</b><small>${x.s}</small></span>${pill}<span class="go">${x.copy?"copier":"↗"}</span>`;
   return x.copy
-    ?`<button class="lnk" type="button" style="--c:${x.c}" data-copy="${x.copy}" data-msg="${x.m}">${inner}</button>`
-    :`<a class="lnk" style="--c:${x.c}" href="${x.a}" target="_blank" rel="noopener">${inner}</a>`;
+    ?`<div class="contact-row"><button class="lnk" type="button" style="--c:${x.c}" data-copy="${x.copy}" data-msg="${x.m}" data-track="${x.id}">${inner}</button>
+       <a class="write" href="mailto:${x.copy}?subject=${encodeURIComponent("Collab avec Dwenyx")}" data-track="email-write" aria-label="Écrire un e-mail à ${x.copy}">${SVG.mail}<span>Écrire</span></a></div>`
+    :`<a class="lnk" style="--c:${x.c}" href="${x.a}" target="_blank" rel="noopener" data-track="${x.id}">${inner}</a>`;
 }).join("");
+$("p-liens").insertAdjacentHTML("afterbegin",`<a class="latest" id="latest" target="_blank" rel="noopener" data-track="latest-video" hidden>
+  <span class="lthumb"><img id="latestImg" alt="" width="480" height="360"><span class="lplay"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span></span>
+  <span class="ltxt"><span class="lkick"><i></i>Dernière vidéo YouTube</span><b id="latestTitle"></b><small id="latestDate"></small></span></a>`);
 
 /* Stats cumulées */
 const fmt=n=>n>=1e6?(n/1e6).toFixed(n>=1e7?0:1).replace(".",",")+" M":n>=1e3?(n/1e3).toFixed(n>=1e4?0:1).replace(".",",")+" k":String(Math.round(n));
@@ -742,7 +798,16 @@ $("views").textContent="–";
   if(location.protocol.startsWith("http")&&!/claude\.ai|claudeusercontent/.test(location.hostname)){
     /* +1 une fois par ouverture du site (un simple rechargement de la page ne recompte pas) */
     let first=true;try{first=!sessionStorage.getItem("visitCounted");sessionStorage.setItem("visitCounted","1")}catch(e){}
-    fetch("/api/visits",first?{method:"POST",cache:"no-store"}:{}).then(r=>r.ok?r.json():null).then(d=>{if(d&&typeof d.count==="number")showVisits(d.count)}).catch(()=>{});
+    const ref=(()=>{
+      const q=new URLSearchParams(location.search),u=(q.get("utm_source")||q.get("src")||"").toLowerCase();
+      let h="";try{h=document.referrer?new URL(document.referrer).hostname:""}catch(e){}
+      const t=(u+" "+h).toLowerCase();
+      if(/tiktok/.test(t))return "tiktok";if(/youtu/.test(t))return "youtube";if(/discord/.test(t))return "discord";
+      if(/instagram|l\.instagram/.test(t))return "instagram";if(/snapchat/.test(t))return "snapchat";
+      if(/twitter|t\.co$|x\.com/.test(t))return "twitter";if(/google/.test(t))return "google";if(/roblox/.test(t))return "roblox";
+      if(!h&&!u)return "direct";if(h===location.hostname)return "direct";return "autre";
+    })();
+    fetch("/api/visits",first?{method:"POST",cache:"no-store",headers:{"Content-Type":"application/json"},body:JSON.stringify({src:ref,dev:IS_MOBILE?"mobile":"pc"})}:{}).then(r=>r.ok?r.json():null).then(d=>{if(d&&typeof d.count==="number")showVisits(d.count)}).catch(()=>{});
   }
 })();
 const clock=()=>$("clock").textContent=new Date().toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit",timeZone:"Europe/Paris"})+" Paris";
@@ -752,7 +817,7 @@ clock();setInterval(clock,10000);
 /* ===== Son : musique de fond + effets ===== */
 const store={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 const bgm=$("bgm");
-let musicVol=store.get("musicVol3",50),musicOn=store.get("musicOn",true),sfxOn=store.get("sfxOn",true);
+let musicVol=store.get("musicVol3",50),musicOn=store.get("musicOn",!IS_MOBILE),sfxOn=store.get("sfxOn",true);
 let AC=null,sfxGain=null;
 function audioInit(){
   if(AC)return;
@@ -935,6 +1000,43 @@ function liquidDrops(){
     setTimeout(()=>requestAnimationFrame(tick),45);
   })();
 }
+/* ===== Site public uniquement (pas dans l'aperçu claude.ai) ===== */
+const ON_SITE=location.protocol.startsWith("http")&&!/claude\.ai|claudeusercontent/.test(location.hostname);
+const SITE_URL="https://dwenyx.vercel.app";
+function track(id){
+  if(!ON_SITE)return;
+  try{const b=new Blob([JSON.stringify({id})],{type:"application/json"});
+    if(!(navigator.sendBeacon&&navigator.sendBeacon("/api/track",b)))fetch("/api/track",{method:"POST",keepalive:true,headers:{"Content-Type":"application/json"},body:JSON.stringify({id})})}catch(e){}
+}
+document.addEventListener("click",e=>{const t=e.target.closest("[data-track]");if(t&&t.id!=="shareBtn")track(t.dataset.track)},true);
+
+/* Dernière vidéo YouTube */
+function ago(iso){
+  const d=(Date.now()-new Date(iso))/1000;if(!(d>=0))return "";
+  if(d<3600)return "il y a "+Math.max(1,Math.round(d/60))+" min";if(d<86400)return "il y a "+Math.round(d/3600)+" h";
+  const j=Math.round(d/86400);return j===1?"hier":j<30?"il y a "+j+" jours":new Date(iso).toLocaleDateString("fr-FR",{day:"numeric",month:"long"});
+}
+if(ON_SITE){
+  fetch("/api/latest").then(r=>r.ok?r.json():null).then(d=>{
+    const v=d&&d.video;if(!v)return;
+    const a=$("latest");a.href=v.url;$("latestTitle").textContent=v.title;$("latestDate").textContent=(v.isShort?"Short · ":"")+ago(v.published);
+    const img=$("latestImg");img.src=v.thumb;img.alt="Miniature : "+v.title;
+    if(!$("p-liens").hidden)resizePanes(()=>{a.hidden=false});else a.hidden=false;
+  }).catch(()=>{});
+}
+
+/* Partager */
+$("shareBtn").addEventListener("click",async()=>{
+  track("share");
+  const data={title:"Dwenyx · Page",text:"Mes vidéos, mes jeux Roblox et mes réseaux 💜",url:ON_SITE?location.origin:SITE_URL};
+  if(navigator.share&&IS_MOBILE){try{await navigator.share(data);return}catch(e){if(e&&e.name==="AbortError")return}}
+  copy(data.url,"Lien de la page copié");
+});
+
+/* Accès caché à mes stats : 3 clics rapides sur « © Dwenyx » */
+let cc=0,ct=0;
+$("copyMark").addEventListener("click",()=>{const n=Date.now();cc=n-ct<500?cc+1:1;ct=n;if(cc>=3&&ON_SITE)location.href="/admin"});
+
 /* ===== Entrée ===== */
 const gate=$("gate");
 const enter=e=>{
@@ -951,7 +1053,8 @@ applySfx();audioInit();applyMusic();
 
 /* Fond : grille de studs violets qui suit la souris */
 const cv=$("studs"),cx=cv.getContext("2d",{alpha:true,desynchronized:true});let W,H,mx=.5,my=.5,mouseSeen=false;
-const DPR=Math.min(devicePixelRatio||1,1.25);
+const LITE=matchMedia("(pointer:coarse)").matches||/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+const DPR=Math.min(devicePixelRatio||1,LITE?1:1.25);
 const still=matchMedia("(prefers-reduced-motion:reduce)").matches;
 let CR={left:0,top:0,width:innerWidth,height:innerHeight};
 const TRAIL=[],TRAIL_MS=190;
@@ -986,6 +1089,7 @@ function size(){
 }
 addEventListener("resize",size);
 addEventListener("pointermove",e=>{
+  if(e.pointerType&&e.pointerType!=="mouse")return; /* pas de lumière ni de traînée au doigt */
   const sx=W/CR.width,sy=H/CR.height;
   mx=(e.clientX-CR.left)/CR.width;my=(e.clientY-CR.top)/CR.height;mouseSeen=true;
   const now=performance.now(),evs=e.getCoalescedEvents?e.getCoalescedEvents():[e];
@@ -993,8 +1097,11 @@ addEventListener("pointermove",e=>{
   if(TRAIL.length>60)TRAIL.splice(0,TRAIL.length-60);
 },{passive:true});
 
+let lastFrame=0;
 function draw(t=0){
   if(document.hidden){if(!still)requestAnimationFrame(draw);return}
+  if(LITE&&t-lastFrame<40){requestAnimationFrame(draw);return} /* ~25 images/s sur mobile */
+  lastFrame=t;
   const d=DPR,g=GSTEP*d,r=3.5*d,M=Math.max(W,H),now=performance.now(),cxp=mx*W,cyp=my*H;
   while(TRAIL.length&&now-TRAIL[0].t>TRAIL_MS)TRAIL.shift();
   cx.clearRect(0,0,W,H);
