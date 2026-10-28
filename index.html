@@ -51,6 +51,8 @@ body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:1
 #gate{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;gap:22px;align-items:center;justify-content:center;
   background:radial-gradient(circle at 50% 42%,#2a1650 0,var(--bg) 60%);cursor:pointer;transition:transform 1.25s cubic-bezier(.6,-.12,.25,1)}
 #gate.gone{transform:translateY(calc(-100% - 150px))}
+/* le petit élan vers le bas au départ ne doit pas laisser de trou en haut : on prolonge le fond au-dessus */
+#gate::before{content:"";position:absolute;left:0;right:0;bottom:100%;height:40vh;background:var(--bg);pointer-events:none}
 /* bord liquide façon cartoon sous l'écran d'entrée */
 .gwave{position:absolute;left:0;right:0;top:calc(100% - 2px);height:130px;pointer-events:none;overflow:hidden}
 .gwave svg{position:absolute;top:0;left:0;width:200%;height:100%;display:block}
