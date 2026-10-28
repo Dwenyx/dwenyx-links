@@ -34,39 +34,6 @@ export async function overLimit(kind, who, max) {
   return Number(n) > max;
 }
 
-/* Reprise unique des anciens chiffres (stockage Blob) au premier passage sur Redis */
-let migrated = false; // gardé en mémoire : évite une requête Redis inutile à chaque visite
-export async function migrateOnce() {
-  if (migrated) return;
-  const [done] = await redis(["GET", "migrated:v1"]);
-  if (done) { migrated = true; return; }
-  const [lock] = await redis(["SET", "migrating:v1", "1", "NX", "EX", "60"]);
-  if (lock !== "OK") return;
-  try {
-    const { list } = await import("@vercel/blob");
-    const { readCounter } = await import("./_lib.js");
-    const members = [];
-    let cursor;
-    do {
-      const page = await list({ prefix: "likes/", limit: 1000, cursor });
-      for (const b of page.blobs) {
-        const m = b.pathname.match(/^likes\/(.+)\.txt$/);
-        if (m) members.push(m[1]);
-      }
-      cursor = page.hasMore ? page.cursor : undefined;
-    } while (cursor);
-    const visits = (await readCounter("counters/visits.json")).count || 0;
-    const cmds = [];
-    if (members.length) cmds.push(["SADD", "likes:visitors", ...members]);
-    cmds.push(["INCRBY", "visits", String(visits)]);
-    cmds.push(["SET", "migrated:v1", new Date().toISOString()]);
-    await redis(...cmds);
-  } catch (err) {
-    console.error("migration", err);
-    await redis(["SET", "migrated:v1", "failed"]);
-  }
-}
-
 /* Date du jour à Paris (AAAA-MM-JJ) pour ranger les stats par jour */
 export function dayKey(date = new Date()) {
   return new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Paris", year: "numeric", month: "2-digit", day: "2-digit" }).format(date);

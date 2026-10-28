@@ -1,8 +1,5 @@
 {
   "name": "dwenyx-links",
   "private": true,
-  "type": "module",
-  "dependencies": {
-    "@vercel/blob": "2.8.2"
-  }
+  "type": "module"
 }
