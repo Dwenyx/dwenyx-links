@@ -644,10 +644,6 @@ input,textarea,select{-webkit-user-select:text;user-select:text;-webkit-touch-ca
   background:radial-gradient(ellipse 80% 70% at 50% 40%,rgba(14,10,23,.5),rgba(14,10,23,.86) 75%)}
 /* carte : petit fondu au tout premier mouvement après le retournement */
 .egg.ease .egg-card{transition:transform .25s ease-out!important}
-/* ===== Chiffres exacts : un peu plus petits pour tenir ===== */
-.tnum b{font-size:clamp(15px,4.9vw,21px);letter-spacing:-.02em;white-space:nowrap}
-.lnk .subs b{font-size:15px;white-space:nowrap}
-@media (max-width:440px){.tnum b{font-size:clamp(12px,3.9vw,16px)}.lnk .subs b{font-size:13px}}
 </style>
 
 <div class="bgv" aria-hidden="true"><video id="bgv" src="video/bg.mp4" poster="video/poster.webp" autoplay muted loop playsinline preload="auto" disablepictureinpicture disableremoteplayback></video></div>
@@ -942,7 +938,7 @@ const L=[
 ];
 $("p-liens").innerHTML=L.map(x=>{
   const subs=x.p!=null?PROFILE.platforms[x.p].subs:null;
-  const pill=subs!=null?`<span class="subs"><b data-psubs="${x.p}" data-v="${subs}">${Math.round(subs).toLocaleString("fr-FR")}</b><i>abonné${subs>1?"s":""}</i></span>`:"";
+  const pill=subs!=null?`<span class="subs"><b data-psubs="${x.p}" data-v="${subs}">${new Intl.NumberFormat("fr-FR",{notation:"compact",maximumFractionDigits:1}).format(subs)}</b><i>abonné${subs>1?"s":""}</i></span>`:"";
   const inner=`<span class="ic">${x.i}</span><span class="t"><b>${x.t}</b><small>${x.s}</small></span>${pill}<span class="go">${x.copy?"copier":"↗"}</span>`;
   return x.copy
     ?`<div class="contact-row"><button class="lnk" type="button" style="--c:${x.c}" data-copy="${x.copy}" data-msg="${x.m}">${inner}</button>
@@ -974,7 +970,7 @@ function bump(el,diff){
   if(!diff)return;
   el.classList.remove("bump");el.offsetWidth;el.classList.add("bump");
   const tag=document.createElement("span");tag.className="delta "+(diff>0?"up":"down");
-  tag.textContent=(diff>0?"+":"−")+fr(Math.abs(diff));el.parentElement.append(tag);setTimeout(()=>tag.remove(),2200);
+  tag.textContent=(diff>0?"+":"−")+fmt(Math.abs(diff));el.parentElement.append(tag);setTimeout(()=>tag.remove(),2200);
 }
 /* Objectif d'abonnés : paliers de 10 000, le prochain s'affiche dès qu'un palier est atteint */
 const STEP=10000;
@@ -986,10 +982,10 @@ function setGoal(subs){
 function renderTotals(next,live){
   if(live){const d=(next.subs-shown.subs)+(next.views-shown.views)+(next.likes-shown.likes);if(d>0)SFX.up();else if(d<0)SFX.down()}
   document.querySelectorAll("[data-total]").forEach(el=>{
-    const k=el.dataset.total;tween(el,shown[k],next[k],fr,live?1200:1600);if(live)bump(el,next[k]-shown[k]);shown[k]=next[k];
+    const k=el.dataset.total;tween(el,shown[k],next[k],fmt,live?1200:1600);if(live)bump(el,next[k]-shown[k]);shown[k]=next[k];
   });
   document.querySelectorAll("[data-psubs]").forEach(el=>{
-    const to=+PROFILE.platforms[+el.dataset.psubs].subs||0,from=+el.dataset.v||0;tween(el,from,to,fr,1200);el.dataset.v=to;
+    const to=+PROFILE.platforms[+el.dataset.psubs].subs||0,from=+el.dataset.v||0;tween(el,from,to,compact,1200);el.dataset.v=to;
   });
   setGoal(next.subs);
 }
