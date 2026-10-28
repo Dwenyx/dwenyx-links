@@ -47,7 +47,7 @@
       ]
     },
     {
-      "source": "/(img|sfx|audio)/(.*)",
+      "source": "/(img|sfx|audio|video)/(.*)",
       "headers": [
         {
           "key": "Cache-Control",
