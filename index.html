@@ -544,6 +544,94 @@ input,textarea,select{-webkit-user-select:text;user-select:text;-webkit-touch-ca
 .cwrap .done h2{font-family:var(--f-display);font-weight:400;font-size:22px;margin:6px 0 0;text-shadow:0 3px 0 var(--accent-deep)}
 .cwrap .done .btn{margin-top:6px;min-width:140px}
 .side-h .fi.mail svg{width:20px;height:20px}
+/* ===== Notes en étoiles ===== */
+.pttl{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.pttl .pname{margin-right:auto}
+.stars{position:relative;display:inline-block;height:16px;line-height:0;flex:none}
+.st-row{display:inline-flex;gap:2px;white-space:nowrap}
+.st-row svg{width:16px;height:16px;flex:none}
+.st-off svg{fill:rgba(255,255,255,.14)}
+.st-on{position:absolute;left:0;top:0;overflow:hidden}
+.st-on svg{fill:#ffc94a;filter:drop-shadow(0 0 4px rgba(255,201,74,.55))}
+.st-n{font-family:var(--f-mono);font-size:12px;font-weight:700;color:#ffd77a;flex:none}
+.st-n i{font-style:normal;color:var(--muted);font-weight:400}
+.pj:hover .st-on svg{animation:starPop .5s cubic-bezier(.3,1.7,.5,1) both}
+.pj:hover .st-on svg:nth-child(2){animation-delay:.05s}.pj:hover .st-on svg:nth-child(3){animation-delay:.1s}
+.pj:hover .st-on svg:nth-child(4){animation-delay:.15s}.pj:hover .st-on svg:nth-child(5){animation-delay:.2s}
+@keyframes starPop{40%{transform:scale(1.35) rotate(-12deg)}}
+/* ===== Like : bien visible ===== */
+.like-hint{position:absolute;right:-6px;bottom:calc(100% + 8px);z-index:3;white-space:nowrap;pointer-events:none;
+  font-family:var(--f-mono);font-size:11px;font-weight:700;color:var(--accent-deep);background:var(--white);padding:6px 10px;border-radius:10px;
+  box-shadow:0 4px 0 #ff5ea8,0 10px 24px -8px rgba(255,94,168,.8);opacity:0;transform:translateY(6px) scale(.8);transform-origin:85% 100%}
+.like-hint::after{content:"";position:absolute;right:22px;top:100%;border:7px solid transparent;border-top-color:var(--white)}
+.like.hint .like-hint{animation:hintIn .5s cubic-bezier(.3,1.6,.5,1) forwards,hintBob 1.6s .5s ease-in-out infinite}
+@keyframes hintIn{to{opacity:1;transform:none}}
+@keyframes hintBob{0%,100%{transform:none}50%{transform:translateY(-4px)}}
+.like.done .like-hint{animation:hintOut .25s ease forwards}
+@keyframes hintOut{from{opacity:1;transform:none}to{opacity:0;transform:translateY(-6px) scale(.8)}}
+.like-btn:not(.on){border-color:#ff5ea8;animation:likePulse 2s ease-out infinite}
+.like-btn:not(.on) svg{stroke:#ff8cc4;animation:likeBeat 2s ease-in-out infinite}
+@keyframes likePulse{0%{box-shadow:0 0 0 0 rgba(255,94,168,.65)}70%,100%{box-shadow:0 0 0 14px rgba(255,94,168,0)}}
+@keyframes likeBeat{0%,40%,100%{transform:scale(1)}10%{transform:scale(1.22)}20%{transform:scale(.95)}30%{transform:scale(1.12)}}
+@media (max-width:440px){.like-hint{font-size:10px;padding:5px 8px}}
+/* ===== Easter egg : la carte ===== */
+.avatar{cursor:pointer}
+.egg{position:fixed;inset:0;z-index:50;display:grid;place-items:center;perspective:1400px}
+.egg[hidden]{display:none}
+.egg-bg{position:absolute;inset:0;background:radial-gradient(circle at 50% 45%,rgba(91,42,209,.55),rgba(8,5,16,.92) 70%);opacity:0;transition:opacity .4s;backdrop-filter:blur(3px)}
+.egg.open .egg-bg{opacity:1}
+.egg-move{position:relative;perspective:1400px;--cw:min(360px,78vw,calc((100vh - 140px)*.716));width:var(--cw);aspect-ratio:63/88;transform-origin:50% 50%;will-change:transform}
+.egg.zoom .egg-move{transition:transform .6s cubic-bezier(.2,.9,.25,1.15)}
+.egg-card{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .9s cubic-bezier(.3,1.25,.4,1);
+  transform:rotateY(var(--ry,0deg)) rotateX(var(--rx,0deg))}
+.egg.flip .egg-card{transform:rotateY(calc(180deg + var(--ry,0deg))) rotateX(var(--rx,0deg))}
+.egg.tilting .egg-card{transition:transform .12s linear}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.face.f-front{display:grid;place-items:center}
+.face.f-front img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:22%;box-shadow:0 0 0 4px var(--surface),0 0 0 6px var(--accent),0 20px 50px rgba(0,0,0,.6)}
+.face.f-back{transform:rotateY(180deg);border-radius:4.6%/3.3%;overflow:hidden;padding:3.2%;
+  background:linear-gradient(135deg,#f3e9ff,#c9b2ff 20%,#fff 35%,#ffc6ea 52%,#b7e6ff 70%,#f1e4ff 88%,#c9b2ff);
+  box-shadow:0 30px 80px -10px rgba(155,92,255,.8),0 0 0 1px rgba(255,255,255,.4)}
+.tc{position:relative;width:100%;height:100%;border-radius:3.4%/2.4%;overflow:hidden;color:#fff;font-family:var(--f-body);
+  background:#1b0f3a url(img/card-art.webp) center/cover no-repeat;container-type:inline-size}
+.tc-top{position:absolute;left:0;right:0;top:0;display:flex;align-items:center;gap:2.5cqw;padding:3.5cqw 4cqw 8cqw;
+  background:linear-gradient(rgba(10,4,30,.75),transparent)}
+.tc-stage{font-family:var(--f-mono);font-size:2.6cqw;font-weight:700;letter-spacing:.1em;padding:.8cqw 2cqw;border-radius:99px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35)}
+.tc-name{font-family:var(--f-display);font-size:7.2cqw;line-height:1;text-shadow:0 .6cqw 0 #5b2ad1,0 0 3cqw rgba(155,92,255,.9)}
+.tc-shiny{font-size:5cqw;filter:drop-shadow(0 0 2cqw #fff)}
+.tc-hp{margin-left:auto;display:flex;align-items:baseline;gap:1cqw;font-family:var(--f-display);font-size:7cqw;text-shadow:0 .5cqw 0 #5b2ad1}
+.tc-hp small{font-family:var(--f-mono);font-size:2.8cqw;font-weight:700}
+.tc-type{width:7.5cqw;height:7.5cqw;border-radius:50%;display:grid;place-items:center;font-family:var(--f-display);font-size:4.2cqw;
+  background:radial-gradient(circle at 35% 30%,#d8c6ff,#9b5cff 55%,#5b2ad1);box-shadow:0 0 0 .6cqw #fff,0 0 3cqw rgba(155,92,255,.9)}
+.tc-bot{position:absolute;left:3cqw;right:3cqw;bottom:3cqw;padding:3.5cqw 4cqw 2.6cqw;border-radius:3cqw;
+  background:linear-gradient(rgba(14,8,34,.55),rgba(14,8,34,.82));border:1px solid rgba(255,255,255,.25)}
+.tc-atk{display:grid;grid-template-columns:auto 1fr auto;gap:.6cqw 2.5cqw;align-items:center;padding:1.6cqw 0}
+.tc-atk + .tc-atk{border-top:1px solid rgba(255,255,255,.18)}
+.tc-cost{display:flex;gap:.8cqw}
+.tc-cost i{width:4.6cqw;height:4.6cqw;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,#ff8cc4 60%,#d6338a);box-shadow:0 0 0 .4cqw rgba(255,255,255,.7)}
+.tc-cost i.b{background:radial-gradient(circle at 35% 30%,#fff,#8fd8ff 60%,#2a8fd6)}
+.tc-atk b{font-size:4.6cqw;font-weight:700}
+.tc-dmg{font-family:var(--f-display);font-size:6cqw}
+.tc-atk p{grid-column:1/-1;margin:0;font-size:3cqw;line-height:1.35;color:#e9e0ff}
+.tc-foot{display:flex;justify-content:space-between;gap:2cqw;margin-top:1.8cqw;padding-top:1.6cqw;border-top:1px solid rgba(255,255,255,.18);
+  font-family:var(--f-mono);font-size:2.3cqw;color:#d8c6ff}
+.tc-foot b{color:#fff}
+/* reflets holographiques qui suivent la souris */
+.tc-holo,.tc-glare,.tc-spark{position:absolute;inset:0;pointer-events:none;border-radius:inherit}
+.tc-holo{mix-blend-mode:color-dodge;opacity:.2;
+  background:repeating-linear-gradient(115deg,#ff5ea8 0%,#ffd76a 6%,#7cffc4 12%,#5ec8ff 18%,#b07cff 24%,#ff5ea8 30%);
+  background-size:300% 300%;background-position:var(--hx,50%) var(--hy,50%);animation:holoIdle 6s linear infinite}
+.egg.tilting .tc-holo{animation:none}
+@keyframes holoIdle{0%{background-position:0% 50%}100%{background-position:150% 50%}}
+.tc-glare{mix-blend-mode:soft-light;background:radial-gradient(circle at var(--gx,50%) var(--gy,30%),rgba(255,255,255,.7),transparent 50%)}
+.tc-spark{mix-blend-mode:screen;opacity:.55;background-image:radial-gradient(circle,#fff 0 1px,transparent 1.6px),radial-gradient(circle,#fff 0 .8px,transparent 1.3px);
+  background-size:23px 29px,17px 13px;background-position:var(--hx,0) var(--hy,0),calc(var(--hx,0)*-1) 40%;
+  -webkit-mask-image:radial-gradient(circle at var(--gx,50%) var(--gy,30%),#000,transparent 60%);mask-image:radial-gradient(circle at var(--gx,50%) var(--gy,30%),#000,transparent 60%)}
+.egg-hint{position:absolute;bottom:calc(18px + env(safe-area-inset-bottom,0px));left:0;right:0;text-align:center;font-family:var(--f-mono);font-size:11px;
+  letter-spacing:.15em;text-transform:uppercase;color:var(--lilac);opacity:0;transition:opacity .4s .9s}
+.egg.flip .egg-hint{opacity:.8}
+.egg.closing .egg-move{transition:transform .35s ease-in,opacity .35s;transform:scale(.6)!important;opacity:0}
+@media (prefers-reduced-motion:reduce){.egg-card,.egg.zoom .egg-move{transition:none}}
 </style>
 
 <canvas id="studs"></canvas>
@@ -580,6 +668,7 @@ input,textarea,select{-webkit-user-select:text;user-select:text;-webkit-touch-ca
         <div class="role"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6.5A2.5 2.5 0 015.5 4h8A2.5 2.5 0 0116 6.5v1.6l4.4-2.6A1 1 0 0122 6.4v11.2a1 1 0 01-1.6.9L16 15.9v1.6a2.5 2.5 0 01-2.5 2.5h-8A2.5 2.5 0 013 17.5v-11z"/></svg><span id="status">Content Creator</span></div>
       </div>
       <div class="like">
+        <span class="like-hint" aria-hidden="true">Like ma page ! 💜</span>
         <span class="like-count" id="likeCount" aria-live="polite">–</span>
         <button class="like-btn" id="likeBtn" type="button" aria-pressed="false" aria-label="Liker le profil">
           <svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.6-9.3C.9 8.2 3 4.5 6.6 4.5c2.1 0 3.5 1.1 4.4 2.5.9-1.4 2.3-2.5 4.4-2.5 3.6 0 5.7 3.7 4.2 7.2C19.5 16.4 12 21 12 21z"/></svg>
@@ -615,6 +704,26 @@ input,textarea,select{-webkit-user-select:text;user-select:text;-webkit-touch-ca
 </main>
 
 <div id="toast"></div>
+
+<div class="egg" id="egg" hidden aria-hidden="true">
+  <div class="egg-bg"></div>
+  <div class="egg-move" id="eggMove"><div class="egg-card" id="eggCard">
+    <div class="face f-front"><img id="eggFront" alt=""></div>
+    <div class="face f-back"><div class="tc">
+      <div class="tc-top"><span class="tc-stage">BASE</span><span class="tc-name">DWENYX</span><span class="tc-shiny">✦</span>
+        <span class="tc-hp"><small>PV</small>240</span><span class="tc-type">D</span></div>
+      <div class="tc-bot">
+        <div class="tc-atk"><span class="tc-cost"><i></i></span><b>Vidéo virale</b><span class="tc-dmg">120</span>
+          <p>Lance une nouvelle vidéo : tous les spectateurs adverses s'abonnent.</p></div>
+        <div class="tc-atk"><span class="tc-cost"><i></i><i class="b"></i></span><b>Spleef explosif</b><span class="tc-dmg">200</span>
+          <p>Fais sauter le sol sous l'adversaire. Il tombe et perd la partie.</p></div>
+        <div class="tc-foot"><span>Faiblesse <b>Lag ×2</b></span><span>Résistance <b>Haters −30</b></span><span><b>✦ 001/783</b></span></div>
+      </div>
+      <div class="tc-holo"></div><div class="tc-spark"></div><div class="tc-glare"></div>
+    </div></div>
+  </div></div>
+  <p class="egg-hint">Bouge la souris · clique pour fermer</p>
+</div>
 
 <div id="formHome" hidden><div class="cwrap" id="cwrap">
     <div id="sheetForm">
@@ -685,13 +794,13 @@ const PROFILE = {
   /* Dossiers de projets. Pour chaque projet : name, desc, status ("live" / "dev" / ""), link (optionnel), img (optionnel) */
   folders:[
     {name:"Projets Roblox", items:[
-      {name:"Dynamite Spleef", desc:"Fais sauter les blocs sous les autres, dernier debout gagne.", status:"live", role:"Solo Dev", visits:"loading",
+      {name:"Dynamite Spleef", desc:"Fais sauter les blocs sous les autres, dernier debout gagne.", status:"live", role:"Solo Dev", rating:4, visits:"loading",
        link:"https://www.roblox.com/fr/games/93715439719200/Dynamite-Spleef", img:"img/dynamite-spleef.webp"},
-      {name:"Dodge to Survive!", desc:"Esquive les murs qui foncent sur toi pour rester en vie.", status:"live", role:"Solo Dev", visits:"130K+",
+      {name:"Dodge to Survive!", desc:"Esquive les murs qui foncent sur toi pour rester en vie.", status:"live", role:"Solo Dev", rating:4.5, visits:"130K+",
        link:"https://www.roblox.com/fr/games/93885728521060/Dodge-to-Survive", img:"img/dodge-to-survive.webp"}
     ]},
     {name:"Applications", items:[
-      {name:"FlipZik", desc:"Le Tinder de la musique : écoute 30 s, swipe, découvre ta prochaine musique préférée.", status:"beta", role:"Co-Builder",
+      {name:"FlipZik", desc:"Le Tinder de la musique : écoute 30 s, swipe, découvre ta prochaine musique préférée.", status:"beta", role:"Co-Builder", rating:5,
        link:"https://flipzik.vercel.app/discover", cta:"Découvrir FlipZik ↗", img:"img/flipzik.webp"}
     ]}
   ]
@@ -733,12 +842,18 @@ function openFolder(i){
   $("proj").innerHTML=`<div class="fhead"><button class="back" type="button" id="back" aria-label="Retour aux dossiers"><svg viewBox="0 0 24 24"><path d="M15.4 5.4 14 4l-8 8 8 8 1.4-1.4L8.8 12z"/></svg>Retour</button>
       <div class="fname">${FOLDER}<b>${f.name}</b><span class="cnt">${nProj(f.items.length)}</span></div></div>`+folderBody(f);
 }
+/* Note sur 5 étoiles (demi-étoiles possibles) */
+const STAR='<svg viewBox="0 0 24 24"><path d="M12 2.6l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.5l-5.9 3.1 1.2-6.5L2.5 9.5l6.6-.9z"/></svg>';
+function stars(r){
+  const pct=Math.max(0,Math.min(5,r))/5*100,lbl=String(r).replace(".",",");
+  return `<span class="stars" role="img" aria-label="Note : ${lbl} sur 5"><span class="st-row st-off">${STAR.repeat(5)}</span><span class="st-row st-on" style="width:${pct}%">${STAR.repeat(5)}</span></span><span class="st-n">${lbl}<i>/5</i></span>`;
+}
 function folderBody(f){
   return `<div class="pjs">${f.items.map(p=>{
       const st=p.status?`<span class="st ${p.status}">${STATUS[p.status]||p.status}</span>`:"";
       return `<article class="pj">
         ${p.img?`<div class="shot"><img src="${p.img}" alt="${p.name}" loading="lazy" decoding="async">${st}${p.visits!=null?`<span class="visits"><svg viewBox="0 0 24 24"><path d="M12 5c-7 0-10 7-10 7s3 7 10 7 10-7 10-7-3-7-10-7zm0 11a4 4 0 110-8 4 4 0 010 8z"/></svg>${p.visits==="loading"?`<span class="ld" aria-label="Chargement des visites"><i></i><i></i><i></i></span> visites`:typeof p.visits==="string"?p.visits+" visites":new Intl.NumberFormat("fr-FR",{notation:"compact",maximumFractionDigits:1}).format(p.visits)+" visite"+(p.visits>1?"s":"")}</span>`:""}</div>`:""}
-        <div class="info">${p.img?"":st}<b class="pname">${p.name}</b>${p.role?`<span class="myrole"><span class="mini">D</span>Mon rôle sur ce projet : <strong>${p.role}</strong></span>`:""}<span class="d">${p.desc}</span>
+        <div class="info">${p.img?"":st}<div class="pttl"><b class="pname">${p.name}</b>${p.rating!=null?stars(p.rating):""}</div>${p.role?`<span class="myrole"><span class="mini">D</span>Mon rôle sur ce projet : <strong>${p.role}</strong></span>`:""}<span class="d">${p.desc}</span>
         ${p.link?`<a class="btn play" href="${p.link}" target="_blank" rel="noopener">${p.cta||(f.name.includes("Roblox")?"▶ Jouer sur Roblox":"Ouvrir ↗")}</a>`:""}</div>
       </article>`}).join("")}</div>`;
 }
@@ -1026,7 +1141,8 @@ document.addEventListener("click",e=>{
   if(t.closest("#openContact"))return t.closest(".write.on")?SFX.close():SFX.open();
   if(t.closest("#back,#sideX,#cBack,[data-cclose]"))return SFX.close();
   if(t.closest("a[href]"))return SFX.link();
-  if(t.closest("button,.avatar"))return SFX.click();
+  if(t.closest(".avatar,#egg"))return;
+  if(t.closest("button"))return SFX.click();
 },true);
 
 /* Onde au point de clic sur les éléments cliquables */
@@ -1046,7 +1162,7 @@ function showLikes(n,animate){
   const from=likes==null?n:likes;likes=n;
   tween(likeCount,from,n,likeFmt,animate?700:0);
 }
-function setLikedUI(){likeBtn.classList.toggle("on",liked);likeBtn.setAttribute("aria-pressed",liked);likeBtn.setAttribute("aria-label",liked?"Tu as liké ce profil":"Liker le profil")}
+function setLikedUI(){likeBtn.parentElement.classList.toggle("done",liked);likeBtn.classList.toggle("on",liked);likeBtn.setAttribute("aria-pressed",liked);likeBtn.setAttribute("aria-label",liked?"Tu as liké ce profil":"Liker le profil")}
 function burst(){
   if(reduceMotion)return;
   const wrap=likeBtn.parentElement;
@@ -1192,6 +1308,45 @@ $("cform").addEventListener("submit",async e=>{
   btn.disabled=false;btn.textContent="Envoyer le message";
 });
 
+/* ===== Easter egg : clic sur la photo → zoom → elle se retourne → carte shiny ===== */
+(()=>{
+  const egg=$("egg"),mv=$("eggMove"),card=$("eggCard"),av=$("avatar");let busy=false,open=false,timers=[];
+  const later=(f,ms)=>timers.push(setTimeout(f,ms));
+  function show(){
+    if(busy||open)return;busy=true;open=true;timers.forEach(clearTimeout);timers=[];
+    $("eggFront").src=(av.querySelector("img")||{}).src||"";
+    egg.className="egg";egg.hidden=false;egg.setAttribute("aria-hidden","false");card.style.removeProperty("--rx");card.style.removeProperty("--ry");
+    const a=av.getBoundingClientRect(),c=mv.getBoundingClientRect();
+    const sc=a.width/c.width,dx=a.left+a.width/2-(c.left+c.width/2),dy=a.top+a.height/2-(c.top+c.height/2);
+    mv.style.transform=`translate(${dx}px,${dy}px) scale(${sc})`;mv.offsetWidth;
+    egg.classList.add("open","zoom");mv.style.transform="";SFX.open();
+    later(()=>{egg.classList.add("flip");SFX.copy()},650);
+    later(()=>{busy=false},1500);
+  }
+  function hide(){
+    if(!open)return;timers.forEach(clearTimeout);timers=[];open=false;busy=true;
+    egg.classList.add("closing");egg.classList.remove("open");SFX.close();
+    later(()=>{egg.hidden=true;egg.className="egg";egg.setAttribute("aria-hidden","true");busy=false},380);
+  }
+  if(matchMedia("(hover:none)").matches)egg.querySelector(".egg-hint").textContent="Touche pour fermer";
+  av.setAttribute("role","button");av.tabIndex=0;av.setAttribute("aria-label","Photo de profil");
+  av.addEventListener("click",show);
+  av.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();show()}});
+  egg.addEventListener("click",()=>{if(!busy)hide()});
+  addEventListener("keydown",e=>{if(e.key==="Escape"&&open)hide()});
+  /* inclinaison + reflets qui suivent la souris (ou le doigt) */
+  egg.addEventListener("pointermove",e=>{
+    if(!egg.classList.contains("flip"))return;
+    const r=mv.getBoundingClientRect(),px=Math.min(1,Math.max(0,(e.clientX-r.left)/r.width)),py=Math.min(1,Math.max(0,(e.clientY-r.top)/r.height));
+    egg.classList.add("tilting");
+    card.style.setProperty("--ry",((.5-px)*24).toFixed(2)+"deg");card.style.setProperty("--rx",((py-.5)*-18).toFixed(2)+"deg");
+    const tc=card.querySelector(".tc");
+    tc.style.setProperty("--gx",(100-px*100).toFixed(1)+"%");tc.style.setProperty("--gy",(py*100).toFixed(1)+"%");
+    tc.style.setProperty("--hx",(100-px*100).toFixed(1)+"%");tc.style.setProperty("--hy",(py*100).toFixed(1)+"%");
+  });
+  egg.addEventListener("pointerleave",()=>{egg.classList.remove("tilting");card.style.removeProperty("--rx");card.style.removeProperty("--ry")});
+})();
+
 /* ===== Protection des images ===== */
 document.addEventListener("contextmenu",e=>{if(e.target.closest("img,.avatar,.shot,.lthumb,canvas"))e.preventDefault()});
 document.addEventListener("dragstart",e=>{if(e.target.closest("img,canvas"))e.preventDefault()});
@@ -1205,6 +1360,7 @@ const enter=e=>{
   audioInit();SFX.enter();
   if(e&&e.clientX!=null){const r=document.createElement("div");r.className="ripple";r.style.left=e.clientX+"px";r.style.top=e.clientY+"px";document.body.append(r);setTimeout(()=>r.remove(),900)}
   gate.classList.add("gone");liquidDrops();
+  setTimeout(()=>{if(!liked)likeBtn.parentElement.classList.add("hint")},1600);
   const card=document.querySelector(".card");card.classList.add("enter");setTimeout(()=>card.classList.remove("enter"),1600);
   $("sound").hidden=false;applySfx();applyMusic();
   setTimeout(runCounters,500);
