@@ -118,7 +118,7 @@ main{position:relative;z-index:1;min-height:100%;display:flex;flex-direction:col
 .banner .shine::before{content:"";position:absolute;top:-50%;bottom:-50%;width:60px;left:-30%;transform:rotate(20deg);
   background:linear-gradient(90deg,transparent,rgba(255,255,255,.28),transparent);animation:sweep 5s ease-in-out infinite}
 @keyframes sweep{0%,55%{left:-30%}100%{left:130%}}
-.banner > :not(.shine):not(.bgshift):not(.live){position:relative;z-index:1}
+.banner > :not(.shine):not(.bgshift):not(.live):not(.share){position:relative;z-index:1}
 .banner .top{display:flex;justify-content:space-between;align-items:center;gap:8px;font-family:var(--f-mono);font-size:10px;color:var(--lilac);text-transform:uppercase;letter-spacing:.12em}
 .badge-lv{font-family:var(--f-mono);font-size:11px;font-weight:700;background:rgba(14,10,23,.45);
   color:var(--white);padding:4px 8px;border-radius:6px;border:1px solid rgba(216,198,255,.45);letter-spacing:0}
@@ -431,7 +431,7 @@ main{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
 .myrole strong{color:var(--white);font-weight:700}
 .pj .pname{font-size:15px}
 /* ===== Partager ===== */
-.banner > .share{position:absolute;z-index:2;right:12px;top:8px;display:inline-flex;align-items:center;gap:6px;padding:5px 10px 5px 8px;border-radius:999px;cursor:pointer;
+.banner > .share{position:absolute;z-index:2;right:14px;top:10px;left:auto;width:auto;display:inline-flex;align-items:center;gap:6px;padding:5px 10px 5px 8px;border-radius:999px;cursor:pointer;
   font-family:var(--f-mono);font-size:11px;font-weight:700;color:#fff;background:rgba(14,10,23,.45);border:1px solid rgba(216,198,255,.4);
   transition:transform .2s cubic-bezier(.3,1.6,.5,1),background .2s}
 .banner > .share svg{width:14px;height:14px;fill:currentColor}
@@ -461,7 +461,8 @@ main{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
   background:var(--accent);color:#fff;font-family:var(--f-mono);font-size:11px;font-weight:700;box-shadow:0 4px 0 var(--accent-deep);border:2px solid var(--accent)}
 .write svg{width:20px;height:20px;fill:#fff}
 .write:active{transform:translateY(3px);box-shadow:0 1px 0 var(--accent-deep)}
-@media (pointer:coarse){.write{display:flex}.contact-row .lnk .go{display:none}}
+.write{display:flex;cursor:pointer}
+@media (pointer:coarse){.contact-row .lnk .go{display:none}}
 /* ===== En-tête sur petits écrans ===== */
 @media (max-width:440px){
   .banner{padding-left:14px;padding-right:14px}
@@ -480,6 +481,39 @@ main{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
   .tnum b{font-size:22px}
 }
 @media (max-width:360px){.who .wordmark{font-size:18px}.role span{max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}}
+/* ===== Feuille de contact ===== */
+.sheet{position:fixed;inset:0;z-index:40;display:flex;align-items:center;justify-content:center;padding:16px}
+.sheet[hidden]{display:none}
+.sheet-bg{position:absolute;inset:0;background:rgba(8,5,16,.7);opacity:0;transition:opacity .28s}
+.sheet.open .sheet-bg{opacity:1}
+.sheet-card{position:relative;width:100%;max-width:460px;max-height:calc(100% - 20px);overflow:auto;background:var(--surface);border:2px solid var(--line-solid);border-radius:20px;
+  padding:22px 20px 20px;box-shadow:0 6px 0 var(--line-solid),0 30px 80px -20px rgba(0,0,0,.8);transform:translateY(24px) scale(.96);opacity:0;
+  transition:transform .32s cubic-bezier(.2,.9,.25,1.2),opacity .25s}
+.sheet.open .sheet-card{transform:none;opacity:1}
+.sheet-card h2{font-family:var(--f-display);font-weight:400;font-size:22px;margin:0 0 6px;text-shadow:0 3px 0 var(--accent-deep)}
+.sheet-sub{margin:0 0 14px;color:var(--muted);font-size:13px;line-height:1.5}
+.sheet-x{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:50%;border:2px solid var(--line-solid);background:var(--surface-2);color:var(--ink);cursor:pointer;font-size:14px}
+#cform{display:flex;flex-direction:column;gap:12px}
+#cform label{display:flex;flex-direction:column;gap:6px;font-family:var(--f-mono);font-size:11px;color:var(--muted);position:relative}
+#cform input,#cform select,#cform textarea{font:inherit;font-family:var(--f-body);font-size:16px;color:var(--ink);background:var(--bg);border:2px solid var(--line-solid);border-radius:12px;padding:11px 12px;width:100%}
+#cform input:focus,#cform select:focus,#cform textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 4px rgba(155,92,255,.2)}
+#cform textarea{min-height:120px;resize:vertical}
+#cform .count{position:absolute;right:10px;bottom:8px;font-size:10px;color:var(--muted)}
+#cform .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cerr{color:#ff9aa8;font-family:var(--f-mono);font-size:12px;min-height:1em}
+.btn.send{width:100%;padding:14px}
+.btn:disabled{opacity:.6;cursor:wait}
+.done{text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 0}
+.check svg{width:76px;height:76px}
+.check circle{fill:none;stroke:var(--ok);stroke-width:3;stroke-dasharray:160;stroke-dashoffset:160;animation:drawC .6s ease-out forwards}
+.check path{fill:none;stroke:var(--ok);stroke-width:4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:40;stroke-dashoffset:40;animation:drawC .4s .5s ease-out forwards}
+@keyframes drawC{to{stroke-dashoffset:0}}
+@media (max-width:520px){
+  .sheet{align-items:flex-end;padding:0}
+  .sheet-card{max-width:none;border-radius:22px 22px 0 0;border-bottom:0;padding-bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateY(100%)}
+  .two{grid-template-columns:1fr}
+}
 </style>
 
 <!-- Modèle du logo (réutilisé partout) -->
@@ -562,6 +596,36 @@ main{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
 </main>
 
 <div id="toast"></div>
+
+<div class="sheet" id="sheet" hidden>
+  <div class="sheet-bg" data-close></div>
+  <section class="sheet-card" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+    <button class="sheet-x" type="button" data-close aria-label="Fermer">✕</button>
+    <div id="sheetForm">
+      <h2 id="sheetTitle">M'écrire</h2>
+      <p class="sheet-sub">Ton message arrive directement dans ma boîte mail. Je te réponds sur l'adresse que tu indiques.</p>
+      <form id="cform" novalidate>
+        <div class="two">
+          <label for="c-name">Nom ou pseudo<input id="c-name" name="name" autocomplete="nickname" maxlength="60" required></label>
+          <label for="c-mail">Ton e-mail<input id="c-mail" name="email" type="email" inputmode="email" autocomplete="email" maxlength="254" required placeholder="toi@exemple.fr"></label>
+        </div>
+        <label for="c-type">Sujet
+          <select id="c-type" name="type"><option value="marque">Partenariat de marque</option><option value="createur">Collab entre créateurs</option><option value="jeu">Jeu Roblox</option><option value="autre">Autre</option></select>
+        </label>
+        <label for="c-msg">Message<textarea id="c-msg" name="message" maxlength="2000" required placeholder="Présente-toi et explique ton idée…"></textarea><span class="count" id="c-count">0 / 2000</span></label>
+        <label class="hp" aria-hidden="true">Site web<input id="c-web" name="website" tabindex="-1" autocomplete="off"></label>
+        <div class="cerr" id="c-err" role="alert"></div>
+        <button class="btn send" type="submit" id="c-send">Envoyer le message</button>
+      </form>
+    </div>
+    <div id="sheetDone" class="done" hidden>
+      <div class="check"><svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="24"/><path d="M15 27l7 7 15-16"/></svg></div>
+      <h2>Message envoyé !</h2>
+      <p class="sheet-sub">Merci, je te réponds dès que possible sur ton adresse e-mail.</p>
+      <button class="btn" type="button" data-close>Fermer</button>
+    </div>
+  </section>
+</div>
 
 <audio id="bgm" src="audio/palace.mp3" loop preload="none"></audio>
 <div class="sound" id="sound" hidden>
@@ -685,7 +749,7 @@ $("p-liens").innerHTML=L.map(x=>{
   const inner=`<span class="ic">${x.i}</span><span class="t"><b>${x.t}</b><small>${x.s}</small></span>${pill}<span class="go">${x.copy?"copier":"↗"}</span>`;
   return x.copy
     ?`<div class="contact-row"><button class="lnk" type="button" style="--c:${x.c}" data-copy="${x.copy}" data-msg="${x.m}" data-track="${x.id}">${inner}</button>
-       <a class="write" href="mailto:${x.copy}?subject=${encodeURIComponent("Collab avec Dwenyx")}" data-track="email-write" aria-label="Écrire un e-mail à ${x.copy}">${SVG.mail}<span>Écrire</span></a></div>`
+       <button class="write" type="button" id="openContact" data-track="email-write" aria-label="M'écrire un message">${SVG.mail}<span>Écrire</span></button></div>`
     :`<a class="lnk" style="--c:${x.c}" href="${x.a}" target="_blank" rel="noopener" data-track="${x.id}">${inner}</a>`;
 }).join("");
 $("p-liens").insertAdjacentHTML("afterbegin",`<a class="latest" id="latest" target="_blank" rel="noopener" data-track="latest-video" hidden>
@@ -1036,6 +1100,38 @@ $("shareBtn").addEventListener("click",async()=>{
 /* Accès caché à mes stats : 3 clics rapides sur « © Dwenyx » */
 let cc=0,ct=0;
 $("copyMark").addEventListener("click",()=>{const n=Date.now();cc=n-ct<500?cc+1:1;ct=n;if(cc>=3&&ON_SITE)location.href="/admin"});
+
+/* ===== Formulaire de contact ===== */
+const sheet=$("sheet");let lastFocus=null;
+function openSheet(){
+  lastFocus=document.activeElement;$("sheetForm").hidden=false;$("sheetDone").hidden=true;$("c-err").textContent="";
+  sheet.hidden=false;requestAnimationFrame(()=>sheet.classList.add("open"));SFX.open();
+  setTimeout(()=>{if(!IS_MOBILE)$("c-name").focus()},250);
+}
+function closeSheet(){
+  sheet.classList.remove("open");SFX.close();setTimeout(()=>{sheet.hidden=true;if(lastFocus)lastFocus.focus()},280);
+}
+document.addEventListener("click",e=>{if(e.target.closest("#openContact")){e.preventDefault();openSheet()}});
+sheet.addEventListener("click",e=>{if(e.target.closest("[data-close]"))closeSheet()});
+addEventListener("keydown",e=>{if(e.key==="Escape"&&!sheet.hidden)closeSheet()});
+$("c-msg").addEventListener("input",e=>{$("c-count").textContent=e.target.value.length+" / 2000"});
+$("cform").addEventListener("submit",async e=>{
+  e.preventDefault();
+  const body={name:$("c-name").value.trim(),email:$("c-mail").value.trim(),type:$("c-type").value,message:$("c-msg").value.trim(),website:$("c-web").value};
+  const err=m=>{$("c-err").textContent=m;SFX.down()};
+  if(body.name.length<2)return err("Indique ton nom ou pseudo.");
+  if(!/^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(body.email))return err("Vérifie ton adresse e-mail.");
+  if(body.message.length<10)return err("Ton message est un peu court.");
+  if(!ON_SITE){err("L'envoi marche sur dwenyx.vercel.app. Ici, copie plutôt mon e-mail.");return}
+  const btn=$("c-send");btn.disabled=true;btn.textContent="Envoi…";
+  try{
+    const r=await fetch("/api/contact",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
+    const d=await r.json().catch(()=>({}));
+    if(!r.ok)throw new Error(d.error||"Envoi impossible, réessaie.");
+    $("sheetForm").hidden=true;$("sheetDone").hidden=false;SFX.copy();$("cform").reset();$("c-count").textContent="0 / 2000";
+  }catch(x){err(x.message)}
+  btn.disabled=false;btn.textContent="Envoyer le message";
+});
 
 /* ===== Entrée ===== */
 const gate=$("gate");

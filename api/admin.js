@@ -30,7 +30,10 @@ export default async function handler(req, res) {
     const days = [];
     for (let i = nDays - 1; i >= 0; i--) days.push(dayKey(new Date(Date.now() - i * 86400000)));
     const cmds = [["GET", "visits"], ["SCARD", "likes:visitors"]];
+    const MSG_BASE = 2 + nDays * 3;
     for (const d of days) cmds.push(["HGETALL", `d:${d}`], ["HGETALL", `src:${d}`], ["HGETALL", `clk:${d}`]);
+    cmds.push(["LRANGE", "msgs", "0", "99"], ["GET", "msgs:unread"]);
+    if (req.query?.read === "1") cmds.push(["SET", "msgs:unread", "0"]);
     const out = await redis(...cmds);
 
     const series = [], sources = {}, clicks = {}, devices = { mobile: 0, pc: 0 };
@@ -46,6 +49,8 @@ export default async function handler(req, res) {
     return send(res, 200, {
       totals: { visits: Number(out[0]) || 0, likes: Number(out[1]) || 0 },
       days: nDays, series, sources, devices, clicks, generatedAt: new Date().toISOString(),
+      messages: (out[MSG_BASE] || []).map((x) => { try { return JSON.parse(x); } catch { return null; } }).filter(Boolean),
+      unread: Number(out[MSG_BASE + 1]) || 0,
     });
   } catch (err) {
     console.error(err);

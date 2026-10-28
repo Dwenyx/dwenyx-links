@@ -61,6 +61,19 @@ h2{font-family:var(--f-mono);font-size:12px;font-weight:700;text-transform:upper
 input{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);border:2px solid var(--line);border-radius:12px;padding:12px 14px;width:100%}
 .err{color:var(--bad);font-family:var(--f-mono);font-size:12px;min-height:1.2em}
 .note{font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+.badge{display:inline-block;margin-left:8px;padding:2px 8px;border-radius:999px;background:var(--pink);color:#fff;font-size:10px;letter-spacing:0;text-transform:none}
+.msgs{display:flex;flex-direction:column;gap:10px;max-height:520px;overflow:auto}
+.msg{border:2px solid var(--line);border-radius:12px;padding:12px;background:var(--surface-2);display:flex;flex-direction:column;gap:8px}
+.msg.new{border-color:var(--accent);box-shadow:0 0 0 3px rgba(155,92,255,.15)}
+.mh{display:flex;flex-wrap:wrap;gap:8px;align-items:baseline}
+.mh b{font-size:15px}
+.mt{font-family:var(--f-mono);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--lilac);background:rgba(155,92,255,.18);padding:2px 7px;border-radius:6px}
+.md{margin-left:auto;font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+.msg p{margin:0;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere}
+.mf{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.mm{font-family:var(--f-mono);font-size:12px;color:var(--ink);overflow-wrap:anywhere}
+.ms{font-family:var(--f-mono);font-size:10px;color:var(--muted);flex:1}
+.mf .btn{text-decoration:none;padding:7px 11px}
 </style>
 </head>
 <body>
@@ -94,6 +107,11 @@ input{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);border:2
   </div>
 
   <div class="card">
+    <h2>Messages reçus <span class="badge" id="unread" hidden></span></h2>
+    <div class="msgs" id="msgs"></div>
+  </div>
+
+  <div class="card">
     <h2>Visites, likes et clics par jour</h2>
     <div class="legend"><span><i style="background:var(--accent)"></i>Visites</span><span><i style="background:var(--pink)"></i>Likes</span><span><i style="background:var(--ok)"></i>Clics</span></div>
     <div class="chart" id="line"></div>
@@ -122,7 +140,7 @@ let days=30,data=null;
 
 async function load(){
   $("err").textContent="";
-  const r=await fetch("/api/admin?days="+days,{headers:{Authorization:"Bearer "+pw},cache:"no-store"}).catch(()=>null);
+  const r=await fetch("/api/admin?read=1&days="+days,{headers:{Authorization:"Bearer "+pw},cache:"no-store"}).catch(()=>null);
   if(!r){$("err").textContent="Connexion impossible, réessaie.";return false}
   const d=await r.json().catch(()=>({}));
   if(r.status===401){$("err").textContent="Mot de passe incorrect.";try{sessionStorage.removeItem("adminPw")}catch(e){};showLogin();return false}
@@ -153,9 +171,33 @@ function render(){
   lineChart(s);
   bars("sources",data.sources,SRC_NAMES);
   bars("clicks",data.clicks,LINK_NAMES);
+  messages(data.messages||[],data.unread||0);
   bars("devices",{mobile:data.devices.mobile,pc:data.devices.pc},{mobile:"Téléphone",pc:"Ordinateur"});
 }
 
+const TYPE_NAMES={marque:"Partenariat de marque",createur:"Collab entre créateurs",jeu:"Jeu Roblox",autre:"Autre"};
+function messages(list,unread){
+  const u=$("unread");u.hidden=!unread;u.textContent=unread+" nouveau"+(unread>1?"x":"");
+  const el=$("msgs");el.innerHTML="";
+  if(!list.length){el.innerHTML='<div class="empty">Aucun message pour l\'instant. Ceux envoyés depuis le bouton « Écrire » de ta page arriveront ici.</div>';return}
+  list.forEach((m,i)=>{
+    const c=document.createElement("article");c.className="msg"+(i<unread?" new":"");
+    const h=document.createElement("div");h.className="mh";
+    const n=document.createElement("b");n.textContent=m.name;
+    const t=document.createElement("span");t.className="mt";t.textContent=TYPE_NAMES[m.type]||m.type;
+    const d=document.createElement("span");d.className="md";d.textContent=new Date(m.at).toLocaleString("fr-FR",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"});
+    h.append(n,t,d);
+    const body=document.createElement("p");body.textContent=m.message;
+    const f=document.createElement("div");f.className="mf";
+    const mail=document.createElement("span");mail.className="mm";mail.textContent=m.email;
+    const rep=document.createElement("a");rep.className="btn primary";rep.textContent="Répondre";
+    rep.href="mailto:"+encodeURIComponent(m.email)+"?subject="+encodeURIComponent("Re: "+(TYPE_NAMES[m.type]||"ton message"));
+    const cp=document.createElement("button");cp.className="btn";cp.type="button";cp.textContent="Copier l'e-mail";
+    cp.addEventListener("click",()=>{navigator.clipboard&&navigator.clipboard.writeText(m.email).then(()=>{cp.textContent="Copié ✓";setTimeout(()=>cp.textContent="Copier l'e-mail",1500)},()=>{})});
+    const st=document.createElement("span");st.className="ms";st.textContent=m.mailed?"✓ envoyé sur ta boîte mail":"seulement ici (e-mail non configuré)";
+    f.append(mail,st,cp,rep);c.append(h,body,f);el.append(c);
+  });
+}
 function bars(id,obj,names){
   const rows=Object.entries(obj).filter(([,v])=>v>0).sort((a,b)=>b[1]-a[1]);
   const el=$(id);
