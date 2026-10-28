@@ -568,6 +568,9 @@ img{-webkit-user-drag:none;user-select:none;-webkit-user-select:none;-webkit-tou
   .folder.on .go{color:var(--white);transform:rotate(180deg)}
 }
 @media (prefers-reduced-motion:reduce){.col,.side-in{transition:none!important}}
+/* ===== Pas de surlignage du texte (sauf dans le formulaire) ===== */
+html,body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+input,textarea,select{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
 </style>
 
 <!-- Modèle du logo (réutilisé partout) -->
