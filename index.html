@@ -576,7 +576,7 @@ input,textarea,select{-webkit-user-select:text;user-select:text;-webkit-touch-ca
 @media (max-width:440px){.like-hint{font-size:10px;padding:5px 8px}}
 /* ===== Easter egg : la carte ===== */
 .avatar{cursor:pointer}
-.egg{position:fixed;inset:0;z-index:50;display:grid;place-items:center;perspective:1400px}
+.egg{position:fixed;inset:0;z-index:50;display:grid;place-items:center;perspective:1400px;touch-action:none;overscroll-behavior:contain;-webkit-user-select:none;user-select:none}
 .egg[hidden]{display:none}
 .egg-bg{position:absolute;inset:0;background:radial-gradient(circle at 50% 45%,rgba(91,42,209,.55),rgba(8,5,16,.92) 70%);opacity:0;transition:opacity .4s;backdrop-filter:blur(3px)}
 .egg.open .egg-bg{opacity:1}
@@ -1319,6 +1319,7 @@ $("cform").addEventListener("submit",async e=>{
     const a=av.getBoundingClientRect(),c=mv.getBoundingClientRect();
     const sc=a.width/c.width,dx=a.left+a.width/2-(c.left+c.width/2),dy=a.top+a.height/2-(c.top+c.height/2);
     mv.style.transform=`translate(${dx}px,${dy}px) scale(${sc})`;mv.offsetWidth;
+    document.documentElement.style.overflow="hidden";
     egg.classList.add("open","zoom");mv.style.transform="";SFX.open();
     later(()=>{egg.classList.add("flip");SFX.copy()},650);
     later(()=>{busy=false},1500);
@@ -1326,16 +1327,21 @@ $("cform").addEventListener("submit",async e=>{
   function hide(){
     if(!open)return;timers.forEach(clearTimeout);timers=[];open=false;busy=true;
     egg.classList.add("closing");egg.classList.remove("open");SFX.close();
-    later(()=>{egg.hidden=true;egg.className="egg";egg.setAttribute("aria-hidden","true");busy=false},380);
+    later(()=>{document.documentElement.style.overflow="";egg.hidden=true;egg.className="egg";egg.setAttribute("aria-hidden","true");busy=false},380);
   }
   if(matchMedia("(hover:none)").matches)egg.querySelector(".egg-hint").textContent="Touche pour fermer";
   av.setAttribute("role","button");av.tabIndex=0;av.setAttribute("aria-label","Photo de profil");
   av.addEventListener("click",show);
   av.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();show()}});
-  egg.addEventListener("click",()=>{if(!busy)hide()});
+  /* glisser le doigt fait bouger la carte ; seul un vrai tap la ferme */
+  let downAt=null,dragged=false;
+  egg.addEventListener("pointerdown",e=>{downAt={x:e.clientX,y:e.clientY};dragged=false});
+  egg.addEventListener("touchmove",e=>e.preventDefault(),{passive:false});
+  egg.addEventListener("click",e=>{if(dragged){dragged=false;return}if(!busy)hide()});
   addEventListener("keydown",e=>{if(e.key==="Escape"&&open)hide()});
   /* inclinaison + reflets qui suivent la souris (ou le doigt) */
   egg.addEventListener("pointermove",e=>{
+    if(downAt&&Math.hypot(e.clientX-downAt.x,e.clientY-downAt.y)>10)dragged=true;
     if(!egg.classList.contains("flip"))return;
     const r=mv.getBoundingClientRect(),px=Math.min(1,Math.max(0,(e.clientX-r.left)/r.width)),py=Math.min(1,Math.max(0,(e.clientY-r.top)/r.height));
     egg.classList.add("tilting");
@@ -1344,6 +1350,7 @@ $("cform").addEventListener("submit",async e=>{
     tc.style.setProperty("--gx",(100-px*100).toFixed(1)+"%");tc.style.setProperty("--gy",(py*100).toFixed(1)+"%");
     tc.style.setProperty("--hx",(100-px*100).toFixed(1)+"%");tc.style.setProperty("--hy",(py*100).toFixed(1)+"%");
   });
+  egg.addEventListener("pointerup",()=>{downAt=null});
   egg.addEventListener("pointerleave",()=>{egg.classList.remove("tilting");card.style.removeProperty("--rx");card.style.removeProperty("--ry")});
 })();
 
