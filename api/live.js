@@ -84,11 +84,18 @@ export default async function handler(req, res) {
       const [cached] = await redis(["GET", KEY]);
       if (cached) return send(res, 200, JSON.parse(cached), fresh);
     }
-    const out = { at: new Date().toISOString(), tiktok: {}, youtube: null };
+    const out = { at: new Date().toISOString(), tiktok: {}, youtube: null, views: null };
+    /* vues envoyées par la tâche Metricool (TikTok n'affiche pas le total des vues sur le profil) */
+    if (hasRedis) {
+      try {
+        const [h] = await redis(["HGETALL", "stats:views"]);
+        if (Array.isArray(h) && h.length) { out.views = {}; for (let i = 0; i < h.length; i += 2) out.views[h[i]] = Number(h[i + 1]) || 0; }
+      } catch {}
+    }
     const [yt, ...results] = await Promise.allSettled([cachedYoutube(), ...ACCOUNTS.map(profile)]);
     results.forEach((r, i) => { if (r.status === "fulfilled") out.tiktok[ACCOUNTS[i]] = r.value; else console.error(r.reason?.message || r.reason); });
     if (yt.status === "fulfilled") out.youtube = yt.value; else console.error(yt.reason?.message || yt.reason);
-    if (!Object.keys(out.tiktok).length && !out.youtube) return send(res, 200, { at: out.at, tiktok: {} }, "public, s-maxage=60");
+    if (!Object.keys(out.tiktok).length && !out.youtube && !out.views) return send(res, 200, { at: out.at, tiktok: {} }, "public, s-maxage=60");
     if (hasRedis) await redis(["SET", KEY, JSON.stringify(out), "EX", String(TTL)]);
     return send(res, 200, out, fresh);
   } catch (err) {
