@@ -648,7 +648,7 @@ input,textarea,select{-webkit-user-select:text;user-select:text;-webkit-touch-ca
 html.touch .bgv,html.touch #studs{display:none}
 /* ===== Petit chargement avant "appuie pour continuer" ===== */
 #gate:not(.ready){cursor:progress}
-.gload{display:flex;flex-direction:column;align-items:center;gap:10px;opacity:0;animation:appear .3s .15s forwards}
+.gload{display:flex;flex-direction:column;align-items:center;gap:10px;opacity:0;animation:appear .3s 1.3s forwards}
 .gload span{font-family:var(--f-mono);font-size:11px;letter-spacing:.25em;text-transform:uppercase;color:var(--muted)}
 .gload span::after{content:"";animation:dots 1.2s steps(4) infinite}
 @keyframes dots{0%{content:""}25%{content:"."}50%{content:".."}75%{content:"..."}}
@@ -1441,7 +1441,7 @@ const gate=$("gate");
 /* Chargement : on attend les polices, les images, la vidéo (ordi) et quelques images calmes avant de laisser entrer */
 let gateReady=false;
 (()=>{
-  const bar=$("gbar"),t0=performance.now(),MIN=1500,MAX=5000;let pct=.04;
+  const bar=$("gbar"),t0=performance.now(),MIN=2300,MAX=5500;let pct=.04;
   const set=v=>{pct=Math.max(pct,v);bar.style.transform=`scaleX(${pct})`};
   const steps=[
     (document.fonts?document.fonts.ready:Promise.resolve()).then(()=>set(.35)),
