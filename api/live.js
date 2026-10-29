@@ -50,8 +50,9 @@ const num = (t) => {
 };
 async function likesOf(id) {
   const h = await ytGet(`https://www.youtube.com/watch?v=${id}`);
-  const m = h.match(/like this video along with ([\d,]+) other/);
-  return m ? Number(m[1].replace(/,/g, "")) : 0;
+  const m = h.match(/like this video along with ([\d,]+) other/) || h.match(/"likeCount":"?(\d+)/) || h.match(/"label":"([\d,]+) likes?"/i);
+  if (!m) throw new Error("likes illisibles " + id);
+  return Number(m[1].replace(/,/g, ""));
 }
 async function youtube() {
   const about = await ytGet(`https://www.youtube.com/channel/${YT_CHANNEL}/about`);
@@ -64,7 +65,7 @@ async function youtube() {
     const part = await Promise.allSettled(ids.slice(i, i + 6).map(likesOf));
     part.forEach((r) => { if (r.status === "fulfilled") { likes += r.value; ok++; } });
   }
-  return { subs, views, likes: ok ? likes : null, videos: ids.length };
+  return { subs, views, likes: ok ? likes : null, videos: ids.length, partial: ok < ids.length };
 }
 async function cachedYoutube() {
   if (hasRedis) {
@@ -72,7 +73,15 @@ async function cachedYoutube() {
     if (c) return JSON.parse(c);
   }
   const y = await youtube();
-  if (hasRedis && (y.subs || y.views || y.likes)) await redis(["SET", YT_KEY, JSON.stringify(y), "EX", String(YT_TTL)]);
+  /* si une valeur n'a pas pu être lue cette fois, on garde la dernière bonne (les chiffres ne disparaissent jamais) */
+  if (hasRedis) {
+    const [lastRaw] = await redis(["GET", "live:youtube:last"]);
+    const last = lastRaw ? JSON.parse(lastRaw) : {};
+    for (const k of ["subs", "views", "likes"]) if (!(y[k] > 0) && last[k] > 0) y[k] = last[k];
+    if (y.likes > 0 && last.likes > y.likes && y.partial) y.likes = last.likes;
+    const keep = { subs: y.subs, views: y.views, likes: y.likes };
+    await redis(["SET", "live:youtube:last", JSON.stringify(keep)], ["SET", YT_KEY, JSON.stringify(y), "EX", String(YT_TTL)]);
+  }
   return y;
 }
 
