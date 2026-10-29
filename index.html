@@ -644,14 +644,30 @@ input,textarea,select{-webkit-user-select:text;user-select:text;-webkit-touch-ca
   background:radial-gradient(ellipse 80% 70% at 50% 40%,rgba(14,10,23,.5),rgba(14,10,23,.86) 75%)}
 /* carte : petit fondu au tout premier mouvement après le retournement */
 .egg.ease .egg-card{transition:transform .25s ease-out!important}
+/* ===== Mobile : pas de vidéo ni de vagues ===== */
+html.touch .bgv,html.touch #studs{display:none}
+/* ===== Petit chargement avant "appuie pour continuer" ===== */
+#gate:not(.ready){cursor:progress}
+.gload{display:flex;flex-direction:column;align-items:center;gap:10px;opacity:0;animation:appear .3s .15s forwards}
+.gload span{font-family:var(--f-mono);font-size:11px;letter-spacing:.25em;text-transform:uppercase;color:var(--muted)}
+.gload span::after{content:"";animation:dots 1.2s steps(4) infinite}
+@keyframes dots{0%{content:""}25%{content:"."}50%{content:".."}75%{content:"..."}}
+.gbar{width:160px;height:6px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden;border:1px solid var(--line-solid)}
+.gbar b{display:block;height:100%;width:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent-deep),var(--accent),var(--lilac));
+  transform-origin:left;transform:scaleX(.04);transition:transform .45s cubic-bezier(.3,.8,.3,1)}
+#gate.ready .gload{display:none}
+#gate p[hidden]{display:none}
+#gate.ready p{animation:appear .4s forwards,bob 1.4s .4s ease-in-out infinite}
 </style>
 
-<div class="bgv" aria-hidden="true"><video id="bgv" src="video/bg.mp4" poster="video/poster.webp" autoplay muted loop playsinline preload="auto" disablepictureinpicture disableremoteplayback></video></div>
+<script>window.IS_TOUCH=matchMedia("(pointer:coarse)").matches||/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);if(IS_TOUCH)document.documentElement.classList.add("touch")</script>
+<div class="bgv" aria-hidden="true"><video id="bgv" data-src="video/bg.mp4" data-poster="video/poster.webp" muted loop playsinline preload="none" disablepictureinpicture disableremoteplayback></video></div>
 <canvas id="studs"></canvas>
 
 <div id="gate" class="intro" role="button" tabindex="0" aria-label="Entrer">
   <h2 class="wordmark" id="gateWord" aria-label="Dwenyx"></h2>
-  <p>▶ appuie pour continuer</p>
+  <div class="gload" id="gload" aria-label="Chargement"><div class="gbar"><b id="gbar"></b></div><span>chargement</span></div>
+  <p id="gtap" hidden>▶ appuie pour continuer</p>
   <div class="gwave" aria-hidden="true">
     <svg class="back" viewBox="0 0 2400 130" preserveAspectRatio="none"><path d="M0 0H2400V40Q2300 92 2200 40T2000 40T1800 40T1600 40T1400 40T1200 40T1000 40T800 40T600 40T400 40T200 40T0 40Z" fill="#5b2ad1"/></svg>
     <svg class="front" viewBox="0 0 2400 130" preserveAspectRatio="none"><path d="M0 0H2400V58Q2325 104 2250 58T2100 58T1950 58T1800 58T1650 58T1500 58T1350 58T1200 58T1050 58T900 58T750 58T600 58T450 58T300 58T150 58T0 58Z" fill="#0e0a17"/><path d="M0 58Q75 12 150 58T300 58T450 58T600 58T750 58T900 58T1050 58T1200 58T1350 58T1500 58T1650 58T1800 58T1950 58T2100 58T2250 58T2400 58" fill="none" stroke="#d8c6ff" stroke-width="7" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>
@@ -1340,8 +1356,12 @@ $("cform").addEventListener("submit",async e=>{
 /* ===== Vidéo de fond : démarre en douceur, en pause si l'onglet est caché ou "réduire les animations" ===== */
 (()=>{
   const v=$("bgv");if(!v)return;
+  if(window.IS_TOUCH){v.closest(".bgv").remove();window.VIDEO_READY=true;return} /* mobile : pas de vidéo */
   const lowData=navigator.connection&&navigator.connection.saveData;
-  if(matchMedia("(prefers-reduced-motion:reduce)").matches||lowData){v.removeAttribute("autoplay");v.preload="none";v.classList.add("on");return}
+  v.poster=v.dataset.poster;
+  if(matchMedia("(prefers-reduced-motion:reduce)").matches||lowData){v.classList.add("on");window.VIDEO_READY=true;return}
+  v.preload="auto";v.src=v.dataset.src;
+  v.addEventListener("canplay",()=>{window.VIDEO_READY=true},{once:true});
   const go=()=>{v.classList.add("on")};
   v.addEventListener("playing",go,{once:true});
   const play=()=>{const p=v.play();if(p&&p.catch)p.catch(()=>{})};
@@ -1418,8 +1438,25 @@ lockImgs(document);new MutationObserver(m=>m.forEach(x=>x.addedNodes.forEach(n=>
 
 /* ===== Entrée ===== */
 const gate=$("gate");
+/* Chargement : on attend les polices, les images, la vidéo (ordi) et quelques images calmes avant de laisser entrer */
+let gateReady=false;
+(()=>{
+  const bar=$("gbar"),t0=performance.now(),MIN=1500,MAX=5000;let pct=.04;
+  const set=v=>{pct=Math.max(pct,v);bar.style.transform=`scaleX(${pct})`};
+  const steps=[
+    (document.fonts?document.fonts.ready:Promise.resolve()).then(()=>set(.35)),
+    new Promise(r=>document.readyState==="complete"?r():addEventListener("load",r,{once:true})).then(()=>set(.7)),
+    new Promise(r=>{const c=()=>window.VIDEO_READY?r():setTimeout(c,100);c()}).then(()=>set(.9))
+  ];
+  const calm=()=>new Promise(r=>{let n=0;const f=()=>++n<8?requestAnimationFrame(f):r();requestAnimationFrame(f)}); /* ~8 images pour laisser tout se poser */
+  const done=()=>{if(gateReady)return;gateReady=true;set(1);
+    setTimeout(()=>{gate.classList.add("ready");$("gtap").hidden=false},Math.max(250,MIN-(performance.now()-t0)))};
+  Promise.all(steps).then(calm).then(done);
+  setTimeout(done,MAX);
+})();
 const enter=e=>{
   if(gate.classList.contains("gone"))return;
+  if(!gate.classList.contains("ready"))return;
   audioInit();SFX.enter();
   if(e&&e.clientX!=null){const r=document.createElement("div");r.className="ripple";r.style.left=e.clientX+"px";r.style.top=e.clientY+"px";document.body.append(r);setTimeout(()=>r.remove(),900)}
   gate.classList.add("gone");liquidDrops();
@@ -1533,7 +1570,7 @@ function addWave(pt,sc,am,dur){WAVES.push({x:pt.x,y:pt.y,t:performance.now(),sc,
 /* appui maintenu : des vagues plus petites suivent le doigt / la souris, comme en marchant dans l'eau */
 const HOLD={on:false,id:null,x:0,y:0,last:0,moved:0};
 addEventListener("pointerdown",e=>{
-  if(still||e.button>0)return;
+  if(still||LITE||e.button>0)return;
   const pt=toCanvas(e);addWave(pt,1,1,WAVE_MS);
   Object.assign(HOLD,{on:true,id:e.pointerId,x:pt.x,y:pt.y,last:performance.now(),moved:0});
 },{passive:true});
@@ -1600,6 +1637,6 @@ function drawTrail(now,hx,hy,d){
   }
   if(STARS.length>40)STARS.splice(0,STARS.length-40);
 }
-size();if(!still)draw();
+size();if(!still&&!LITE)draw();
 </script>
 </body></html>
