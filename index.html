@@ -658,6 +658,46 @@ html.touch .bgv,html.touch #studs{display:none}
 #gate.ready .gload{display:none}
 #gate p[hidden]{display:none}
 #gate.ready p{animation:appear .4s forwards,bob 1.4s .4s ease-in-out infinite}
+/* ===== Bouton Jouer + mini-jeu ===== */
+.play-btn{width:100%;max-width:480px;display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;cursor:pointer;text-align:left;color:#fff;font:inherit;
+  background:linear-gradient(135deg,var(--accent-deep),var(--accent) 55%,#b07cff);border:2px solid rgba(216,198,255,.35);box-shadow:0 5px 0 #3b1690,0 16px 36px -14px rgba(155,92,255,.9);
+  position:relative;overflow:hidden;isolation:isolate;transition:transform .3s cubic-bezier(.2,.9,.25,1.25),box-shadow .3s,filter .2s}
+.play-btn::before{content:"";position:absolute;z-index:-1;top:0;bottom:0;left:0;width:40%;background:linear-gradient(105deg,transparent,rgba(255,255,255,.25),transparent);transform:translateX(-120%) skewX(-18deg);transition:transform .7s ease}
+.play-btn:hover::before{transform:translateX(330%) skewX(-18deg)}
+.play-btn:hover{transform:translateY(-3px);filter:brightness(1.08);box-shadow:0 8px 0 #3b1690,0 20px 40px -14px rgba(155,92,255,1)}
+.play-btn:active{transform:translateY(3px);box-shadow:0 2px 0 #3b1690;transition-duration:.08s}
+.play-btn:focus-visible{outline:2px solid #fff;outline-offset:3px}
+.pb-ic{width:42px;height:42px;flex:none;border-radius:12px;display:grid;place-items:center;background:rgba(14,10,23,.35);border:1px solid rgba(255,255,255,.25)}
+.pb-ic svg{width:22px;height:22px;fill:#fff;transition:transform .35s cubic-bezier(.3,1.7,.5,1)}
+.play-btn:hover .pb-ic svg{transform:scale(1.2)}
+.pb-t{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.15}
+.pb-t b{font-family:var(--f-display);font-weight:400;font-size:20px;letter-spacing:.5px;text-shadow:0 2px 0 #3b1690}
+.pb-t small{font-family:var(--f-mono);font-size:11px;color:#efe6ff;opacity:.9}
+.pb-go{font-family:var(--f-mono);font-size:14px;transition:transform .3s}
+.play-btn:hover .pb-go{transform:translateX(4px)}
+.game{position:fixed;inset:0;z-index:55;display:grid;place-items:center;padding:12px;touch-action:none;overscroll-behavior:contain;user-select:none;-webkit-user-select:none}
+.game[hidden]{display:none}
+.game-bg{position:absolute;inset:0;background:radial-gradient(circle at 50% 40%,rgba(60,24,140,.9),rgba(8,5,16,.97) 70%);opacity:0;transition:opacity .3s}
+.game.open .game-bg{opacity:1}
+.game-box{position:relative;width:min(380px,94vw,calc((100vh - 90px)*.667 + 0px));display:flex;flex-direction:column;gap:8px;
+  transform:scale(.9) translateY(20px);opacity:0;transition:transform .35s cubic-bezier(.2,.9,.25,1.2),opacity .25s}
+.game.open .game-box{transform:none;opacity:1}
+.game-top{display:flex;align-items:center;gap:10px;font-family:var(--f-mono);font-size:12px;color:var(--lilac)}
+.gt-name{font-family:var(--f-display);font-size:14px;color:#fff;letter-spacing:.5px;margin-right:auto;white-space:nowrap}
+.game-top b{color:#fff;font-size:14px}
+#gClose{flex:none;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;cursor:pointer;color:#fff;font-size:14px;background:var(--surface);border:2px solid var(--line-solid)}
+#gClose:hover{border-color:var(--accent)}
+#gCanvas{width:100%;aspect-ratio:2/3;height:auto;border-radius:16px;border:2px solid var(--line-solid);background:#120c22;display:block;touch-action:none;
+  box-shadow:0 0 0 1px rgba(155,92,255,.3),0 24px 60px -20px rgba(155,92,255,.7)}
+.game-over{position:absolute;left:0;right:0;top:42px;bottom:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;padding:24px;
+  border-radius:16px;background:rgba(14,10,23,.72);transition:opacity .25s}
+.game-over[hidden]{display:flex!important;opacity:0;pointer-events:none}
+.game-over h3{margin:0;font-family:var(--f-display);font-weight:400;font-size:26px;color:#fff;text-shadow:0 3px 0 var(--accent-deep),0 0 20px rgba(155,92,255,.7)}
+.game-over p{margin:0;color:#e7dcff;font-size:15px;line-height:1.4}
+.game-over .btn{min-width:160px;font-size:16px}
+.game-over small{font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+.game-shake{animation:gShake .35s}
+@keyframes gShake{20%{transform:translate(-6px,2px)}40%{transform:translate(5px,-3px)}60%{transform:translate(-4px,1px)}80%{transform:translate(2px,-1px)}}
 </style>
 
 <script>window.IS_TOUCH=matchMedia("(pointer:coarse)").matches||/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);if(IS_TOUCH)document.documentElement.classList.add("touch")</script>
@@ -725,6 +765,8 @@ html.touch .bgv,html.touch #studs{display:none}
     </div>
   </article>
 
+  <button class="play-btn" id="playBtn" type="button"><span class="pb-ic"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span><span class="pb-t"><b>Jouer</b><small>Mini-jeu · Dodge to Survive</small></span><span class="pb-go">→</span></button>
+
   <p class="thanks"><span class="th-heart" aria-hidden="true">💜</span>Merci à vous tous de me suivre, c'est grâce à vous que tout ça existe !</p>
   <footer><span class="visits-f"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5c-7 0-10 7-10 7s3 7 10 7 10-7 10-7-3-7-10-7zm0 11a4 4 0 110-8 4 4 0 010 8z"/></svg><span id="views">–</span> visites</span><span id="clock">--:--</span><span id="copyMark">© Dwenyx</span></footer>
 </div>
@@ -733,6 +775,21 @@ html.touch .bgv,html.touch #studs{display:none}
 </main>
 
 <div id="toast"></div>
+
+<div class="game" id="game" hidden aria-hidden="true" role="dialog" aria-label="Mini-jeu Dodge to Survive">
+  <div class="game-bg"></div>
+  <div class="game-box">
+    <div class="game-top"><span class="gt-name">DODGE TO SURVIVE</span><span class="gt-score">Score <b id="gScore">0</b></span><span class="gt-best">Record <b id="gBest">0</b></span>
+      <button class="side-x" id="gClose" type="button" aria-label="Fermer le jeu">✕</button></div>
+    <canvas id="gCanvas" width="360" height="540"></canvas>
+    <div class="game-over" id="gPanel">
+      <h3 id="gTitle">Dodge to Survive</h3>
+      <p id="gText">Esquive les murs, ils vont de plus en plus vite !</p>
+      <button class="btn" id="gStart" type="button">▶ Jouer</button>
+      <small id="gHelp">← → ou A / D · au doigt : glisse</small>
+    </div>
+  </div>
+</div>
 
 <div class="egg" id="egg" hidden aria-hidden="true">
   <div class="egg-bg"></div>
@@ -1168,7 +1225,7 @@ document.addEventListener("visibilitychange",()=>{document.hidden?onHide():onSho
 addEventListener("pagehide",onHide);addEventListener("pageshow",e=>{if(e.persisted)onShow()});
 
 /* Un son pour chaque survol et chaque clic */
-const HOVERABLE=".lnk,.tab,.folder,.btn,.back,.avatar,.snd-btn,.write,.side-x";
+const HOVERABLE=".lnk,.tab,.folder,.btn,.back,.avatar,.snd-btn,.write,.side-x,.play-btn";
 let hovered=null,lastHover=0;
 document.addEventListener("pointerover",e=>{
   if(e.pointerType==="touch")return;
@@ -1186,7 +1243,7 @@ document.addEventListener("click",e=>{
   if(t.closest("#openContact"))return t.closest(".write.on")?SFX.close():SFX.open();
   if(t.closest("#back,#sideX,#cBack,[data-cclose]"))return SFX.close();
   if(t.closest("a[href]"))return SFX.link();
-  if(t.closest(".avatar,#egg"))return;
+  if(t.closest(".avatar,#egg,#playBtn,#game"))return;
   if(t.closest("button"))return SFX.click();
 },true);
 
@@ -1367,6 +1424,107 @@ $("cform").addEventListener("submit",async e=>{
   const play=()=>{const p=v.play();if(p&&p.catch)p.catch(()=>{})};
   play();addEventListener("pointerdown",play,{once:true,passive:true});
   document.addEventListener("visibilitychange",()=>{document.hidden?v.pause():play()});
+})();
+
+/* ===== Mini-jeu : Dodge to Survive (aucun score sauvegardé, juste le record de la session) ===== */
+(()=>{
+  const box=$("game"),cv=$("gCanvas"),c=cv.getContext("2d"),panel=$("gPanel");
+  const W=360,H=540,PW=30,PH=30,PY=H-70;
+  let dpr=1,state="menu",raf=0,last=0,score=0,best=0,speed,gapW,spacing,px,vx,target,walls,parts,shake,keys={},tLive=0;
+  function fit(){dpr=Math.min(2,devicePixelRatio||1);cv.width=W*dpr;cv.height=H*dpr;c.setTransform(dpr,0,0,dpr,0,0)}
+  function reset(){score=0;speed=170;gapW=128;spacing=230;px=W/2;vx=0;target=null;walls=[];parts=[];shake=0;tLive=0;
+    for(let i=0;i<3;i++)spawn(-60-i*spacing);$("gScore").textContent="0"}
+  function spawn(y){const g=Math.max(78,gapW),x=24+Math.random()*(W-48-g);walls.push({y,gx:x,g,passed:false,hue:Math.random()<.5?0:1})}
+  function open(){
+    box.hidden=false;box.setAttribute("aria-hidden","false");fit();reset();state="menu";draw(0);
+    requestAnimationFrame(()=>box.classList.add("open"));
+    document.documentElement.style.overflow="hidden";window.eggOpen=true;SFX.open();
+    $("gTitle").textContent="Dodge to Survive";$("gText").textContent="Esquive les murs, ils vont de plus en plus vite !";$("gStart").textContent="▶ Jouer";panel.hidden=false;
+    setTimeout(()=>$("gStart").focus({preventScroll:true}),50);
+  }
+  function close(){
+    cancelAnimationFrame(raf);state="menu";box.classList.remove("open");SFX.close();
+    setTimeout(()=>{box.hidden=true;box.setAttribute("aria-hidden","true");document.documentElement.style.overflow="";window.eggOpen=false;if(typeof wake==="function")wake()},300);
+  }
+  function start(){reset();state="play";panel.hidden=true;last=performance.now();SFX.enter();cancelAnimationFrame(raf);raf=requestAnimationFrame(loop)}
+  function over(){
+    state="over";SFX.down();shake=14;box.querySelector(".game-box").classList.remove("game-shake");void box.offsetWidth;box.querySelector(".game-box").classList.add("game-shake");
+    for(let i=0;i<26;i++){const a=Math.random()*Math.PI*2,v=60+Math.random()*220;parts.push({x:px,y:PY+PH/2,vx:Math.cos(a)*v,vy:Math.sin(a)*v-80,l:1,c:Math.random()<.5?"#ffffff":"#b07cff"})}
+    const rec=score>best;if(rec)best=score;$("gBest").textContent=best;
+    setTimeout(()=>{if(state!=="over")return;
+      $("gTitle").textContent=rec&&score>0?"Nouveau record !":"Perdu !";
+      $("gText").textContent=`${score} mur${score>1?"s":""} esquivé${score>1?"s":""}`+(rec||!best?"":` · record : ${best}`);
+      $("gStart").textContent="↻ Rejouer";panel.hidden=false;$("gStart").focus({preventScroll:true})},650);
+  }
+  function loop(t){
+    const dt=Math.min(.033,(t-last)/1000);last=t;
+    if(state==="play"){
+      tLive+=dt;speed=Math.min(560,170+tLive*9);gapW=Math.max(78,128-tLive*1.6);spacing=Math.max(150,230-tLive*2.4);
+      /* déplacement : clavier (accélération) ou doigt/souris (suit la position) */
+      const dir=(keys.ArrowRight||keys.d||keys.D?1:0)-(keys.ArrowLeft||keys.a||keys.q||keys.A||keys.Q?1:0);
+      if(dir){target=null;vx+=dir*2600*dt;vx=Math.max(-420,Math.min(420,vx))}else if(target!=null){vx=(target-px)*14}else vx*=Math.pow(.0005,dt);
+      px=Math.max(PW/2+4,Math.min(W-PW/2-4,px+vx*dt));
+      for(const w of walls)w.y+=speed*dt;
+      if(walls.length&&walls[0].y>H+20)walls.shift();
+      const top=walls[walls.length-1];if(!top||top.y>-20)spawn((top?top.y:0)-spacing);
+      for(const w of walls){
+        if(!w.passed&&w.y>PY+PH){w.passed=true;score++;$("gScore").textContent=score;if(score%10===0)SFX.up();else SFX.tick()}
+        if(w.y+18>PY&&w.y<PY+PH){const l=px-PW/2,r=px+PW/2;if(l<w.gx||r>w.gx+w.g){over();break}}
+      }
+    }
+    for(const q of parts){q.x+=q.vx*dt;q.y+=q.vy*dt;q.vy+=420*dt;q.l-=dt*1.4}
+    parts=parts.filter(q=>q.l>0);shake*=Math.pow(.02,dt);
+    draw(t);
+    if(state==="play"||parts.length||shake>.3)raf=requestAnimationFrame(loop);
+  }
+  function rr(x,y,w,h,r){c.beginPath();c.roundRect?c.roundRect(x,y,w,h,r):c.rect(x,y,w,h)}
+  function draw(t){
+    c.save();c.clearRect(0,0,W,H);
+    if(shake>.3)c.translate((Math.random()-.5)*shake,(Math.random()-.5)*shake);
+    /* sol : grille de points qui défile */
+    const off=((t||0)/1000*speed)%24;
+    c.fillStyle="rgba(155,92,255,.16)";
+    for(let y=-24+off;y<H;y+=24)for(let x=12;x<W;x+=24){c.beginPath();c.arc(x,y,2.2,0,7);c.fill()}
+    /* murs */
+    for(const w of walls){
+      const col=w.hue?["#ff5ea8","#c2185b"]:["#9b5cff","#5b2ad1"];
+      for(const [x0,x1] of [[0,w.gx],[w.gx+w.g,W]]){if(x1-x0<2)continue;
+        c.fillStyle=col[1];rr(x0,w.y+5,x1-x0,18,5);c.fill();
+        c.fillStyle=col[0];rr(x0,w.y,x1-x0,18,5);c.fill();
+        c.fillStyle="rgba(255,255,255,.28)";for(let x=x0+8;x<x1-4;x+=16){c.beginPath();c.arc(x,w.y+9,2.4,0,7);c.fill()}}
+    }
+    /* joueur : petit bloc façon Roblox */
+    if(state!=="over"){
+      const x=px-PW/2,y=PY,tilt=Math.max(-.25,Math.min(.25,vx/1600));
+      c.save();c.translate(px,y+PH/2);c.rotate(tilt);c.translate(-px,-(y+PH/2));
+      c.shadowColor="rgba(155,92,255,.9)";c.shadowBlur=16;c.fillStyle="#ffd84d";rr(x,y,PW,PH,7);c.fill();c.shadowBlur=0;
+      c.fillStyle="#3b6cff";rr(x-1,y-4,PW+2,11,5);c.fill();
+      c.fillStyle="#1b1530";c.beginPath();c.arc(px-6,y+15,2.4,0,7);c.arc(px+6,y+15,2.4,0,7);c.fill();
+      c.strokeStyle="#1b1530";c.lineWidth=2;c.beginPath();c.arc(px,y+18,5,.15*Math.PI,.85*Math.PI);c.stroke();
+      c.restore();
+    }
+    for(const q of parts){c.globalAlpha=Math.max(0,q.l);c.fillStyle=q.c;c.fillRect(q.x-3,q.y-3,6,6)}
+    c.globalAlpha=1;c.restore();
+  }
+  $("playBtn").addEventListener("click",open);
+  $("gClose").addEventListener("click",close);
+  $("gStart").addEventListener("click",e=>{e.stopPropagation();start()});
+  box.querySelector(".game-bg").addEventListener("click",close);
+  addEventListener("keydown",e=>{
+    if(box.hidden)return;
+    if(e.key==="Escape"){close();return}
+    if((e.key===" "||e.key==="Enter")&&state!=="play"&&document.activeElement!==$("gStart")){e.preventDefault();start();return}
+    if(["ArrowLeft","ArrowRight"," "].includes(e.key))e.preventDefault();
+    keys[e.key]=true;
+  });
+  addEventListener("keyup",e=>{keys[e.key]=false});
+  /* au doigt / à la souris : le perso suit la position horizontale */
+  const aim=e=>{if(state!=="play")return;const r=cv.getBoundingClientRect();target=(e.clientX-r.left)/r.width*W};
+  cv.addEventListener("pointerdown",e=>{aim(e);cv.setPointerCapture&&cv.setPointerCapture(e.pointerId)});
+  cv.addEventListener("pointermove",e=>{if(e.pointerType==="mouse"||e.buttons)aim(e)});
+  cv.addEventListener("pointerup",e=>{if(e.pointerType!=="mouse")target=null});
+  box.addEventListener("touchmove",e=>e.preventDefault(),{passive:false});
+  document.addEventListener("visibilitychange",()=>{if(document.hidden&&state==="play")over()});
 })();
 
 /* ===== Easter egg : clic sur la photo → zoom → elle se retourne → carte shiny ===== */
