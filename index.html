@@ -871,7 +871,7 @@ const PROFILE = {
     {name:"TikTok · @dwenyxgames",  color:"#9b5cff", subs:1838, views:2457000, likes:46300}
   ],
   discord:"dwenyx",
-  discordInvite:"https://discord.gg/TON-INVITE",
+  discordInvite:"https://discord.gg/fVNDYgwKq3",
   youtube:"https://www.youtube.com/@Dwenyxrbx",
   tiktok:"https://www.tiktok.com/@dwenyxrbx",
   tiktok2:"https://www.tiktok.com/@dwenyxgames",
@@ -1006,12 +1006,13 @@ const L=[
   {a:PROFILE.tiktok,c:"#111",i:SVG.tiktok,t:"TikTok · Dwenyx",s:short(PROFILE.tiktok),p:1,id:"tiktok"},
   {a:PROFILE.youtube,c:"#e62117",i:SVG.youtube,t:"YouTube",s:short(PROFILE.youtube),p:0,id:"youtube"},
   {a:PROFILE.tiktok2,c:"#111",i:SVG.tiktok,t:"TikTok · Dwenyx Games",s:short(PROFILE.tiktok2),p:2,id:"tiktok2"},
+  {a:PROFILE.discordInvite,c:"#5865F2",i:SVG.discord,t:"Discord · Dwenyx Community",s:short(PROFILE.discordInvite),id:"discord",mem:true},
   {a:PROFILE.roblox,c:"#3a3f45",i:SVG.roblox,t:"Profil Roblox",s:"Dwenyx_783",id:"roblox"},
   {copy:PROFILE.email,m:"E-mail copié",c:"#9b5cff",i:SVG.mail,t:"Contact & collabs",s:PROFILE.email,id:"email"}
 ];
 $("p-liens").innerHTML=L.map(x=>{
   const subs=x.p!=null?PROFILE.platforms[x.p].subs:null;
-  const pill=subs!=null?`<span class="subs"><b data-psubs="${x.p}" data-v="${subs}">${new Intl.NumberFormat("fr-FR",{notation:"compact",maximumFractionDigits:1}).format(subs)}</b><i>abonné${subs>1?"s":""}</i></span>`:"";
+  const pill=x.mem?`<span class="subs" id="dcPill" hidden><b id="dcMembers">–</b><i>membres</i></span>`:subs!=null?`<span class="subs"><b data-psubs="${x.p}" data-v="${subs}">${new Intl.NumberFormat("fr-FR",{notation:"compact",maximumFractionDigits:1}).format(subs)}</b><i>abonné${subs>1?"s":""}</i></span>`:"";
   const inner=`<span class="ic">${x.i}</span><span class="t"><b>${x.t}</b><small>${x.s}</small></span>${pill}<span class="go">${x.copy?"copier":"↗"}</span>`;
   return x.copy
     ?`<div class="contact-row"><button class="lnk" type="button" style="--c:${x.c}" data-copy="${x.copy}" data-msg="${x.m}">${inner}</button>
@@ -1082,7 +1083,8 @@ function overlayLive(){
   if(y&&Y){if(y.subs>0)Y.subs=y.subs;if(y.views>0)Y.views=y.views;if(y.likes>0)Y.likes=y.likes}
 }
 function applyLive(d){
-  if(!d||((!d.tiktok||!Object.keys(d.tiktok).length)&&!d.youtube&&!d.views))return;
+  if(!d||((!d.tiktok||!Object.keys(d.tiktok).length)&&!d.youtube&&!d.views&&!d.discord))return;
+  if(d.discord&&d.discord.members>0){$("dcMembers").textContent=compact(d.discord.members);$("dcPill").hidden=false}
   LIVE=Object.assign({},d.tiktok||{});if(d.youtube)LIVE.youtube=d.youtube;if(d.views)LIVE.views=d.views;overlayLive();tot=sumStats(PROFILE.platforms);$("live").hidden=false;if(entered)renderTotals(tot,true);
 }
 function applyRemote(d){
