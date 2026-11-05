@@ -928,6 +928,13 @@ main.site{padding-bottom:0}
 @keyframes logoShine{0%{background-position:120% 0}45%,100%{background-position:-60% 0}}
 .logo-anim:hover{animation-duration:1.6s}
 @media (prefers-reduced-motion:reduce){.logo-anim,.logo-shine{animation:none}}
+/* ===== Logo : reflet calé pile sur le texte + inclinaison 3D vers la souris ===== */
+.hero h1{perspective:900px}
+.logo-anim{display:block;width:min(560px,100%);animation:none;transform-style:preserve-3d;will-change:transform;
+  transform:rotateX(var(--lrx,0deg)) rotateY(var(--lry,0deg)) translateZ(0)}
+.hero h1 .logo-anim img{display:block;width:100%;height:auto}
+.logo-shine{inset:0;-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-position:0 0;mask-position:0 0;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
+.logo-anim:hover{animation:none}
 
 </style>
 <script>window.IS_TOUCH=matchMedia("(pointer:coarse)").matches||/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);if(IS_TOUCH)document.documentElement.classList.add("touch")</script>
@@ -1306,6 +1313,21 @@ document.addEventListener("click",e=>{
   if(e.target.closest("[data-cclose]")){resetForm();}
 });
 
+/* Logo de l'accueil : il s'oriente vers la souris, comme un objet en 3D */
+(()=>{
+  const el=document.querySelector(".logo-anim");if(!el||reduceMotion||IS_MOBILE)return;
+  let tx=0,ty=0,x=0,y=0,run=false;
+  const step=()=>{x+=(tx-x)*.1;y+=(ty-y)*.1;el.style.setProperty("--lry",x.toFixed(2)+"deg");el.style.setProperty("--lrx",y.toFixed(2)+"deg");
+    if(Math.abs(tx-x)>.02||Math.abs(ty-y)>.02)requestAnimationFrame(step);else run=false};
+  addEventListener("pointermove",e=>{
+    if(e.pointerType==="touch")return;
+    const r=el.getBoundingClientRect();if(r.bottom<0)return;
+    const dx=(e.clientX-(r.left+r.width/2))/innerWidth,dy=(e.clientY-(r.top+r.height/2))/innerHeight;
+    tx=Math.max(-1,Math.min(1,dx*2))*22;ty=Math.max(-1,Math.min(1,dy*2))*-16;
+    if(!run){run=true;requestAnimationFrame(step)}
+  },{passive:true});
+  document.addEventListener("pointerleave",()=>{tx=0;ty=0;if(!run){run=true;requestAnimationFrame(step)}});
+})();
 
 /* Copier */
 function toast(m){const t=$("toast");t.textContent=m;t.classList.add("on");clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("on"),1800)}
