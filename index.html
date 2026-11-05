@@ -935,6 +935,14 @@ main.site{padding-bottom:0}
 .hero h1 .logo-anim img{display:block;width:100%;height:auto}
 .logo-shine{inset:0;-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-position:0 0;mask-position:0 0;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
 .logo-anim:hover{animation:none}
+/* ===== Logo en relief : épaisseur ronde (couches empilées, sans flou) ===== */
+.logo-anim .lx{position:absolute;inset:0;pointer-events:none;-webkit-mask:url(img/logo-depth.webp) 0 0/100% 100% no-repeat;mask:url(img/logo-depth.webp) 0 0/100% 100% no-repeat;
+  transform:translate3d(0,calc(var(--i) * .62px),calc(var(--i) * -1.05px));
+}
+.logo-anim .lf{position:relative;transform:translateZ(1px)}
+.logo-shine{transform:translateZ(2px)}
+.hero h1.logo-glow .lf{filter:drop-shadow(0 0 16px rgba(120,210,255,.7))}
+.hero h1.logo-glow .lx{filter:none}
 
 </style>
 <script>window.IS_TOUCH=matchMedia("(pointer:coarse)").matches||/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);if(IS_TOUCH)document.documentElement.classList.add("touch")</script>
@@ -964,7 +972,7 @@ main.site{padding-bottom:0}
   <div class="hero-bg" aria-hidden="true"></div>
   <div class="wrap">
     <div class="hero-id">
-      <h1 class="logo-glow"><span class="logo-anim"><img src="img/logo-dwenyx.webp" alt="Dwenyx" width="958" height="351"><span class="logo-shine" aria-hidden="true"></span></span></h1>
+      <h1 class="logo-glow"><span class="logo-anim"><span class="lx" aria-hidden="true" style="--i:22;background:#082256"></span><span class="lx" aria-hidden="true" style="--i:21;background:#0a285f"></span><span class="lx" aria-hidden="true" style="--i:20;background:#0d2e68"></span><span class="lx" aria-hidden="true" style="--i:19;background:#103471"></span><span class="lx" aria-hidden="true" style="--i:18;background:#133b7a"></span><span class="lx" aria-hidden="true" style="--i:17;background:#154183"></span><span class="lx" aria-hidden="true" style="--i:16;background:#18478c"></span><span class="lx" aria-hidden="true" style="--i:15;background:#1b4e95"></span><span class="lx" aria-hidden="true" style="--i:14;background:#1e549e"></span><span class="lx" aria-hidden="true" style="--i:13;background:#215aa7"></span><span class="lx" aria-hidden="true" style="--i:12;background:#2361b0"></span><span class="lx" aria-hidden="true" style="--i:11;background:#2667b9"></span><span class="lx" aria-hidden="true" style="--i:10;background:#296dc3"></span><span class="lx" aria-hidden="true" style="--i:9;background:#2c73cc"></span><span class="lx" aria-hidden="true" style="--i:8;background:#337cd3"></span><span class="lx" aria-hidden="true" style="--i:7;background:#4489d9"></span><span class="lx" aria-hidden="true" style="--i:6;background:#5596de"></span><span class="lx" aria-hidden="true" style="--i:5;background:#66a3e4"></span><span class="lx" aria-hidden="true" style="--i:4;background:#77b0e9"></span><span class="lx" aria-hidden="true" style="--i:3;background:#88bdef"></span><span class="lx" aria-hidden="true" style="--i:2;background:#99caf4"></span><span class="lx" aria-hidden="true" style="--i:1;background:#aad7fa"></span><img class="lf" src="img/logo-dwenyx.webp" alt="Dwenyx" width="958" height="351"><span class="logo-shine" aria-hidden="true"></span></span></h1>
       <div class="who-row"><div class="role"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6.5A2.5 2.5 0 015.5 4h8A2.5 2.5 0 0116 6.5v1.6l4.4-2.6A1 1 0 0122 6.4v11.2a1 1 0 01-1.6.9L16 15.9v1.6a2.5 2.5 0 01-2.5 2.5h-8A2.5 2.5 0 013 17.5v-11z"/></svg><span id="status">Content Creator</span></div><span class="verified" title="Compte certifié" aria-label="Compte certifié"><svg viewBox="0 0 24 24"><path class="seal" d="M12 1.5l2.4 1.8 3-.2 1 2.8 2.6 1.6-.7 2.9 1.2 2.8-2.2 2 -.3 3-2.9.8-1.7 2.5-2.9-.9-2.8 1.2-2-2.2-3-.3-.8-2.9L.7 13.6l1-2.8-1-2.9L3.4 6.4l.6-3 3-.2L9.4 1.5z"/><path class="tick" d="M7.5 12.3l3 3 6-6.2" fill="none"/></svg></span></div>
       <p class="hero-tag">Créateur de contenu Roblox. Des vidéos sur YouTube et TikTok, et mes propres jeux à tester.</p>
       <div class="hero-cta">
