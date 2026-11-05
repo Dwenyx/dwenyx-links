@@ -6,23 +6,33 @@ function webgl(){try{const c=document.createElement("canvas");return !!(c.getCon
 if(h1&&box&&webgl())(async()=>{
   /* relief "gonflé" : une carte de hauteur (16 bits) devient une surface 3D arrondie, devant + derrière */
   const img=await new Promise((ok,ko)=>{const im=new Image();im.onload=()=>ok(im);im.onerror=ko;im.src="img/logo-height.png"});
-  const STEP=window.IS_TOUCH?3:2,GW=img.width,GH=img.height;
+  const GW=img.width,GH=img.height;
   const cc=document.createElement("canvas");cc.width=GW;cc.height=GH;const cx=cc.getContext("2d",{willReadFrequently:true});cx.drawImage(img,0,0);
-  const px=cx.getImageData(0,0,GW,GH).data;
-  const W=Math.floor((GW-1)/STEP)+1,H=Math.floor((GH-1)/STEP)+1,HZ=34/GW;
-  const idx=new Int32Array(W*H).fill(-1),pos=[];let nv=0;
-  for(let y=0;y<H;y++)for(let x=0;x<W;x++){const o=((y*STEP)*GW+x*STEP)*4;if(px[o+2]<128)continue;
-    const h=((px[o]<<8)|px[o+1])/65535;idx[y*W+x]=nv++;pos.push((x*STEP-GW/2)/GW,-(y*STEP-GH/2)/GW,h*HZ)}
+  const px=cx.getImageData(0,0,GW,GH).data,HZ=30/958;
+  const SD=new Float32Array(GW*GH),HT=new Float32Array(GW*GH);
+  for(let k=0;k<GW*GH;k++){SD[k]=(px[k*4+2]-128)/32;HT[k]=((px[k*4]<<8)|px[k*4+1])/65535}
+  const sd=(x,y)=>SD[Math.min(GH-1,Math.max(0,y))*GW+Math.min(GW-1,Math.max(0,x))];
+  /* sommets : ceux dedans gardent leur hauteur ; ceux juste dehors sont posés pile sur le contour (bord lisse) */
+  const idx=new Int32Array(GW*GH).fill(-1),pos=[];let nv=0;
+  for(let y=0;y<GH;y++)for(let x=0;x<GW;x++){
+    const k=y*GW+x,v=SD[k];if(v<-1.5)continue;
+    let X=x,Y=y,Z=0;
+    if(v>0)Z=HT[k]*HZ*GW;
+    else{let gx=(sd(x+1,y)-sd(x-1,y))/2,gy=(sd(x,y+1)-sd(x,y-1))/2;const L=Math.hypot(gx,gy)||1;X=x+gx/L*(-v);Y=y+gy/L*(-v)}
+    idx[k]=nv++;pos.push((X-GW/2)/GW,-(Y-GH/2)/GW,Z/GW);
+  }
   const N=nv,P=new Float32Array(N*6);
   for(let k=0;k<N;k++){P[k*3]=pos[k*3];P[k*3+1]=pos[k*3+1];P[k*3+2]=pos[k*3+2];P[(N+k)*3]=pos[k*3];P[(N+k)*3+1]=pos[k*3+1];P[(N+k)*3+2]=-pos[k*3+2]*.55}
-  const I=[];
-  for(let y=0;y<H-1;y++)for(let x=0;x<W-1;x++){
-    const a=idx[y*W+x],b=idx[y*W+x+1],c=idx[(y+1)*W+x],d=idx[(y+1)*W+x+1];
-    if(a>=0&&c>=0&&b>=0){I.push(a,c,b,N+a,N+b,N+c)}
-    if(b>=0&&c>=0&&d>=0){I.push(b,c,d,N+b,N+d,N+c)}
+  const I=[],ins=k=>SD[k]>0;
+  for(let y=0;y<GH-1;y++)for(let x=0;x<GW-1;x++){
+    const ka=y*GW+x,kb=ka+1,kc=ka+GW,kd=kc+1,a=idx[ka],b=idx[kb],c=idx[kc],d=idx[kd];
+    /* on coupe le carré selon la diagonale qui suit le mieux le contour */
+    const diag=Math.abs(SD[ka]-SD[kd])<Math.abs(SD[kb]-SD[kc]);
+    const tri=(p,q,r,kp,kq,kr)=>{if(p>=0&&q>=0&&r>=0&&(ins(kp)||ins(kq)||ins(kr)))I.push(p,q,r,N+p,N+r,N+q)};
+    if(diag){tri(a,c,d,ka,kc,kd);tri(a,d,b,ka,kd,kb)}else{tri(a,c,b,ka,kc,kb);tri(b,c,d,kb,kc,kd)}
   }
   const geo=new THREE.BufferGeometry();geo.setAttribute("position",new THREE.BufferAttribute(P,3));
-  geo.setIndex(N*2>65535?new THREE.Uint32BufferAttribute(I,1):new THREE.Uint16BufferAttribute(I,1));geo.computeVertexNormals();
+  geo.setIndex(new THREE.Uint32BufferAttribute(I,1));geo.computeVertexNormals();
   const ASPX=GW/GH;
 
   /* décor reflété : ciel blanc, bandes bleues, sol bleu nuit, panneaux lumineux */
