@@ -948,6 +948,64 @@ main.site{padding-bottom:0}
 .logo3d canvas{width:100%!important;height:100%!important;display:block}
 .hero h1.is3d .logo-anim{visibility:hidden}
 .hero h1.is3d .logo-anim{transform:none!important}
+/* ===================== Mobile : version propre ===================== */
+@media (max-width:720px){
+  :root{--nav-h:96px}
+  .nav,.nav.solid{background:#050d1a;border-bottom:1px solid var(--line-solid);box-shadow:0 8px 20px -14px rgba(0,0,0,.9);padding:8px 0 4px}
+  .nav .wrap{padding:0 14px}
+  .brand img{height:26px}
+  .nbtn{height:34px;width:34px;padding:0;justify-content:center;box-shadow:0 2px 0 #073c8f}
+  .menu{display:grid;grid-template-columns:repeat(5,auto);justify-content:space-between;margin:0;overflow:visible}
+  .menu a{font-size:12.5px;padding:7px 4px}
+  .menu a.on::after{left:4px;right:4px}
+  /* accueil */
+  .hero{padding:calc(var(--nav-h) + 22px) 0 30px}
+  .hero .wrap{gap:18px;padding:0 16px}
+  .hero-id{gap:12px}
+  .hero h1 img{width:100%}
+  .hero-tag{font-size:15px;line-height:1.45;max-width:340px}
+  .hero-cta{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%}
+  .cta{justify-content:center;padding:11px 6px;font-size:13.5px;gap:6px;border-radius:12px}
+  .cta svg{width:17px;height:17px}
+  .pcard{padding:14px;gap:12px;border-radius:20px}
+  .pcard-top{gap:12px}
+  .pcard .avatar{width:60px;height:60px;border-radius:16px}
+  .pcard .pname b{font-size:19px}
+  .like-hint{display:none!important}
+  .pcard .tgrid{padding:12px 4px}
+  .pcard .tnum b{font-size:21px}
+  .pcard .tnum span{font-size:9px}
+  .pcard .xp .l{font-size:10.5px}
+  /* sections */
+  .sec{padding-top:40px}
+  .sec .wrap{padding:0 16px}
+  .sec-h{margin-bottom:14px;gap:6px}
+  .sec-h h2{font-size:30px}
+  .sec-h p{font-size:13.5px}
+  .panel{padding:14px;border-radius:16px}
+  .grid2,.comm,.about,.cgrid{gap:12px}
+  .stack{gap:8px}
+  .vempty{min-height:170px}
+  .vbig .ltxt{padding:12px 14px 14px}
+  .vbig .ltxt b{font-size:15px}
+  .games{gap:18px}
+  .games .pjs{gap:12px}
+  .dcard{padding:16px;gap:12px}
+  .dcard .dtop svg{width:36px;height:36px}
+  .dcard .dtop b{font-size:17px}
+  .dcard .dmem{flex-direction:column;gap:4px}
+  .tagcard{aspect-ratio:4/3}
+  .tagcard .rg{left:8px;right:8px;bottom:8px;padding:8px 10px}
+  .thanks{font-size:13px}
+  .site-foot{margin-top:40px;padding:22px 0 calc(84px + env(safe-area-inset-bottom,0px))}
+  .site-foot .wrap{flex-direction:column;gap:10px}
+  .site-foot footer{justify-content:center;flex-wrap:wrap}
+  /* son : petite pastille dans le coin, sans curseur */
+  .sound{left:auto!important;right:12px!important;bottom:calc(12px + env(safe-area-inset-bottom,0px))!important;width:auto!important;padding:5px!important;gap:5px!important;border-radius:999px!important}
+  .sound .vol,.sound .lbl{display:none!important}
+  .sound .snd-btn{width:38px;height:38px}
+}
+@media (max-width:360px){.menu a{font-size:11.5px}.cta{font-size:12.5px}}
 
 </style>
 <script>window.IS_TOUCH=matchMedia("(pointer:coarse)").matches||/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);if(IS_TOUCH)document.documentElement.classList.add("touch")</script>
@@ -966,7 +1024,7 @@ main.site{padding-bottom:0}
 
 <header class="nav" id="nav"><div class="wrap">
   <a class="brand" href="#accueil" aria-label="Accueil"><img src="img/logo-dwenyx-s.webp" alt="Dwenyx" width="479" height="175"></a>
-  <nav class="menu" aria-label="Menu"><a href="#accueil">Accueil</a><a href="#videos">Vidéos</a><a href="#jeux">Jeux</a><a href="#communaute">Communauté</a><a href="#contact">Contact</a></nav>
+  <nav class="menu" aria-label="Menu"><a href="#accueil">Accueil</a><a href="#videos">Vidéos</a><a href="#projets">Projets</a><a href="#communaute">Communauté</a><a href="#contact">Contact</a></nav>
   <div class="nav-r">
     <button class="nbtn" id="shareBtn" type="button" aria-label="Partager le site"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16a3 3 0 00-2.4 1.2l-6.7-3.4a3 3 0 000-1.6l6.7-3.4A3 3 0 1015 7a3 3 0 00.1.8L8.4 11.2a3 3 0 100 1.6l6.7 3.4A3 3 0 1018 16z"/></svg><span>Partager</span></button>
   </div>
@@ -983,7 +1041,7 @@ main.site{padding-bottom:0}
       <div class="hero-cta">
         <a class="cta yt" href="https://www.youtube.com/@Dwenyxrbx" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M23.5 6.2a3 3 0 00-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 00.5 6.2 31 31 0 000 12a31 31 0 00.5 5.8 3 3 0 002.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 002.1-2.1A31 31 0 0024 12a31 31 0 00-.5-5.8zM9.6 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg>YouTube</a>
         <a class="cta tt" href="https://www.tiktok.com/@dwenyxrbx" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M19.6 6.7a4.8 4.8 0 01-3.8-4.2V2h-3.4v13.7a2.9 2.9 0 11-2-2.8V9.4a6.3 6.3 0 105.4 6.3V8.7a8.2 8.2 0 004.8 1.5V6.8l-1-.1z"/></svg>TikTok</a>
-        <a class="cta gm" href="#jeux"><svg viewBox="0 0 24 24"><path d="M2 5a2 2 0 012-2h5l2 2h9a2 2 0 012 2v11a2 2 0 01-2 2H4a2 2 0 01-2-2V5z"/></svg>Mes jeux</a>
+        <a class="cta gm" href="#projets"><svg viewBox="0 0 24 24"><path d="M2 5a2 2 0 012-2h5l2 2h9a2 2 0 012 2v11a2 2 0 01-2 2H4a2 2 0 01-2-2V5z"/></svg>Projets</a>
       </div>
     </div>
     <aside class="pcard" aria-label="Profil">
@@ -1025,8 +1083,8 @@ main.site{padding-bottom:0}
   </div>
 </div></section>
 
-<section class="sec" id="jeux"><div class="wrap">
-  <div class="sec-h rv"><h2><span>02</span>Jeux & projets</h2><p>Mes jeux Roblox et mes applications.</p></div>
+<section class="sec" id="projets"><div class="wrap">
+  <div class="sec-h rv"><h2><span>02</span>Projets</h2><p>Mes jeux Roblox et mes applications.</p></div>
   <div class="games" id="games"></div>
 </div></section>
 
@@ -1075,7 +1133,7 @@ main.site{padding-bottom:0}
       <button class="btn" type="button" data-cclose>Fermer</button>
     </div>
 </div></div>
-</div><p class="cform-off" id="cformOff">Écris-moi à l'adresse ci-contre, je te réponds dès que possible.</p></div>
+</div><p class="cform-off" id="cformOff">Écris-moi à cette adresse, je te réponds dès que possible.</p></div>
   </div>
 </div></section>
 
