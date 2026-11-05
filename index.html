@@ -908,6 +908,26 @@ main.site{padding-bottom:0}
 @keyframes gateGlow{0%,100%{opacity:.6}50%{opacity:1}}
 .brand img{filter:drop-shadow(0 0 8px rgba(95,208,255,.8))}
 @media (prefers-reduced-motion:reduce){.logo-glow::before,.logo-glow::after,#gate::after{animation:none}}
+/* ===== Groupe Roblox (carte Dwenyx Games) ===== */
+.tagcard .rg{position:absolute;left:12px;right:12px;bottom:12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 14px;border-radius:14px;
+  background:rgba(3,10,24,.92);border:1px solid rgba(255,255,255,.25);font-family:var(--f-body);color:#fff}
+.tagcard .rg b{font-size:14px;margin-right:auto}
+.tagcard .rg em{font-style:normal;font-family:var(--f-mono);font-size:12px;color:var(--sky)}
+.tagcard .rg em strong{font-family:var(--f-display);font-weight:400;font-size:17px;color:#fff;margin-right:3px}
+.tagcard .rg em[hidden]{display:none}
+.tagcard .rg i{font-style:normal;font-family:var(--f-mono);font-size:11px;font-weight:700;padding:6px 10px;border-radius:10px;background:var(--accent);color:#fff}
+/* ===== Pastille « Content creator » au-dessus de la lueur ===== */
+.hero .who-row,.hero-tag,.hero-cta{position:relative;z-index:1}
+/* ===== Animation du logo DWENYX ===== */
+.logo-anim{position:relative;display:inline-block;line-height:0;animation:logoFloat 5s ease-in-out infinite;transform-origin:50% 60%}
+@keyframes logoFloat{0%,100%{transform:translateY(0) rotate(0)}25%{transform:translateY(-6px) rotate(-1deg)}50%{transform:translateY(-10px) rotate(.4deg)}75%{transform:translateY(-4px) rotate(1deg)}}
+.logo-shine{position:absolute;inset:0;pointer-events:none;
+  -webkit-mask:url(img/logo-dwenyx.webp) center/100% 100% no-repeat;mask:url(img/logo-dwenyx.webp) center/100% 100% no-repeat;
+  background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.95) 48%,rgba(190,235,255,.6) 52%,transparent 65%) 0 0/300% 100% no-repeat;
+  background-position:120% 0;animation:logoShine 4.5s 1.2s ease-in-out infinite;mix-blend-mode:screen}
+@keyframes logoShine{0%{background-position:120% 0}45%,100%{background-position:-60% 0}}
+.logo-anim:hover{animation-duration:1.6s}
+@media (prefers-reduced-motion:reduce){.logo-anim,.logo-shine{animation:none}}
 
 </style>
 <script>window.IS_TOUCH=matchMedia("(pointer:coarse)").matches||/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);if(IS_TOUCH)document.documentElement.classList.add("touch")</script>
@@ -928,7 +948,6 @@ main.site{padding-bottom:0}
   <a class="brand" href="#accueil" aria-label="Accueil"><img src="img/logo-dwenyx-s.webp" alt="Dwenyx" width="479" height="175"></a>
   <nav class="menu" aria-label="Menu"><a href="#accueil">Accueil</a><a href="#videos">Vidéos</a><a href="#jeux">Jeux</a><a href="#communaute">Communauté</a><a href="#contact">Contact</a></nav>
   <div class="nav-r">
-    <span class="live" id="live" hidden><i></i>En direct</span>
     <button class="nbtn" id="shareBtn" type="button" aria-label="Partager le site"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16a3 3 0 00-2.4 1.2l-6.7-3.4a3 3 0 000-1.6l6.7-3.4A3 3 0 1015 7a3 3 0 00.1.8L8.4 11.2a3 3 0 100 1.6l6.7 3.4A3 3 0 1018 16z"/></svg><span>Partager</span></button>
   </div>
 </div></header>
@@ -938,7 +957,7 @@ main.site{padding-bottom:0}
   <div class="hero-bg" aria-hidden="true"></div>
   <div class="wrap">
     <div class="hero-id">
-      <h1 class="logo-glow"><img src="img/logo-dwenyx.webp" alt="Dwenyx" width="958" height="351"></h1>
+      <h1 class="logo-glow"><span class="logo-anim"><img src="img/logo-dwenyx.webp" alt="Dwenyx" width="958" height="351"><span class="logo-shine" aria-hidden="true"></span></span></h1>
       <div class="who-row"><div class="role"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6.5A2.5 2.5 0 015.5 4h8A2.5 2.5 0 0116 6.5v1.6l4.4-2.6A1 1 0 0122 6.4v11.2a1 1 0 01-1.6.9L16 15.9v1.6a2.5 2.5 0 01-2.5 2.5h-8A2.5 2.5 0 013 17.5v-11z"/></svg><span id="status">Content Creator</span></div><span class="verified" title="Compte certifié" aria-label="Compte certifié"><svg viewBox="0 0 24 24"><path class="seal" d="M12 1.5l2.4 1.8 3-.2 1 2.8 2.6 1.6-.7 2.9 1.2 2.8-2.2 2 -.3 3-2.9.8-1.7 2.5-2.9-.9-2.8 1.2-2-2.2-3-.3-.8-2.9L.7 13.6l1-2.8-1-2.9L3.4 6.4l.6-3 3-.2L9.4 1.5z"/><path class="tick" d="M7.5 12.3l3 3 6-6.2" fill="none"/></svg></span></div>
       <p class="hero-tag">Créateur de contenu Roblox. Des vidéos sur YouTube et TikTok, et mes propres jeux à tester.</p>
       <div class="hero-cta">
@@ -992,7 +1011,7 @@ main.site{padding-bottom:0}
 </div></section>
 
 <section class="sec" id="communaute"><div class="wrap">
-  <div class="sec-h rv"><h2><span>03</span>Communauté</h2><p>Rejoins le serveur Discord et suis Dwenyx Games.</p></div>
+  <div class="sec-h rv"><h2><span>03</span>Communauté</h2><p>Rejoins le serveur Discord et le groupe Roblox Dwenyx Games.</p></div>
   <div class="comm">
     <div class="stack">
       <a class="dcard rv" href="https://discord.gg/fVNDYgwKq3" target="_blank" rel="noopener">
@@ -1003,7 +1022,7 @@ main.site{padding-bottom:0}
       <div class="rv" id="robloxLink"></div>
       <div class="panel rv"><h3 style="margin:0 0 12px;font-size:16px">À propos</h3><ul class="bio" id="about" aria-label="Présentation"></ul></div>
     </div>
-    <a class="tagcard rv" href="https://www.tiktok.com/@dwenyxgames" target="_blank" rel="noopener"><img src="img/dwenyx-games.webp" alt="Dwenyx Games" loading="lazy"><span>TikTok · @dwenyxgames ↗</span></a>
+    <a class="tagcard rv" href="https://www.roblox.com/fr/communities/926461867/Dwenyx-Games#!/about" target="_blank" rel="noopener"><img src="img/dwenyx-games.webp" alt="Groupe Roblox Dwenyx Games" loading="lazy"><span class="rg"><b>Groupe Roblox · Dwenyx Games</b><em id="rgPill" hidden><strong id="rgMembers">–</strong> membres</em><i>Rejoindre ↗</i></span></a>
   </div>
   <p class="thanks rv" style="max-width:none;margin-top:16px"><span class="th-heart" aria-hidden="true">💙</span>Merci à vous tous de me suivre, c'est grâce à vous que tout ça existe !</p>
 </div></section>
@@ -1228,9 +1247,10 @@ function overlayLive(){
   if(y&&Y){if(y.subs>0)Y.subs=y.subs;if(y.views>0)Y.views=y.views;if(y.likes>0)Y.likes=y.likes}
 }
 function applyLive(d){
-  if(!d||((!d.tiktok||!Object.keys(d.tiktok).length)&&!d.youtube&&!d.views&&!d.discord))return;
+  if(!d||((!d.tiktok||!Object.keys(d.tiktok).length)&&!d.youtube&&!d.views&&!d.discord&&!d.robloxGroup))return;
+  if(d.robloxGroup&&d.robloxGroup.members>0){$("rgMembers").textContent=compact(d.robloxGroup.members);$("rgPill").hidden=false}
   if(d.discord&&d.discord.members>0){$("dcMembers").textContent=compact(d.discord.members);$("dcPill").hidden=false}
-  LIVE=Object.assign({},d.tiktok||{});if(d.youtube)LIVE.youtube=d.youtube;if(d.views)LIVE.views=d.views;overlayLive();tot=sumStats(PROFILE.platforms);$("live").hidden=false;if(entered)renderTotals(tot,true);
+  LIVE=Object.assign({},d.tiktok||{});if(d.youtube)LIVE.youtube=d.youtube;if(d.views)LIVE.views=d.views;overlayLive();tot=sumStats(PROFILE.platforms);if(entered)renderTotals(tot,true);
 }
 function applyRemote(d){
   if(!d||!Array.isArray(d.platforms))return;
@@ -1238,7 +1258,7 @@ function applyRemote(d){
   d.platforms.forEach((p,i)=>{if(PROFILE.platforms[i])Object.assign(PROFILE.platforms[i],{subs:+p.subs||0,views:+p.views||0,likes:+p.likes||0})});
   overlayLive();
   tot=sumStats(PROFILE.platforms);
-  $("live").hidden=false;
+  
   if(entered)renderTotals(tot,true);
 }
 (async()=>{

@@ -5,7 +5,7 @@ import { send } from "./_lib.js";
 import { hasRedis, redis } from "./_redis.js";
 
 const ACCOUNTS = ["dwenyxrbx", "dwenyxgames"];
-const KEY = "live:all:v2";
+const KEY = "live:all:v3";
 const TTL = 180;
 const UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36";
 
@@ -94,6 +94,15 @@ async function discord() {
   return { members: Number(j.approximate_member_count) || 0, online: Number(j.approximate_presence_count) || 0, name: String(j.guild?.name || "").slice(0, 60) };
 }
 
+/* ---------- Groupe Roblox Dwenyx Games (nombre de membres) ---------- */
+const RB_GROUP = 926461867;
+async function robloxGroup() {
+  const r = await fetch(`https://groups.roblox.com/v1/groups/${RB_GROUP}`, { headers: { "User-Agent": UA, Accept: "application/json" }, signal: AbortSignal.timeout(5000) });
+  if (!r.ok) throw new Error("Roblox " + r.status);
+  const j = await r.json();
+  return { members: Number(j.memberCount) || 0, name: String(j.name || "").slice(0, 60) };
+}
+
 export default async function handler(req, res) {
   if (req.method !== "GET") { res.setHeader("Allow", "GET"); return send(res, 405, { error: "Méthode non autorisée" }); }
   const fresh = "public, s-maxage=120, stale-while-revalidate=600";
@@ -102,7 +111,7 @@ export default async function handler(req, res) {
       const [cached] = await redis(["GET", KEY]);
       if (cached) return send(res, 200, JSON.parse(cached), fresh);
     }
-    const out = { at: new Date().toISOString(), tiktok: {}, youtube: null, views: null, discord: null };
+    const out = { at: new Date().toISOString(), tiktok: {}, youtube: null, views: null, discord: null, robloxGroup: null };
     /* vues envoyées par la tâche Metricool (TikTok n'affiche pas le total des vues sur le profil) */
     if (hasRedis) {
       try {
@@ -110,11 +119,12 @@ export default async function handler(req, res) {
         if (Array.isArray(h) && h.length) { out.views = {}; for (let i = 0; i < h.length; i += 2) out.views[h[i]] = Number(h[i + 1]) || 0; }
       } catch {}
     }
-    const [yt, dc, ...results] = await Promise.allSettled([cachedYoutube(), discord(), ...ACCOUNTS.map(profile)]);
+    const [yt, dc, rg, ...results] = await Promise.allSettled([cachedYoutube(), discord(), robloxGroup(), ...ACCOUNTS.map(profile)]);
+    if (rg.status === "fulfilled" && rg.value.members > 0) out.robloxGroup = rg.value; else if (rg.status === "rejected") console.error(rg.reason?.message || rg.reason);
     if (dc.status === "fulfilled" && dc.value.members > 0) out.discord = dc.value; else if (dc.status === "rejected") console.error(dc.reason?.message || dc.reason);
     results.forEach((r, i) => { if (r.status === "fulfilled") out.tiktok[ACCOUNTS[i]] = r.value; else console.error(r.reason?.message || r.reason); });
     if (yt.status === "fulfilled") out.youtube = yt.value; else console.error(yt.reason?.message || yt.reason);
-    if (!Object.keys(out.tiktok).length && !out.youtube && !out.views && !out.discord) return send(res, 200, { at: out.at, tiktok: {} }, "public, s-maxage=60");
+    if (!Object.keys(out.tiktok).length && !out.youtube && !out.views && !out.discord && !out.robloxGroup) return send(res, 200, { at: out.at, tiktok: {} }, "public, s-maxage=60");
     if (hasRedis) await redis(["SET", KEY, JSON.stringify(out), "EX", String(TTL)]);
     return send(res, 200, out, fresh);
   } catch (err) {
