@@ -334,11 +334,11 @@ footer{font-family:var(--f-mono);font-size:11px;color:var(--muted);display:flex;
 .like-btn{width:48px;height:48px;border-radius:50%;border:2px solid var(--line-solid);background:var(--surface-2);display:grid;place-items:center;cursor:pointer;
   position:relative;z-index:1;transition:transform .25s cubic-bezier(.3,1.7,.5,1),border-color .2s,background .3s,box-shadow .3s}
 .like-btn svg{width:24px;height:24px;fill:none;stroke:var(--lilac);stroke-width:2;transition:fill .25s,stroke .25s,transform .3s cubic-bezier(.3,1.7,.5,1)}
-.like-btn:hover{transform:scale(1.08);border-color:#ff5ea8;box-shadow:0 0 18px -4px #ff5ea8}
+.like-btn:hover{transform:scale(1.08);border-color:#2fb4ff;box-shadow:0 0 18px -4px #2fb4ff}
 .like-btn:hover svg{transform:scale(1.08)}
 .like-btn:active{transform:scale(.9)}
 .like-btn:focus-visible{outline:2px solid var(--white);outline-offset:3px}
-.like-btn.on{background:linear-gradient(135deg,#ff5ea8,var(--accent));border-color:transparent;box-shadow:0 4px 0 var(--accent-deep),0 0 22px -4px #ff5ea8}
+.like-btn.on{background:linear-gradient(135deg,#2fb4ff,var(--accent));border-color:transparent;box-shadow:0 4px 0 var(--accent-deep),0 0 22px -4px #2fb4ff}
 .like-btn.on svg{fill:var(--white);stroke:var(--white)}
 .like-btn.pop{animation:likePop .6s cubic-bezier(.3,1.8,.4,1)}
 .like-btn.pop svg{animation:heartBeat .6s ease-out}
@@ -348,11 +348,11 @@ footer{font-family:var(--f-mono);font-size:11px;color:var(--muted);display:flex;
 @keyframes nope{20%{transform:translateX(-4px) rotate(-6deg)}40%{transform:translateX(4px) rotate(6deg)}60%{transform:translateX(-3px)}80%{transform:translateX(2px)}}
 .like .spark{position:absolute;left:50%;bottom:24px;width:7px;height:7px;margin:-3.5px;border-radius:50%;pointer-events:none;z-index:2;
   background:var(--lilac);animation:spark .8s cubic-bezier(.2,.8,.3,1) forwards}
-.like .spark:nth-child(2n){background:#ff5ea8}.like .spark:nth-child(5n){background:var(--white)}
-.like .spark.heart{width:12px;height:12px;margin:-6px;border-radius:0;background:#ff5ea8;
+.like .spark:nth-child(2n){background:#2fb4ff}.like .spark:nth-child(5n){background:var(--white)}
+.like .spark.heart{width:12px;height:12px;margin:-6px;border-radius:0;background:#2fb4ff;
   clip-path:path("M6 11S0 7.3 0 3.6C0 1.6 1.4 0 3.2 0 4.4 0 5.4.7 6 1.7 6.6.7 7.6 0 8.8 0 10.6 0 12 1.6 12 3.6 12 7.3 6 11 6 11z")}
 @keyframes spark{0%{transform:translate(0,0) scale(.3) rotate(0)}70%{opacity:1}100%{transform:translate(var(--dx),var(--dy)) scale(1) rotate(var(--rot));opacity:0}}
-.like .ring{position:absolute;left:50%;bottom:24px;width:48px;height:48px;margin:-24px;border-radius:50%;border:3px solid #ff5ea8;pointer-events:none;
+.like .ring{position:absolute;left:50%;bottom:24px;width:48px;height:48px;margin:-24px;border-radius:50%;border:3px solid #2fb4ff;pointer-events:none;
   animation:ring .6s ease-out forwards}
 @keyframes ring{from{transform:scale(.6);opacity:1}to{transform:scale(1.9);opacity:0;border-width:1px}}
 
@@ -376,8 +376,8 @@ footer{font-family:var(--f-mono);font-size:11px;color:var(--muted);display:flex;
 .folder:hover .thumbs img{transform:translateY(-2px) rotate(-4deg)}
 .folder:hover .thumbs img:nth-child(2){transform:translateY(-3px) rotate(3deg)}
 @media (max-width:380px){.folder .thumbs{display:none}}
-.st.beta{background:rgba(255,94,168,.18);color:#ffb3d6}
-.pj .shot .st.beta{background:rgba(5,13,26,.8);color:#ffb3d6}
+.st.beta{background:rgba(47,180,255,.18);color:#bfe6ff}
+.pj .shot .st.beta{background:rgba(5,13,26,.8);color:#bfe6ff}
 
 /* ===== Like : rond parfait ===== */
 .like-btn{padding:0;aspect-ratio:1;min-width:48px;min-height:48px;flex:none;overflow:visible}
@@ -470,7 +470,7 @@ main{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
 }
 /* ===== Merci ===== */
 .thanks{max-width:480px;width:100%;margin:2px 0 0;padding:12px 16px;border-radius:14px;text-align:center;font-size:14px;line-height:1.45;color:var(--ink);
-  background:linear-gradient(135deg,rgba(30,155,255,.18),rgba(255,94,168,.12));border:1px solid rgba(191,230,255,.25)}
+  background:linear-gradient(135deg,rgba(30,155,255,.18),rgba(47,180,255,.12));border:1px solid rgba(191,230,255,.25)}
 .th-heart{display:inline-block;margin-right:6px;animation:thBeat 1.6s ease-in-out infinite}
 @keyframes thBeat{0%,60%,100%{transform:scale(1)}20%{transform:scale(1.25)}40%{transform:scale(.95)}}
 /* ===== Images protégées (pas de glisser, d'enregistrer ni de menu « Enregistrer l'image ») ===== */
@@ -562,16 +562,16 @@ input,textarea,select{-webkit-user-select:text;user-select:text;-webkit-touch-ca
 /* ===== Like : bien visible ===== */
 .like-hint{position:absolute;right:-6px;bottom:calc(100% + 8px);z-index:3;white-space:nowrap;pointer-events:none;
   font-family:var(--f-mono);font-size:11px;font-weight:700;color:var(--accent-deep);background:var(--white);padding:6px 10px;border-radius:10px;
-  box-shadow:0 4px 0 #ff5ea8,0 10px 24px -8px rgba(255,94,168,.8);opacity:0;transform:translateY(6px) scale(.8);transform-origin:85% 100%}
+  box-shadow:0 4px 0 #2fb4ff,0 10px 24px -8px rgba(47,180,255,.8);opacity:0;transform:translateY(6px) scale(.8);transform-origin:85% 100%}
 .like-hint::after{content:"";position:absolute;right:22px;top:100%;border:7px solid transparent;border-top-color:var(--white)}
 .like.hint .like-hint{animation:hintIn .5s cubic-bezier(.3,1.6,.5,1) forwards,hintBob 1.6s .5s ease-in-out infinite}
 @keyframes hintIn{to{opacity:1;transform:none}}
 @keyframes hintBob{0%,100%{transform:none}50%{transform:translateY(-4px)}}
 .like.done .like-hint{animation:hintOut .25s ease forwards}
 @keyframes hintOut{from{opacity:1;transform:none}to{opacity:0;transform:translateY(-6px) scale(.8)}}
-.like-btn:not(.on){border-color:#ff5ea8;animation:likePulse 2s ease-out infinite}
-.like-btn:not(.on) svg{stroke:#ff8cc4;animation:likeBeat 2s ease-in-out infinite}
-@keyframes likePulse{0%{box-shadow:0 0 0 0 rgba(255,94,168,.65)}70%,100%{box-shadow:0 0 0 14px rgba(255,94,168,0)}}
+.like-btn:not(.on){border-color:#2fb4ff;animation:likePulse 2s ease-out infinite}
+.like-btn:not(.on) svg{stroke:#7fd3ff;animation:likeBeat 2s ease-in-out infinite}
+@keyframes likePulse{0%{box-shadow:0 0 0 0 rgba(47,180,255,.65)}70%,100%{box-shadow:0 0 0 14px rgba(47,180,255,0)}}
 @keyframes likeBeat{0%,40%,100%{transform:scale(1)}10%{transform:scale(1.22)}20%{transform:scale(.95)}30%{transform:scale(1.12)}}
 @media (max-width:440px){.like-hint{font-size:10px;padding:5px 8px}}
 /* ===== Easter egg : la carte ===== */
@@ -593,7 +593,7 @@ input,textarea,select{-webkit-user-select:text;user-select:text;-webkit-touch-ca
 .face.f-front{display:grid;place-items:center}
 .face.f-front img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:22%;box-shadow:0 0 0 4px var(--surface),0 0 0 6px var(--accent),0 20px 50px rgba(0,0,0,.6)}
 .face.f-back{transform:rotateY(180deg);border-radius:4.6%/3.3%;overflow:hidden;padding:3.2%;
-  background:linear-gradient(135deg,#eaf6ff,#a8dcff 20%,#fff 35%,#ffc6ea 52%,#b7e6ff 70%,#e6f4ff 88%,#a8dcff);
+  background:linear-gradient(135deg,#eaf6ff,#a8dcff 20%,#fff 35%,#c6ecff 52%,#b7e6ff 70%,#e6f4ff 88%,#a8dcff);
   box-shadow:0 30px 80px -10px rgba(30,155,255,.8),0 0 0 1px rgba(255,255,255,.4)}
 .tc{position:relative;width:100%;height:100%;border-radius:3.4%/2.4%;overflow:hidden;color:#fff;font-family:var(--f-body);
   background:#06183a url(img/card-art.webp) center/cover no-repeat;container-type:inline-size}
@@ -611,7 +611,7 @@ input,textarea,select{-webkit-user-select:text;user-select:text;-webkit-touch-ca
 .tc-atk{display:grid;grid-template-columns:auto 1fr auto;gap:.6cqw 2.5cqw;align-items:center;padding:1.6cqw 0}
 .tc-atk + .tc-atk{border-top:1px solid rgba(255,255,255,.18)}
 .tc-cost{display:flex;gap:.8cqw}
-.tc-cost i{width:4.6cqw;height:4.6cqw;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,#ff8cc4 60%,#d6338a);box-shadow:0 0 0 .4cqw rgba(255,255,255,.7)}
+.tc-cost i{width:4.6cqw;height:4.6cqw;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,#7fd3ff 60%,#0b6fd6);box-shadow:0 0 0 .4cqw rgba(255,255,255,.7)}
 .tc-cost i.b{background:radial-gradient(circle at 35% 30%,#fff,#8fd8ff 60%,#2a8fd6)}
 .tc-atk b{font-size:4.6cqw;font-weight:700}
 .tc-dmg{font-family:var(--f-display);font-size:6cqw}
@@ -622,7 +622,7 @@ input,textarea,select{-webkit-user-select:text;user-select:text;-webkit-touch-ca
 /* reflets holographiques qui suivent la souris */
 .tc-holo,.tc-glare,.tc-spark{position:absolute;inset:0;pointer-events:none;border-radius:inherit}
 .tc-holo{mix-blend-mode:color-dodge;opacity:.2;
-  background:repeating-linear-gradient(115deg,#ff5ea8 0%,#ffd76a 6%,#7cffc4 12%,#5ec8ff 18%,#5cc2ff 24%,#ff5ea8 30%);
+  background:repeating-linear-gradient(115deg,#2fb4ff 0%,#ffffff 6%,#9fe8ff 12%,#5ec8ff 18%,#5cc2ff 24%,#2fb4ff 30%);
   background-size:300% 300%;background-position:var(--hx,50%) var(--hy,50%);animation:holoIdle 6s linear infinite}
 .egg.tilting .tc-holo{animation:none}
 @keyframes holoIdle{0%{background-position:0% 50%}100%{background-position:150% 50%}}
@@ -883,6 +883,16 @@ body.entered .hero-id{animation:slideIn .8s cubic-bezier(.2,.9,.2,1) both}
 .nav{background:rgba(4,12,26,.35);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 .menu a{color:rgba(255,255,255,.78)}
 @media (max-width:720px){.menu{justify-content:space-between}.menu a{font-size:12px;padding:6px 7px}}
+/* ===== Net : aucun flou ===== */
+*,*::before,*::after{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+.nav{background:rgba(4,12,26,.82)}
+.nav.solid{background:rgba(4,12,26,.96)}
+.pcard{background:rgba(5,16,34,.9)}
+.hero .role{background:rgba(4,12,26,.85)}
+@keyframes swirlDrift{from{transform:translate(0,0)}to{transform:translate(-2%,1.5%)}}
+/* ===== Bas de page : fond plein, on ne voit plus le fond animé ===== */
+main.site{padding-bottom:0}
+.site-foot{position:relative;z-index:3;background:var(--bg);margin-top:60px;padding:26px 0 calc(96px + env(safe-area-inset-bottom,0px))}
 
 </style>
 <script>window.IS_TOUCH=matchMedia("(pointer:coarse)").matches||/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);if(IS_TOUCH)document.documentElement.classList.add("touch")</script>
@@ -1617,7 +1627,7 @@ $("cform").addEventListener("submit",async e=>{
     for(let y=-24+off;y<H;y+=24)for(let x=12;x<W;x+=24){c.beginPath();c.arc(x,y,2.2,0,7);c.fill()}
     /* murs */
     for(const w of walls){
-      const col=w.hue?["#ff5ea8","#c2185b"]:["#1e9bff","#0b5fd6"];
+      const col=w.hue?["#2fb4ff","#0a4fb0"]:["#1e9bff","#0b5fd6"];
       for(const [x0,x1] of [[0,w.gx],[w.gx+w.g,W]]){if(x1-x0<2)continue;
         c.fillStyle=col[1];rr(x0,w.y+5,x1-x0,18,5);c.fill();
         c.fillStyle=col[0];rr(x0,w.y,x1-x0,18,5);c.fill();
@@ -1913,7 +1923,7 @@ function drawTrail(now,hx,hy,d){
   if(lastPt){travel+=Math.hypot(head.x-lastPt.x,head.y-lastPt.y);
     while(travel>46*d){travel-=46*d;const c=Math.random();
       STARS.push({x:head.x+(Math.random()-.5)*14*d,y:head.y+(Math.random()-.5)*14*d,vx:(Math.random()-.5)*.6*d,vy:(-.2-Math.random()*.5)*d,
-        r:(5+Math.random()*5)*d,rot:Math.random()*6,vr:(Math.random()-.5)*.12,t:now,c:c<.5?"#ffffff":c<.8?"#bfe6ff":"#ff9bd0"})}}
+        r:(5+Math.random()*5)*d,rot:Math.random()*6,vr:(Math.random()-.5)*.12,t:now,c:c<.5?"#ffffff":c<.8?"#bfe6ff":"#8fd8ff"})}}
   lastPt=head;
   /* étoiles : pop, rotation, petite chute, avec contour */
   for(let i=STARS.length-1;i>=0;i--){
