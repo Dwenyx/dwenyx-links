@@ -1,6 +1,7 @@
 <!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Dwenyx · Site officiel</title><meta name="description" content="Dwenyx — Créateur de contenu Roblox sur YouTube et TikTok. Vidéos, jeux Roblox et partenariats : contactdwenyx@gmail.com"><meta name="theme-color" content="#050d1a"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="canonical" href="https://dwenyx.vercel.app/"><meta property="og:type" content="profile"><meta property="og:site_name" content="Dwenyx"><meta property="og:title" content="Dwenyx · Page"><meta property="og:description" content="Créateur de contenu Roblox sur YouTube et TikTok. Mes vidéos, mes jeux et mes réseaux."><meta property="og:url" content="https://dwenyx.vercel.app/"><meta property="og:image" content="https://dwenyx.vercel.app/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Dwenyx · Content Creator · Vidéos Roblox sur YouTube &amp; TikTok"><meta property="og:locale" content="fr_FR"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Dwenyx · Page"><meta name="twitter:description" content="Créateur de contenu Roblox sur YouTube et TikTok."><meta name="twitter:image" content="https://dwenyx.vercel.app/og.png"><style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body><meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Outfit:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Fredoka:wght@500;600;700&family=Outfit:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap">
 <style>
 /* Layout : fond en grille de "studs" violets, logo Dwenyx animé (emblème D + lettres-briques), carte profil avec bannière + menu à onglets */
 :root{
@@ -1195,6 +1196,93 @@ html.menu-open .sound{display:none!important}
 }
 @media (prefers-reduced-motion:reduce){.cf-card{transition:none}}
 .cf{overflow-x:clip;overflow-y:visible;margin:0 -18px;padding-left:18px;padding-right:18px}html,body{overflow-x:clip}
+/* =====================================================================
+   STYLE CARTOON : contours épais, ombres dures, formes rondes, rebonds
+   ===================================================================== */
+:root{--f-toon:"Fredoka","Outfit",system-ui,sans-serif;--ink:#030b1a;--toon-bd:#1f4a85;--toon-bg:#0f2242;--toon-bg2:#132a50;
+  --bounce:cubic-bezier(.34,1.56,.64,1)}
+/* titres */
+.sec-h h2{font-family:var(--f-toon);font-weight:700;font-size:clamp(32px,4.2vw,46px);letter-spacing:0;color:#fff;
+  text-shadow:0 4px 0 #0b5fd6,0 7px 0 var(--ink)}
+.sec-h p{font-family:var(--f-toon);font-weight:500;font-size:15px}
+.gfold h3{font-family:var(--f-toon);font-weight:600;font-size:18px}
+.menu a,.cta,.btn,.dgo,.pname b,.cf-name,.cf-play,.cf-chip,.tnum b,.dcard .dtop b,.lnk .t b,.about h3,.panel h3,.tagcard .rg b,.thanks,.vbig .ltxt b,.hero-tag{font-family:var(--f-toon)!important}
+/* cartes */
+.panel,.lnk,.pj,.vbig,.latest,.tagcard,.pcard,.cinfo,.folder{background:var(--toon-bg)!important;border:3px solid var(--toon-bd)!important;border-radius:22px!important;
+  box-shadow:0 6px 0 var(--ink)!important;transition:transform .35s var(--bounce),box-shadow .35s var(--bounce),border-color .2s!important}
+.lnk:hover,.pj:hover,.vbig:hover,.tagcard:hover,.folder:hover{transform:translateY(-4px) rotate(-.6deg)!important;box-shadow:0 10px 0 var(--ink)!important;border-color:#2f6fc0!important;background:var(--toon-bg2)!important}
+.lnk:active,.pj:active{transform:translateY(2px)!important;box-shadow:0 3px 0 var(--ink)!important}
+.lnk .ic{border-radius:14px!important;border:2px solid rgba(0,0,0,.35)!important}
+.lnk .t b{font-weight:600;font-size:16px}
+.pcard{background:#0c1d3a!important;border-color:#2a5b9e!important;box-shadow:0 8px 0 var(--ink)!important}
+.pcard .avatar{border:3px solid #fff!important;border-radius:20px;box-shadow:0 4px 0 var(--ink)!important}
+.pcard .tnum b{font-weight:700;font-size:26px}
+.pcard .tgrid{border-color:var(--toon-bd)!important}
+.xp .bar{height:12px!important;border:2px solid var(--ink)!important;background:#081834!important;border-radius:99px!important}
+.xp .bar b{border-radius:99px;background:linear-gradient(90deg,#5fd0ff,#1e9bff)!important}
+/* boutons */
+.cta{font-weight:600!important;font-size:15px;border-radius:16px!important;border:3px solid var(--ink)!important;transition:transform .3s var(--bounce),box-shadow .3s var(--bounce)!important}
+.cta.yt{background:#ff3b30!important;box-shadow:0 5px 0 #8a1008!important}.cta.yt svg{fill:#fff}
+.cta.tt{background:#1c1c24!important;box-shadow:0 5px 0 #000!important}
+.cta.gm{background:#1e9bff!important;box-shadow:0 5px 0 #073c8f!important}.cta.gm svg{fill:#fff}
+.cta:hover{transform:translateY(-4px) scale(1.03)!important}
+.cta:active{transform:translateY(3px)!important;box-shadow:0 1px 0 var(--ink)!important}
+.btn,.cf-play{font-weight:700!important;font-size:16px!important;color:#fff!important;background:#1e9bff!important;border:3px solid var(--ink)!important;border-radius:16px!important;
+  box-shadow:0 5px 0 #073c8f!important;transition:transform .3s var(--bounce),box-shadow .3s var(--bounce)!important}
+.btn:hover,.cf-play:hover{transform:translateY(-3px) scale(1.02);background:#38a8ff!important}
+.btn:active,.cf-play:active{transform:translateY(3px);box-shadow:0 1px 0 #073c8f!important}
+.ibtn{transition:transform .3s var(--bounce),background .2s}
+.ibtn:hover{transform:scale(1.12) rotate(-6deg)}
+/* discord */
+.dcard{background:#5865F2!important;border:3px solid var(--ink)!important;box-shadow:0 6px 0 #262c8a!important;transition:transform .35s var(--bounce)!important}
+.dcard:hover{transform:translateY(-4px) rotate(.6deg)!important;background:#6470f5!important}
+.dcard .dtop svg{fill:#fff}
+.dcard .dgo{background:#fff!important;color:#3c45c7!important;border:3px solid var(--ink)!important;box-shadow:0 4px 0 var(--ink)!important;font-weight:700;border-radius:14px}
+.tagcard .rg{background:#0c1d3a!important;border:3px solid var(--ink)!important;border-radius:16px!important}
+.tagcard .rg i{background:#1e9bff;border:2px solid var(--ink);border-radius:10px}
+/* bulle merci */
+.thanks{display:block;width:fit-content;margin:22px auto 0!important;padding:12px 22px!important;background:#132a50!important;border:3px solid var(--toon-bd)!important;border-radius:999px!important;
+  box-shadow:0 5px 0 var(--ink)!important;color:#e6f4ff!important;font-weight:600;font-size:15px}
+/* son */
+.sound{border:3px solid var(--ink)!important;box-shadow:0 5px 0 var(--ink)!important;background:#0c1d3a!important}
+
+/* ---------- carrousel version cartoon ---------- */
+.cf-stage{perspective:none;transform-style:flat}
+.cf-card{background:var(--toon-bg);border:4px solid var(--toon-bd);border-radius:28px;box-shadow:0 10px 0 var(--ink);
+  transition:transform .75s var(--bounce),opacity .45s,filter .45s,border-color .3s,box-shadow .3s;filter:brightness(.62) saturate(.85)}
+.cf-card.on{border-color:#5fd0ff;box-shadow:0 10px 0 var(--ink),0 0 0 6px rgba(95,208,255,.18)}
+.cf-shot{margin:10px 10px 0;border-radius:20px;border:3px solid var(--ink);aspect-ratio:16/9}
+.cf-shot::after{display:none}
+.cf-tag{left:10px;top:10px;font-family:var(--f-toon);font-size:12px;font-weight:600;letter-spacing:0;text-transform:none;padding:5px 12px 5px 10px;border-radius:999px;
+  background:#22c55e;border:3px solid var(--ink);box-shadow:0 3px 0 var(--ink);display:inline-flex;align-items:center;gap:6px}
+.cf-tag i{width:8px;height:8px;border-radius:50%;background:#fff;animation:ping 1.6s infinite}
+.cf-tag.dev{background:#f59e0b}.cf-tag.beta{background:#1e9bff}
+.cf-body{padding:14px 18px 20px}
+.cf-name{font-family:var(--f-toon)!important;font-weight:700;font-size:26px;margin:0 0 10px;text-shadow:0 3px 0 #0b5fd6}
+.cf-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.cf-chip{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;background:#16305a;border:2px solid #2a5b9e;font-weight:600;font-size:14px;color:#eaf6ff}
+.cf-chip i{font-style:normal}
+.cf-desc{margin:0 0 16px;font-size:14.5px;line-height:1.45;color:var(--muted)}
+.cf-play{padding:14px;font-size:18px!important}
+.cf-prog{height:10px;border-radius:99px;border:2px solid var(--ink);background:#081834;margin-top:26px}
+.cf-prog b{border-radius:99px;background:linear-gradient(90deg,#5fd0ff,#1e9bff)}
+.cf-ctl{gap:18px;margin-top:18px}
+.cf-btn{width:54px;height:54px;border-radius:50%;background:#1e9bff;border:3px solid var(--ink);box-shadow:0 5px 0 #073c8f;font-size:16px;
+  transition:transform .3s var(--bounce),box-shadow .3s var(--bounce)}
+.cf-btn:hover{transform:translateY(-3px) scale(1.08);background:#38a8ff}
+.cf-btn:active{transform:translateY(3px);box-shadow:0 1px 0 #073c8f}
+.cf-dots{gap:8px}
+.cf-dots button{width:14px;height:14px;border-radius:50%;border:2px solid var(--ink);background:#2a4a78;transition:width .35s var(--bounce),background .3s}
+.cf-dots button.on{width:34px;border-radius:99px;background:#5fd0ff;border-color:var(--ink)}
+.cf-n{font-family:var(--f-toon);font-weight:600;font-size:15px}
+.cf-hint{font-family:var(--f-toon);font-size:13px}
+@media (max-width:720px){
+  .sec-h h2{font-size:34px}
+  .cf-name{font-size:22px}
+  .cf-chip{font-size:13px;padding:5px 10px}
+  .cf-btn{width:48px;height:48px}
+  .cta{font-size:14px!important;padding:10px 6px!important}
+}
 
 </style>
 <script>window.IS_TOUCH=matchMedia("(pointer:coarse)").matches||/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);if(IS_TOUCH)document.documentElement.classList.add("touch")</script>
@@ -1561,15 +1649,14 @@ function carouselHTML(f){
   return `<div class="gfold rv"><h3>${FOLDER}${f.name}<small>${nProj(f.items.length)}</small></h3>
   <div class="cf" id="cf" tabindex="0" role="region" aria-roledescription="carrousel" aria-label="${f.name}">
     <div class="cf-stage">${f.items.map((p,i)=>`<article class="cf-card" data-i="${i}" aria-label="${p.name}">
-      <div class="cf-bar"><span>${slug(p.name)}.exe</span><i aria-hidden="true">─ □ ✕</i></div>
-      <div class="cf-shot">${p.img?`<img src="${p.img}" alt="${p.name}" loading="lazy" decoding="async" draggable="false">`:""}${p.status?`<span class="cf-tag ${p.status}">${STATUS[p.status]||p.status}</span>`:""}</div>
+      <div class="cf-shot">${p.img?`<img src="${p.img}" alt="${p.name}" loading="lazy" decoding="async" draggable="false">`:""}${p.status?`<span class="cf-tag ${p.status}"><i></i>${STATUS[p.status]||p.status}</span>`:""}</div>
       <div class="cf-body"><b class="cf-name">${p.name}</b>
-        <dl class="cf-rows">
-          <dt>statut</dt><dd class="cf-st ${p.status||""}">● ${(STATUS[p.status]||"—").toLowerCase()}</dd>
-          ${p.role?`<dt>rôle</dt><dd>${p.role}</dd>`:""}
-          ${p.rating!=null?`<dt>note</dt><dd>${stars(p.rating)}</dd>`:""}
-          <dt>visites</dt><dd class="cf-big">${visitsTxt(p.visits)}</dd>
-        </dl>
+        <div class="cf-chips">
+          ${p.rating!=null?`<span class="cf-chip"><i>⭐</i>${String(p.rating).replace(".",",")}/5</span>`:""}
+          <span class="cf-chip"><i>👀</i>${visitsTxt(p.visits)}${p.visits==="loading"||p.visits==null?"":" visites"}</span>
+          ${p.role?`<span class="cf-chip"><i>🛠️</i>${p.role}</span>`:""}
+        </div>
+        <p class="cf-desc">${p.desc||""}</p>
         ${p.link?`<a class="cf-play" href="${p.link}" target="_blank" rel="noopener" tabindex="-1">▶ Jouer sur Roblox</a>`:""}
       </div></article>`).join("")}</div>
     <div class="cf-prog" aria-hidden="true"><b></b></div>
@@ -1577,7 +1664,7 @@ function carouselHTML(f){
       <span class="cf-dots">${f.items.map((p,i)=>`<button type="button" data-cfi="${i}" aria-label="${p.name}"></button>`).join("")}</span>
       <span class="cf-n"><b>01</b> / ${String(f.items.length).padStart(2,"0")}</span>
       <button class="cf-btn" type="button" data-cf="1" aria-label="Jeu suivant">▶</button></div>
-    <p class="cf-hint">glisse à gauche ou à droite · flèches du clavier</p>
+    <p class="cf-hint">glisse ou utilise les flèches ← →</p>
   </div></div>`;
 }
 $("games").innerHTML=PROFILE.folders.map(f=>/roblox/i.test(f.name)?carouselHTML(f):`<div class="gfold rv"><h3>${FOLDER}${f.name}<small>${nProj(f.items.length)}</small></h3>${folderBody(f)}</div>`).join("");
@@ -1589,7 +1676,7 @@ $("games").innerHTML=PROFILE.folders.map(f=>/roblox/i.test(f.name)?carouselHTML(
     cards.forEach((c,i)=>{
       let d=i-cur;if(n>2){if(d>n/2)d-=n;if(d<-n/2)d+=n}
       const a=Math.abs(d);
-      c.style.transform=`translateX(${d*58}%) translateZ(${-a*190}px) rotateY(${-Math.sign(d)*Math.min(a,1)*32}deg)`;
+      c.style.transform=`translateX(${d*64}%) translateY(${a*26}px) scale(${1-Math.min(a,2)*.15}) rotate(${d*5}deg)`;
       c.style.opacity=a>2?0:a>1?.35:1;c.style.zIndex=10-a;
       c.classList.toggle("on",d===0);c.setAttribute("aria-hidden",d!==0);
       const l=c.querySelector(".cf-play");if(l)l.tabIndex=d===0?0:-1;
@@ -1604,21 +1691,25 @@ $("games").innerHTML=PROFILE.folders.map(f=>/roblox/i.test(f.name)?carouselHTML(
     requestAnimationFrame(()=>requestAnimationFrame(()=>{bar.style.transition=`transform ${AUTO}ms linear`;bar.style.transform="scaleX(1)"}));
     timer=setTimeout(()=>go(cur+1),AUTO)}
   cf.addEventListener("click",e=>{
-    const b=e.target.closest("[data-cf]");if(b){go(cur+ +b.dataset.cf,true);return}
-    const d=e.target.closest("[data-cfi]");if(d){go(+d.dataset.cfi,true);return}
+    const b=e.target.closest("[data-cf]");if(b){go(cur+ +b.dataset.cf);return}
+    const d=e.target.closest("[data-cfi]");if(d){go(+d.dataset.cfi);return}
     const c=e.target.closest(".cf-card");if(c&&!c.classList.contains("on")){e.preventDefault();go(+c.dataset.i,true)}
   });
   /* glisser au doigt ou à la souris */
-  let x0=null,dx=0;
-  cf.querySelector(".cf-stage").addEventListener("pointerdown",e=>{x0=e.clientX;dx=0});
-  addEventListener("pointermove",e=>{if(x0!=null)dx=e.clientX-x0},{passive:true});
-  addEventListener("pointerup",()=>{if(x0==null)return;if(Math.abs(dx)>40)go(cur+(dx<0?1:-1),true);x0=null});
-  cf.addEventListener("click",e=>{if(Math.abs(dx)>40){e.preventDefault();e.stopPropagation()}},true);
+  let x0=null,y0=0,dx=0,dy=0,pid=null,swiped=false;
+  const stg=cf.querySelector(".cf-stage");
+  stg.addEventListener("pointerdown",e=>{if(e.button>0)return;x0=e.clientX;y0=e.clientY;dx=dy=0;pid=e.pointerId;swiped=false});
+  stg.addEventListener("pointermove",e=>{if(e.pointerId!==pid||x0==null)return;dx=e.clientX-x0;dy=e.clientY-y0});
+  const end=e=>{if(e.pointerId!==pid||x0==null)return;
+    if(e.type==="pointerup"&&Math.abs(dx)>45&&Math.abs(dx)>Math.abs(dy)*1.3){swiped=true;go(cur+(dx<0?1:-1),true)}
+    x0=null;pid=null};
+  addEventListener("pointerup",end);addEventListener("pointercancel",end);
+  cf.addEventListener("click",e=>{if(swiped){swiped=false;e.preventDefault();e.stopPropagation()}},true);
   /* flèches du clavier quand le carrousel est visible */
   let vis=false;new IntersectionObserver(es=>{vis=es[0].isIntersecting;paused=!vis;restart()},{threshold:.4}).observe(cf);
   addEventListener("keydown",e=>{if(!vis||/input|textarea|select/i.test(document.activeElement.tagName))return;
     if(e.key==="ArrowRight"){go(cur+1,true);e.preventDefault()}else if(e.key==="ArrowLeft"){go(cur-1,true);e.preventDefault()}});
-  cf.addEventListener("pointerenter",()=>{paused=true;restart()});cf.addEventListener("pointerleave",()=>{paused=!vis;restart()});
+  cf.addEventListener("pointerenter",e=>{if(e.pointerType==="touch")return;paused=true;restart()});cf.addEventListener("pointerleave",e=>{if(e.pointerType==="touch")return;paused=!vis;restart()});
   const stage=cf.querySelector(".cf-stage"),fit=()=>{stage.style.height=Math.max(...cards.map(c=>c.offsetHeight))+"px"};
   cf.querySelectorAll("img").forEach(i=>i.addEventListener("load",fit));addEventListener("resize",fit);fit();
   layout();
@@ -1637,7 +1728,6 @@ const rvObs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.t
 document.querySelectorAll(".rv").forEach(el=>rvObs.observe(el));
 /* « Écrire » et liens internes : petit son */
 document.addEventListener("click",e=>{
-  const a=e.target.closest('a[href^="#"]');if(a){SFX.tab();return}
   if(e.target.closest("[data-cclose]")){resetForm();}
 });
 
@@ -1660,7 +1750,7 @@ document.addEventListener("click",e=>{
 /* Menu mobile (bouton ☰) */
 (()=>{const nav=$("nav"),bt=$("burger");
   const set=o=>{nav.classList.toggle("open",o);bt.setAttribute("aria-expanded",o);bt.setAttribute("aria-label",o?"Fermer le menu":"Ouvrir le menu");document.documentElement.classList.toggle("menu-open",o)};
-  bt.addEventListener("click",()=>{set(!nav.classList.contains("open"));SFX.tab()});
+  bt.addEventListener("click",()=>{set(!nav.classList.contains("open"))});
   $("menu").addEventListener("click",e=>{if(e.target.closest("a"))set(false)});
   addEventListener("keydown",e=>{if(e.key==="Escape")set(false)});
   addEventListener("resize",()=>{if(innerWidth>720)set(false)});
@@ -1768,7 +1858,7 @@ document.addEventListener("visibilitychange",()=>{document.hidden?onHide():onSho
 addEventListener("pagehide",onHide);addEventListener("pageshow",e=>{if(e.persisted)onShow()});
 
 /* Un son pour chaque survol et chaque clic */
-const HOVERABLE=".lnk,.tab,.folder,.btn,.back,.avatar,.snd-btn,.write,.side-x,.play-btn";
+const HOVERABLE=".lnk,.tab,.folder,.btn,.back,.avatar,.snd-btn,.write,.side-x,.play-btn,.cta,.ibtn,.menu a,.cf-btn,.cf-play,.cf-dots button,.cf-card:not(.on),.dcard,.tagcard,.like-btn,.brand";
 let hovered=null,lastHover=0;
 document.addEventListener("pointerover",e=>{
   if(e.pointerType==="touch")return;
@@ -1785,6 +1875,7 @@ document.addEventListener("click",e=>{
   if(t.closest("[data-folder]"))return t.closest(".folder.on")?SFX.close():SFX.open();
   if(t.closest("#openContact"))return t.closest(".write.on")?SFX.close():SFX.open();
   if(t.closest("#back,#sideX,#cBack,[data-cclose]"))return SFX.close();
+  if(t.closest('a[href^="#"]'))return SFX.tab();
   if(t.closest("a[href]"))return SFX.link();
   if(t.closest(".avatar,#egg,#playBtn,#game"))return;
   if(t.closest("button"))return SFX.click();
@@ -1792,7 +1883,7 @@ document.addEventListener("click",e=>{
 
 /* Onde au point de clic sur les éléments cliquables */
 document.addEventListener("pointerdown",e=>{
-  const el=e.target.closest(".lnk,.folder,.tab,.btn,.pj,.snd-btn,.write");if(!el||reduceMotion)return;
+  const el=e.target.closest(".lnk,.folder,.tab,.btn,.pj,.snd-btn,.write,.cta,.cf-play,.cf-btn,.dcard");if(!el||reduceMotion)return;
   const r=el.getBoundingClientRect(),size=Math.max(r.width,r.height)*2.2,d=document.createElement("span");
   d.className="rip";d.style.width=d.style.height=size+"px";d.style.left=(e.clientX-r.left)+"px";d.style.top=(e.clientY-r.top)+"px";
   el.append(d);setTimeout(()=>d.remove(),650);
