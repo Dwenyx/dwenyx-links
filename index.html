@@ -1145,6 +1145,56 @@ html.menu-open .sound{display:none!important}
   .hero{padding-top:calc(var(--nav-h) + 30px)}
   .hero-tag{font-size:17px;font-weight:500;max-width:330px}
 }
+/* ===================== Carrousel 3D des jeux Roblox ===================== */
+.cf{position:relative;outline:none;padding:6px 0 0;user-select:none;-webkit-user-select:none}
+.cf-stage{position:relative;height:540px;perspective:1400px;transform-style:preserve-3d;touch-action:pan-y;cursor:grab}
+.cf-stage:active{cursor:grabbing}
+.cf-card{position:absolute;left:50%;top:0;width:min(480px,86vw);margin-left:calc(min(480px,86vw) / -2);
+  background:#08121f;border:1px solid var(--soft-2);border-radius:14px;overflow:hidden;
+  transition:transform .7s cubic-bezier(.2,.8,.2,1),opacity .5s,filter .5s,border-color .4s,box-shadow .4s;
+  filter:brightness(.42) saturate(.8);will-change:transform}
+.cf-card.on{filter:none;border-color:rgba(95,208,255,.75);box-shadow:0 0 0 1px rgba(95,208,255,.25),0 30px 70px -28px rgba(30,155,255,.75)}
+.cf-card:not(.on){cursor:pointer}
+.cf-bar{display:flex;align-items:center;justify-content:space-between;padding:9px 14px;background:rgba(255,255,255,.03);border-bottom:1px solid var(--soft);
+  font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+.cf-bar i{font-style:normal;letter-spacing:2px;opacity:.7}
+.cf-shot{position:relative;aspect-ratio:16/9;overflow:hidden;background:#0b1830}
+.cf-shot img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
+.cf-shot::after{content:"";position:absolute;inset:auto 0 0;height:40%;background:linear-gradient(transparent,#08121f)}
+.cf-tag{position:absolute;left:12px;top:12px;z-index:1;font-family:var(--f-mono);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  padding:4px 8px;border-radius:6px;background:rgba(3,8,18,.78);color:#fff}
+.cf-body{padding:4px 18px 18px}
+.cf-name{display:block;font-family:var(--f-mono);font-size:21px;font-weight:700;letter-spacing:-.01em;margin:0 0 12px;color:#fff}
+.cf-rows{display:grid;grid-template-columns:auto 1fr;gap:8px 12px;margin:0 0 16px;font-family:var(--f-mono);font-size:12.5px}
+.cf-rows dt{color:var(--muted)}
+.cf-rows dd{margin:0;text-align:right;font-weight:700;color:#e9f4ff;display:flex;justify-content:flex-end;align-items:center;gap:6px}
+.cf-rows .stars{transform:scale(.85);transform-origin:right center}
+.cf-st.live{color:#6ef0a6}.cf-st.dev{color:#ffd36a}.cf-st.beta{color:var(--sky)}
+.cf-big{font-family:var(--f-display);font-weight:400!important;font-size:19px;color:var(--sky)!important}
+.cf-play{display:block;text-align:center;padding:12px;border-radius:12px;text-decoration:none;font-weight:600;font-size:14px;color:#fff;
+  background:rgba(30,155,255,.16);border:1px solid rgba(30,155,255,.4);transition:background .2s}
+.cf-play:hover{background:rgba(30,155,255,.3)}
+.cf-prog{width:min(480px,86vw);height:2px;margin:18px auto 0;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden}
+.cf-prog b{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--sky));transform-origin:left;transform:scaleX(0)}
+.cf-ctl{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:16px}
+.cf-btn{width:46px;height:40px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid var(--soft-2);color:#fff;font-size:14px;cursor:pointer;transition:background .2s,border-color .2s}
+.cf-btn:hover{background:rgba(30,155,255,.15);border-color:rgba(30,155,255,.5)}
+.cf-dots{display:flex;gap:6px;align-items:center}
+.cf-dots button{width:10px;height:10px;padding:0;border:1px solid var(--muted);background:transparent;border-radius:2px;cursor:pointer;transition:width .3s,background .3s,border-color .3s}
+.cf-dots button.on{width:28px;background:var(--accent);border-color:var(--accent)}
+.cf-n{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.cf-n b{color:#fff}
+.cf-hint{text-align:center;margin:12px 0 0;font-family:var(--f-mono);font-size:11px;color:var(--muted);opacity:.7}
+@media (max-width:720px){
+  .cf-stage{height:500px}
+  .cf-card{width:84vw;margin-left:-42vw}
+  .cf-name{font-size:18px}
+  .cf-rows{font-size:12px}
+  .cf-prog{width:84vw}
+  .cf-hint{display:none}
+}
+@media (prefers-reduced-motion:reduce){.cf-card{transition:none}}
+.cf{overflow-x:clip;overflow-y:visible;margin:0 -18px;padding-left:18px;padding-right:18px}html,body{overflow-x:clip}
 
 </style>
 <script>window.IS_TOUCH=matchMedia("(pointer:coarse)").matches||/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);if(IS_TOUCH)document.documentElement.classList.add("touch")</script>
@@ -1504,7 +1554,75 @@ const byId=id=>L.find(x=>x.id===id);
 $("socials").innerHTML=["youtube","tiktok","tiktok2"].map(k=>lnkHTML(byId(k))).join("");
 $("robloxLink").innerHTML=lnkHTML(byId("roblox"));
 $("mailLink").innerHTML=lnkHTML(byId("email"));
-$("games").innerHTML=PROFILE.folders.map(f=>`<div class="gfold rv"><h3>${FOLDER}${f.name}<small>${nProj(f.items.length)}</small></h3>${folderBody(f)}</div>`).join("");
+/* Projets : carrousel 3D pour les jeux Roblox, cartes simples pour le reste */
+const slug=s=>s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"_").replace(/^_|_$/g,"");
+const visitsTxt=v=>v==="loading"||v==null?"nouveau":typeof v==="number"?compact(v)+"+":v;
+function carouselHTML(f){
+  return `<div class="gfold rv"><h3>${FOLDER}${f.name}<small>${nProj(f.items.length)}</small></h3>
+  <div class="cf" id="cf" tabindex="0" role="region" aria-roledescription="carrousel" aria-label="${f.name}">
+    <div class="cf-stage">${f.items.map((p,i)=>`<article class="cf-card" data-i="${i}" aria-label="${p.name}">
+      <div class="cf-bar"><span>${slug(p.name)}.exe</span><i aria-hidden="true">─ □ ✕</i></div>
+      <div class="cf-shot">${p.img?`<img src="${p.img}" alt="${p.name}" loading="lazy" decoding="async" draggable="false">`:""}${p.status?`<span class="cf-tag ${p.status}">${STATUS[p.status]||p.status}</span>`:""}</div>
+      <div class="cf-body"><b class="cf-name">${p.name}</b>
+        <dl class="cf-rows">
+          <dt>statut</dt><dd class="cf-st ${p.status||""}">● ${(STATUS[p.status]||"—").toLowerCase()}</dd>
+          ${p.role?`<dt>rôle</dt><dd>${p.role}</dd>`:""}
+          ${p.rating!=null?`<dt>note</dt><dd>${stars(p.rating)}</dd>`:""}
+          <dt>visites</dt><dd class="cf-big">${visitsTxt(p.visits)}</dd>
+        </dl>
+        ${p.link?`<a class="cf-play" href="${p.link}" target="_blank" rel="noopener" tabindex="-1">▶ Jouer sur Roblox</a>`:""}
+      </div></article>`).join("")}</div>
+    <div class="cf-prog" aria-hidden="true"><b></b></div>
+    <div class="cf-ctl"><button class="cf-btn" type="button" data-cf="-1" aria-label="Jeu précédent">◀</button>
+      <span class="cf-dots">${f.items.map((p,i)=>`<button type="button" data-cfi="${i}" aria-label="${p.name}"></button>`).join("")}</span>
+      <span class="cf-n"><b>01</b> / ${String(f.items.length).padStart(2,"0")}</span>
+      <button class="cf-btn" type="button" data-cf="1" aria-label="Jeu suivant">▶</button></div>
+    <p class="cf-hint">glisse à gauche ou à droite · flèches du clavier</p>
+  </div></div>`;
+}
+$("games").innerHTML=PROFILE.folders.map(f=>/roblox/i.test(f.name)?carouselHTML(f):`<div class="gfold rv"><h3>${FOLDER}${f.name}<small>${nProj(f.items.length)}</small></h3>${folderBody(f)}</div>`).join("");
+(()=>{
+  const cf=$("cf");if(!cf)return;
+  const cards=[...cf.querySelectorAll(".cf-card")],dots=[...cf.querySelectorAll(".cf-dots button")],n=cards.length,bar=cf.querySelector(".cf-prog b");
+  let cur=0,timer=0,paused=false;const AUTO=6500;
+  function layout(){
+    cards.forEach((c,i)=>{
+      let d=i-cur;if(n>2){if(d>n/2)d-=n;if(d<-n/2)d+=n}
+      const a=Math.abs(d);
+      c.style.transform=`translateX(${d*58}%) translateZ(${-a*190}px) rotateY(${-Math.sign(d)*Math.min(a,1)*32}deg)`;
+      c.style.opacity=a>2?0:a>1?.35:1;c.style.zIndex=10-a;
+      c.classList.toggle("on",d===0);c.setAttribute("aria-hidden",d!==0);
+      const l=c.querySelector(".cf-play");if(l)l.tabIndex=d===0?0:-1;
+    });
+    dots.forEach((b,i)=>b.classList.toggle("on",i===cur));
+    cf.querySelector(".cf-n b").textContent=String(cur+1).padStart(2,"0");
+    restart();
+  }
+  function go(i,user){cur=(i+n)%n;layout();if(user)SFX.tab()}
+  function restart(){bar.style.transition="none";bar.style.transform="scaleX(0)";clearTimeout(timer);
+    if(paused||n<2||reduceMotion)return;
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{bar.style.transition=`transform ${AUTO}ms linear`;bar.style.transform="scaleX(1)"}));
+    timer=setTimeout(()=>go(cur+1),AUTO)}
+  cf.addEventListener("click",e=>{
+    const b=e.target.closest("[data-cf]");if(b){go(cur+ +b.dataset.cf,true);return}
+    const d=e.target.closest("[data-cfi]");if(d){go(+d.dataset.cfi,true);return}
+    const c=e.target.closest(".cf-card");if(c&&!c.classList.contains("on")){e.preventDefault();go(+c.dataset.i,true)}
+  });
+  /* glisser au doigt ou à la souris */
+  let x0=null,dx=0;
+  cf.querySelector(".cf-stage").addEventListener("pointerdown",e=>{x0=e.clientX;dx=0});
+  addEventListener("pointermove",e=>{if(x0!=null)dx=e.clientX-x0},{passive:true});
+  addEventListener("pointerup",()=>{if(x0==null)return;if(Math.abs(dx)>40)go(cur+(dx<0?1:-1),true);x0=null});
+  cf.addEventListener("click",e=>{if(Math.abs(dx)>40){e.preventDefault();e.stopPropagation()}},true);
+  /* flèches du clavier quand le carrousel est visible */
+  let vis=false;new IntersectionObserver(es=>{vis=es[0].isIntersecting;paused=!vis;restart()},{threshold:.4}).observe(cf);
+  addEventListener("keydown",e=>{if(!vis||/input|textarea|select/i.test(document.activeElement.tagName))return;
+    if(e.key==="ArrowRight"){go(cur+1,true);e.preventDefault()}else if(e.key==="ArrowLeft"){go(cur-1,true);e.preventDefault()}});
+  cf.addEventListener("pointerenter",()=>{paused=true;restart()});cf.addEventListener("pointerleave",()=>{paused=!vis;restart()});
+  const stage=cf.querySelector(".cf-stage"),fit=()=>{stage.style.height=Math.max(...cards.map(c=>c.offsetHeight))+"px"};
+  cf.querySelectorAll("img").forEach(i=>i.addEventListener("load",fit));addEventListener("resize",fit);fit();
+  layout();
+})();
 /* menu : on surligne la section visible, la barre devient opaque en descendant */
 const navLinks=[...document.querySelectorAll(".menu a")];
 const secs=navLinks.map(a=>document.querySelector(a.getAttribute("href")));
