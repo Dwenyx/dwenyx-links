@@ -1338,10 +1338,21 @@ body{color:var(--label);background:#05080f;-webkit-font-smoothing:antialiased;le
 @media (max-width:900px){.net #socials{order:-1}}
 /* ===== Curseur main (PC uniquement) ===== */
 @media (hover:hover) and (pointer:fine){
-  html,html *{cursor:url(img/cursor-normal.png) 4 1,auto!important;cursor:image-set(url(img/cursor-normal.png) 1x,url(img/cursor-normal@2x.png) 2x) 4 1,auto!important}
-  html.press,html.press *{cursor:url(img/cursor-press.png) 1 2,auto!important;cursor:image-set(url(img/cursor-press.png) 1x,url(img/cursor-press@2x.png) 2x) 1 2,auto!important}
+  /* secours sans JavaScript : curseur image fixe */
+  html,html *{cursor:url(img/cursor-normal.png) 3 1,auto!important}
+  html.press,html.press *{cursor:url(img/cursor-press.png) 1 1,auto!important}
+  /* main animée : on cache la flèche du système */
+  html.hand-on,html.hand-on *{cursor:none!important}
   html input:not([type=range]):not([type=checkbox]),html textarea{cursor:text!important}
 }
+#hand{position:fixed;left:0;top:0;width:32px;height:32px;z-index:2147483647;pointer-events:none;opacity:0;transition:opacity .2s;will-change:transform}
+#hand.show{opacity:1}
+#hand img{position:absolute;inset:0;width:32px;height:32px;transition:opacity .08s;filter:drop-shadow(0 2px 3px rgba(0,0,0,.35))}
+#hand .hp{opacity:0}
+#hand.down .hp{opacity:1}#hand.down .hn{opacity:0}
+.hand-ring{position:fixed;z-index:2147483646;pointer-events:none;width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:50%;border:2px solid rgba(160,215,255,.85);
+  animation:handRing .55s cubic-bezier(.2,.7,.3,1) forwards}
+@keyframes handRing{from{transform:scale(.3);opacity:.9}to{transform:scale(1.5);opacity:0}}
 
 </style>
 <script>window.IS_TOUCH=matchMedia("(pointer:coarse)").matches||/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);if(IS_TOUCH)document.documentElement.classList.add("touch")</script>
@@ -1789,13 +1800,37 @@ document.addEventListener("click",e=>{
   addEventListener("keydown",e=>{if(e.key==="Escape")set(false)});
   addEventListener("resize",()=>{if(innerWidth>720)set(false)});
 })();
-/* Curseur : main « appuyée » pendant le clic (visible au moins un court instant même pour un clic rapide) */
+/* Curseur : main animée qui suit la souris (penche un peu en bougeant, grossit sur ce qui est cliquable, se pose au clic) */
 (()=>{if(!matchMedia("(hover:hover) and (pointer:fine)").matches)return;
-  const root=document.documentElement;let t0=0,tm=0;
-  [new Image().src="img/cursor-press.png",new Image().src="img/cursor-press@2x.png"];
-  addEventListener("pointerdown",e=>{if(e.pointerType!=="mouse")return;clearTimeout(tm);t0=performance.now();root.classList.add("press")},true);
-  const up=()=>{const left=Math.max(0,140-(performance.now()-t0));clearTimeout(tm);tm=setTimeout(()=>root.classList.remove("press"),left)};
-  addEventListener("pointerup",up,true);addEventListener("pointercancel",up,true);addEventListener("blur",up);
+  const root=document.documentElement;
+  const h=document.createElement("div");h.id="hand";h.setAttribute("aria-hidden","true");
+  h.innerHTML='<img class="hn" src="img/cursor-normal@2x.png" alt=""><img class="hp" src="img/cursor-press@2x.png" alt="">';
+  document.body.append(h);root.classList.add("hand-on");
+  const CLICK="a,button,[role=button],label,select,summary,.lnk,.cf-card,.pj,.avatar,input[type=range],input[type=checkbox]";
+  let x=-100,y=-100,px=x,vx=0,rot=0,sc=1,scT=1,down=false,t0=0,tm=0,over=false,running=false,last=performance.now();
+  const reduce=matchMedia("(prefers-reduced-motion:reduce)").matches;
+  function frame(now){
+    const dt=Math.min(50,now-last);last=now;
+    vx+=((x-px)-vx)*.25;px=x;
+    const rotT=reduce?0:Math.max(-14,Math.min(14,vx*.9))+(over&&!down?Math.sin(now/260)*4:0);
+    rot+=(rotT-rot)*Math.min(1,dt/90);
+    sc+=(scT-sc)*Math.min(1,dt/70);
+    /* le bout du doigt reste pile sous la souris : rotation autour du point visé */
+    h.style.transform=`translate3d(${x-3}px,${y-1}px,0) rotate(${rot.toFixed(2)}deg) scale(${sc.toFixed(3)})`;
+    if(Math.abs(rotT-rot)>.05||Math.abs(scT-sc)>.002||over){requestAnimationFrame(frame)}else running=false;
+  }
+  h.style.transformOrigin="3px 1px";
+  const kick=()=>{if(!running){running=true;last=performance.now();requestAnimationFrame(frame)}};
+  const target=()=>{scT=down?.88:over?1.12:1};
+  addEventListener("pointermove",e=>{if(e.pointerType!=="mouse")return;x=e.clientX;y=e.clientY;h.classList.add("show");
+    const o=!!(e.target.closest&&e.target.closest(CLICK));if(o!==over){over=o;target()}kick()},{passive:true});
+  document.addEventListener("pointerleave",()=>h.classList.remove("show"));
+  addEventListener("blur",()=>h.classList.remove("show"));
+  addEventListener("pointerdown",e=>{if(e.pointerType!=="mouse")return;clearTimeout(tm);t0=performance.now();down=true;h.classList.add("down");root.classList.add("press");target();kick();
+    if(!reduce){const r=document.createElement("span");r.className="hand-ring";r.style.left=e.clientX+"px";r.style.top=e.clientY+"px";document.body.append(r);setTimeout(()=>r.remove(),600)}},true);
+  const up=()=>{const left=Math.max(0,140-(performance.now()-t0));clearTimeout(tm);
+    tm=setTimeout(()=>{down=false;h.classList.remove("down");root.classList.remove("press");target();kick()},left)};
+  addEventListener("pointerup",up,true);addEventListener("pointercancel",up,true);
 })();
 
 /* Copier */
