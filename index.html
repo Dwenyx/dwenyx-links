@@ -1325,25 +1325,25 @@ body{color:var(--label);background:#05080f;-webkit-font-smoothing:antialiased;le
 .cf-n{display:none}
 .cf-hint{font-size:13px;color:var(--label-3)}
 @media (max-width:720px){.cf-name{font-size:22px}.sec-h h2{font-size:30px}}
+/* ===== Organisation : Réseaux / À propos & contact ===== */
+.hero h1{cursor:default}
+.net{align-items:start}
+.lnk .ic img{width:100%;height:100%;object-fit:cover;border-radius:10px;display:block}
+.ptitle{margin:0 0 10px;font-size:17px;font-weight:700;letter-spacing:-.02em;color:var(--label)}
+.pnote{margin:-4px 0 12px;font-size:13px;color:var(--label-3)}
+.cgrid .bio{padding:0;grid-template-columns:1fr}
+.cgrid .stack{gap:16px}
+.thanks{margin-top:28px!important;text-align:center}
+@media (max-width:900px){.net{grid-template-columns:1fr}}
+@media (max-width:900px){.net #socials{order:-1}}
 
 </style>
 <script>window.IS_TOUCH=matchMedia("(pointer:coarse)").matches||/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);if(IS_TOUCH)document.documentElement.classList.add("touch")</script>
 <canvas id="studs"></canvas>
 
-<div id="gate" class="intro" role="button" tabindex="0" aria-label="Entrer">
-  <img class="glogo" src="img/logo-dwenyx.webp" alt="Dwenyx" width="958" height="351">
-  <div class="gload" id="gload" aria-label="Chargement"><div class="gbar"><b id="gbar"></b></div><span>chargement</span></div>
-  <p id="gtap" hidden>▶ appuie pour continuer</p>
-  <div class="gwave" aria-hidden="true">
-    <svg class="back" viewBox="0 0 2400 130" preserveAspectRatio="none"><path d="M0 0H2400V40Q2300 92 2200 40T2000 40T1800 40T1600 40T1400 40T1200 40T1000 40T800 40T600 40T400 40T200 40T0 40Z" fill="#5b2ad1"/></svg>
-    <svg class="front" viewBox="0 0 2400 130" preserveAspectRatio="none"><path d="M0 0H2400V58Q2325 104 2250 58T2100 58T1950 58T1800 58T1650 58T1500 58T1350 58T1200 58T1050 58T900 58T750 58T600 58T450 58T300 58T150 58T0 58Z" fill="#0e0a17"/><path d="M0 58Q75 12 150 58T300 58T450 58T600 58T750 58T900 58T1050 58T1200 58T1350 58T1500 58T1650 58T1800 58T1950 58T2100 58T2250 58T2400 58" fill="none" stroke="#d8c6ff" stroke-width="7" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>
-  </div>
-</div>
-
-
 <header class="nav" id="nav"><div class="wrap">
   <a class="brand" href="#accueil" aria-label="Accueil"><img src="img/logo-dwenyx-s.webp" alt="Dwenyx" width="479" height="175"></a>
-  <nav class="menu" id="menu" aria-label="Menu"><a href="#accueil">Accueil</a><a href="#videos">Vidéos</a><a href="#projets">Projets</a><a href="#communaute">Communauté</a><a href="#contact">Contact</a></nav>
+  <nav class="menu" id="menu" aria-label="Menu"><a href="#accueil">Accueil</a><a href="#reseaux">Réseaux</a><a href="#projets">Projets</a><a href="#contact">Contact</a></nav>
   <div class="nav-r">
     <button class="ibtn" id="shareBtn" type="button" aria-label="Partager le site"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V3m0 0L7.5 7.5M12 3l4.5 4.5M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/></svg></button>
     <button class="ibtn burger" id="burger" type="button" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="b1" d="M3 7h18"/><path class="b2" d="M3 12h18"/><path class="b3" d="M3 17h18"/></svg></button>
@@ -1386,12 +1386,12 @@ body{color:var(--label);background:#05080f;-webkit-font-smoothing:antialiased;le
       </div>
     </aside>
   </div>
-  <a class="scroll-hint" href="#videos">Découvrir<i></i></a>
+  <a class="scroll-hint" href="#reseaux">Découvrir<i></i></a>
 </section>
 
-<section class="sec" id="videos"><div class="wrap">
-  <div class="sec-h rv"><h2><span>01</span>Vidéos</h2><p>Ma dernière vidéo et mes chaînes. Les abonnés se mettent à jour tout seuls.</p></div>
-  <div class="grid2">
+<section class="sec" id="reseaux"><div class="wrap">
+  <div class="sec-h rv"><h2>Réseaux</h2><p>Toutes mes chaînes et ma communauté au même endroit.</p></div>
+  <div class="grid2 net">
     <div class="rv">
       <a class="latest panel vbig" id="latest" target="_blank" rel="noopener" hidden>
         <span class="lthumb"><img id="latestImg" alt="" width="480" height="360"><span class="lplay"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span></span>
@@ -1407,28 +1407,14 @@ body{color:var(--label);background:#05080f;-webkit-font-smoothing:antialiased;le
   <div class="games" id="games"></div>
 </div></section>
 
-<section class="sec" id="communaute"><div class="wrap">
-  <div class="sec-h rv"><h2><span>03</span>Communauté</h2><p>Rejoins le serveur Discord et le groupe Roblox Dwenyx Games.</p></div>
-  <div class="comm">
-    <div class="stack">
-      <a class="dcard rv" href="https://discord.gg/fVNDYgwKq3" target="_blank" rel="noopener">
-        <div class="dtop"><svg viewBox="0 0 24 24"><path d="M20.3 4.4A19.8 19.8 0 0015.4 3l-.6 1.3a18.4 18.4 0 00-5.6 0L8.6 3a19.7 19.7 0 00-4.9 1.4C.6 9-.3 13.6.1 18.1a19.9 19.9 0 006 3l1.3-2a12.9 12.9 0 01-2-1l.5-.4a14.2 14.2 0 0012.2 0l.5.4c-.6.4-1.3.7-2 1l1.3 2a19.8 19.8 0 006-3c.5-5.2-.8-9.7-3.6-13.7zM8 15.4c-1.2 0-2.2-1.1-2.2-2.4S6.8 10.6 8 10.6s2.2 1.1 2.2 2.4-1 2.4-2.2 2.4zm8 0c-1.2 0-2.2-1.1-2.2-2.4s1-2.4 2.2-2.4 2.2 1.1 2.2 2.4-1 2.4-2.2 2.4z"/></svg><div><b>Dwenyx Community</b><small>discord.gg/fVNDYgwKq3</small></div></div>
-        <div class="dmem"><span id="dcPill" hidden><b id="dcMembers">–</b>membres</span><span>Annonces, sorties de vidéos, jeux à tester</span></div>
-        <span class="dgo">Rejoindre le serveur ↗</span>
-      </a>
-      <div class="rv" id="robloxLink"></div>
-      <div class="panel rv"><h3 style="margin:0 0 12px;font-size:16px">À propos</h3><ul class="bio" id="about" aria-label="Présentation"></ul></div>
-    </div>
-    <a class="tagcard rv" href="https://www.roblox.com/fr/communities/926461867/Dwenyx-Games#!/about" target="_blank" rel="noopener"><img src="img/dwenyx-games.webp" alt="Groupe Roblox Dwenyx Games" loading="lazy"><span class="rg"><b>Groupe Roblox · Dwenyx Games</b><em id="rgPill" hidden><strong id="rgMembers">–</strong> membres</em><i>Rejoindre ↗</i></span></a>
-  </div>
-  <p class="thanks rv" style="max-width:none;margin-top:16px"><span class="th-heart" aria-hidden="true">💙</span>Merci à vous tous de me suivre, c'est grâce à vous que tout ça existe !</p>
-</div></section>
-
 <section class="sec" id="contact"><div class="wrap">
-  <div class="sec-h rv"><h2><span>04</span>Contact</h2><p>Partenariat de marque, collab entre créateurs ou autre : écris-moi.</p></div>
+  <div class="sec-h rv"><h2>À propos & contact</h2><p>Partenariat de marque, collab entre créateurs ou autre : écris-moi.</p></div>
   <div class="cgrid">
-    <div class="panel cinfo rv"><p>Pour les collabs et partenariats, le plus simple est de m'écrire directement. Clique sur l'adresse pour la copier.</p><div id="mailLink"></div></div>
-    <div class="panel rv"><div class="cform-box" id="cformBox" hidden><div id="formHome"><div class="cwrap" id="cwrap">
+    <div class="stack">
+      <div class="panel rv"><h3 class="ptitle">À propos</h3><ul class="bio" id="about" aria-label="Présentation"></ul></div>
+      <div class="panel rv"><h3 class="ptitle">E-mail</h3><p class="pnote">Clique sur l'adresse pour la copier.</p><div id="mailLink"></div></div>
+    </div>
+    <div class="panel rv"><h3 class="ptitle">M'écrire</h3><div class="cform-box" id="cformBox" hidden><div id="formHome"><div class="cwrap" id="cwrap">
     <div id="sheetForm">
       <p class="sheet-sub">Ton message arrive directement dans ma boîte mail. Je te réponds sur l'adresse que tu indiques.</p>
       <form id="cform" novalidate>
@@ -1452,8 +1438,9 @@ body{color:var(--label);background:#05080f;-webkit-font-smoothing:antialiased;le
       <button class="btn" type="button" data-cclose>Fermer</button>
     </div>
 </div></div>
-</div><p class="cform-off" id="cformOff">Écris-moi à cette adresse, je te réponds dès que possible.</p></div>
+</div><p class="cform-off" id="cformOff">Écris-moi à l'adresse e-mail, je te réponds dès que possible.</p></div>
   </div>
+  <p class="thanks rv"><span class="th-heart" aria-hidden="true">💙</span>Merci à vous tous de me suivre, c'est grâce à vous que tout ça existe !</p>
 </div></section>
 
 <div class="site-foot"><div class="wrap"><img src="img/logo-dwenyx-s.webp" alt="" width="479" height="175"><footer><span class="visits-f"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5c-7 0-10 7-10 7s3 7 10 7 10-7 10-7-3-7-10-7zm0 11a4 4 0 110-8 4 4 0 010 8z"/></svg><span id="views">–</span> visites</span><span id="clock">--:--</span><span>© 2026 Dwenyx</span></footer></div></div>
@@ -1681,8 +1668,11 @@ const lnkHTML=x=>{
     :`<a class="lnk" style="--c:${x.c}" href="${x.a}" target="_blank" rel="noopener">${inner}</a>`;
 };
 const byId=id=>L.find(x=>x.id===id);
-$("socials").innerHTML=["youtube","tiktok","tiktok2"].map(k=>lnkHTML(byId(k))).join("");
-$("robloxLink").innerHTML=lnkHTML(byId("roblox"));
+const memRow=(href,c,icon,t,s,id)=>`<a class="lnk" style="--c:${c}" href="${href}" target="_blank" rel="noopener"><span class="ic">${icon}</span><span class="t"><b>${t}</b><small>${s}</small></span><span class="subs" id="${id}Pill" hidden><b id="${id}Members">–</b><i>membres</i></span><span class="go">↗</span></a>`;
+$("socials").innerHTML=["youtube","tiktok","tiktok2"].map(k=>lnkHTML(byId(k))).join("")
+  +memRow(PROFILE.discordInvite||"https://discord.gg/fVNDYgwKq3","#5865F2",SVG.discord,"Discord · Dwenyx Community","discord.gg/fVNDYgwKq3","dc")
+  +lnkHTML(byId("roblox"))
+  +memRow("https://www.roblox.com/fr/communities/926461867/Dwenyx-Games#!/about","#0a0f1a",'<img src="img/dwenyx-games.webp" alt="" width="40" height="40">',"Groupe Roblox · Dwenyx Games","roblox.com/communities","rg");
 $("mailLink").innerHTML=lnkHTML(byId("email"));
 /* Projets : carrousel 3D pour les jeux Roblox, cartes simples pour le reste */
 const slug=s=>s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"_").replace(/^_|_$/g,"");
@@ -1773,20 +1763,16 @@ document.addEventListener("click",e=>{
   if(e.target.closest("[data-cclose]")){resetForm();}
 });
 
-/* Logo de l'accueil : il s'oriente vers la souris, comme un objet en 3D */
+/* Logo de l'accueil (version sans 3D) : il regarde la souris seulement quand on passe dessus */
 (()=>{
-  const el=document.querySelector(".logo-anim");if(!el||reduceMotion||IS_MOBILE)return;
+  const el=document.querySelector(".logo-anim"),zone=document.querySelector(".hero h1");if(!el||!zone||reduceMotion||IS_MOBILE)return;
   let tx=0,ty=0,x=0,y=0,run=false;
-  const step=()=>{x+=(tx-x)*.1;y+=(ty-y)*.1;el.style.setProperty("--lry",x.toFixed(2)+"deg");el.style.setProperty("--lrx",y.toFixed(2)+"deg");
+  const step=()=>{x+=(tx-x)*.12;y+=(ty-y)*.12;el.style.setProperty("--lry",x.toFixed(2)+"deg");el.style.setProperty("--lrx",y.toFixed(2)+"deg");
     if(Math.abs(tx-x)>.02||Math.abs(ty-y)>.02)requestAnimationFrame(step);else run=false};
-  addEventListener("pointermove",e=>{
-    if(e.pointerType==="touch")return;
-    const r=el.getBoundingClientRect();if(r.bottom<0)return;
-    const dx=(e.clientX-(r.left+r.width/2))/innerWidth,dy=(e.clientY-(r.top+r.height/2))/innerHeight;
-    tx=Math.max(-1,Math.min(1,dx*2))*22;ty=Math.max(-1,Math.min(1,dy*2))*-16;
-    if(!run){run=true;requestAnimationFrame(step)}
-  },{passive:true});
-  document.addEventListener("pointerleave",()=>{tx=0;ty=0;if(!run){run=true;requestAnimationFrame(step)}});
+  const kick=()=>{if(!run){run=true;requestAnimationFrame(step)}};
+  zone.addEventListener("pointermove",e=>{if(e.pointerType==="touch")return;const r=zone.getBoundingClientRect();
+    tx=((e.clientX-r.left)/r.width-.5)*2*20;ty=((e.clientY-r.top)/r.height-.5)*-2*14;kick()});
+  zone.addEventListener("pointerleave",()=>{tx=ty=0;kick()});
 })();
 
 /* Menu mobile (bouton ☰) */
@@ -2125,37 +2111,16 @@ document.addEventListener("dragstart",e=>{if(e.target.closest("img,canvas"))e.pr
 const lockImgs=root=>root.querySelectorAll("img").forEach(i=>{i.draggable=false;i.setAttribute("draggable","false")});
 lockImgs(document);new MutationObserver(m=>m.forEach(x=>x.addedNodes.forEach(n=>{if(n.nodeType===1)lockImgs(n.tagName==="IMG"?n.parentNode:n)}))).observe(document.body,{childList:true,subtree:true});
 
-/* ===== Entrée ===== */
-const gate=$("gate");
-/* Chargement : on attend les polices, les images, la vidéo (ordi) et quelques images calmes avant de laisser entrer */
-let gateReady=false;
-(()=>{
-  const bar=$("gbar"),t0=performance.now(),MIN=2300,MAX=5500;let pct=.04;
-  const set=v=>{pct=Math.max(pct,v);bar.style.transform=`scaleX(${pct})`};
-  const steps=[
-    (document.fonts?document.fonts.ready:Promise.resolve()).then(()=>set(.35)),
-    new Promise(r=>document.readyState==="complete"?r():addEventListener("load",r,{once:true})).then(()=>set(.7)),
-    Promise.resolve().then(()=>set(.9))
-  ];
-  const calm=()=>new Promise(r=>{let n=0;const f=()=>++n<8?requestAnimationFrame(f):r();requestAnimationFrame(f)}); /* ~8 images pour laisser tout se poser */
-  const done=()=>{if(gateReady)return;gateReady=true;set(1);
-    setTimeout(()=>{gate.classList.add("ready");$("gtap").hidden=false},Math.max(250,MIN-(performance.now()-t0)))};
-  Promise.all(steps).then(calm).then(done);
-  setTimeout(done,MAX);
-})();
-const enter=e=>{
-  if(gate.classList.contains("gone"))return;
-  if(!gate.classList.contains("ready"))return;
-  audioInit();SFX.enter();
-  if(e&&e.clientX!=null){const r=document.createElement("div");r.className="ripple";r.style.left=e.clientX+"px";r.style.top=e.clientY+"px";document.body.append(r);setTimeout(()=>r.remove(),900)}
-  gate.classList.add("gone");liquidDrops();
-  setTimeout(()=>{if(!liked)likeBtn.parentElement.classList.add("hint")},1600);
-  document.body.classList.add("entered");
-  $("sound").hidden=false;applySfx();applyMusic();
-  setTimeout(runCounters,500);
-};
-gate.addEventListener("click",enter);addEventListener("keydown",e=>{if(!gate.classList.contains("gone"))enter(e)});
-applySfx();audioInit();applyMusic();
+/* ===== Démarrage direct (plus d'écran d'intro) ===== */
+const gate=document.createElement("div");gate.classList.add("gone");
+document.body.classList.add("entered");
+$("sound").hidden=false;applySfx();
+setTimeout(runCounters,350);
+setTimeout(()=>{if(!liked)likeBtn.parentElement.classList.add("hint")},2500);
+/* les navigateurs n'autorisent le son qu'après un premier geste : la musique démarre au premier clic/toucher/touche */
+const firstGesture=()=>{audioInit();wakeAudio();applyMusic();["pointerdown","keydown","touchstart"].forEach(ev=>removeEventListener(ev,firstGesture,true))};
+["pointerdown","keydown","touchstart"].forEach(ev=>addEventListener(ev,firstGesture,true));
+applyMusic();
 
 /* Fond : grille de studs violets qui suit la souris */
 const cv=$("studs"),cx=cv.getContext("2d",{alpha:true,desynchronized:true});let W,H,mx=.5,my=.5,mouseSeen=false;

@@ -86,10 +86,11 @@ if(h1&&box&&!matchMedia("(max-width:720px)").matches&&webgl())(async()=>{
 
   const still=matchMedia("(prefers-reduced-motion:reduce)").matches,touch=window.IS_TOUCH;
   let tx=0,ty=0,rx=0,ry=0,visible=true;const t0=performance.now();
-  addEventListener("pointermove",e=>{if(e.pointerType==="touch")return;
-    const r=box.getBoundingClientRect(),dx=(e.clientX-(r.left+r.width/2))/innerWidth,dy=(e.clientY-(r.top+r.height/2))/innerHeight;
-    ty=Math.max(-1,Math.min(1,dx*2))*.42;tx=Math.max(-1,Math.min(1,dy*2))*.26},{passive:true});
-  document.addEventListener("pointerleave",()=>{tx=ty=0});
+  /* le logo ne regarde la souris que quand elle passe sur lui */
+  h1.addEventListener("pointermove",e=>{if(e.pointerType==="touch")return;
+    const r=h1.getBoundingClientRect(),dx=(e.clientX-r.left)/r.width-.5,dy=(e.clientY-r.top)/r.height-.5;
+    ty=Math.max(-1,Math.min(1,dx*2))*.42;tx=Math.max(-1,Math.min(1,dy*2))*.26});
+  h1.addEventListener("pointerleave",()=>{tx=ty=0});
   new IntersectionObserver(es=>{visible=es[0].isIntersecting}).observe(box);
   function frame(now){
     requestAnimationFrame(frame);
