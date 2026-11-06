@@ -1135,6 +1135,16 @@ html.menu-open .sound{display:none!important}
   .pcard .verified{width:18px;height:18px}
 }
 .pcard .verified{box-shadow:none!important;background:none!important;border:0!important;padding:0!important}.pcard .verified::before,.pcard .verified::after{display:none!important}
+/* ===== Logo qui ressort mieux ===== */
+.logo-glow::before{width:118%;height:175%;background:radial-gradient(ellipse at center,rgba(210,240,255,.55) 0,rgba(95,208,255,.35) 32%,rgba(30,155,255,.14) 55%,transparent 72%)}
+.logo-glow::after{background:radial-gradient(ellipse at center,rgba(255,255,255,.4),transparent 62%)}
+.logo3d canvas{filter:drop-shadow(0 14px 26px rgba(0,10,30,.55))}
+/* mobile : pas de gros logo, la place va au contenu */
+@media (max-width:720px){
+  .hero h1{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);margin:0}
+  .hero{padding-top:calc(var(--nav-h) + 30px)}
+  .hero-tag{font-size:17px;font-weight:500;max-width:330px}
+}
 
 </style>
 <script>window.IS_TOUCH=matchMedia("(pointer:coarse)").matches||/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);if(IS_TOUCH)document.documentElement.classList.add("touch")</script>

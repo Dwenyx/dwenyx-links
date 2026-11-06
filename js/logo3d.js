@@ -3,7 +3,7 @@ import * as THREE from "./three.module.min.js";
 const h1=document.querySelector(".hero h1.logo-glow");
 const box=document.querySelector(".logo3d");
 function webgl(){try{const c=document.createElement("canvas");return !!(c.getContext("webgl2")||c.getContext("webgl"))}catch(e){return false}}
-if(h1&&box&&webgl())(async()=>{
+if(h1&&box&&!matchMedia("(max-width:720px)").matches&&webgl())(async()=>{
   /* relief "gonflé" : une carte de hauteur (16 bits) devient une surface 3D arrondie, devant + derrière */
   const img=await new Promise((ok,ko)=>{const im=new Image();im.onload=()=>ok(im);im.onerror=ko;im.src="img/logo-height.png"});
   const GW=img.width,GH=img.height;
@@ -38,7 +38,7 @@ if(h1&&box&&webgl())(async()=>{
   /* décor reflété : ciel blanc, bandes bleues, sol bleu nuit, panneaux lumineux */
   const ec=document.createElement("canvas");ec.width=1024;ec.height=512;const g=ec.getContext("2d");
   const gr=g.createLinearGradient(0,0,0,512);
-  [[0,"#ffffff"],[.22,"#e6f6ff"],[.4,"#9fd8ff"],[.5,"#3f9cf0"],[.58,"#1a5fc4"],[.72,"#0b2f6e"],[1,"#020d24"]].forEach(([o,k])=>gr.addColorStop(o,k));
+  [[0,"#ffffff"],[.25,"#f2faff"],[.42,"#bfe6ff"],[.52,"#6cbcff"],[.62,"#2f80e0"],[.78,"#164a9e"],[1,"#0a2a5e"]].forEach(([o,k])=>gr.addColorStop(o,k));
   g.fillStyle=gr;g.fillRect(0,0,1024,512);
   const strip=(x,w,a)=>{const l=g.createLinearGradient(x-w,0,x+w,0);l.addColorStop(0,"rgba(255,255,255,0)");l.addColorStop(.5,"rgba(255,255,255,"+a+")");l.addColorStop(1,"rgba(255,255,255,0)");g.fillStyle=l;g.fillRect(x-w,40,w*2,230)};
   strip(180,46,.95);strip(470,30,.8);strip(760,60,.9);strip(930,24,.7);
@@ -47,14 +47,14 @@ if(h1&&box&&webgl())(async()=>{
 
   const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,powerPreference:"high-performance"});
   renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));renderer.outputColorSpace=THREE.SRGBColorSpace;
-  renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.2;
+  renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.6;
   const scene=new THREE.Scene();
   const pm=new THREE.PMREMGenerator(renderer);scene.environment=pm.fromEquirectangular(etex).texture;etex.dispose();pm.dispose();
-  const mat=new THREE.MeshPhysicalMaterial({color:0xd2ebff,metalness:1,roughness:.06,clearcoat:1,clearcoatRoughness:.04,envMapIntensity:1.4,iridescence:.25,iridescenceIOR:1.3});
+  const mat=new THREE.MeshPhysicalMaterial({color:0xeaf6ff,metalness:1,roughness:.06,clearcoat:1,clearcoatRoughness:.04,envMapIntensity:1.6,iridescence:.25,iridescenceIOR:1.3});
   const mesh=new THREE.Mesh(geo,mat);const grp=new THREE.Group();grp.add(mesh);scene.add(grp);
-  const key=new THREE.DirectionalLight(0xffffff,1.4);key.position.set(-.6,1,1.2);scene.add(key);
+  const key=new THREE.DirectionalLight(0xffffff,2.2);key.position.set(-.6,1,1.2);scene.add(key);
   const rim=new THREE.DirectionalLight(0x5fd0ff,1.6);rim.position.set(.8,-.4,-.6);scene.add(rim);
-  scene.add(new THREE.AmbientLight(0x6fb8ff,.35));
+  scene.add(new THREE.AmbientLight(0xbfe6ff,.6));
   const cam=new THREE.PerspectiveCamera(24,2,.01,20);
   const cv=renderer.domElement;cv.setAttribute("aria-hidden","true");box.append(cv);
 
