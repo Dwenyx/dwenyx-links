@@ -1336,6 +1336,12 @@ body{color:var(--label);background:#05080f;-webkit-font-smoothing:antialiased;le
 .thanks{margin-top:28px!important;text-align:center}
 @media (max-width:900px){.net{grid-template-columns:1fr}}
 @media (max-width:900px){.net #socials{order:-1}}
+/* ===== Curseur main (PC uniquement) ===== */
+@media (hover:hover) and (pointer:fine){
+  html,html *{cursor:url(img/cursor-normal.png) 4 1,auto!important;cursor:image-set(url(img/cursor-normal.png) 1x,url(img/cursor-normal@2x.png) 2x) 4 1,auto!important}
+  html.press,html.press *{cursor:url(img/cursor-press.png) 1 2,auto!important;cursor:image-set(url(img/cursor-press.png) 1x,url(img/cursor-press@2x.png) 2x) 1 2,auto!important}
+  html input:not([type=range]):not([type=checkbox]),html textarea{cursor:text!important}
+}
 
 </style>
 <script>window.IS_TOUCH=matchMedia("(pointer:coarse)").matches||/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);if(IS_TOUCH)document.documentElement.classList.add("touch")</script>
@@ -1782,6 +1788,14 @@ document.addEventListener("click",e=>{
   $("menu").addEventListener("click",e=>{if(e.target.closest("a"))set(false)});
   addEventListener("keydown",e=>{if(e.key==="Escape")set(false)});
   addEventListener("resize",()=>{if(innerWidth>720)set(false)});
+})();
+/* Curseur : main « appuyée » pendant le clic (visible au moins un court instant même pour un clic rapide) */
+(()=>{if(!matchMedia("(hover:hover) and (pointer:fine)").matches)return;
+  const root=document.documentElement;let t0=0,tm=0;
+  [new Image().src="img/cursor-press.png",new Image().src="img/cursor-press@2x.png"];
+  addEventListener("pointerdown",e=>{if(e.pointerType!=="mouse")return;clearTimeout(tm);t0=performance.now();root.classList.add("press")},true);
+  const up=()=>{const left=Math.max(0,140-(performance.now()-t0));clearTimeout(tm);tm=setTimeout(()=>root.classList.remove("press"),left)};
+  addEventListener("pointerup",up,true);addEventListener("pointercancel",up,true);addEventListener("blur",up);
 })();
 
 /* Copier */
