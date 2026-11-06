@@ -51,6 +51,23 @@ if(h1&&box&&!matchMedia("(max-width:720px)").matches&&webgl())(async()=>{
   const scene=new THREE.Scene();
   const pm=new THREE.PMREMGenerator(renderer);scene.environment=pm.fromEquirectangular(etex).texture;etex.dispose();pm.dispose();
   const mat=new THREE.MeshPhysicalMaterial({color:0xeaf6ff,metalness:1,roughness:.06,clearcoat:1,clearcoatRoughness:.04,envMapIntensity:1.6,iridescence:.25,iridescenceIOR:1.3});
+  /* reflet chrome multicolore pastel qui balaie le logo de temps en temps */
+  const sweep={value:-9};
+  mat.onBeforeCompile=sh=>{
+    sh.uniforms.uSweep=sweep;
+    sh.vertexShader=sh.vertexShader.replace("#include <common>","#include <common>\nvarying vec3 vWP;")
+      .replace("#include <project_vertex>","#include <project_vertex>\nvWP=(modelMatrix*vec4(transformed,1.0)).xyz;");
+    sh.fragmentShader=sh.fragmentShader.replace("#include <common>","#include <common>\nvarying vec3 vWP;\nuniform float uSweep;")
+      .replace("#include <opaque_fragment>",`
+        float u=vWP.x+vWP.y*.55-uSweep;
+        float band=smoothstep(.34,0.,abs(u));
+        vec3 rb=.5+.5*cos(6.2832*(u*1.6+vec3(0.,.33,.67)));
+        vec3 pastel=mix(rb,vec3(1.),.22);
+        float fres=.55+.45*pow(1.-abs(dot(normalize(vNormal),vec3(0.,0.,1.))),1.5);
+        float lum=dot(outgoingLight,vec3(.299,.587,.114));
+        outgoingLight=mix(outgoingLight,pastel*(.55+.65*clamp(lum,0.,1.2)),band*fres);
+        #include <opaque_fragment>`);
+  };
   const mesh=new THREE.Mesh(geo,mat);const grp=new THREE.Group();grp.add(mesh);scene.add(grp);
   const key=new THREE.DirectionalLight(0xffffff,2.2);key.position.set(-.6,1,1.2);scene.add(key);
   const rim=new THREE.DirectionalLight(0x5fd0ff,1.6);rim.position.set(.8,-.4,-.6);scene.add(rim);
@@ -81,6 +98,8 @@ if(h1&&box&&!matchMedia("(max-width:720px)").matches&&webgl())(async()=>{
     const sx=still?0:Math.sin(t*.6)*.05,sy=still?0:Math.sin(t*.45)*(touch?.22:.08);
     rx+=(tx+sx-rx)*.08;ry+=(ty+sy-ry)*.08;
     grp.rotation.set(rx,ry,0);
+    /* un passage toutes les ~7 s, qui dure 1,8 s */
+    const ph=(t%7)/1.8;sweep.value=ph<1?-1.05+ph*2.1:-9;
     renderer.render(scene,cam);
   }
   renderer.render(scene,cam);requestAnimationFrame(frame);
