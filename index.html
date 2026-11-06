@@ -1119,6 +1119,22 @@ body{background:#060c17}
 }
 html.menu-open .sound{display:none!important}
 @media (hover:none){.menu a:hover{color:#fff}.menu a.on{color:var(--sky)}}
+/* ===== Profil : badge certifié + « Content creator » dans la carte ===== */
+.pcard .pn-row{display:flex;align-items:center;gap:6px}
+.pcard .verified{width:20px;height:20px;flex:none}
+.pcard .verified svg{width:100%;height:100%}
+.pcard .role{align-self:flex-start;margin-top:6px;font-size:9.5px;padding:4px 9px;background:rgba(255,255,255,.05);border:1px solid var(--soft-2);box-shadow:none}
+.pcard .role svg{width:12px;height:12px}
+/* logo d'accueil un peu plus bas */
+.hero-id{gap:20px}
+.hero h1{margin-top:28px}
+@media (max-width:720px){
+  .hero{padding-top:calc(var(--nav-h) + 54px)}
+  .hero h1{margin-top:0}
+  .hero-id{gap:18px}
+  .pcard .verified{width:18px;height:18px}
+}
+.pcard .verified{box-shadow:none!important;background:none!important;border:0!important;padding:0!important}.pcard .verified::before,.pcard .verified::after{display:none!important}
 
 </style>
 <script>window.IS_TOUCH=matchMedia("(pointer:coarse)").matches||/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);if(IS_TOUCH)document.documentElement.classList.add("touch")</script>
@@ -1150,7 +1166,6 @@ html.menu-open .sound{display:none!important}
   <div class="wrap">
     <div class="hero-id">
       <h1 class="logo-glow"><span class="logo-anim"><span class="lx" aria-hidden="true" style="--i:22;background:#082256"></span><span class="lx" aria-hidden="true" style="--i:21;background:#0a285f"></span><span class="lx" aria-hidden="true" style="--i:20;background:#0d2e68"></span><span class="lx" aria-hidden="true" style="--i:19;background:#103471"></span><span class="lx" aria-hidden="true" style="--i:18;background:#133b7a"></span><span class="lx" aria-hidden="true" style="--i:17;background:#154183"></span><span class="lx" aria-hidden="true" style="--i:16;background:#18478c"></span><span class="lx" aria-hidden="true" style="--i:15;background:#1b4e95"></span><span class="lx" aria-hidden="true" style="--i:14;background:#1e549e"></span><span class="lx" aria-hidden="true" style="--i:13;background:#215aa7"></span><span class="lx" aria-hidden="true" style="--i:12;background:#2361b0"></span><span class="lx" aria-hidden="true" style="--i:11;background:#2667b9"></span><span class="lx" aria-hidden="true" style="--i:10;background:#296dc3"></span><span class="lx" aria-hidden="true" style="--i:9;background:#2c73cc"></span><span class="lx" aria-hidden="true" style="--i:8;background:#337cd3"></span><span class="lx" aria-hidden="true" style="--i:7;background:#4489d9"></span><span class="lx" aria-hidden="true" style="--i:6;background:#5596de"></span><span class="lx" aria-hidden="true" style="--i:5;background:#66a3e4"></span><span class="lx" aria-hidden="true" style="--i:4;background:#77b0e9"></span><span class="lx" aria-hidden="true" style="--i:3;background:#88bdef"></span><span class="lx" aria-hidden="true" style="--i:2;background:#99caf4"></span><span class="lx" aria-hidden="true" style="--i:1;background:#aad7fa"></span><img class="lf" src="img/logo-dwenyx.webp" alt="Dwenyx" width="958" height="351"><span class="logo-shine" aria-hidden="true"></span></span><span class="logo3d" aria-hidden="true"></span></h1>
-      <div class="who-row"><div class="role"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6.5A2.5 2.5 0 015.5 4h8A2.5 2.5 0 0116 6.5v1.6l4.4-2.6A1 1 0 0122 6.4v11.2a1 1 0 01-1.6.9L16 15.9v1.6a2.5 2.5 0 01-2.5 2.5h-8A2.5 2.5 0 013 17.5v-11z"/></svg><span id="status">Content Creator</span></div><span class="verified" title="Compte certifié" aria-label="Compte certifié"><svg viewBox="0 0 24 24"><path class="seal" d="M12 1.5l2.4 1.8 3-.2 1 2.8 2.6 1.6-.7 2.9 1.2 2.8-2.2 2 -.3 3-2.9.8-1.7 2.5-2.9-.9-2.8 1.2-2-2.2-3-.3-.8-2.9L.7 13.6l1-2.8-1-2.9L3.4 6.4l.6-3 3-.2L9.4 1.5z"/><path class="tick" d="M7.5 12.3l3 3 6-6.2" fill="none"/></svg></span></div>
       <p class="hero-tag">Créateur de contenu Roblox. Des vidéos sur YouTube et TikTok, et mes propres jeux à tester.</p>
       <div class="hero-cta">
         <a class="cta yt" href="https://www.youtube.com/@Dwenyxrbx" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M23.5 6.2a3 3 0 00-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 00.5 6.2 31 31 0 000 12a31 31 0 00.5 5.8 3 3 0 002.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 002.1-2.1A31 31 0 0024 12a31 31 0 00-.5-5.8zM9.6 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg>YouTube</a>
@@ -1161,7 +1176,7 @@ html.menu-open .sound{display:none!important}
     <aside class="pcard" aria-label="Profil">
       <div class="pcard-top">
         <div class="avatar" id="avatar" title="Clique sur moi"></div>
-        <div class="pname"><b>DWENYX</b><small>@Dwenyx_783</small></div>
+        <div class="pname"><span class="pn-row"><b>DWENYX</b><span class="verified" title="Compte certifié" aria-label="Compte certifié"><svg viewBox="0 0 24 24"><path class="seal" d="M12 1.5l2.4 1.8 3-.2 1 2.8 2.6 1.6-.7 2.9 1.2 2.8-2.2 2 -.3 3-2.9.8-1.7 2.5-2.9-.9-2.8 1.2-2-2.2-3-.3-.8-2.9L.7 13.6l1-2.8-1-2.9L3.4 6.4l.6-3 3-.2L9.4 1.5z"/><path class="tick" d="M7.5 12.3l3 3 6-6.2" fill="none"/></svg></span></span><small>@Dwenyx_783</small><div class="role"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6.5A2.5 2.5 0 015.5 4h8A2.5 2.5 0 0116 6.5v1.6l4.4-2.6A1 1 0 0122 6.4v11.2a1 1 0 01-1.6.9L16 15.9v1.6a2.5 2.5 0 01-2.5 2.5h-8A2.5 2.5 0 013 17.5v-11z"/></svg><span id="status">Content Creator</span></div></div>
       <div class="like">
         <span class="like-hint" aria-hidden="true">Like ma page ! 💙</span>
         <span class="like-count" id="likeCount" aria-live="polite">–</span>
