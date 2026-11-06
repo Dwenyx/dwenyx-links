@@ -1,7 +1,7 @@
 <!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Dwenyx · Site officiel</title><meta name="description" content="Dwenyx — Créateur de contenu Roblox sur YouTube et TikTok. Vidéos, jeux Roblox et partenariats : contactdwenyx@gmail.com"><meta name="theme-color" content="#050d1a"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="canonical" href="https://dwenyx.vercel.app/"><meta property="og:type" content="profile"><meta property="og:site_name" content="Dwenyx"><meta property="og:title" content="Dwenyx · Page"><meta property="og:description" content="Créateur de contenu Roblox sur YouTube et TikTok. Mes vidéos, mes jeux et mes réseaux."><meta property="og:url" content="https://dwenyx.vercel.app/"><meta property="og:image" content="https://dwenyx.vercel.app/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Dwenyx · Content Creator · Vidéos Roblox sur YouTube &amp; TikTok"><meta property="og:locale" content="fr_FR"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Dwenyx · Page"><meta name="twitter:description" content="Créateur de contenu Roblox sur YouTube et TikTok."><meta name="twitter:image" content="https://dwenyx.vercel.app/og.png"><style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body><meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Fredoka:wght@500;600;700&family=Outfit:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Inter:wght@400;500;600;700;800&family=Outfit:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap">
 <style>
 /* Layout : fond en grille de "studs" violets, logo Dwenyx animé (emblème D + lettres-briques), carte profil avec bannière + menu à onglets */
 :root{
@@ -1197,92 +1197,134 @@ html.menu-open .sound{display:none!important}
 @media (prefers-reduced-motion:reduce){.cf-card{transition:none}}
 .cf{overflow-x:clip;overflow-y:visible;margin:0 -18px;padding-left:18px;padding-right:18px}html,body{overflow-x:clip}
 /* =====================================================================
-   STYLE CARTOON : contours épais, ombres dures, formes rondes, rebonds
+   THÈME iOS (mode sombre, style iPhone actuel) : une seule police,
+   textes clairs partout, cartes arrondies, boutons « capsule »
    ===================================================================== */
-:root{--f-toon:"Fredoka","Outfit",system-ui,sans-serif;--ink:#030b1a;--toon-bd:#1f4a85;--toon-bg:#0f2242;--toon-bg2:#132a50;
-  --bounce:cubic-bezier(.34,1.56,.64,1)}
-/* titres */
-.sec-h h2{font-family:var(--f-toon);font-weight:700;font-size:clamp(32px,4.2vw,46px);letter-spacing:0;color:#fff;
-  text-shadow:0 4px 0 #0b5fd6,0 7px 0 var(--ink)}
-.sec-h p{font-family:var(--f-toon);font-weight:500;font-size:15px}
-.gfold h3{font-family:var(--f-toon);font-weight:600;font-size:18px}
-.menu a,.cta,.btn,.dgo,.pname b,.cf-name,.cf-play,.cf-chip,.tnum b,.dcard .dtop b,.lnk .t b,.about h3,.panel h3,.tagcard .rg b,.thanks,.vbig .ltxt b,.hero-tag{font-family:var(--f-toon)!important}
-/* cartes */
-.panel,.lnk,.pj,.vbig,.latest,.tagcard,.pcard,.cinfo,.folder{background:var(--toon-bg)!important;border:3px solid var(--toon-bd)!important;border-radius:22px!important;
-  box-shadow:0 6px 0 var(--ink)!important;transition:transform .35s var(--bounce),box-shadow .35s var(--bounce),border-color .2s!important}
-.lnk:hover,.pj:hover,.vbig:hover,.tagcard:hover,.folder:hover{transform:translateY(-4px) rotate(-.6deg)!important;box-shadow:0 10px 0 var(--ink)!important;border-color:#2f6fc0!important;background:var(--toon-bg2)!important}
-.lnk:active,.pj:active{transform:translateY(2px)!important;box-shadow:0 3px 0 var(--ink)!important}
-.lnk .ic{border-radius:14px!important;border:2px solid rgba(0,0,0,.35)!important}
-.lnk .t b{font-weight:600;font-size:16px}
-.pcard{background:#0c1d3a!important;border-color:#2a5b9e!important;box-shadow:0 8px 0 var(--ink)!important}
-.pcard .avatar{border:3px solid #fff!important;border-radius:20px;box-shadow:0 4px 0 var(--ink)!important}
-.pcard .tnum b{font-weight:700;font-size:26px}
-.pcard .tgrid{border-color:var(--toon-bd)!important}
-.xp .bar{height:12px!important;border:2px solid var(--ink)!important;background:#081834!important;border-radius:99px!important}
-.xp .bar b{border-radius:99px;background:linear-gradient(90deg,#5fd0ff,#1e9bff)!important}
-/* boutons */
-.cta{font-weight:600!important;font-size:15px;border-radius:16px!important;border:3px solid var(--ink)!important;transition:transform .3s var(--bounce),box-shadow .3s var(--bounce)!important}
-.cta.yt{background:#ff3b30!important;box-shadow:0 5px 0 #8a1008!important}.cta.yt svg{fill:#fff}
-.cta.tt{background:#1c1c24!important;box-shadow:0 5px 0 #000!important}
-.cta.gm{background:#1e9bff!important;box-shadow:0 5px 0 #073c8f!important}.cta.gm svg{fill:#fff}
-.cta:hover{transform:translateY(-4px) scale(1.03)!important}
-.cta:active{transform:translateY(3px)!important;box-shadow:0 1px 0 var(--ink)!important}
-.btn,.cf-play{font-weight:700!important;font-size:16px!important;color:#fff!important;background:#1e9bff!important;border:3px solid var(--ink)!important;border-radius:16px!important;
-  box-shadow:0 5px 0 #073c8f!important;transition:transform .3s var(--bounce),box-shadow .3s var(--bounce)!important}
-.btn:hover,.cf-play:hover{transform:translateY(-3px) scale(1.02);background:#38a8ff!important}
-.btn:active,.cf-play:active{transform:translateY(3px);box-shadow:0 1px 0 #073c8f!important}
-.ibtn{transition:transform .3s var(--bounce),background .2s}
-.ibtn:hover{transform:scale(1.12) rotate(-6deg)}
-/* discord */
-.dcard{background:#5865F2!important;border:3px solid var(--ink)!important;box-shadow:0 6px 0 #262c8a!important;transition:transform .35s var(--bounce)!important}
-.dcard:hover{transform:translateY(-4px) rotate(.6deg)!important;background:#6470f5!important}
-.dcard .dtop svg{fill:#fff}
-.dcard .dgo{background:#fff!important;color:#3c45c7!important;border:3px solid var(--ink)!important;box-shadow:0 4px 0 var(--ink)!important;font-weight:700;border-radius:14px}
-.tagcard .rg{background:#0c1d3a!important;border:3px solid var(--ink)!important;border-radius:16px!important}
-.tagcard .rg i{background:#1e9bff;border:2px solid var(--ink);border-radius:10px}
-/* bulle merci */
-.thanks{display:block;width:fit-content;margin:22px auto 0!important;padding:12px 22px!important;background:#132a50!important;border:3px solid var(--toon-bd)!important;border-radius:999px!important;
-  box-shadow:0 5px 0 var(--ink)!important;color:#e6f4ff!important;font-weight:600;font-size:15px}
-/* son */
-.sound{border:3px solid var(--ink)!important;box-shadow:0 5px 0 var(--ink)!important;background:#0c1d3a!important}
-
-/* ---------- carrousel version cartoon ---------- */
-.cf-stage{perspective:none;transform-style:flat}
-.cf-card{background:var(--toon-bg);border:4px solid var(--toon-bd);border-radius:28px;box-shadow:0 10px 0 var(--ink);
-  transition:transform .75s var(--bounce),opacity .45s,filter .45s,border-color .3s,box-shadow .3s;filter:brightness(.62) saturate(.85)}
-.cf-card.on{border-color:#5fd0ff;box-shadow:0 10px 0 var(--ink),0 0 0 6px rgba(95,208,255,.18)}
-.cf-shot{margin:10px 10px 0;border-radius:20px;border:3px solid var(--ink);aspect-ratio:16/9}
-.cf-shot::after{display:none}
-.cf-tag{left:10px;top:10px;font-family:var(--f-toon);font-size:12px;font-weight:600;letter-spacing:0;text-transform:none;padding:5px 12px 5px 10px;border-radius:999px;
-  background:#22c55e;border:3px solid var(--ink);box-shadow:0 3px 0 var(--ink);display:inline-flex;align-items:center;gap:6px}
-.cf-tag i{width:8px;height:8px;border-radius:50%;background:#fff;animation:ping 1.6s infinite}
-.cf-tag.dev{background:#f59e0b}.cf-tag.beta{background:#1e9bff}
-.cf-body{padding:14px 18px 20px}
-.cf-name{font-family:var(--f-toon)!important;font-weight:700;font-size:26px;margin:0 0 10px;text-shadow:0 3px 0 #0b5fd6}
-.cf-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
-.cf-chip{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;background:#16305a;border:2px solid #2a5b9e;font-weight:600;font-size:14px;color:#eaf6ff}
-.cf-chip i{font-style:normal}
-.cf-desc{margin:0 0 16px;font-size:14.5px;line-height:1.45;color:var(--muted)}
-.cf-play{padding:14px;font-size:18px!important}
-.cf-prog{height:10px;border-radius:99px;border:2px solid var(--ink);background:#081834;margin-top:26px}
-.cf-prog b{border-radius:99px;background:linear-gradient(90deg,#5fd0ff,#1e9bff)}
-.cf-ctl{gap:18px;margin-top:18px}
-.cf-btn{width:54px;height:54px;border-radius:50%;background:#1e9bff;border:3px solid var(--ink);box-shadow:0 5px 0 #073c8f;font-size:16px;
-  transition:transform .3s var(--bounce),box-shadow .3s var(--bounce)}
-.cf-btn:hover{transform:translateY(-3px) scale(1.08);background:#38a8ff}
-.cf-btn:active{transform:translateY(3px);box-shadow:0 1px 0 #073c8f}
-.cf-dots{gap:8px}
-.cf-dots button{width:14px;height:14px;border-radius:50%;border:2px solid var(--ink);background:#2a4a78;transition:width .35s var(--bounce),background .3s}
-.cf-dots button.on{width:34px;border-radius:99px;background:#5fd0ff;border-color:var(--ink)}
-.cf-n{font-family:var(--f-toon);font-weight:600;font-size:15px}
-.cf-hint{font-family:var(--f-toon);font-size:13px}
-@media (max-width:720px){
-  .sec-h h2{font-size:34px}
-  .cf-name{font-size:22px}
-  .cf-chip{font-size:13px;padding:5px 10px}
-  .cf-btn{width:48px;height:48px}
-  .cta{font-size:14px!important;padding:10px 6px!important}
+:root{
+  --f-ios:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Inter","Segoe UI",system-ui,sans-serif;
+  --ios-blue:#0A84FF;--ios-blue-2:#409CFF;--ios-green:#30D158;--ios-red:#FF453A;--ios-orange:#FF9F0A;
+  --label:#ffffff;--label-2:rgba(235,240,255,.66);--label-3:rgba(235,240,255,.42);
+  --fill:rgba(120,140,170,.16);--fill-2:rgba(120,140,170,.24);
+  --cell:#111a2b;--cell-2:#162238;--sep:rgba(255,255,255,.08);
+  --rim:inset 0 1px 0 rgba(255,255,255,.07),inset 0 0 0 .5px rgba(255,255,255,.08);
+  --ios-ease:cubic-bezier(.32,.72,0,1);
+  --ink:#ffffff;--muted:var(--label-2)
 }
+/* une seule police partout */
+body,body *:not(svg):not(path){font-family:var(--f-ios)!important}
+body{color:var(--label);background:#05080f;-webkit-font-smoothing:antialiased;letter-spacing:-.01em}
+#studs{opacity:.18}
+/* titres façon « grand titre » iOS */
+.sec-h h2{font-weight:800;font-size:clamp(30px,3.4vw,38px);letter-spacing:-.03em;text-shadow:none;color:var(--label)}
+.sec-h p{color:var(--label-2);font-size:15px;font-weight:400}
+.gfold h3{font-size:20px;font-weight:700;letter-spacing:-.02em;color:var(--label)}
+.gfold h3 svg{display:none}
+.gfold h3 small{font-size:13px;font-weight:500;color:var(--label-3)}
+/* cellules / cartes */
+.panel,.lnk,.pj,.vbig,.latest,.tagcard,.cinfo,.folder{background:var(--cell)!important;border:0!important;border-radius:22px!important;box-shadow:var(--rim)!important;
+  transition:transform .45s var(--ios-ease),background .2s!important}
+.lnk:hover,.pj:hover,.vbig:hover,.tagcard:hover{transform:scale(1.015)!important;background:var(--cell-2)!important;box-shadow:var(--rim)!important}
+.lnk:active,.pj:active,.vbig:active{transform:scale(.98)!important}
+.lnk{padding:12px 14px!important}
+.lnk .ic{border-radius:10px!important;border:0!important;width:40px;height:40px}
+.lnk .t b{font-size:16px;font-weight:600;color:var(--label)}
+.lnk .t small{font-size:13px;color:var(--label-3)}
+.lnk .subs b{font-weight:700;color:var(--label)}
+.lnk .subs i{color:var(--label-3)}
+.lnk .go{color:var(--label-3);opacity:1}
+.bio li,.about li,.cinfo p,.pj .d,.cf-desc{color:var(--label-2)!important}
+/* carte profil : comme un widget iOS */
+.pcard{background:rgba(14,22,38,.92)!important;border:0!important;border-radius:28px!important;box-shadow:var(--rim),0 30px 60px -30px rgba(0,0,0,.8)!important}
+.pcard .pname b{font-size:20px;font-weight:700;letter-spacing:-.02em;color:var(--label)}
+.pcard .pname small{color:var(--label-3);font-size:13px}
+.pcard .avatar{border:0!important;border-radius:18px!important;box-shadow:none!important}
+.pcard .role{font-size:11px;font-weight:600;letter-spacing:0;text-transform:none;background:var(--fill)!important;border:0!important;color:var(--label-2)}
+.pcard .tgrid{border-color:var(--sep)!important}
+.pcard .tnum b{font-weight:700;letter-spacing:-.02em;color:var(--label)}
+.pcard .tnum span{font-size:11px;font-weight:500;letter-spacing:0;text-transform:none;color:var(--label-3)}
+.pcard .tnum + .tnum{border-left-color:var(--sep)!important}
+.xp .l{font-size:12px;color:var(--label-2)}
+.xp .l strong{color:var(--label)}
+.xp .bar{height:6px!important;border:0!important;background:var(--fill)!important;border-radius:99px!important}
+.xp .bar b{border-radius:99px;background:var(--ios-blue)!important}
+/* boutons capsule */
+.cta{border-radius:999px!important;border:0!important;box-shadow:none!important;font-weight:600!important;font-size:15px;padding:12px 20px;transition:transform .35s var(--ios-ease),background .2s!important}
+.cta.yt,.cta.tt,.cta.gm{background:rgba(255,255,255,.14)!important;color:#fff}
+.cta.gm{background:var(--ios-blue)!important}
+.cta.yt svg{fill:var(--ios-red)}.cta.tt svg,.cta.gm svg{fill:#fff}
+.cta:hover{transform:scale(1.04)!important;background:rgba(255,255,255,.2)!important}.cta.gm:hover{background:var(--ios-blue-2)!important}
+.cta:active{transform:scale(.96)!important}
+.btn,.cf-play{background:var(--ios-blue)!important;color:#fff!important;border:0!important;border-radius:999px!important;box-shadow:none!important;font-weight:600!important;font-size:16px!important;
+  transition:transform .35s var(--ios-ease),background .2s!important}
+.btn:hover,.cf-play:hover{background:var(--ios-blue-2)!important;transform:scale(1.02)}
+.btn:active,.cf-play:active{transform:scale(.97)}
+.ibtn{color:var(--ios-blue-2)}
+.nbtn{background:var(--fill)!important;border:0!important;color:#fff}
+/* barre du haut */
+.nav,.nav.solid{background:rgba(5,8,15,.96)!important;border-bottom:.5px solid var(--sep)!important}
+.menu a{font-weight:500;color:var(--label-2);letter-spacing:-.01em}
+.menu a.on,.menu a:hover{color:var(--label)}
+@media (max-width:720px){.menu a{font-size:28px;font-weight:700;letter-spacing:-.03em;color:var(--label)}.menu a.on{color:var(--ios-blue-2)}}
+/* accueil */
+.hero-tag{font-weight:500;color:#fff}
+/* vidéos */
+.vbig .lkick{color:var(--ios-red);font-weight:600;font-size:12px;letter-spacing:0;text-transform:none}
+.vbig .ltxt b{color:var(--label)}
+.vbig .ltxt small,.vempty{color:var(--label-2)}
+/* projets (cartes simples) */
+.pj .pname{color:var(--label);font-weight:700}
+.pj .myrole{color:var(--label-2)}
+.pj .myrole strong{color:var(--label)}
+.pj .shot .st,.pj .shot .visits{font-size:11px;font-weight:600;letter-spacing:0;text-transform:none;border-radius:999px!important;background:rgba(0,0,0,.6)!important;color:#fff}
+/* discord + groupe roblox */
+.dcard{background:#5865F2!important;border:0!important;border-radius:24px!important;box-shadow:var(--rim)!important;transition:transform .45s var(--ios-ease)!important}
+.dcard:hover{transform:scale(1.015)!important}
+.dcard .dtop b{font-weight:700;color:#fff}.dcard .dtop small,.dcard .dmem{color:rgba(255,255,255,.85)}
+.dcard .dmem b{color:#fff;font-weight:700}
+.dcard .dgo{background:#fff!important;color:#4752c4!important;border:0!important;border-radius:999px!important;box-shadow:none!important;font-weight:600}
+.tagcard .rg{background:rgba(10,14,24,.88)!important;border:0!important;border-radius:16px!important;box-shadow:var(--rim)}
+.tagcard .rg b{color:#fff;font-weight:600}.tagcard .rg em{color:var(--label-2)}.tagcard .rg em strong{color:#fff}
+.tagcard .rg i{background:var(--ios-blue);border:0;border-radius:999px;font-weight:600;font-size:12px;padding:6px 12px}
+.thanks{color:var(--label-2)!important;font-weight:500}
+/* formulaire */
+.cwrap label,.cwrap .lbl{color:var(--label-2)}
+.cwrap input,.cwrap textarea,.cwrap select{background:var(--fill)!important;border:0!important;border-radius:12px!important;color:#fff!important}
+/* son : pastille style Centre de contrôle */
+.sound{background:rgba(20,26,40,.94)!important;border:0!important;border-radius:999px!important;box-shadow:var(--rim),0 10px 30px -10px rgba(0,0,0,.7)!important}
+.snd-btn{background:var(--fill)!important;border:0!important}
+.snd-btn:not(.off){background:var(--ios-blue)!important}
+.sound .lbl{color:var(--label-2)}
+/* pied de page */
+.site-foot footer,.site-foot footer *{color:var(--label-3)}
+
+/* ---------- carrousel : façon cartes de l'App Store ---------- */
+.cf-stage{perspective:none}
+.cf-card{background:var(--cell);border:0;border-radius:28px;box-shadow:var(--rim),0 24px 50px -24px rgba(0,0,0,.85);filter:brightness(.55);
+  transition:transform .6s var(--ios-ease),opacity .45s,filter .45s}
+.cf-card.on{filter:none;box-shadow:var(--rim),0 30px 60px -26px rgba(10,132,255,.45)}
+.cf-shot{margin:0;border:0;border-radius:0;aspect-ratio:16/9}
+.cf-shot::after{display:none}
+.cf-tag{left:14px;top:14px;display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;border:0;box-shadow:none;
+  font-size:12px;font-weight:600;letter-spacing:0;text-transform:none;background:rgba(0,0,0,.62);color:#fff}
+.cf-tag i{width:7px;height:7px;border-radius:50%;background:var(--ios-green)}
+.cf-tag.dev i{background:var(--ios-orange)}.cf-tag.beta i{background:var(--ios-blue)}
+.cf-body{padding:16px 18px 18px}
+.cf-name{font-size:24px;font-weight:800;letter-spacing:-.03em;margin:0 0 10px;color:var(--label);text-shadow:none}
+.cf-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.cf-chip{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:999px;background:var(--fill);border:0;font-size:13px;font-weight:600;color:var(--label)}
+.cf-chip i{font-style:normal}
+.cf-desc{margin:0 0 16px;font-size:15px;line-height:1.4}
+.cf-play{display:block;padding:13px;text-align:center;text-decoration:none}
+.cf-prog{display:none}
+.cf-ctl{gap:14px;margin-top:22px}
+.cf-btn{width:44px;height:44px;border-radius:50%;background:var(--fill);border:0;box-shadow:none;color:#fff;font-size:13px;transition:background .2s,transform .3s var(--ios-ease)}
+.cf-btn:hover{background:var(--fill-2)}.cf-btn:active{transform:scale(.92)}
+.cf-dots{gap:8px;padding:8px 12px;border-radius:999px;background:var(--fill)}
+.cf-dots button{width:8px;height:8px;border-radius:50%;border:0;background:rgba(255,255,255,.3);transition:background .3s,transform .3s}
+.cf-dots button.on{width:8px;background:#fff;transform:scale(1.15)}
+.cf-n{display:none}
+.cf-hint{font-size:13px;color:var(--label-3)}
+@media (max-width:720px){.cf-name{font-size:22px}.sec-h h2{font-size:30px}}
 
 </style>
 <script>window.IS_TOUCH=matchMedia("(pointer:coarse)").matches||/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);if(IS_TOUCH)document.documentElement.classList.add("touch")</script>
@@ -1676,7 +1718,7 @@ $("games").innerHTML=PROFILE.folders.map(f=>/roblox/i.test(f.name)?carouselHTML(
     cards.forEach((c,i)=>{
       let d=i-cur;if(n>2){if(d>n/2)d-=n;if(d<-n/2)d+=n}
       const a=Math.abs(d);
-      c.style.transform=`translateX(${d*64}%) translateY(${a*26}px) scale(${1-Math.min(a,2)*.15}) rotate(${d*5}deg)`;
+      c.style.transform=`translateX(${d*74}%) scale(${1-Math.min(a,2)*.1})`;
       c.style.opacity=a>2?0:a>1?.35:1;c.style.zIndex=10-a;
       c.classList.toggle("on",d===0);c.setAttribute("aria-hidden",d!==0);
       const l=c.querySelector(".cf-play");if(l)l.tabIndex=d===0?0:-1;
