@@ -1090,6 +1090,35 @@ body{background:#060c17}
 .nav,.nav.solid{background:#060c17}
 .hero .nav{background:transparent}
 .dcard .dmem{font-family:var(--f-body);font-size:13px;opacity:.85}
+/* ===== Haut de page épuré (logo à gauche, icônes à droite) ===== */
+.ibtn{width:42px;height:42px;display:grid;place-items:center;border-radius:50%;background:transparent;border:0;color:#fff;cursor:pointer;transition:background .2s}
+.ibtn:hover{background:rgba(255,255,255,.07)}
+.ibtn svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.burger{display:none}
+.burger path{transition:transform .3s ease,opacity .2s;transform-origin:12px 12px}
+.nav.open .burger .b1{transform:translateY(5px) rotate(45deg)}
+.nav.open .burger .b2{opacity:0}
+.nav.open .burger .b3{transform:translateY(-5px) rotate(-45deg)}
+.nav .wrap{height:100%}
+.menu a.on::after{display:none}
+.menu a.on{color:#fff}
+@media (max-width:720px){
+  :root{--nav-h:64px}
+  .nav,.nav.solid{height:var(--nav-h);padding:0;background:#060c17}
+  .nav .wrap{flex-wrap:nowrap;padding:0 14px 0 20px;gap:4px}
+  .brand img{height:30px}
+  .nav-r{margin-left:auto;gap:2px}
+  .burger{display:grid}
+  .menu{position:fixed;left:0;right:0;top:var(--nav-h);bottom:0;z-index:11;display:flex;flex-direction:column;justify-content:flex-start;gap:0;
+    margin:0;padding:18px 20px;background:#060c17;opacity:0;visibility:hidden;transform:translateY(-8px);transition:opacity .25s,transform .25s,visibility 0s .25s;overflow:auto}
+  .nav.open .menu{opacity:1;visibility:visible;transform:none;transition:opacity .25s,transform .25s}
+  .menu a{font-size:26px;font-weight:600;padding:16px 0;border-radius:0;color:#fff;border-bottom:1px solid var(--soft);letter-spacing:-.01em}
+  .menu a:hover{background:transparent;color:var(--sky)}
+  .menu a.on{color:var(--sky)}
+  html.menu-open,html.menu-open body{overflow:hidden}
+}
+html.menu-open .sound{display:none!important}
+@media (hover:none){.menu a:hover{color:#fff}.menu a.on{color:var(--sky)}}
 
 </style>
 <script>window.IS_TOUCH=matchMedia("(pointer:coarse)").matches||/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);if(IS_TOUCH)document.documentElement.classList.add("touch")</script>
@@ -1108,9 +1137,10 @@ body{background:#060c17}
 
 <header class="nav" id="nav"><div class="wrap">
   <a class="brand" href="#accueil" aria-label="Accueil"><img src="img/logo-dwenyx-s.webp" alt="Dwenyx" width="479" height="175"></a>
-  <nav class="menu" aria-label="Menu"><a href="#accueil">Accueil</a><a href="#videos">Vidéos</a><a href="#projets">Projets</a><a href="#communaute">Communauté</a><a href="#contact">Contact</a></nav>
+  <nav class="menu" id="menu" aria-label="Menu"><a href="#accueil">Accueil</a><a href="#videos">Vidéos</a><a href="#projets">Projets</a><a href="#communaute">Communauté</a><a href="#contact">Contact</a></nav>
   <div class="nav-r">
-    <button class="nbtn" id="shareBtn" type="button" aria-label="Partager le site"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16a3 3 0 00-2.4 1.2l-6.7-3.4a3 3 0 000-1.6l6.7-3.4A3 3 0 1015 7a3 3 0 00.1.8L8.4 11.2a3 3 0 100 1.6l6.7 3.4A3 3 0 1018 16z"/></svg><span>Partager</span></button>
+    <button class="ibtn" id="shareBtn" type="button" aria-label="Partager le site"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V3m0 0L7.5 7.5M12 3l4.5 4.5M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/></svg></button>
+    <button class="ibtn burger" id="burger" type="button" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="b1" d="M3 7h18"/><path class="b2" d="M3 12h18"/><path class="b3" d="M3 17h18"/></svg></button>
   </div>
 </div></header>
 
@@ -1482,6 +1512,15 @@ document.addEventListener("click",e=>{
     if(!run){run=true;requestAnimationFrame(step)}
   },{passive:true});
   document.addEventListener("pointerleave",()=>{tx=0;ty=0;if(!run){run=true;requestAnimationFrame(step)}});
+})();
+
+/* Menu mobile (bouton ☰) */
+(()=>{const nav=$("nav"),bt=$("burger");
+  const set=o=>{nav.classList.toggle("open",o);bt.setAttribute("aria-expanded",o);bt.setAttribute("aria-label",o?"Fermer le menu":"Ouvrir le menu");document.documentElement.classList.toggle("menu-open",o)};
+  bt.addEventListener("click",()=>{set(!nav.classList.contains("open"));SFX.tab()});
+  $("menu").addEventListener("click",e=>{if(e.target.closest("a"))set(false)});
+  addEventListener("keydown",e=>{if(e.key==="Escape")set(false)});
+  addEventListener("resize",()=>{if(innerWidth>720)set(false)});
 })();
 
 /* Copier */
