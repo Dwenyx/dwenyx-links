@@ -1006,6 +1006,90 @@ main.site{padding-bottom:0}
   .sound .snd-btn{width:38px;height:38px}
 }
 @media (max-width:360px){.menu a{font-size:11.5px}.cta{font-size:12.5px}}
+/* =====================================================================
+   VERSION MINIMALISTE : même contenu, plus d'air, moins d'effets
+   ===================================================================== */
+:root{--soft:rgba(170,210,255,.09);--soft-2:rgba(170,210,255,.16);--card:rgba(255,255,255,.028);--card-h:rgba(255,255,255,.05)}
+body{background:#060c17}
+#studs{opacity:.28}
+/* titres de section : simples, sans halo ni numéro */
+.sec{padding:110px 0 0}
+.sec-h{margin-bottom:28px;align-items:baseline}
+.sec-h h2{font-family:var(--f-body);font-weight:700;font-size:clamp(26px,3vw,34px);letter-spacing:-.02em;text-shadow:none}
+.sec-h h2 span{display:none}
+.sec-h p{font-size:14px;color:var(--muted);opacity:.85}
+/* cartes : fines bordures, pas d'ombre, fond à peine visible */
+.panel,.lnk,.pj,.tagcard,.latest,.vbig,.thanks,.folder{border:1px solid var(--soft)!important;box-shadow:none!important;background:var(--card)!important;border-radius:18px!important}
+.lnk{padding:14px 16px!important;transition:background .25s,border-color .25s,transform .25s!important}
+.lnk:hover,.pj:hover,.vbig:hover,.tagcard:hover{transform:translateY(-2px)!important;background:var(--card-h)!important;border-color:var(--soft-2)!important;box-shadow:none!important}
+.lnk .ic{box-shadow:none!important;border:0!important}
+.lnk .go{opacity:.45}
+.stack{gap:10px}
+/* boutons : plats, arrondis, sans relief */
+.cta,.nbtn,.btn,.dgo,.pb-go,.tagcard .rg i,.cwrap button[type=submit],.sheet button[type=submit]{box-shadow:none!important;text-shadow:none!important}
+.cta{border-radius:999px;padding:11px 20px;font-weight:600;border:1px solid rgba(255,255,255,.22);background:rgba(4,12,26,.45)!important}
+.cta:hover{background:rgba(4,12,26,.7)!important;transform:translateY(-2px)}
+.cta.yt svg{fill:#ff3b30}.cta.tt svg{fill:#fff}.cta.gm svg{fill:var(--sky)}
+.nbtn{background:rgba(255,255,255,.06);border:1px solid var(--soft-2)}
+.btn{border-radius:12px!important;background:rgba(30,155,255,.14)!important;color:#cfe9ff!important;border:1px solid rgba(30,155,255,.3)!important;font-weight:600}
+.btn:hover{background:rgba(30,155,255,.24)!important}
+/* barre du haut */
+.nav,.nav.solid{background:rgba(6,12,23,.92);border-bottom:1px solid var(--soft);box-shadow:none}
+.menu a{font-weight:600;color:rgba(255,255,255,.6)}
+.menu a.on::after{height:2px;background:var(--sky)}
+/* accueil : moins de choses qui crient */
+.hero .role{border-color:var(--soft-2)}
+.hero-tag{opacity:.92;font-weight:400}
+.pcard{background:rgba(6,14,28,.88)!important;border:1px solid var(--soft-2)!important;box-shadow:0 24px 60px -30px rgba(0,0,0,.8)!important;gap:18px}
+.pcard .avatar{box-shadow:none;border:2px solid rgba(255,255,255,.7)}
+.pcard .tgrid{background:transparent;border:0;border-top:1px solid var(--soft);border-bottom:1px solid var(--soft);border-radius:0;padding:14px 0}
+.pcard .tnum + .tnum{border-left-color:var(--soft)}
+.xp .bar{height:6px!important;box-shadow:none!important;border:0!important;background:rgba(255,255,255,.07)!important}
+.xp .bar b{box-shadow:none!important}
+.like-hint{display:none!important}
+/* vidéos */
+.vbig .lkick{opacity:.8}
+.vempty svg{width:44px;height:44px}
+/* projets : on calme les badges */
+.gfold h3{font-size:15px;font-weight:600;color:rgba(255,255,255,.85)}
+.gfold h3 svg{width:16px;height:16px;opacity:.8}
+.gfold h3 small{background:transparent;padding:0;color:var(--muted)}
+.games{gap:40px}
+.games .pjs{gap:18px}
+.pj .shot .st,.pj .shot .visits{box-shadow:none!important;border:0!important;background:rgba(3,8,18,.72)!important}
+.pj .myrole{background:transparent!important;border:0!important;padding:0!important;font-size:12px;opacity:.75}
+.pj .myrole .mini{display:none}
+.pj .d{opacity:.8}
+/* communauté */
+.dcard{background:rgba(88,101,242,.1)!important;border:1px solid rgba(120,132,255,.3)!important;box-shadow:none!important}
+.dcard:hover{background:rgba(88,101,242,.16)!important;transform:translateY(-2px)}
+.dcard::after{display:none}
+.dcard .dtop svg{fill:#8f9bff}
+.dcard .dgo{background:rgba(255,255,255,.1);color:#fff;font-family:var(--f-body);font-weight:600;border:1px solid rgba(255,255,255,.2)}
+.tagcard{max-height:360px}
+.tagcard .rg{background:rgba(3,8,18,.82);border:1px solid var(--soft-2)}
+.thanks{background:transparent!important;border:0!important;text-align:center;color:var(--muted);font-size:14px;padding:10px 0!important}
+.bio li::before{opacity:.6}
+/* contact */
+.cinfo p{font-size:14px}
+.cwrap input,.cwrap textarea,.cwrap select{background:rgba(255,255,255,.03)!important;border:1px solid var(--soft-2)!important;box-shadow:none!important}
+/* pied de page */
+.site-foot{border-top:1px solid var(--soft);background:#060c17}
+.site-foot img{height:22px;opacity:.7}
+.site-foot footer{opacity:.7}
+/* son plus discret */
+.sound{background:rgba(6,12,23,.9)!important;border:1px solid var(--soft-2)!important;box-shadow:none!important}
+.snd-btn{box-shadow:none!important}
+@media (max-width:720px){
+  .sec{padding-top:64px}
+  .sec-h{margin-bottom:18px}
+  .sec-h h2{font-size:25px}
+  .cta{padding:10px 6px;font-size:13px}
+  .games{gap:28px}
+}
+.nav,.nav.solid{background:#060c17}
+.hero .nav{background:transparent}
+.dcard .dmem{font-family:var(--f-body);font-size:13px;opacity:.85}
 
 </style>
 <script>window.IS_TOUCH=matchMedia("(pointer:coarse)").matches||/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);if(IS_TOUCH)document.documentElement.classList.add("touch")</script>
