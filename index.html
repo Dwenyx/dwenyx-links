@@ -1,7 +1,8 @@
 <!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Dwenyx · Site officiel</title><meta name="description" content="Dwenyx — Créateur de contenu Roblox sur YouTube et TikTok. Vidéos, jeux Roblox et partenariats : contactdwenyx@gmail.com"><meta name="theme-color" content="#050d1a"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="canonical" href="https://dwenyx.vercel.app/"><meta property="og:type" content="profile"><meta property="og:site_name" content="Dwenyx"><meta property="og:title" content="Dwenyx · Page"><meta property="og:description" content="Créateur de contenu Roblox sur YouTube et TikTok. Mes vidéos, mes jeux et mes réseaux."><meta property="og:url" content="https://dwenyx.vercel.app/"><meta property="og:image" content="https://dwenyx.vercel.app/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Dwenyx · Content Creator · Vidéos Roblox sur YouTube &amp; TikTok"><meta property="og:locale" content="fr_FR"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Dwenyx · Page"><meta name="twitter:description" content="Créateur de contenu Roblox sur YouTube et TikTok."><meta name="twitter:image" content="https://dwenyx.vercel.app/og.png"><style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body><meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Inter:wght@400;500;600;700;800&family=Outfit:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@700&text=0123456789%2C.kKM%2B%E2%80%93%20&display=swap">
 <style>
 /* Layout : fond en grille de "studs" violets, logo Dwenyx animé (emblème D + lettres-briques), carte profil avec bannière + menu à onglets */
 :root{
@@ -1353,6 +1354,16 @@ body{color:var(--label);background:#05080f;-webkit-font-smoothing:antialiased;le
 .hand-ring{position:fixed;z-index:2147483646;pointer-events:none;width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:50%;border:2px solid rgba(160,215,255,.85);
   animation:handRing .55s cubic-bezier(.2,.7,.3,1) forwards}
 @keyframes handRing{from{transform:scale(.3);opacity:.9}to{transform:scale(1.5);opacity:0}}
+/* ===== Compteur de likes version cartoon ===== */
+#likeCount{font-family:"Fredoka","Arial Rounded MT Bold","Inter",sans-serif!important;font-weight:700!important;font-size:22px;letter-spacing:.5px;color:#fff;
+  -webkit-text-stroke:5px #06224f;paint-order:stroke fill;text-shadow:0 3px 0 #031634,0 4px 0 #031634;display:inline-block;transform:rotate(-5deg);
+  margin-bottom:2px;line-height:1.1}
+#likeCount.bump{animation:likePop .5s cubic-bezier(.34,1.56,.64,1)}
+@keyframes likePop{0%{transform:rotate(-5deg) scale(1)}40%{transform:rotate(4deg) scale(1.35)}100%{transform:rotate(-5deg) scale(1)}}
+/* ===== Performances ===== */
+.hero-bg.paused{animation-play-state:paused}
+@media (max-width:720px){.hero h1 .logo-anim,.logo3d{display:none!important}}
+.hero h1.is3d .lx,.hero h1.is3d .logo-shine{display:none}
 
 </style>
 <script>window.IS_TOUCH=matchMedia("(pointer:coarse)").matches||/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);if(IS_TOUCH)document.documentElement.classList.add("touch")</script>
@@ -1372,7 +1383,7 @@ body{color:var(--label);background:#05080f;-webkit-font-smoothing:antialiased;le
   <div class="hero-bg" aria-hidden="true"></div>
   <div class="wrap">
     <div class="hero-id">
-      <h1 class="logo-glow"><span class="logo-anim"><span class="lx" aria-hidden="true" style="--i:22;background:#082256"></span><span class="lx" aria-hidden="true" style="--i:21;background:#0a285f"></span><span class="lx" aria-hidden="true" style="--i:20;background:#0d2e68"></span><span class="lx" aria-hidden="true" style="--i:19;background:#103471"></span><span class="lx" aria-hidden="true" style="--i:18;background:#133b7a"></span><span class="lx" aria-hidden="true" style="--i:17;background:#154183"></span><span class="lx" aria-hidden="true" style="--i:16;background:#18478c"></span><span class="lx" aria-hidden="true" style="--i:15;background:#1b4e95"></span><span class="lx" aria-hidden="true" style="--i:14;background:#1e549e"></span><span class="lx" aria-hidden="true" style="--i:13;background:#215aa7"></span><span class="lx" aria-hidden="true" style="--i:12;background:#2361b0"></span><span class="lx" aria-hidden="true" style="--i:11;background:#2667b9"></span><span class="lx" aria-hidden="true" style="--i:10;background:#296dc3"></span><span class="lx" aria-hidden="true" style="--i:9;background:#2c73cc"></span><span class="lx" aria-hidden="true" style="--i:8;background:#337cd3"></span><span class="lx" aria-hidden="true" style="--i:7;background:#4489d9"></span><span class="lx" aria-hidden="true" style="--i:6;background:#5596de"></span><span class="lx" aria-hidden="true" style="--i:5;background:#66a3e4"></span><span class="lx" aria-hidden="true" style="--i:4;background:#77b0e9"></span><span class="lx" aria-hidden="true" style="--i:3;background:#88bdef"></span><span class="lx" aria-hidden="true" style="--i:2;background:#99caf4"></span><span class="lx" aria-hidden="true" style="--i:1;background:#aad7fa"></span><img class="lf" src="img/logo-dwenyx.webp" alt="Dwenyx" width="958" height="351"><span class="logo-shine" aria-hidden="true"></span></span><span class="logo3d" aria-hidden="true"></span></h1>
+      <h1 class="logo-glow" aria-label="Dwenyx"><span class="logo-anim"><span class="lx" aria-hidden="true" style="--i:22;background:#082256"></span><span class="lx" aria-hidden="true" style="--i:21;background:#0a285f"></span><span class="lx" aria-hidden="true" style="--i:20;background:#0d2e68"></span><span class="lx" aria-hidden="true" style="--i:19;background:#103471"></span><span class="lx" aria-hidden="true" style="--i:18;background:#133b7a"></span><span class="lx" aria-hidden="true" style="--i:17;background:#154183"></span><span class="lx" aria-hidden="true" style="--i:16;background:#18478c"></span><span class="lx" aria-hidden="true" style="--i:15;background:#1b4e95"></span><span class="lx" aria-hidden="true" style="--i:14;background:#1e549e"></span><span class="lx" aria-hidden="true" style="--i:13;background:#215aa7"></span><span class="lx" aria-hidden="true" style="--i:12;background:#2361b0"></span><span class="lx" aria-hidden="true" style="--i:11;background:#2667b9"></span><span class="lx" aria-hidden="true" style="--i:10;background:#296dc3"></span><span class="lx" aria-hidden="true" style="--i:9;background:#2c73cc"></span><span class="lx" aria-hidden="true" style="--i:8;background:#337cd3"></span><span class="lx" aria-hidden="true" style="--i:7;background:#4489d9"></span><span class="lx" aria-hidden="true" style="--i:6;background:#5596de"></span><span class="lx" aria-hidden="true" style="--i:5;background:#66a3e4"></span><span class="lx" aria-hidden="true" style="--i:4;background:#77b0e9"></span><span class="lx" aria-hidden="true" style="--i:3;background:#88bdef"></span><span class="lx" aria-hidden="true" style="--i:2;background:#99caf4"></span><span class="lx" aria-hidden="true" style="--i:1;background:#aad7fa"></span><img class="lf" src="img/logo-dwenyx.webp" alt="Dwenyx" width="958" height="351"><span class="logo-shine" aria-hidden="true"></span></span><span class="logo3d" aria-hidden="true"></span></h1>
       <p class="hero-tag">Créateur de contenu Roblox. Des vidéos sur YouTube et TikTok, et mes propres jeux à tester.</p>
       <div class="hero-cta">
         <a class="cta yt" href="https://www.youtube.com/@Dwenyxrbx" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M23.5 6.2a3 3 0 00-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 00.5 6.2 31 31 0 000 12a31 31 0 00.5 5.8 3 3 0 002.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 002.1-2.1A31 31 0 0024 12a31 31 0 00-.5-5.8zM9.6 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg>YouTube</a>
@@ -1833,6 +1844,13 @@ document.addEventListener("click",e=>{
   addEventListener("pointerup",up,true);addEventListener("pointercancel",up,true);
 })();
 
+/* heroPause : le fond animé de l'accueil s'arrête quand on n'est plus dessus */
+(()=>{const bg=document.querySelector(".hero-bg");if(!bg)return;
+  new IntersectionObserver(es=>bg.classList.toggle("paused",!es[0].isIntersecting)).observe(document.querySelector(".hero"))})();
+/* petite animation du compteur de likes quand il change */
+(()=>{const el=$("likeCount");if(!el)return;let prev=el.textContent,lastB=0;
+  new MutationObserver(()=>{const v=el.textContent;if(v!==prev&&prev!=="–"&&v!=="–"&&performance.now()-lastB>900){lastB=performance.now();el.classList.remove("bump");void el.offsetWidth;el.classList.add("bump")}prev=v}).observe(el,{childList:true,characterData:true,subtree:true})})();
+
 /* Copier */
 function toast(m){const t=$("toast");t.textContent=m;t.classList.add("on");clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("on"),1800)}
 function flash(el){if(!el)return;const go=el.querySelector(".go"),old=go&&go.textContent;
@@ -2237,7 +2255,7 @@ function draw(t=0){
   if(document.hidden||window.eggOpen){if(!still)requestAnimationFrame(draw);return}
   /* cadence : 60 i/s max (écrans 120/144 Hz), 30 i/s quand rien ne bouge, ~25 i/s sur mobile */
   const busy=WAVES.length||HOLD.on||STARS.length||t-lastInput<1500;
-  const minGap=LITE?40:busy?14:31;
+  const minGap=LITE?40:busy?16:50;
   if(t-lastFrame<minGap){requestAnimationFrame(draw);return}
   lastFrame=t;
   const d=DPR,g=GSTEP*d,r=3.5*d,M=Math.max(W,H),now=performance.now(),cxp=mx*W,cyp=my*H;
@@ -2342,5 +2360,5 @@ function drawTrail(now,hx,hy,d){
 }
 size();if(!still&&!LITE)draw();
 </script>
-<script type="module" src="js/logo3d.js"></script>
+<script>/* logo 3D : seulement sur ordinateur, chargé après la page */if(matchMedia("(min-width:721px) and (hover:hover)").matches){const go=()=>import("./js/logo3d.js").catch(()=>{});addEventListener("load",()=>("requestIdleCallback"in window?requestIdleCallback(go,{timeout:1500}):setTimeout(go,300)))}</script>
 </body></html>

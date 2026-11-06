@@ -46,7 +46,7 @@ if(h1&&box&&!matchMedia("(max-width:720px)").matches&&webgl())(async()=>{
   const etex=new THREE.CanvasTexture(ec);etex.mapping=THREE.EquirectangularReflectionMapping;etex.colorSpace=THREE.SRGBColorSpace;
 
   const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,powerPreference:"high-performance"});
-  renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));renderer.outputColorSpace=THREE.SRGBColorSpace;
+  renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));renderer.outputColorSpace=THREE.SRGBColorSpace;
   renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.6;
   const scene=new THREE.Scene();
   const pm=new THREE.PMREMGenerator(renderer);scene.environment=pm.fromEquirectangular(etex).texture;etex.dispose();pm.dispose();
@@ -92,9 +92,13 @@ if(h1&&box&&!matchMedia("(max-width:720px)").matches&&webgl())(async()=>{
     ty=Math.max(-1,Math.min(1,dx*2))*.42;tx=Math.max(-1,Math.min(1,dy*2))*.26});
   h1.addEventListener("pointerleave",()=>{tx=ty=0});
   new IntersectionObserver(es=>{visible=es[0].isIntersecting}).observe(box);
+  let hover=false,lastR=0;h1.addEventListener("pointerenter",()=>hover=true);h1.addEventListener("pointerleave",()=>hover=false);
   function frame(now){
     requestAnimationFrame(frame);
     if(!visible||document.hidden)return;
+    /* 60 i/s quand la souris est sur le logo ou pendant le reflet, sinon 30 i/s (économise la carte graphique) */
+    const sweeping=((now-t0)/1000%7)<1.9,moving=Math.abs(tx-rx)+Math.abs(ty-ry)>.004;
+    if(!hover&&!sweeping&&!moving&&now-lastR<32)return;lastR=now;
     const t=(now-t0)/1000;
     const sx=still?0:Math.sin(t*.6)*.05,sy=still?0:Math.sin(t*.45)*(touch?.22:.08);
     rx+=(tx+sx-rx)*.08;ry+=(ty+sy-ry)*.08;
