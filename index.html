@@ -1409,11 +1409,37 @@ body{color:var(--label);background:#05080f;-webkit-font-smoothing:antialiased;le
 #egg .tc-dmg{font-size:3.9cqw;-webkit-text-stroke:.65cqw #06224f}
 #egg .tc-atk p{font-size:2.1cqw;line-height:1.3}
 #egg .tc-foot{font-size:1.8cqw}
+/* ===================== Chargement : boule lumineuse bleue ===================== */
+#loader{position:fixed;inset:0;z-index:2147483600;display:grid;place-items:center;background:#000;transition:opacity .7s ease,visibility 0s .7s}
+#loader.out{opacity:0;visibility:hidden}
+html.loading,html.loading body{overflow:hidden}
+.orb{position:relative;width:min(180px,40vw);aspect-ratio:1;border-radius:50%;overflow:hidden;isolation:isolate;background:#010a1f;
+  box-shadow:0 0 50px 8px rgba(30,155,255,.5),0 0 130px 40px rgba(30,155,255,.16);animation:orbGlow 5.8s ease-in-out infinite,orbIn .9s cubic-bezier(.2,.8,.2,1) both}
+/* lumière principale qui tourne autour de la boule */
+.orb::before{content:"";position:absolute;inset:-35%;z-index:0;
+  background:radial-gradient(circle at 50% 16%,#d6f4ff 0,#5ccaff 10%,#1f8fff 22%,#0b55cc 34%,rgba(4,26,80,.4) 46%,rgba(3,20,70,0) 56%);animation:orbSpin 5.8s linear infinite}
+/* deuxième lumière (cyan / indigo) qui tourne dans l'autre sens, façon assistant vocal */
+.orb i{position:absolute;inset:-25%;z-index:1;mix-blend-mode:screen;opacity:.55;
+  background:radial-gradient(circle at 70% 70%,rgba(110,90,255,.75) 0,rgba(60,70,255,.35) 22%,transparent 50%),radial-gradient(circle at 28% 62%,rgba(0,230,255,.55) 0,transparent 38%);
+  animation:orbSpin 8.5s linear infinite reverse}
+/* ombre du bord + grain léger pour le relief */
+.orb::after{content:"";position:absolute;inset:0;z-index:2;border-radius:50%;
+  background:radial-gradient(circle at 50% 50%,transparent 52%,rgba(0,0,0,.55) 100%),
+  url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .16 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  mix-blend-mode:overlay}
+.orb b{position:absolute;inset:0;z-index:3;border-radius:50%;box-shadow:inset 0 0 18px rgba(160,225,255,.35)}
+@keyframes orbSpin{to{transform:rotate(360deg)}}
+@keyframes orbGlow{0%,100%{box-shadow:0 0 46px 6px rgba(30,155,255,.42),0 0 120px 34px rgba(30,155,255,.14);transform:scale(1)}
+  50%{box-shadow:0 0 70px 14px rgba(60,180,255,.6),0 0 170px 60px rgba(30,155,255,.22);transform:scale(1.04)}}
+@keyframes orbIn{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:scale(1)}}
+#loader.out .orb{transform:scale(1.25);transition:transform .7s cubic-bezier(.2,.8,.2,1)}
+@media (prefers-reduced-motion:reduce){.orb,.orb::before,.orb i{animation:none}}
 
 </style>
 <script>window.IS_TOUCH=matchMedia("(pointer:coarse)").matches||/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);if(IS_TOUCH)document.documentElement.classList.add("touch")</script>
 <canvas id="studs"></canvas>
 
+<div id="loader" role="status" aria-label="Chargement du site"><div class="orb"><i></i><b></b></div></div>
 <header class="nav" id="nav"><div class="wrap">
   <a class="brand" href="#accueil" aria-label="Accueil"><img src="img/logo-dwenyx-s.webp" alt="Dwenyx" width="479" height="175"></a>
   <nav class="menu" id="menu" aria-label="Menu"><a href="#accueil">Accueil</a><a href="#reseaux">Réseaux</a><a href="#projets">Projets</a><a href="#contact">Contact</a></nav>
@@ -2227,8 +2253,15 @@ lockImgs(document);new MutationObserver(m=>m.forEach(x=>x.addedNodes.forEach(n=>
 const gate=document.createElement("div");gate.classList.add("gone");
 document.body.classList.add("entered");
 $("sound").hidden=false;applySfx();
-setTimeout(runCounters,350);
-setTimeout(()=>{if(!liked)likeBtn.parentElement.classList.add("hint")},2500);
+/* Chargement : la boule reste le temps que le site se charge derrière (au moins 1,6 s, au plus 7 s) */
+(()=>{const L=$("loader"),root=document.documentElement,t0=performance.now();root.classList.add("loading");
+  let ok=false;const done=()=>{if(ok)return;ok=true;
+    setTimeout(()=>{L.classList.add("out");root.classList.remove("loading");
+      setTimeout(runCounters,250);setTimeout(()=>{if(!liked)likeBtn.parentElement.classList.add("hint")},2200);
+      setTimeout(()=>L.remove(),900)},Math.max(0,1600-(performance.now()-t0)))};
+  Promise.all([document.fonts?document.fonts.ready:0,new Promise(r=>document.readyState==="complete"?r():addEventListener("load",r,{once:true}))]).then(done);
+  setTimeout(done,7000);
+})();
 /* les navigateurs n'autorisent le son qu'après un premier geste : la musique démarre au premier clic/toucher/touche */
 const firstGesture=()=>{audioInit();wakeAudio();applyMusic();["pointerdown","keydown","touchstart"].forEach(ev=>removeEventListener(ev,firstGesture,true))};
 ["pointerdown","keydown","touchstart"].forEach(ev=>addEventListener(ev,firstGesture,true));
