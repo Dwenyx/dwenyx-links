@@ -2,7 +2,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@700&text=0123456789%2C.kKM%2B%E2%80%93%20&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&display=swap">
 <style>
 /* Layout : fond en grille de "studs" violets, logo Dwenyx animé (emblème D + lettres-briques), carte profil avec bannière + menu à onglets */
 :root{
@@ -1364,6 +1364,26 @@ body{color:var(--label);background:#05080f;-webkit-font-smoothing:antialiased;le
 .hero-bg.paused{animation-play-state:paused}
 @media (max-width:720px){.hero h1 .logo-anim,.logo3d{display:none!important}}
 .hero h1.is3d .lx,.hero h1.is3d .logo-shine{display:none}
+/* ===== Carte profil : tous les textes en cartoon, plus petits ===== */
+.hero .pcard :not(svg):not(path){font-family:"Fredoka","Arial Rounded MT Bold","Inter",sans-serif!important;letter-spacing:.01em}
+.pcard{gap:14px;padding:18px}
+.pcard .pname b{font-size:17px;font-weight:700;color:#fff;-webkit-text-stroke:3.5px #06224f;paint-order:stroke fill;text-shadow:0 2px 0 #031634}
+.pcard .pname small{font-size:11.5px;font-weight:500;color:var(--label-2)}
+.pcard .verified{width:17px;height:17px}
+.pcard .role{font-size:10px!important;font-weight:600;padding:3px 9px;margin-top:5px}
+.pcard .role svg{width:11px;height:11px}
+.pcard .tgrid{padding:11px 0}
+.pcard .tnum b{font-size:21px!important;font-weight:700;color:#fff;-webkit-text-stroke:4px #06224f;paint-order:stroke fill;text-shadow:0 2px 0 #031634,0 3px 0 #031634}
+.pcard .tnum span{font-size:10.5px;font-weight:600;color:var(--label-2);margin-top:3px}
+.pcard .xp .l{font-size:11px;font-weight:500}
+.pcard .xp .l strong{font-weight:700;color:#fff}
+.pcard #likeCount{font-size:18px}
+.pcard .avatar{width:72px;height:72px}
+@media (max-width:720px){
+  .pcard .pname b{font-size:16px}
+  .pcard .tnum b{font-size:19px!important}
+  .pcard .avatar{width:58px;height:58px}
+}
 
 </style>
 <script>window.IS_TOUCH=matchMedia("(pointer:coarse)").matches||/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);if(IS_TOUCH)document.documentElement.classList.add("touch")</script>
