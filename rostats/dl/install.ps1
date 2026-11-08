@@ -1,7 +1,7 @@
 # Installateur RoStats pour Windows
 $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'
-$base = 'https://rostats.vercel.app/dl'
+$base = 'https://rostats-seven.vercel.app/dl'
 $dir = Join-Path $env:LOCALAPPDATA 'RoStats'
 $tmp = Join-Path $env:TEMP 'rostats-install'
 Write-Host ''
