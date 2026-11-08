@@ -1432,6 +1432,24 @@ html.loading,html.loading body{overflow:hidden}
 @keyframes orbIn{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:scale(1)}}
 #loader.out .orb-wrap{transform:scale(1.2);opacity:0;transition:transform .6s cubic-bezier(.2,.8,.2,1),opacity .5s}
 @media (prefers-reduced-motion:reduce){.orb,.orb::before,.orb i,.orb-halo{animation:none}}
+/* ===== Boule : effet hologramme, la lumière descend de haut en bas, la boule ne bouge pas ===== */
+.orb-wrap{width:min(92px,22vw)}
+.orb{animation:none}
+.orb-halo{animation:orbGlowOp 2.8s ease-in-out infinite}
+@keyframes orbGlowOp{0%,100%{opacity:.6;transform:none}50%{opacity:1;transform:none}}
+/* grande lueur bleue qui descend du haut vers le bas */
+.orb::before{inset:-10% -20%;height:140%;
+  background:radial-gradient(ellipse 70% 38% at 50% 50%,#d6f4ff 0,#5ccaff 18%,#1f8fff 38%,#0b55cc 58%,rgba(3,20,70,0) 80%);
+  animation:holoFall 2.8s cubic-bezier(.45,0,.55,1) infinite}
+@keyframes holoFall{0%{transform:translateY(-78%);opacity:.2}18%{opacity:1}82%{opacity:1}100%{transform:translateY(70%);opacity:.2}}
+/* fine ligne lumineuse de balayage + lignes d'hologramme */
+.orb i{inset:0;opacity:1;background:linear-gradient(180deg,transparent 0,transparent 46%,rgba(200,240,255,.95) 50%,transparent 54%,transparent 100%) 0 0/100% 200% no-repeat;
+  animation:holoScan 2.8s cubic-bezier(.45,0,.55,1) infinite}
+@keyframes holoScan{0%{background-position:0 100%}100%{background-position:0 -100%}}
+.orb b{background:repeating-linear-gradient(180deg,rgba(160,220,255,.16) 0 1px,transparent 1px 3px);mix-blend-mode:normal}
+.orb{background:radial-gradient(circle at 50% 40%,#0a2a66 0,#04163d 55%,#010a1f 100%)}
+.orb i{background:linear-gradient(180deg,transparent 0,transparent 48.5%,rgba(170,230,255,.7) 50%,transparent 51.5%,transparent 100%) 0 0/100% 200% no-repeat}
+.orb b{background:repeating-linear-gradient(180deg,rgba(150,215,255,.07) 0 1px,transparent 1px 3px)}
 
 </style>
 <script>window.IS_TOUCH=matchMedia("(pointer:coarse)").matches||/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);if(IS_TOUCH)document.documentElement.classList.add("touch")</script>
