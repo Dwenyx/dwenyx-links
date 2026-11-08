@@ -1450,6 +1450,16 @@ html.loading,html.loading body{overflow:hidden}
 .orb{background:radial-gradient(circle at 50% 40%,#0a2a66 0,#04163d 55%,#010a1f 100%)}
 .orb i{background:linear-gradient(180deg,transparent 0,transparent 48.5%,rgba(170,230,255,.7) 50%,transparent 51.5%,transparent 100%) 0 0/100% 200% no-repeat}
 .orb b{background:repeating-linear-gradient(180deg,rgba(150,215,255,.07) 0 1px,transparent 1px 3px)}
+/* la boule se déforme légèrement, comme une bulle liquide */
+.orb{animation:orbBlob 4.6s ease-in-out infinite}
+.orb::after,.orb b{border-radius:inherit}
+@keyframes orbBlob{
+  0%,100%{border-radius:50% 50% 50% 50% / 50% 50% 50% 50%}
+  20%{border-radius:54% 46% 52% 48% / 47% 55% 45% 53%}
+  40%{border-radius:47% 53% 45% 55% / 54% 46% 53% 47%}
+  60%{border-radius:52% 48% 55% 45% / 46% 52% 48% 54%}
+  80%{border-radius:46% 54% 49% 51% / 53% 48% 52% 47%}}
+@media (prefers-reduced-motion:reduce){.orb{animation:none}}
 
 </style>
 <script>window.IS_TOUCH=matchMedia("(pointer:coarse)").matches||/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);if(IS_TOUCH)document.documentElement.classList.add("touch")</script>
