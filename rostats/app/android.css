@@ -1,0 +1,60 @@
+/* Ajustements tablette Android */
+html.android .titlebar { -webkit-app-region: no-drag; height: 48px; }
+html.android .shell { height: calc(100% - 48px - var(--gap)); }
+html.android .account { margin-right: 6px; }
+html.android #aiFolder,
+html.android #sData,
+html.android .switch:has(#sTray) { display: none !important; }
+html.android .nav-item, html.android .game-item, html.android .btn, html.android .chip { min-height: 40px; }
+html.android .main { -webkit-overflow-scrolling: touch; }
+html.android .le-canvas canvas { touch-action: none; }
+@media (max-width: 900px) {
+  html.android .sidebar { width: 200px; }
+  html.android .main { padding: 18px 16px 30px; }
+  html.android .page-head { flex-wrap: wrap; }
+  html.android .le { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  html.android .shell { flex-direction: column; }
+  html.android .sidebar { width: 100%; flex-direction: row; overflow-x: auto; padding: 6px; border-right: 0; border-bottom: 1px solid var(--line); }
+  html.android .side-label, html.android .side-bottom { display: none; }
+  html.android .game-list { flex-direction: row; min-height: 0; }
+  html.android .game-item { width: auto; }
+}
+/* 1.10 : barres d'icônes */
+html.android .sidebar { display: none; }
+@media (max-width: 900px) {
+  html.android .rail.right { display: none; }
+  html.android .rail.left { width: 64px; }
+  html.android .main { padding: 18px 16px 30px; }
+}
+@media (max-width: 640px) {
+  html.android .shell { flex-direction: row; }
+  html.android .hero-in { max-width: 100%; }
+}
+/* 1.12 — téléphone : barre d'onglets en bas, contenu pleine largeur */
+html.web #account, html.web #ovLogin, html.web #revLogin { display: none !important; }
+html.android .titlebar { padding-top: env(safe-area-inset-top); height: calc(48px + env(safe-area-inset-top)); }
+@media (max-width: 640px) {
+  html.android .shell { flex-direction: column; height: calc(100% - 48px - env(safe-area-inset-top)); padding: 0 10px calc(86px + env(safe-area-inset-bottom)); }
+  html.android .rail.left { position: fixed; left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bottom)); width: auto; height: 66px; flex-direction: row; padding: 0 16px; justify-content: space-between; border-radius: 999px; z-index: 40; gap: 8px; background: rgba(16, 17, 28, .92); backdrop-filter: blur(16px); }
+  html.android .rail.left .rail-nav { flex-direction: row; gap: 10px; }
+  html.android .rail .nav-item { width: 48px; height: 48px; }
+  html.android .rail .nav-item::after { display: none; }
+  html.android .plus-bubble { width: 52px; height: 52px; order: 2; }
+  html.android .main { padding: 16px 14px 24px; border-radius: 22px; }
+  html.android .live #liveText { display: none; }
+  html.android .brand .wm { font-size: 19px; }
+  html.android .hero-card, html.android .hero-card.tall { height: auto; min-height: 210px; border-radius: 24px; }
+  html.android .hero-in { max-width: 100%; padding: 18px; }
+  html.android .hero-img { inset: 0; opacity: .32; -webkit-mask-image: none; mask-image: none; }
+  html.android .hero-name { font-size: 26px; }
+  html.android .hero-foot { flex-wrap: wrap; margin-top: 14px; }
+  html.android .greet { font-size: 19px; }
+  html.android .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  html.android .kpi .k-value { font-size: 22px; }
+  html.android .sec-head { flex-wrap: wrap; }
+  html.android .bubble-menu.left { left: 12px; right: 12px; width: auto; top: auto; bottom: calc(88px + env(safe-area-inset-bottom)); transform-origin: 50% 100%; }
+  html.android .bubble-menu.pick-menu { left: 12px; right: 12px; width: auto; }
+  html.android .modal { width: calc(100vw - 24px); }
+}
