@@ -1460,6 +1460,15 @@ html.loading,html.loading body{overflow:hidden}
   60%{border-radius:52% 48% 55% 45% / 46% 52% 48% 54%}
   80%{border-radius:46% 54% 49% 51% / 53% 48% 52% 47%}}
 @media (prefers-reduced-motion:reduce){.orb{animation:none}}
+/* déformation plus marquée */
+.orb{animation:orbBlob2 3.6s ease-in-out infinite}
+@keyframes orbBlob2{
+  0%,100%{border-radius:50% 50% 50% 50% / 50% 50% 50% 50%}
+  20%{border-radius:62% 38% 56% 44% / 42% 60% 40% 58%}
+  40%{border-radius:40% 60% 38% 62% / 60% 40% 58% 42%}
+  60%{border-radius:58% 42% 64% 36% / 38% 56% 44% 62%}
+  80%{border-radius:38% 62% 46% 54% / 58% 44% 60% 40%}}
+.orb-halo{animation:orbGlowOp 2.8s ease-in-out infinite,orbBlob2 3.6s ease-in-out infinite}
 
 </style>
 <script>window.IS_TOUCH=matchMedia("(pointer:coarse)").matches||/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);if(IS_TOUCH)document.documentElement.classList.add("touch")</script>
