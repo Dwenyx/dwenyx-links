@@ -13,26 +13,26 @@ if(h1&&box&&!matchMedia("(max-width:720px)").matches&&webgl())(async()=>{
   for(let k=0;k<GW*GH;k++){SD[k]=(px[k*4+2]-128)/32;HT[k]=((px[k*4]<<8)|px[k*4+1])/65535}
   const sd=(x,y)=>SD[Math.min(GH-1,Math.max(0,y))*GW+Math.min(GW-1,Math.max(0,x))];
   /* sommets : ceux dedans gardent leur hauteur ; ceux juste dehors sont posés pile sur le contour (bord lisse) */
-  const idx=new Int32Array(GW*GH).fill(-1),pos=[];let nv=0;
+  const idx=new Int32Array(GW*GH).fill(-1);let pos=new Float32Array(GW*GH*3),nv=0;
   for(let y=0;y<GH;y++)for(let x=0;x<GW;x++){
     const k=y*GW+x,v=SD[k];if(v<-1.5)continue;
     let X=x,Y=y,Z=0;
     if(v>0)Z=HT[k]*HZ*GW;
     else{let gx=(sd(x+1,y)-sd(x-1,y))/2,gy=(sd(x,y+1)-sd(x,y-1))/2;const L=Math.hypot(gx,gy)||1;X=x+gx/L*(-v);Y=y+gy/L*(-v)}
-    idx[k]=nv++;pos.push((X-GW/2)/GW,-(Y-GH/2)/GW,Z/GW);
+    pos[nv*3]=(X-GW/2)/GW;pos[nv*3+1]=-(Y-GH/2)/GW;pos[nv*3+2]=Z/GW;idx[k]=nv++;
   }
   const N=nv,P=new Float32Array(N*6);
   for(let k=0;k<N;k++){P[k*3]=pos[k*3];P[k*3+1]=pos[k*3+1];P[k*3+2]=pos[k*3+2];P[(N+k)*3]=pos[k*3];P[(N+k)*3+1]=pos[k*3+1];P[(N+k)*3+2]=-pos[k*3+2]*.55}
-  const I=[],ins=k=>SD[k]>0;
+  let I=new Uint32Array(GW*GH*12),ni=0;const ins=k=>SD[k]>0;
   for(let y=0;y<GH-1;y++)for(let x=0;x<GW-1;x++){
     const ka=y*GW+x,kb=ka+1,kc=ka+GW,kd=kc+1,a=idx[ka],b=idx[kb],c=idx[kc],d=idx[kd];
     /* on coupe le carré selon la diagonale qui suit le mieux le contour */
     const diag=Math.abs(SD[ka]-SD[kd])<Math.abs(SD[kb]-SD[kc]);
-    const tri=(p,q,r,kp,kq,kr)=>{if(p>=0&&q>=0&&r>=0&&(ins(kp)||ins(kq)||ins(kr)))I.push(p,q,r,N+p,N+r,N+q)};
+    const tri=(p,q,r,kp,kq,kr)=>{if(p>=0&&q>=0&&r>=0&&(ins(kp)||ins(kq)||ins(kr))){I[ni++]=p;I[ni++]=q;I[ni++]=r;I[ni++]=N+p;I[ni++]=N+r;I[ni++]=N+q}};
     if(diag){tri(a,c,d,ka,kc,kd);tri(a,d,b,ka,kd,kb)}else{tri(a,c,b,ka,kc,kb);tri(b,c,d,kb,kc,kd)}
   }
   const geo=new THREE.BufferGeometry();geo.setAttribute("position",new THREE.BufferAttribute(P,3));
-  geo.setIndex(new THREE.Uint32BufferAttribute(I,1));geo.computeVertexNormals();
+  geo.setIndex(new THREE.BufferAttribute(I.subarray(0,ni),1));geo.computeVertexNormals();
   const ASPX=GW/GH;
 
   /* décor reflété : ciel blanc, bandes bleues, sol bleu nuit, panneaux lumineux */
@@ -107,6 +107,8 @@ if(h1&&box&&!matchMedia("(max-width:720px)").matches&&webgl())(async()=>{
     const ph=(t%7)/1.8;sweep.value=ph<1?-1.05+ph*2.1:-9;
     renderer.render(scene,cam);
   }
+  /* on prépare tout (shaders compilés + première image) derrière la boule de chargement */
+  try{renderer.compile(scene,cam)}catch(e){}
   renderer.render(scene,cam);requestAnimationFrame(frame);
-  h1.classList.add("is3d");window.LOGO3D=true;
+  h1.classList.add("is3d");window.LOGO3D=true;dispatchEvent(new Event("dw:logo3d"));
 })();
