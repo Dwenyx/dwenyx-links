@@ -856,6 +856,8 @@ body[data-r="home"] #bg{background:radial-gradient(ellipse at 50% 40%,#9af6ff 0,
 .pcol.reach .pnode{-webkit-text-stroke:0;color:#0b0b19;text-shadow:none!important}
 .plv{color:#fff}
 .pvr.reach .pvl span{-webkit-text-stroke:0;color:#0b0b19;text-shadow:none!important}
+#end{background:rgba(0,0,0,.28)}
+.spec{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 10px);transform:translateX(-50%);z-index:12;background:rgba(0,0,0,.6);border-radius:8px;padding:3px 12px;font-size:14px;pointer-events:none;zoom:var(--z,1)}
 </style>
 
 </head>
@@ -957,6 +959,7 @@ body[data-r="home"] #bg{background:radial-gradient(ellipse at 50% 40%,#9af6ff 0,
 <div id="banner" class="s"></div>
 <div id="toast"></div>
 
+<div id="spec" class="spec s" hidden></div>
 <div id="end" class="screen" hidden>
   <div class="endwrap">
     <div id="endTitle"></div>
@@ -1424,7 +1427,7 @@ function startLocal(mode){
  for(const e of ents)if(e.bot)e.frozen=true;
  matchOver=false;simOn=true;beginHud();
 }
-function beginHud(){
+function beginHud(){specOn=false;
  countT=3.6;lastCount=0;state='count';player.frozen=true;playT=0;
  ['#home','#topbar'].forEach(s=>$(s).hidden=true);$('#end').hidden=true;$('#death').hidden=true;$('#hud').hidden=false;$('#timer').hidden=false;$('#hint').style.opacity=1;
  $('#pctBox .dot').style.background=hex(player.hero.color);$('#feed').innerHTML='';
@@ -1448,6 +1451,8 @@ async function play(mode,room){
  setTimeout(()=>startLocal(mode),900);
 }
 const startGame=m=>play(m);
+let specOn=false;
+function specTarget(){if(player.alive||player.dying&&now-player.dying<1.6)return player;let b=null,bs=-1;for(const e of ents)if(e&&e.alive){const v=counts[e.id]||0;if(v>bs){bs=v;b=e}}return b||player}
 function fillAll(e){e.filling=true;feedMsg(`${e.name} est le dernier en vie !`);for(const c of e.trailCells)if(trail[c]===e.id)trail[c]=-1;e.trailCells=[];
  for(let c=0;c<TOT;c++){if(own[c]!==e.id){own[c]=e.id;trail[c]=-1;refresh(c,Math.hypot(c%N+.5-e.x,((c/N)|0)+.5-e.z)*.025,.1)}}
  if(e===player){sfx.capture(TOT);shake=.5;banner('100 % !')}recount()}
@@ -1456,7 +1461,7 @@ function matchWon(e){if(matchOver)return;matchOver=true;simOn=false;
  if(state!=='end'&&state!=='menu')finish(e===player?'win':'lost')}
 function finish(reason){
  if(state==='end'||state==='menu')return;const wasDead=!player.alive;state='end';
- if(NET.role!=='host')simOn=false;
+ if(matchOver&&NET.role!=='host')simOn=false;
  const won=reason==='win',my=won?TOT:(player.alive?(counts[player.id]||0):(player.deathCount||0)),pct=Math.min(100,my/TOT*100),ranked=gameMode==='ranked';
  const sc=e=>e.alive?(counts[e.id]||0):(e.deathCount||0);
  const pl=won?1:1+ents.filter(e=>e&&e!==player&&sc(e)>my).length;
@@ -1475,7 +1480,7 @@ function finish(reason){
 }
 function countUp(el,to,fmtF,coin){const t0=performance.now(),d=900;let last=-1;const f=()=>{const p=Math.min(1,(performance.now()-t0)/d),v=Math.round(to*(1-Math.pow(1-p,3)));el.textContent=fmtF(v);if(coin&&v!==last&&p<1&&v%5===0)sfx.coin();last=v;if(p<1)requestAnimationFrame(f)};setTimeout(f,450)}
 function showEnd(o){
- $('#end').hidden=false;
+ $('#end').hidden=false;specOn=!matchOver;
  $('#endTitle').innerHTML=stitle(o.reason==='win'?'VICTOIRE TOTALE !':o.reason==='quit'?'PARTIE INTERROMPUE':o.wasDead?'ÉLIMINÉ':'FIN DE PARTIE');
  $('#endRank').innerHTML=`#${o.pl}<small>sur ${o.n} joueurs</small>`;
  $('#eP').textContent=o.pct.toFixed(1)+'%';$('#eK').textContent=player.kills;$('#eB').textContent=save.best.toFixed(1)+'%';
@@ -1652,10 +1657,9 @@ function frame(){
  if(state==='play'){keyInput();playT+=dt;if(playT>6)$('#hint').style.opacity=0}
  if(NET.role==='client')clientTick(dt);
  else if(simOn){
-  for(const e of ents){if(!e.alive||e.frozen)continue;if(e.bot)botThink(e,dt);moveEnt(e,dt)}
+  for(const e of ents){if(!e.alive||(e.frozen&&(state==='count'||!e.bot)))continue;if(e.bot)botThink(e,dt);moveEnt(e,dt)}
   for(const e of ents)if(e.alive&&(counts[e.id]||0)>=TOT){matchWon(e);break}
   if(simOn&&!matchOver&&playT>2){const al=ents.filter(e=>e&&e.alive);if(al.length===1&&!al[0].filling)fillAll(al[0])}
-  if(simOn&&NET.role==='host'&&state==='end'&&!player.alive&&!ents.some(e=>e.remote&&e.alive)){simOn=false;NET.leave()}
   if(simOn)hostTick(dt);
  }
  if(state==='play'||state==='dead'||state==='count'){hudT-=dt;if(hudT<=0){hudT=.15;updHud()}}
@@ -1670,8 +1674,9 @@ function frame(){
  updPress(dt);updTiles();updParts(dt);
  const asp=cam.aspect;
  if(state==='menu'){camMenu(asp,dt);lobbyTick(dt)}
- else if(player){const m=asp<1?1+(1-asp)*.85:1;tv.set(player.x,13*m,player.z+11*m);tl.set(player.x,0,player.z);const k=1-Math.exp(-dt*(state==='count'?2.2:6));camPos.lerp(tv,k);camLook.lerp(tl,1-Math.exp(-dt*8))}
+ else if(player){const m=asp<1?1+(1-asp)*.85:1;const f=specTarget();tv.set(f.x,13*m,f.z+11*m);tl.set(f.x,0,f.z);const k=1-Math.exp(-dt*(state==='count'?2.2:6));camPos.lerp(tv,k);camLook.lerp(tl,1-Math.exp(-dt*8))}
  cam.position.copy(camPos);if(shake>0&&!RM){cam.position.x+=(Math.random()-.5)*shake;cam.position.y+=(Math.random()-.5)*shake;shake=Math.max(0,shake-dt*1.6)}else shake=0;cam.lookAt(camLook);
+ {const sp=$('#spec');const on=state==='end'&&specOn&&simOn&&!matchOver&&player&&!player.alive;if(on){const f=specTarget();if(f!==player){const t=`EN DIRECT · ${f.name} · ${((counts[f.id]||0)/TOT*100).toFixed(1)} %`;if(sp.textContent!==t)sp.textContent=t}}if(sp.hidden===on)sp.hidden=!on}
  renderAll();requestAnimationFrame(frame);
 }
 const OL={cam:new THREE.OrthographicCamera(-1,1,1,-1,0,1),scene:new THREE.Scene(),rt:new THREE.WebGLRenderTarget(4,4),mask:new THREE.MeshBasicMaterial({color:0xffffff})};
@@ -2027,7 +2032,7 @@ press($('#setClose'),()=>{save.name=($('#nameIn').value.trim()||'Joueur').slice(
 $('#nameIn').addEventListener('keydown',e=>{if(e.key==='Enter')$('#setClose').click()});
 press($('#againBtn'),()=>play(gameMode));
 press($('#homeBtn'),goHome);
-function goHome(){NET.leave();simOn=false;matchOver=false;state='menu';$('#end').hidden=true;$('#hud').hidden=true;for(const e of ents)if(e)e.view.g.visible=false;snapCam=true;go('home')}
+function goHome(){specOn=false;NET.leave();simOn=false;matchOver=false;state='menu';$('#end').hidden=true;$('#hud').hidden=true;for(const e of ents)if(e)e.view.g.visible=false;snapCam=true;go('home')}
 document.addEventListener('wheel',e=>{const el=e.target.closest('.hx,.rwrap,.pscroll');if(el&&Math.abs(e.deltaY)>Math.abs(e.deltaX)){el.scrollLeft+=e.deltaY;e.preventDefault()}},{passive:false});
 setInterval(()=>{if(state==='menu'&&tab==='home')$('#mTimer').textContent='Nouveaux défis dans '+untilMidnight()},30000);
 
