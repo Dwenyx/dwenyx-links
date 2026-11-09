@@ -603,7 +603,7 @@ body[data-r="home"] .halo{opacity:0}
 .ptk.prem{background:linear-gradient(#b05cff,#5a22c8)}
 .ptk.free{background:linear-gradient(#6a7ab0,#3b4a7a)}
 .ptk img{width:76px;height:60px;object-fit:contain}
-.ptk.free img{filter:grayscale(1) brightness(1.5)}
+.ptk.free img{filter:grayscale(1) brightness(1.05)}
 .ptk .btn{min-height:42px;font-size:14px;width:100%;border-width:10px 12px 13px;display:flex;align-items:center;justify-content:center;gap:4px}
 .ptk .btn .ic{width:18px;height:18px}
 .pscroll{flex:1;min-width:0;overflow-x:auto;-webkit-overflow-scrolling:touch;touch-action:pan-x}
@@ -899,14 +899,9 @@ body[data-r="home"] #bg{background:radial-gradient(ellipse at 50% 40%,#9af6ff 0,
 .shsep{flex:none;align-self:stretch;width:34px;display:flex;align-items:center;justify-content:center;margin-right:-8px}
 .shsep span{writing-mode:vertical-rl;transform:rotate(180deg);font-size:18px;letter-spacing:2px;color:var(--yellow);background:rgba(10,14,40,.55);border:3px solid var(--slateD);border-radius:14px;padding:14px 4px}
 .shsep+.shc{margin-left:0}
-/* barres de défilement au thème */
-*{scrollbar-width:thin;scrollbar-color:#ffc21a rgba(10,14,40,.45)}
-::-webkit-scrollbar{width:10px;height:10px}
-::-webkit-scrollbar-track{background:rgba(10,14,40,.45);border-radius:10px;margin:0 12px}
-::-webkit-scrollbar-thumb{background:linear-gradient(#ffe86e,#ffbf1a);border:2px solid #1b2350;border-radius:10px}
-::-webkit-scrollbar-thumb:hover{background:linear-gradient(#fff08f,#ffc93a)}
-::-webkit-scrollbar-button{display:none;width:0;height:0}
-::-webkit-scrollbar-corner{background:transparent}
+/* barres de défilement invisibles partout */
+*{scrollbar-width:none!important}
+*::-webkit-scrollbar{display:none!important;width:0!important;height:0!important;background:transparent!important}
 .tabs,.stabs{scrollbar-width:none}.stabs::-webkit-scrollbar{display:none}
 
 /* système prêt */
@@ -1075,6 +1070,10 @@ input::placeholder{color:#8a93b8!important;-webkit-text-fill-color:#8a93b8}
 #end .endbtns{display:flex;gap:14px;margin:0}
 #end .endbtns .btn{min-width:170px;min-height:58px;font-size:24px}
 @media (orientation:landscape) and (max-height:520px){#end .endwrap{gap:8px}#endRank b{font-size:46px}.ecard{gap:8px;padding:10px 14px}#end .endbtns .btn{min-height:48px}}
+
+.ptk>img.u{width:76px!important;height:60px!important;object-fit:contain}
+@media (orientation:portrait),(max-width:720px){.ptk>img.u{width:58px!important;height:46px!important}}
+@media (orientation:landscape) and (max-height:520px){.ptk>img.u{width:52px!important;height:38px!important}}
 </style>
 
 </head>
