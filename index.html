@@ -1620,10 +1620,14 @@ function roomSetup(ch){
    if(m.t==='start')roomGameStart();
    else if(m.t==='close'){roomGone("L'hôte a fermé le salon")}}});
  ch.on('presence',{event:'sync'},()=>{if(ROOM&&ROOM.ch===ch)roomSync()});
- ch.on('presence',{event:'leave'},({key})=>{
+ ch.on('presence',{event:'leave'},({key,currentPresences})=>{
+  // un changement de héros renvoie la présence (départ + retour) : on vérifie que la personne est vraiment partie
+  if(currentPresences&&currentPresences.length)return;
+  setTimeout(()=>{const st=ch.presenceState();if(st[key]&&st[key].length)return;presLeft(ch,key)},1500)});
+ function presLeft(ch,key){
   if(NET.role==='host'&&NET.ch===ch&&NET.conns.has(key)){const i=NET.conns.get(key);hostDrop(i.c)}
   if(NET.role==='client'&&NET.ch===ch&&key===NET.hostSid){NET.role='off';if(state!=='end'&&state!=='menu'){toast("L'hôte a quitté la partie");finish('quit')}}
-  if(ROOM&&ROOM.ch===ch&&!ROOM.host&&key===ROOM.hostSid&&NET.role!=='client')roomGone("L'hôte a quitté le salon")})}
+  if(ROOM&&ROOM.ch===ch&&!ROOM.host&&key===ROOM.hostSid&&NET.role!=='client')roomGone("L'hôte a quitté le salon")}}
 function chSend2(ch,ev,payload){try{ch.send({type:'broadcast',event:ev,payload})}catch(_){}}
 async function openRoomCh(code){const ch=await joinCh('pc-room-'+code,SID,roomSetup);if(!ch)return null;return ch}
 function joinRoomCh(code){return new Promise(async res=>{
