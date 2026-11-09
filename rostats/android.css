@@ -58,3 +58,24 @@ html.android .titlebar { padding-top: env(safe-area-inset-top); height: calc(48p
   html.android .bubble-menu.pick-menu { left: 12px; right: 12px; width: auto; }
   html.android .modal { width: calc(100vw - 24px); }
 }
+/* 1.13.1 — téléphone : vraie appli, sans cadre, barre d'onglets collée en bas */
+html.standalone .dl-btn { display: none !important; }
+@media (max-width: 640px) {
+  html.android .shell { padding: 0; gap: 0; height: calc(100% - 48px - env(safe-area-inset-top)); }
+  html.android .main { border: 0; border-radius: 0; background: transparent; box-shadow: none; padding: 8px 16px calc(96px + env(safe-area-inset-bottom)); }
+  html.android .titlebar { background: transparent; }
+  html.android .rail.left { left: 0; right: 0; bottom: 0; width: auto; height: calc(66px + env(safe-area-inset-bottom)); padding: 0 10px env(safe-area-inset-bottom); border-radius: 0; border: 0; border-top: 1px solid rgba(255,255,255,.08); justify-content: space-around; align-items: center; background: rgba(8, 9, 16, .82); backdrop-filter: blur(22px) saturate(1.6); -webkit-backdrop-filter: blur(22px) saturate(1.6); box-shadow: none; }
+  html.android .rail.left .rail-nav { flex: 1; justify-content: space-around; gap: 0; }
+  html.android .rail .nav-item { width: auto; min-width: 58px; height: 52px; border-radius: 12px; background: transparent !important; box-shadow: none !important; flex-direction: column; justify-content: center; gap: 3px; color: #7d8196; transform: none !important; }
+  html.android .rail .nav-item svg { width: 23px; height: 23px; }
+  html.android .rail .nav-item.active { color: var(--accent); }
+  html.android .rail .nav-item.active svg { color: var(--accent); fill: var(--accent); }
+  html.android .rail .nav-item::after { display: block !important; position: static; transform: none; opacity: 1; padding: 0; background: none; box-shadow: none; font-size: 10.5px; font-weight: 600; color: inherit; }
+  html.android .plus-bubble { width: 46px; height: 46px; order: 2; box-shadow: 0 0 0 4px rgba(var(--acc), .14), 0 6px 18px rgba(var(--acc), .5); }
+  html.android .plus-bubble span { font-size: 26px; }
+  html.android .hrow { margin: 0 -16px 14px; padding: 4px 16px 18px; scroll-padding: 0 16px; }
+  html.android .hrow .gcard { flex-basis: 64%; }
+  html.android .hrow.feat .gcard { flex-basis: 86%; }
+  html.android .card, html.android .kpi, html.android .gcard { border-color: rgba(255,255,255,.06); }
+  html.android .bubble-menu.left { bottom: calc(76px + env(safe-area-inset-bottom)); }
+}

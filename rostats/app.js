@@ -657,7 +657,7 @@
     const g = gInfo(g0);
     const img = g.thumb || g.icon;
     return `<button class="gcard ${big ? 'big' : ''}" data-uid="${g.universeId}">
-      <div class="gc-img" ${img ? `style="background-image:url('${esc(img)}')"` : ''}>${g0.label ? `<span class="gc-tag">${esc(g0.label)}</span>` : ''}${gameCfg(g.universeId) ? '<span class="gc-mine">Suivi</span>' : ''}</div>
+      <div class="gc-img">${img ? `<img src="${esc(img)}" alt="" loading="lazy" decoding="async">` : ''}${g0.label ? `<span class="gc-tag">${esc(g0.label)}</span>` : ''}${gameCfg(g.universeId) ? '<span class="gc-mine">Suivi</span>' : ''}</div>
       <div class="gc-body"><b>${esc(g.name || '…')}</b><span class="gc-by">${esc(g.creator || '')}</span>
       <div class="gc-stats"><span><i class="dot on"></i>${nice(g.playing)}</span><span>👍 ${ratingOf(g)}</span>${g.visits != null ? `<span>👁 ${nice(g.visits)}</span>` : ''}</div></div></button>`;
   }
@@ -809,14 +809,16 @@
       <div id="gHero">${heroHTML(uid, true)}</div>
       <div id="gRestricted"></div>
       <div class="kpis" id="gKpis"></div>
-      <div class="sec-head"><h3>Joueurs en ligne</h3>${segHTML(ranges.game, 'gSeg')}</div>
-      <div class="card flat"><div class="chart" id="gChart"></div></div>
+      ${gameCfg(uid) ? `<div class="sec-head"><h3>Joueurs en ligne</h3>${segHTML(ranges.game, 'gSeg')}</div>
+      <div class="card flat"><div class="chart" id="gChart"></div></div>` : ''}
       <div id="gRevenue"></div>
       <div class="sec-head"><h3>Infos</h3></div>
       <div class="card"><div class="info-grid"><div id="gDetails"></div><div id="gServers"></div></div></div>`;
     bindHero(uid);
-    $('#gSeg').onclick = (e) => { const r = e.target.dataset.r; if (!r) return; ranges.game = r; $$('#gSeg button').forEach((b) => b.classList.toggle('on', b.dataset.r === r)); updateGame(uid); };
-    charts.push(Charts.line($('#gChart'), { series: [] }));
+    if ($('#gChart')) {
+      $('#gSeg').onclick = (e) => { const r = e.target.dataset.r; if (!r) return; ranges.game = r; $$('#gSeg button').forEach((b) => b.classList.toggle('on', b.dataset.r === r)); updateGame(uid); };
+      charts.push(Charts.line($('#gChart'), { series: [] }));
+    }
     updateGame(uid);
   }
   function bindHero(uid) {

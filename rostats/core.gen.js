@@ -3,7 +3,7 @@
 'use strict';
 const fetch = window.nativeFetch;
 const Buffer = window.Buffer;
-const UA = 'RoStats/1.12 (Android)';
+const UA = 'RoStats/1.13 (Android)';
 const session = { defaultSession: { cookies: { get: async () => { const v = window.robloxCookie(); return v ? [{ value: v }] : []; } } } };
 
 // ---------- HTTP avec retry / gestion du rate-limit ----------

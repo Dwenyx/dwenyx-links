@@ -39,4 +39,6 @@
     quit: () => {},
   };
   document.documentElement.classList.add('web');
+  // lancée depuis l'écran d'accueil (iPhone / Android) : mode appli, sans bouton Télécharger
+  try { if (window.navigator.standalone || matchMedia('(display-mode: standalone)').matches) document.documentElement.classList.add('standalone'); } catch {}
 })();
