@@ -693,6 +693,78 @@ body[data-r="home"] .halo{opacity:0}
 .rcb{position:absolute!important;left:50%;bottom:-24px;transform:translateX(-50%);min-height:40px!important;font-size:14px!important;z-index:2}
 .rcb:active{transform:translateX(-50%) translateY(3px)}
 .ri.claim .rc b{visibility:hidden}
+/* ===== COULEURS FAÇON BRAWL + ÉCHELLE ===== */
+:root{--ink:#0b0b19;--slate1:#4d5679;--slate2:#2a3050;--slateD:#0b0b19;--royal:#1f64e8;--royalD:#1648b8;--deep:#0b0b19}
+#topbar,#home,.scr,#detail,#hud,#end,.modal,#toast,#count,#banner,#match,#elims,#death{zoom:var(--z,1)}
+body[data-r="home"] #bg{background:radial-gradient(ellipse at 50% 40%,#9af6ff 0,#45cdf9 34%,#1a98ee 66%,#0b6ad6 100%)}
+.scr{background:radial-gradient(circle,rgba(10,40,150,.35) 0 30px,transparent 31px) 0 0/140px 140px,radial-gradient(circle,rgba(10,40,150,.3) 0 18px,transparent 19px) 70px 70px/140px 140px,linear-gradient(#2468ec,#1a4fcf)}
+.full{background:linear-gradient(#2468ec,#1a4fcf)}
+.shead{background:#000}
+.cpill,.hcur .cpill{background:#000;border-radius:4px 4px 10px 10px}
+.stabs{background:#000}
+.pill{background:rgba(0,0,0,.72)}
+#lb{background:rgba(0,0,0,.6);border-color:#000}
+#pctBox,#timer,#killBox,.pill.big{border-color:#000}
+.mstrip,.pstrip{background:#000;color:#c9d2ee}
+.box{border-color:#000;box-shadow:0 5px 0 #000}
+.mbox{background:#2468ec;border-color:#fff;box-shadow:0 0 0 3px #000,0 8px 0 #000}
+.mbox input{border-color:#000}
+.hinfo{background:rgba(0,0,0,.35)}
+.ribbon{box-shadow:0 0 0 3px #000,0 6px 0 #000}
+.hcard{box-shadow:0 0 0 3px #000,0 7px 0 #000}
+.unl{border-color:#000;box-shadow:0 4px 0 #000}
+.endstats div{background:rgba(0,0,0,.55);border-color:#000}
+#end{background:rgba(0,0,0,.45)}
+.modal{background:rgba(0,0,0,.55)}
+/* casier : cartes plus petites et centrées sur grand écran */
+.hgrid{grid-template-columns:repeat(auto-fill,minmax(104px,132px));justify-content:center;gap:22px 16px}
+#sHeroes .sbody>*,#sMissions .sbody>*,#party .sbody>*{max-width:820px;margin-left:auto;margin-right:auto}
+#sHeroes .ribbon{max-width:820px}
+.hcard .lv{font-size:clamp(14px,1.6em,19px)}
+/* profil */
+.prh{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.prh .cube{width:64px;height:64px;flex:none}
+.prh b{display:block;font-weight:400;font-size:24px}.prh small{font-size:15px;color:var(--yellow)}
+.pre{margin-left:auto;width:56px;height:62px}.pre svg{width:100%;height:100%}
+#profBox .cstats{margin:0 auto}
+#invList{max-height:50vh;overflow-y:auto}
+/* éliminations façon Fortnite */
+#feed{max-width:calc(100vw - 200px)}
+.fk{display:flex;align-items:center;gap:6px;background:rgba(0,0,0,.6);border-radius:4px;padding:3px 10px;font-size:14px;animation:fkin .25s ease-out;transition:opacity .4s;text-shadow:none}
+.fk b{font-weight:400}.fk span{color:#c9d2ee}
+.fk.me{background:rgba(0,0,0,.75);box-shadow:inset 3px 0 0 #ffd21f}
+.fsk{width:18px;height:18px;flex:none}
+@keyframes fkin{from{transform:translateX(-24px);opacity:0}}
+#elims{position:fixed;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 150px);z-index:7;display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:none}
+.elim{display:flex;align-items:center;gap:10px;animation:elin .35s cubic-bezier(.2,1.4,.4,1)}
+.elim .et{background:#e3263f;color:#fff;font-size:15px;letter-spacing:.12em;padding:3px 10px;border-radius:3px;box-shadow:0 3px 0 #000}
+.elim .en{font-size:30px;color:#fff;text-shadow:0 3px 0 #000,2px 0 0 #000,-2px 0 0 #000,0 -2px 0 #000}
+.elim.out{opacity:0;transform:translateY(-10px);transition:all .35s}
+@keyframes elin{from{transform:scale(1.6);opacity:0}}
+#death{position:fixed;inset:0;z-index:8;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;background:radial-gradient(ellipse at center,rgba(0,0,0,.35),rgba(120,0,20,.65));pointer-events:none;animation:fade .3s;text-align:center;padding:0 16px}
+#death[hidden]{display:none}
+#death .dk svg{width:70px;height:70px}
+#death .dt{font-size:clamp(28px,7vw,48px);color:#fff;letter-spacing:.04em;text-shadow:0 4px 0 #000,3px 0 0 #000,-3px 0 0 #000,0 -3px 0 #000}
+#death .db{font-size:22px;color:#fff;text-shadow:0 2px 0 #000}
+#death .dp{font-size:64px;color:#ffd21f;text-shadow:0 4px 0 #000,3px 0 0 #000,-3px 0 0 #000,0 -3px 0 #000;animation:ban2 .5s .2s cubic-bezier(.2,1.6,.4,1) both}
+#trophyBtn{position:relative;overflow:visible}
+#trophyBtn .bdg{z-index:2}
+.sfoot s.old{font-size:20px;color:#fff;text-decoration:line-through;text-decoration-color:#ff2a44;text-decoration-thickness:3px;text-shadow:0 2px 0 #000}
+.sitem em{position:relative;z-index:1}
+/* petits boutons : juste une icône + un texte */
+.side .bdg{display:none!important}
+.sbtn{background:rgba(0,0,0,.42);border:0;box-shadow:none;border-radius:12px}
+@media (orientation:portrait),(max-width:720px){
+ .side{gap:22px}
+ .sbtn{width:64px;height:auto;padding:30px 0 4px;background:none;font-size:12px}
+ .sbtn .ic{top:-6px;width:40px;height:40px}
+}
+@media (orientation:landscape) and (max-height:520px){
+ .sbtn{width:auto;padding:0 12px 0 50px;height:42px}
+}
+#elims{bottom:auto;top:62%}
+#hint{transition:opacity .4s}
+@media (orientation:portrait),(max-width:720px){.side{bottom:calc(env(safe-area-inset-bottom,0px) + 250px);gap:16px}}
 </style>
 
 </head>
@@ -702,7 +774,7 @@ body[data-r="home"] .halo{opacity:0}
 
 <header id="topbar" class="lbar">
   <button id="profileBtn" class="lcard prof" aria-label="Profil et réglages"><span id="avatarBtn" class="avatar"></span><b id="pName" class="s"></b></button>
-  <button id="trophyBtn" class="lcard troph" aria-label="Route des trophées">
+  <button id="trophyBtn" class="lcard troph" aria-label="Route des trophées"><i class="bdg" id="roadDot" hidden></i>
     <span class="tl"><span class="tv"><span class="ic" data-i="cup"></span><b id="mTr" class="s">0</b></span><span class="tbar"><b id="tFill"></b></span></span>
     <span class="tnext" id="tNext"></span>
   </button>
@@ -721,8 +793,7 @@ body[data-r="home"] .halo{opacity:0}
   </div>
   <div class="side right">
     <button class="sbtn s" data-go="party"><span class="ic" data-i="heart"></span>AMIS</button>
-    <button class="sbtn s" data-go="road"><span class="ic" data-i="cup"></span>ROUTE<i class="bdg" id="roadDot" hidden></i></button>
-    <button class="sbtn s" data-go="room"><span class="ic" data-i="key"></span>SALON</button>
+    <button class="sbtn s" data-go="profile"><span class="ic" data-i="crown"></span>PROFIL</button>
   </div>
   <button id="plusL" class="plus3d" aria-label="Inviter un ami" hidden>+</button>
   <button id="plusR" class="plus3d" aria-label="Inviter un ami" hidden>+</button>
@@ -761,6 +832,8 @@ body[data-r="home"] .halo{opacity:0}
   <div class="dbtns" id="dBtns"></div>
 </div>
 
+<div id="profile" class="modal" hidden><div class="mbox"><h2 class="s">PROFIL</h2><div id="profBox"></div><div class="row2"><button id="profEdit" class="btn btn-blue">MODIFIER</button><button id="profClose" class="btn btn-green">OK</button></div></div></div>
+<div id="invite" class="modal" hidden><div class="mbox"><h2 class="s">INVITER UN AMI</h2><div id="invList" class="flist"></div><div class="row2"><button id="invManage" class="btn btn-blue">GÉRER MES AMIS</button><button id="invClose" class="btn btn-red">FERMER</button></div></div></div>
 <div id="settings" class="modal" hidden>
   <div class="mbox">
     <h2 class="s">RÉGLAGES</h2>
@@ -786,6 +859,8 @@ body[data-r="home"] .halo{opacity:0}
   <div id="hint" class="s"><img class="tapimg" src="ui/tap.png" alt="">Glisse pour diriger · Reviens dans ta zone pour capturer</div>
 </div>
 <div id="joy" hidden><div id="knob"></div></div>
+<div id="elims"></div>
+<div id="death" hidden></div>
 <div id="count" class="s"></div>
 <div id="banner" class="s"></div>
 <div id="toast"></div>
@@ -1133,9 +1208,9 @@ function kill(v,k){
  const near=Math.hypot(v.x-player.x,v.z-player.z)<22;
  if(near){burst(v.x,1,v.z,v.hero.color,40,7);burst(v.x,1,v.z,0x122a6b,10,5)}
  v.dying=now;recount();
- if(k&&k!==v){k.kills++;feed(`${k.name} a éliminé ${v.name}`);if(k===player){banner('ÉLIMINÉ !');sfx.kill();shake=.55}else if(near)sfx.boom()}
- else feed(`${v.name} s'est pris sa traînée`);
- if(v===player){sfx.die();shake=.8;state='dead';setTimeout(()=>finish('dead'),1500)}else v.respawnT=3.5;
+ if(k&&k!==v){k.kills++;feedKill(k,v);if(k===player){elimToast(v);sfx.kill();shake=.55}else if(near)sfx.boom()}
+ else feedKill(null,v);
+ if(v===player){sfx.die();shake=.8;state='dead';deathScreen(k&&k!==v?k:null);setTimeout(()=>finish('dead'),2200)}else v.respawnT=3.5;
 }
 const vis=new Uint8Array(TOT),Q=new Int32Array(TOT);
 function capture(e){
@@ -1270,6 +1345,11 @@ function updHud(){
  $('#kills').textContent=player.kills;drawMini();
  $('#lb').innerHTML=rows.map(e=>`<li class="${e===player?'me':''}"><i style="background:${hex(e.hero.color)}"></i><span>${ord.indexOf(e)+1}. ${esc(e.name)}</span>${((counts[e.id]||0)/TOT*100).toFixed(1)}%</li>`).join('');
 }
+const SKULL='<svg viewBox="0 0 24 24" class="fsk"><path d="M12 2C6.5 2 3 5.6 3 10.2c0 2.6 1.2 4.4 3 5.5V19a1 1 0 0 0 1 1h1.5v-2h1.5v2h4v-2h1.5v2H17a1 1 0 0 0 1-1v-3.3c1.8-1.1 3-2.9 3-5.5C21 5.6 17.5 2 12 2z" fill="#fff" stroke="#0b0b19" stroke-width="1.6"/><circle cx="8.6" cy="10.6" r="2.3" fill="#0b0b19"/><circle cx="15.4" cy="10.6" r="2.3" fill="#0b0b19"/></svg>';
+const nm=e=>`<b style="color:${hex(e.hero.color)}">${esc(e.name)}</b>`;
+function feedKill(k,v){const f=$('#feed'),d=document.createElement('div');d.className='fk';d.innerHTML=k?`${nm(k)}${SKULL}${nm(v)}`:`${SKULL}${nm(v)} <span>s'est pris sa traînée</span>`;if(k===player||v===player)d.classList.add('me');f.prepend(d);while(f.children.length>4)f.lastChild.remove();setTimeout(()=>{d.style.opacity=0;setTimeout(()=>d.remove(),400)},4200)}
+function elimToast(v){const w=$('#elims'),d=document.createElement('div');d.className='elim';d.innerHTML=`<span class="et">ÉLIMINÉ</span><span class="en">${esc(v.name)}</span>`;w.appendChild(d);while(w.children.length>3)w.firstChild.remove();setTimeout(()=>{d.classList.add('out');setTimeout(()=>d.remove(),350)},2400)}
+function deathScreen(k){const pl=1+ents.filter(e=>e!==player&&(counts[e.id]||0)>(player.deathCount||0)).length;$('#death').innerHTML=`<div class="dk">${SKULL}</div><div class="dt">TU AS ÉTÉ ÉLIMINÉ</div>${k?`<div class="db">par ${nm(k)}</div>`:'<div class="db">par ta propre traînée</div>'}<div class="dp">#${pl}</div>`;$('#death').hidden=false;setTimeout(()=>{$('#death').hidden=true},2200)}
 function feed(t){const f=$('#feed'),d=document.createElement('div');d.textContent=t;f.prepend(d);while(f.children.length>3)f.lastChild.remove();setTimeout(()=>{d.style.opacity=0;setTimeout(()=>d.remove(),400)},3200)}
 function banner(t){$('#banner').innerHTML=`<span>${stitle(t)}</span>`}
 const pv=new THREE.Vector3();
@@ -1334,6 +1414,8 @@ function renderAll(){
  R.setRenderTarget(OL.rt);R.setClearColor(0x000000,0);R.clear();cam.layers.set(1);S.overrideMaterial=OL.mask;R.render(S,cam);S.overrideMaterial=null;cam.layers.set(0);
  R.setRenderTarget(null);R.autoClear=false;R.render(OL.scene,OL.cam);R.autoClear=true;
 }
+function applyZoom(){const w=innerWidth,h=innerHeight;let z=w>h?Math.min(w/900,h/430):Math.min(w/390,h/780);z=Math.max(.72,Math.min(1.7,z));UIZ=z;document.documentElement.style.setProperty('--z',z)}
+let UIZ=1;applyZoom();addEventListener('resize',applyZoom);
 function resize(){R.setSize(innerWidth,innerHeight,false);cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();const w=R.domElement.width,h=R.domElement.height;OL.rt.setSize(w,h);OL.mat.uniforms.px.value.set(1/w,1/h);OL.mat.uniforms.thick.value=4.5*R.getPixelRatio()}
 addEventListener('resize',resize);resize();
 
@@ -1356,9 +1438,9 @@ const untilMonthEnd=()=>{const d=new Date(),e=new Date(d.getFullYear(),d.getMont
 const MODES={
  ranked:{n:'CLASSÉ',cat:'tro',sub:'Clavier AZERTY · 8 joueurs',d:'Finis 1er : +10 trophées',bg:'linear-gradient(135deg,#ff6a72,#a8142a)',ic:'cup',tm:'2:30'},
  quick:{n:'PARTIE RAPIDE',cat:'det',sub:'Sans chrono · sans trophées',d:"Pour t'entraîner tranquille",bg:'linear-gradient(135deg,#3fd0ff,#1f5fd8)',ic:'swords',tm:'Illimité'},
- party:{n:'PARTY',cat:'ami',sub:'En ligne avec tes amis',d:'Forme ton groupe et joue',bg:'linear-gradient(135deg,#ff8ec4,#9a1cb0)',ic:'heart',tm:'2:30'},
- room:{n:'SALON PRIVÉ',cat:'ami',sub:'Rejoins avec un code',d:'Crée un salon et partage le code',bg:'linear-gradient(135deg,#b38bff,#4b23c4)',ic:'key',tm:'2:30'}};
-if(!MODES[save.mode])save.mode='ranked';
+ party:{n:'PARTY',cat:'ami',sub:'Amis · en ligne · salon privé',d:'Joue en groupe ou avec un code',bg:'linear-gradient(135deg,#ff8ec4,#9a1cb0)',ic:'heart',tm:'2:30'},
+ };
+if(!MODES[save.mode])save.mode=save.mode==='room'?'party':'ranked';
 // passe
 const PASS_MAX=30,XP_LV=200;
 const passLevel=()=>Math.min(PASS_MAX,Math.floor((save.xp||0)/XP_LV)+1);
@@ -1410,7 +1492,7 @@ function sideLayout(){const p=cam.aspect<1;return{x:p?2.55:4.7,z:p?-2.6:-1.2,s:p
 function lobbyTick(dt){const L=sideLayout(),show=!detailOpen&&tab==='home';
  sidePods.forEach((g,i)=>{const sg=i?1:-1;g.visible=show;g.position.set(PD.x+sg*L.x,0,PD.z+L.z);g.scale.set(L.s,1,L.s);
   const fc=friendChars[i];if(fc){fc.g.visible=show;fc.g.position.set(g.position.x,.29,g.position.z);fc.g.scale.setScalar(2.2*L.s);fc.g.rotation.y=-sg*.35;animChar(fc,dt,false,now)}
-  const b=i?$('#plusR'):$('#plusL');if(!show||fc){b.hidden=true;return}b.hidden=false;pv.set(g.position.x,1.7*L.s+.7,g.position.z).project(cam);b.style.left=((pv.x+1)/2*innerWidth)+'px';b.style.top=((1-pv.y)/2*innerHeight)+'px'})}
+  const b=i?$('#plusR'):$('#plusL');if(!show||fc){b.hidden=true;return}b.hidden=false;pv.set(g.position.x,1.7*L.s+.7,g.position.z).project(cam);b.style.left=((pv.x+1)/2*innerWidth/UIZ)+'px';b.style.top=((1-pv.y)/2*innerHeight/UIZ)+'px'})}
 function camMenu(asp,dt){
  if(detailOpen){const f=Math.max(1,.95/asp);tv.set(PD.x,2.1*f,PD.z+9*f);tl.set(PD.x,1.45,PD.z)}
  else if(asp<1){const d=Math.min(16,6.3/asp);tv.set(PD.x,3.4,PD.z+d);tl.set(PD.x,.9,PD.z-1.2)}
@@ -1428,7 +1510,7 @@ function updTop(){
  $('#avatarBtn').innerHTML=heroIcon(HE(save.hero));$('#pName').textContent=save.name;$('#mTr').textContent=save.stars;
  const nx=roadNext(),pr=[...ROAD].reverse().find(r=>r.t<=save.stars),a=pr?pr.t:0,cl=roadClaimable().length;
  $('#tFill').style.width=(nx?Math.max(4,(save.stars-a)/(nx.t-a)*100):100)+'%';
- $('#tNext').innerHTML=(cl?img('p_chest'):nx?rewArt(nx).h:img('p_crown'))+(cl?`<i class="bdg">${cl}</i>`:'');
+ $('#tNext').innerHTML=(cl?img('p_chest'):nx?rewArt(nx).h:img('p_crown'));
  setDot('roadDot',cl);setDot('passDot',passClaimable());setDot('missDot',save.missions.filter(m=>!m.done&&m.p>=m.n).length);
  setDot('heroDot',HEROES.filter(h=>save.owned.includes(h.id)&&(save.levels[h.id]||1)<MAXLV&&save.coins>=upCost(save.levels[h.id]||1)).length);
  setDot('shopDot',save.giftDay!==today()?1:0);
@@ -1444,7 +1526,7 @@ function updHome(){
 }
 function refresh2(){updTop();if(tab==='home')updHome();if(tab==='shop')renderShop();if(tab==='pass')renderPass();if(tab==='road')renderRoad();if(tab==='heroes')renderHeroes();if(tab==='missions')renderMissions()}
 const SCR=['#sShop','#sHeroes','#sMissions','#sPass','#sRoad','#sModes','#party'];
-function closeAll(){[...SCR,'#settings','#detail','#chestM','#match'].forEach(s=>$(s).hidden=true);detailOpen=false}
+function closeAll(){[...SCR,'#settings','#profile','#invite','#detail','#chestM','#match'].forEach(s=>$(s).hidden=true);detailOpen=false}
 function go(t){
  tab=t;closeAll();document.body.dataset.tab=t;document.body.dataset.r='home';
  const lob=t==='home';$('#home').hidden=!lob;$('#topbar').hidden=!lob;
@@ -1494,7 +1576,7 @@ function renderDetail(){
  $('#dTop').innerHTML=shead('HÉROS');
  $('#dHead').innerHTML=`<div class="eqmark">${eq?I.check:''}</div><div class="dban" style="--c1:${r.cb};--c2:${r.ca}"><span class="role s">${I[x.perk]}${P.role}</span><h2 class="s">${x.name}</h2></div><div class="dlv s"><small>Niveau</small><b>${own?l:'–'}</b></div>`;
  $('#dAb').innerHTML=`<div class="abi" style="background:linear-gradient(${P.c},${mixCss(P.c)})">${I[x.perk]}${own&&l>=MAXLV?'<span class="mx s">MAX</span>':''}<em class="s">+${P.v(own?l:1)}%</em></div><div class="abt"><h3 class="s">${P.ab}</h3><p class="s">+${P.v(own?l:1)} % ${P.u} en partie · ${r.n}</p><div class="seg">${seg}${bub}</div></div>`;
- $('#dBtns').innerHTML=left+`<button class="ib ib-x" data-dclose aria-label="Fermer"></button>`+right;
+ $('#dBtns').innerHTML=left+right;
 }
 function stepDetail(d){const i=HEROES.findIndex(h=>h.id===detailId),n=HEROES[(i+d+HEROES.length)%HEROES.length];detailId=n.id;setStage(n.id);renderDetail();sfx.boing()}
 press($('#dPrev'),()=>stepDetail(-1));press($('#dNext'),()=>stepDetail(1));
@@ -1521,7 +1603,7 @@ function dailyOffers(){
 const RESS=[{id:'g1',t:'POIGNÉE DE GEMMES',ic:'gem_pile',q:'20',give:{gems:20},price:{coins:2500}},{id:'g2',t:'SAC DE GEMMES',ic:'gem_bag',q:'60',give:{gems:60},price:{coins:6500}},{id:'g3',t:'COFFRE-FORT',ic:'gem_vault',q:'150',give:{gems:150},price:{coins:14000}},
  {id:'c1',t:'TIRELIRE',ic:'p_piggy',q:'1500',give:{coins:1500},price:{gems:15}},{id:'c2',t:'LINGOTS',ic:'p_gold',q:'4000',give:{coins:4000},price:{gems:35}},{id:'c3',t:'LIASSE DE BILLETS',ic:'p_cash',q:'9000',give:{coins:9000},price:{gems:70}}];
 const BOXES=[{id:'iron',price:{coins:1500},d:'1 200 à 2 500 pièces'},{id:'orange',price:{coins:4000},d:'Pièces + gemmes'},{id:'purple',price:{gems:40},d:'Beaucoup de gemmes'},{id:'gold',price:{gems:100},d:'Peut contenir un héros'}];
-const priceBtn=(p,attr,old)=>{const cur=p.gems?'gems':'coins',v=p[cur];return `${old?`<s class="s">${fmt(old)}</s>`:''}<button class="btn ${cur==='gems'?'btn-green':'btn-yellow'}" ${attr}>${ico(cur==='gems'?'gem':'coin')}${fmt(v)}</button>`};
+const priceBtn=(p,attr,old)=>{const cur=p.gems?'gems':'coins',v=p[cur];return `${old?`<s class="old">${fmt(old)}</s>`:''}<button class="btn ${cur==='gems'?'btn-green':'btn-yellow'}" ${attr}>${ico(cur==='gems'?'gem':'coin')}${fmt(v)}</button>`};
 function shopCard(o){const done=save.offerBought.includes(o.id)||(o.id==='free'&&save.giftDay===today());
  return `<div class="shc" style="--c1:${o.c1};--c2:${o.c2}"><span class="stime s">${ico('timer')}${untilMidnight()}</span>${o.isNew?'<span class="snew s">NOUVEAU</span>':''}<div class="sttl s">${o.t}</div><div class="sart">${o.items.map(i=>`<span class="sitem">${i.h}<em class="s">${i.q}</em></span>`).join('')}${o.badge?`<span class="sbadge s">${o.badge}</span>`:''}</div><div class="sfoot">${done?'<button class="btn btn-grey" disabled>RÉCUPÉRÉ</button>':o.price?priceBtn(o.price,`data-offer="${o.id}"`,o.old):`<button class="btn btn-green" data-offer="${o.id}">GRATUIT</button>`}</div></div>`}
 function renderShop(){
@@ -1575,7 +1657,7 @@ $('#sPass').addEventListener('click',e=>{const b=e.target.closest('button');if(!
 
 // ROUTE DES TROPHÉES
 function renderRoad(){
- const W=150,P0=60,s=save.stars,nx=roadNext(),small=innerHeight<520,lineY=small?162:200;
+ const W=150,P0=60,s=save.stars,nx=roadNext(),small=innerHeight/UIZ<520,lineY=small?162:200;
  const xs=ROAD.map((r,i)=>P0+i*W+W/2);
  let mx;if(s<=ROAD[0].t)mx=P0+(s/ROAD[0].t)*(xs[0]-P0);else{mx=xs[xs.length-1];for(let i=0;i<ROAD.length-1;i++)if(s>=ROAD[i].t&&s<ROAD[i+1].t){mx=xs[i]+(s-ROAD[i].t)/(ROAD[i+1].t-ROAD[i].t)*W;break}}
  const total=P0*2+ROAD.length*W;
@@ -1635,19 +1717,25 @@ $('#party').addEventListener('click',e=>{const b=e.target.closest('button');if(!
 });
 
 // LOBBY : boutons
-document.querySelectorAll('[data-go]').forEach(b=>press(b,()=>{const t=b.dataset.go;if(t==='room')openParty(true);else go(t)}));
-press($('#plusL'),()=>go('party'));press($('#plusR'),()=>go('party'));
+document.querySelectorAll('[data-go]').forEach(b=>press(b,()=>{const t=b.dataset.go;if(t==='profile')openProfile();else go(t)}));
+press($('#plusL'),()=>openInvite());press($('#plusR'),()=>openInvite());
 press($('#trophyBtn'),()=>go('road'));press($('#passCard'),()=>go('pass'));press($('#modeBtn'),()=>go('modes'));
-press($('#playGo'),()=>{const m=save.mode;if(m==='ranked')startGame('ranked');else if(m==='quick')startGame('casual');else openParty(m==='room')});
+press($('#playGo'),()=>{const m=save.mode;if(m==='ranked')startGame('ranked');else if(m==='quick')startGame('casual');else openParty()});
 press($('#coinPill'),()=>{shopTab='res';go('shop')});press($('#gemPill'),()=>{shopTab='res';go('shop')});
-press($('#gearBtn'),openSettings);press($('#profileBtn'),openSettings);
+press($('#gearBtn'),openSettings);press($('#profileBtn'),()=>openProfile());
 function openSettings(){$('#nameIn').value=save.name;$('#settings').hidden=false}
+function openProfile(){const L=LG[leagueIdx(save.stars)],H=HE(save.hero);$('#profBox').innerHTML=`<div class="prh">${heroIcon(H,64)}<div><b class="s">${esc(save.name)}</b><small class="s">${L.n}</small></div><span class="pre">${emblem(L)}</span></div><div class="cstats s"><div>Trophées<b>${save.stars}</b></div><div>Record de territoire<b>${save.best.toFixed(1)}%</b></div><div>Héros débloqués<b>${save.owned.length}/${HEROES.length}</b></div><div>Niveau du passe<b>${passLevel()}</b></div></div>`;$('#profile').hidden=false}
+function openInvite(){const fr=save.friends;$('#invList').innerHTML=fr.length?fr.map((f,i)=>{const inv=groupInv.includes(f);return `<div class="friend"><span class="dot"></span><span class="fn s"><b>${esc(f)}</b><small>Hors ligne</small></span><button class="btn ${inv?'btn-grey':'btn-blue'}" data-qinv="${i}" ${inv||groupInv.length>=2?'disabled':''}>${inv?'INVITÉ':'INVITER'}</button></div>`}).join(''):'<p class="note s">Tu n\'as pas encore d\'amis. Ajoute-les depuis l\'écran Amis.</p>';$('#invite').hidden=false}
+$('#invList').addEventListener('click',e=>{const b=e.target.closest('[data-qinv]');if(!b||b.disabled)return;ac();sfx.click();const f=save.friends[+b.dataset.qinv];if(groupInv.length<2&&!groupInv.includes(f)){groupInv.push(f);toast(`${f} a rejoint ton podium`)}$('#invite').hidden=true;updHome()});
+press($('#invClose'),()=>{$('#invite').hidden=true});press($('#invManage'),()=>{$('#invite').hidden=true;go('party')});
+press($('#profClose'),()=>{$('#profile').hidden=true});press($('#profEdit'),()=>{$('#profile').hidden=true;openSettings()});
 press($('#soundBtn'),()=>{save.muted=!save.muted;persist();updTop()});
 press($('#setClose'),()=>{save.name=($('#nameIn').value.trim()||'Joueur').slice(0,12);persist();$('#settings').hidden=true;updTop()});
 $('#nameIn').addEventListener('keydown',e=>{if(e.key==='Enter')$('#setClose').click()});
 press($('#againBtn'),()=>startGame(gameMode));
 press($('#homeBtn'),goHome);
 function goHome(){state='menu';$('#end').hidden=true;$('#hud').hidden=true;for(const e of ents)e.view.g.visible=false;snapCam=true;go('home')}
+document.addEventListener('wheel',e=>{const el=e.target.closest('.hx,.rwrap,.pscroll');if(el&&Math.abs(e.deltaY)>Math.abs(e.deltaX)){el.scrollLeft+=e.deltaY;e.preventDefault()}},{passive:false});
 setInterval(()=>{if(state==='menu'&&tab==='home')$('#mTimer').textContent='Nouveaux défis dans '+untilMidnight()},30000);
 
 fillIcons();$('#gearBtn').innerHTML=I.menu;$('#dPrev').innerHTML=I.chevL;$('#dNext').innerHTML=I.chevR;
