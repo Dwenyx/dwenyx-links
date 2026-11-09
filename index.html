@@ -569,7 +569,10 @@ body[data-r="home"] .halo{opacity:0}
 /* boutique */
 .shcards{display:flex;gap:22px;align-items:stretch;padding:24px 10px 10px;min-height:100%}
 .shc{flex:none;width:230px;display:flex;flex-direction:column;border:3px solid var(--slateD);box-shadow:0 6px 0 var(--slateD);background:var(--c2);transform:skewX(-3deg);position:relative}
-.shc>*{transform:skewX(3deg)}
+.shc>*{transform:none}
+.shc .sitem,.shc .sfoot>*,.shc .sbadge{transform:skewX(3deg)}
+.shc .sart,.shc .sttl{margin:0}
+.shc .sfoot{border-top:3px solid rgba(0,0,0,.25)}
 .stime{position:absolute;top:-26px;left:12px;background:var(--slateD);padding:2px 10px;font-size:13px;border-radius:6px 6px 0 0;display:flex;gap:6px;align-items:center}
 .stime .ic{width:16px;height:16px}
 .snew{position:absolute;top:-26px;right:14px;background:#e3263f;padding:2px 8px;font-size:13px;border-radius:6px 6px 0 0}
@@ -1158,7 +1161,7 @@ function updParts(dt){let any=false;for(let i=0;i<PMAX;i++){if(!P.on[i])continue
 
 /* ---------- HÉROS 3D (cubes) ---------- */
 const G={eye:new THREE.SphereGeometry(.16,16,12),pup:new THREE.SphereGeometry(.085,12,10),shine:new THREE.SphereGeometry(.035,8,6),blush:new THREE.CircleGeometry(.07,12),horn:new THREE.ConeGeometry(.11,.34,10),party:new THREE.ConeGeometry(.2,.5,14),ball:new THREE.SphereGeometry(.09,10,8),stick:new THREE.CylinderGeometry(.025,.025,.35,6),leaf:new THREE.SphereGeometry(.16,10,8),crown:new THREE.CylinderGeometry(.28,.26,.18,14,1,true),spike:new THREE.ConeGeometry(.07,.17,6),halo:new THREE.TorusGeometry(.26,.045,8,24),shadow:new THREE.PlaneGeometry(1.6,1.6),
- palm:roundedBox(.82,.46,.74,.2,5),seg1:new THREE.CylinderGeometry(.105,.1,.42,14),seg2:new THREE.CylinderGeometry(.1,.09,.34,14),joint:new THREE.SphereGeometry(.105,14,10),tip:new THREE.SphereGeometry(.1,14,10),nail:new THREE.SphereGeometry(.065,10,8),curl:new THREE.SphereGeometry(.13,14,10),cuff:new THREE.CylinderGeometry(.3,.33,.26,24),ring:new THREE.TorusGeometry(.33,.07,10,28)};
+ palm:roundedBox(.8,.44,.72,.21,7),seg1:new THREE.CylinderGeometry(.105,.1,.42,14),seg2:new THREE.CylinderGeometry(.1,.09,.34,14),joint:new THREE.SphereGeometry(.105,14,10),tip:new THREE.SphereGeometry(.1,14,10),nail:new THREE.SphereGeometry(.065,10,8),curl:new THREE.SphereGeometry(.13,14,10),cuff:new THREE.CylinderGeometry(.3,.33,.26,24),ring:new THREE.TorusGeometry(.33,.07,10,28)};
 const shC=document.createElement('canvas');shC.width=shC.height=64;{const x=shC.getContext('2d'),g=x.createRadialGradient(32,32,0,32,32,32);g.addColorStop(0,'rgba(18,42,107,.5)');g.addColorStop(1,'rgba(18,42,107,0)');x.fillStyle=g;x.fillRect(0,0,64,64)}
 const SHADOW=new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(shC),transparent:true,depthWrite:false});
 const BLUSH=new THREE.MeshBasicMaterial({color:0xff6f8a,transparent:true,opacity:.55});
@@ -1175,36 +1178,44 @@ function nameSprite(txt,col){const c=document.createElement('canvas');c.width=25
 const SKINS=[0xf2c9a0,0xc68a5a,0x7a4a2c],SKIN_TIP=[0xf7d8b8,0xd49f74,0x8e5a3a];
 const NAILC={bulle:0xff5fb8,ombre:0x2a1f4a,lave:0xff3b4f,galaxie:0x8a5cff};
 // Personnage : une main qui court sur deux doigts (peau + tenue du héros)
+function capsule(r1,r2,len,seg=18){const pts=[],n=8;
+ for(let i=0;i<=n;i++){const a=-Math.PI/2+i/n*Math.PI/2;pts.push(new THREE.Vector2(Math.cos(a)*r2,-len/2+Math.sin(a)*r2))}
+ for(let i=0;i<=n;i++){const a=i/n*Math.PI/2;pts.push(new THREE.Vector2(Math.cos(a)*r1,len/2+Math.sin(a)*r1))}
+ pts[0].x=0.0001;pts[pts.length-1].x=0.0001;return new THREE.LatheGeometry(pts,seg)}
+const HG={up:capsule(.112,.104,.3),lo:capsule(.104,.098,.26),curl:capsule(.1,.094,.2),thumb:capsule(.11,.1,.22),nail:new THREE.SphereGeometry(.07,14,10),
+ cuff:new THREE.CylinderGeometry(.29,.31,.26,32,1),cuffRim:new THREE.TorusGeometry(.3,.055,12,36)};
 function makeChar(h,label,me){
  const g=new THREE.Group(),inner=new THREE.Group();g.add(inner);
  const col=h.color,sk=h.skin||0,M=toon(SKINS[sk]),tipM=toon(SKIN_TIP[sk]),W=toon(0xffffff),SL=toon(col),acc=h.acc||[],NM=acc.includes('nails')?toon(NAILC[h.id]||0xff5fb8):toon(0xfff3ea);
  const add=(par,geo,mat,x,y,z)=>{const m=new THREE.Mesh(geo,mat);m.position.set(x,y,z);par.add(m);return m};
  const palm=new THREE.Group();palm.position.y=1;inner.add(palm);
  add(palm,G.palm,M,0,0,0);
- // manche de la tenue (couleur du héros)
- const cuff=add(palm,G.cuff,SL,0,.16,-.44);cuff.rotation.x=-1;cuff.scale.set(1,1.5,1);
- const ring=add(palm,G.ring,toon(mixHex(col,0xffffff,.45)),0,.2,-.5);ring.rotation.x=-2.57;
- if(acc.includes('watch')){const st=add(palm,G.ring,INK,0,.1,-.33);st.rotation.x=-2.57;st.scale.setScalar(.82);const fc=add(palm,new THREE.CylinderGeometry(.13,.13,.06,18),toon(0xffd21f),0,.33,-.25);fc.rotation.x=-1;add(palm,new THREE.CylinderGeometry(.09,.09,.065,18),W,0,.335,-.245).rotation.x=-1}
- if(acc.includes('band')){const bd=add(palm,G.ring,toon(h.id==='soleil'?0xffd21f:0x4cc72a),0,.1,-.33);bd.rotation.x=-2.57;bd.scale.set(.82,.82,1.4)}
+ // manche de la tenue (couleur du héros), bien emboîtée au poignet
+ const sleeve=new THREE.Group();sleeve.position.set(0,.06,-.4);sleeve.rotation.x=-1.3;palm.add(sleeve);
+ add(sleeve,HG.cuff,SL,0,-.02,0);
+ const rim=add(sleeve,HG.cuffRim,toon(mixHex(col,0xffffff,.5)),0,-.16,0);rim.rotation.x=Math.PI/2;
+ if(acc.includes('watch')){const st=add(sleeve,HG.cuffRim,INK,0,-.3,0);st.rotation.x=Math.PI/2;st.scale.set(.86,.86,.9);const fc=add(sleeve,new THREE.CylinderGeometry(.12,.12,.06,20),toon(0xffd21f),0,-.3,.3);fc.rotation.x=Math.PI/2;add(sleeve,new THREE.CylinderGeometry(.085,.085,.065,20),W,0,-.3,.31).rotation.x=Math.PI/2}
+ if(acc.includes('band')){const bd=add(sleeve,HG.cuffRim,toon(h.id==='soleil'?0xffd21f:0x4cc72a),0,-.3,0);bd.rotation.x=Math.PI/2;bd.scale.set(.86,.86,1.3)}
  // visage sur le dos de la main
- const eyes=new THREE.Group();eyes.position.set(0,.04,.37);palm.add(eyes);
- for(const s of[-1,1]){const e=new THREE.Mesh(G.eye,toon(0xffffff));e.position.set(s*.18,0,0);e.scale.set(1,1.25,.55);const eo=new THREE.Mesh(G.eye,OUT);eo.position.copy(e.position);eo.scale.set(1.14,1.38,.6);const pu=new THREE.Mesh(G.pup,INK);pu.position.set(s*.17,-.05,.07);pu.scale.set(1,1.2,.6);const sh=new THREE.Mesh(G.shine,toon(0xffffff));sh.position.set(s*.17+.03,0,.12);const bl=new THREE.Mesh(G.blush,BLUSH);bl.position.set(s*.33,-.16,.04);eyes.add(eo,e,pu,sh,bl)}
- // doigts repliés (pouce, annulaire, auriculaire)
- const th=add(palm,G.curl,M,-.44,-.08,.12);th.scale.set(.8,.75,1.35);th.rotation.y=-.5;
- add(palm,G.curl,M,.3,-.24,.24).scale.set(1,.85,1.1);
- add(palm,G.curl,M,.43,-.2,.16).scale.set(.8,.75,.95);
- // deux doigts-jambes (index + majeur)
+ const eyes=new THREE.Group();eyes.position.set(0,.04,.36);palm.add(eyes);
+ for(const s of[-1,1]){const e=new THREE.Mesh(G.eye,toon(0xffffff));e.position.set(s*.17,0,0);e.scale.set(1,1.25,.55);const eo=new THREE.Mesh(G.eye,OUT);eo.position.copy(e.position);eo.scale.set(1.14,1.38,.6);const pu=new THREE.Mesh(G.pup,INK);pu.position.set(s*.16,-.05,.07);pu.scale.set(1,1.2,.6);const sh=new THREE.Mesh(G.shine,toon(0xffffff));sh.position.set(s*.16+.03,0,.12);const bl=new THREE.Mesh(G.blush,BLUSH);bl.position.set(s*.32,-.16,.04);eyes.add(eo,e,pu,sh,bl)}
+ // pouce : gélule plaquée sur le côté, pointée vers l'avant
+ const tg=new THREE.Group();tg.position.set(-.4,-.08,.1);tg.rotation.set(Math.PI/2-.2,0,-.35);tg.scale.setScalar(.9);palm.add(tg);
+ add(tg,HG.thumb,M,0,.12,0);add(tg,HG.nail,NM,0,.27,-.07).scale.set(.85,.5,1);
+ // annulaire et auriculaire repliés sous la paume (deux phalanges chacun)
+ [[.29,.78],[.41,.66]].forEach(([x,sc])=>{const f=new THREE.Group();f.position.set(x,-.17,.2);f.scale.setScalar(sc);palm.add(f);
+  const a=add(f,HG.curl,M,0,0,0);a.rotation.x=Math.PI/2;
+  const b=add(f,HG.curl,M,0,-.1,.06);b.rotation.x=-.5})
+ // index + majeur = les deux jambes
  const legs=[];
  for(const s of[-1,1]){
-  const hip=new THREE.Group();hip.position.set(s*.13,.86,.2);inner.add(hip);
-  add(hip,G.joint,M,0,0,0);
-  add(hip,G.seg1,M,0,-.21,0);
-  const knee=new THREE.Group();knee.position.y=-.42;hip.add(knee);
-  add(knee,G.joint,M,0,0,0);
-  add(knee,G.seg2,M,0,-.17,0);
-  add(knee,G.tip,tipM,0,-.34,0);
-  const nl=add(knee,G.nail,NM,0,-.32,.07);nl.scale.set(1,1.2,.5);
-  if(acc.includes('ring')&&s<0){const rg=add(hip,new THREE.TorusGeometry(.115,.035,8,18),toon(0xffc21a),0,-.3,0);rg.rotation.x=Math.PI/2;add(hip,new THREE.SphereGeometry(.05,10,8),toon(0x5fe0ff),0,-.3,.13)}
+  const hip=new THREE.Group();hip.position.set(s*.13,.82,.22);inner.add(hip);
+  add(hip,HG.up,M,0,-.17,0);
+  const knee=new THREE.Group();knee.position.y=-.36;hip.add(knee);
+  add(knee,HG.lo,M,0,-.15,0);
+  const tip=add(knee,new THREE.SphereGeometry(.1,16,12),tipM,0,-.28,0);tip.scale.set(1,.7,1);
+  const nl=add(knee,HG.nail,NM,0,-.24,.075);nl.scale.set(1,1.25,.42);
+  if(acc.includes('ring')&&s<0){const rg=add(hip,new THREE.TorusGeometry(.12,.035,10,22),toon(0xffc21a),0,-.24,0);rg.rotation.x=Math.PI/2;add(hip,new THREE.SphereGeometry(.05,12,10),toon(0x5fe0ff),0,-.24,.14)}
   legs.push({hip,knee});
  }
  addHat(palm,h,.21);
