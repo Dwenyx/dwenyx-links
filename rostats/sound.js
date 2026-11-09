@@ -98,8 +98,10 @@
   }
   Object.values(SAMPLES).forEach(([f]) => sample(f)); // préchargement
 
+  // Pas de son sur les boutons : seulement les vrais événements (vente, record, chargement, ajout)
+  const QUIET = new Set(['tap', 'nav', 'open', 'close', 'on', 'off', 'pick', 'tick']);
   function play(name) {
-    if (!enabled) return;
+    if (!enabled || QUIET.has(name)) return;
     const now = performance.now();
     if (last[name] && now - last[name] < 45) return; // évite les doublons
     last[name] = now;

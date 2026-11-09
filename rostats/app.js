@@ -20,7 +20,8 @@
   let me = null;              // compte Roblox connecté
   const servers = {};        // stats serveurs
   const revenue = {};        // { uid: { days, error, at } }
-  let view = 'overview';
+  let view = 'home';
+  let previewUid = null; // jeu affiché sans être suivi (recherche, tendances)
   let lastRefresh = 0;
   let refreshing = false;
   let refreshError = null;
@@ -32,7 +33,9 @@
   let fx = { rate: 0.86, live: false };
 
   const defaults = { interval: 1, notifySales: true, notifyRecord: true, trayOnClose: true, devex: 0.0038 };
-  const S = () => ({ ...defaults, ...(config.settings || {}) });
+  const IS_WEB = document.documentElement.classList.contains('web');
+  // version web : actualisation toutes les 5 s minimum (chaque appel passe par le relais du site)
+  const S = () => { const o = { ...defaults, ...(config.settings || {}) }; if (IS_WEB && o.interval < 5) o.interval = 5; return o; };
 
   // ---------- Utilitaires ----------
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -196,11 +199,12 @@
 
   // ---------- Rafraîchissement ----------
   async function refresh() {
-    if (refreshing || !config.games.length) { renderLive(); return; }
+    const tracked = config.games.map((g) => g.universeId);
+    const ids = previewUid && !tracked.includes(previewUid) ? [...tracked, previewUid] : tracked;
+    if (refreshing || !ids.length) { renderLive(); return; }
     if (Date.now() < pauseUntil) { renderLive(); return; }
     refreshing = true;
     try {
-      const ids = config.games.map((g) => g.universeId);
       const needVotes = Date.now() - lastVotes > 30000;
       const needIcons = ids.some((id) => !live[id]?.icon || live[id]?.thumb == null);
       const data = await call(api.games, ids, { votes: needVotes, icons: needIcons });
@@ -223,6 +227,7 @@
           if (prev.favorites > g.favorites && prev.favorites - g.favorites < 50) g.favorites = prev.favorites;
         }
         live[uid] = { ...prev, ...g, up: g.up ?? prev?.up, down: g.down ?? prev?.down, icon: g.icon || prev?.icon, thumb: g.thumb || prev?.thumb || (g.icon ? '' : undefined) };
+        if (!tracked.includes(uid)) { pushHistory(uid, { t, p: g.playing, v: g.visits, f: g.favorites }); continue; }
         total += g.playing; tv += g.visits; tf += g.favorites;
         pushHistory(uid, { t, p: g.playing, v: g.visits, f: g.favorites });
         // record de joueurs
@@ -404,7 +409,7 @@
     const gh = gids.map((id) => { const gr = groups[id]; return `<button class="grp-head rg ${view === 'group:' + id ? 'active' : ''}" data-gid="${id}" title="${esc(gr.name)} · ${fmt(gr.memberCount)} membres">${gr.icon ? `<img src="${esc(gr.icon)}" alt="">` : '<div class="ph"></div>'}</button>`; }).join('');
     const gl = $('#groupList');
     if (gl) { if (gl.innerHTML !== gh) gl.innerHTML = gh; gl.hidden = !gids.length; }
-    $$('.nav-item').forEach((b) => b.classList.toggle('active', b.dataset.view === view || (b.dataset.view === 'overview' && /^(game|group):/.test(view))));
+    $$('.nav-item').forEach((b) => b.classList.toggle('active', b.dataset.view === view || (b.dataset.view === 'overview' && (/^group:/.test(view) || (/^game:/.test(view) && gameCfg(Number(view.slice(5))))))));
   }
   $('#groupList')?.addEventListener('click', (e) => { const h = e.target.closest('.grp-head'); if (h) go('group:' + h.dataset.gid); });
   // Menu de sélection des jeux (bouton en haut de la colonne de droite)
@@ -443,6 +448,7 @@
     user: '<svg viewBox="0 0 24 24"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm0 2c-4 0-8 2-8 5v1h16v-1c0-3-4-5-8-5z"/></svg>',
     group: '<svg viewBox="0 0 24 24"><path d="M9 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zm7.5 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM9 13c-3.3 0-7 1.6-7 4.5V20h14v-2.5C16 14.6 12.3 13 9 13zm7.5 0c-.6 0-1.2.1-1.8.2 1.4 1 2.3 2.4 2.3 4.3V20h5v-2.2c0-2.7-3-4.8-5.5-4.8z"/></svg>',
     spark: '<svg viewBox="0 0 24 24"><path d="M11 3q1 7 8 8-7 1-8 8-1-7-8-8 7-1 8-8zm8-1q.5 2.5 3 3-2.5.5-3 3-.5-2.5-3-3 2.5-.5 3-3z"/></svg>',
+    search: '<svg viewBox="0 0 24 24"><path d="M10 3a7 7 0 0 1 5.6 11.2l5.1 5.1-1.4 1.4-5.1-5.1A7 7 0 1 1 10 3zm0 2a5 5 0 1 0 0 10 5 5 0 0 0 0-10z"/></svg>',
     code: '<svg viewBox="0 0 24 24"><path d="M8.6 16.6 4 12l4.6-4.6L7.2 6 1.2 12l6 6zm6.8 0L20 12l-4.6-4.6L16.8 6l6 6-6 6z"/></svg>',
   };
   function showBubble(el) { el.hidden = false; el.classList.remove('closing'); window.Sound?.play('open'); }
@@ -456,10 +462,10 @@
     m.innerHTML = [['link', 'Ajouter un jeu', 'Lien ou ID du jeu', () => openAddModal('link')],
       ['user', 'Importer mes jeux', 'Tous les jeux de ton compte', () => openAddModal('user')],
       ['group', 'Importer un groupe', 'Tous les jeux d’un groupe', () => openAddModal('group')],
-      ['spark', 'Miniature IA', 'Créer une miniature', () => go('thumbs')],
+      ['search', 'Rechercher un jeu', 'Voir les stats de n’importe quel jeu', () => go('search')],
       ['code', 'Script Luau', 'Stats même PC éteint', () => copyTracker()]]
       .map(([ic, t, sub], i) => `<button class="bm-item" data-i="${i}" style="--d:${i * 30}ms">${ICO[ic]}<span><b>${t}</b><small>${sub}</small></span></button>`).join('');
-    const acts = [() => openAddModal('link'), () => openAddModal('user'), () => openAddModal('group'), () => go('thumbs'), () => copyTracker()];
+    const acts = [() => openAddModal('link'), () => openAddModal('user'), () => openAddModal('group'), () => go('search'), () => copyTracker()];
     m.onclick = (e) => { const b = e.target.closest('.bm-item'); if (!b) return; hideBubble(m); $('#plusBtn').classList.remove('on'); acts[b.dataset.i](); };
     showBubble(m);
     $('#plusBtn').classList.add('on');
@@ -478,15 +484,18 @@
     renderSidebar();
     clearInterval(srvTimer);
     clearInterval(heroTimer);
+    previewUid = null;
     if (v.startsWith('game:')) {
       const uid = Number(v.slice(5));
+      if (!gameCfg(uid)) { previewUid = uid; if (!live[uid]) loadPreview(uid); }
       mountGame(uid);
       refreshServers(uid);
       srvTimer = setInterval(() => refreshServers(uid), 120000);
       if (gameCfg(uid)?.keyEnc) refreshRevenue(uid);
     } else if (v.startsWith('group:')) mountGroup(Number(v.slice(6)));
     else if (v === 'settings') mountSettings();
-    else if (v === 'thumbs') mountThumbs();
+    else if (v === 'home') mountHome();
+    else if (v === 'search') mountSearch();
     else mountOverview();
   }
 
@@ -495,6 +504,7 @@
   function updateView() {
     if (document.hidden) return;
     if (view === 'overview') updateOverview();
+    else if (view === 'home') updateHomeLive();
     else if (view.startsWith('game:')) updateGame(Number(view.slice(5)));
     else if (view.startsWith('group:')) updateGroup(Number(view.slice(6)));
   }
@@ -519,7 +529,7 @@
       ${g.thumb ? `<div class="hero-img" style="background-image:url('${esc(g.thumb)}')"></div>` : g.icon ? `<div class="hero-img icon" style="background-image:url('${esc(g.icon)}')"></div>` : ''}
       <div class="hero-in">
         <div class="hero-pills">
-          <span class="hpill hot">${g.playing ? '🔥 En ligne' : '🎮 Ton jeu'}</span>
+          <span class="hpill hot">${g.playing ? '🔥 En ligne' : gameCfg(uid) ? '🎮 Ton jeu' : '🎮 Jeu Roblox'}</span>
           ${gr ? `<span class="hpill round" title="${esc(gr.name)}">${gr.icon ? `<img src="${esc(gr.icon)}" alt="">` : ''}</span>` : ''}
         </div>
         <h2 class="hero-name">${esc(g.name || c.name || 'Chargement…')}</h2>
@@ -527,7 +537,7 @@
         <div class="hero-foot">
           <span class="wpill"><b>${fmt(g.playing)}</b> en ligne</span>
           ${rating != null ? `<span class="wpill">👍 ${pct(rating, 0)}</span>` : ''}
-          ${onGamePage ? `<span style="flex:1"></span><button class="btn glass" id="gOpen">Roblox</button><button class="btn glass" id="gDash">Creator Hub</button><button class="btn glass" id="gMore" title="Plus">⋯</button>` : ''}
+          ${onGamePage ? (gameCfg(uid) ? `<span style="flex:1"></span><button class="btn glass" id="gOpen">Roblox</button><button class="btn glass" id="gDash">Creator Hub</button><button class="btn glass" id="gMore" title="Plus">⋯</button>` : `<span style="flex:1"></span><button class="btn glass" id="gOpen">Jouer sur Roblox</button><button class="btn follow" id="gFollow">+ Suivre ce jeu</button>`) : ''}
         </div>
       </div>
     </div>`;
@@ -611,6 +621,111 @@
   function kpi(label, value, foot = '', cls = '', color) {
     return `<div class="kpi ${cls}"><div class="k-label">${color ? `<span class="sw" style="background:${color}"></span>` : ''}${label}</div>
       <div class="k-value">${value}</div><div class="k-foot">${foot}</div></div>`;
+  }
+
+
+  // ---------- Découverte : accueil (à l'affiche + tendances) et recherche ----------
+  const disc = { at: 0, sorts: [], featured: [], info: {}, loading: false, error: null };
+  const nice = (n) => (n == null ? '—' : compact(n));
+  async function enrich(ids) {
+    const need = [...new Set(ids)].filter((id) => !disc.info[id] || Date.now() - disc.info[id]._at > 120000);
+    for (let i = 0; i < need.length; i += 50) {
+      try {
+        const data = await call(api.games, need.slice(i, i + 50), { votes: true, icons: true });
+        for (const [id, g] of Object.entries(data || {})) disc.info[id] = { ...g, _at: Date.now() };
+      } catch {}
+    }
+  }
+  async function loadPreview(uid) {
+    await enrich([uid]);
+    const g = disc.info[uid];
+    if (g && !live[uid]) { live[uid] = { ...g }; updateView(); }
+  }
+  async function loadDiscover(force) {
+    if (disc.loading || (!force && Date.now() - disc.at < 5 * 60000 && disc.sorts.length)) return;
+    disc.loading = true; disc.error = null;
+    try {
+      const [sorts, featured] = await Promise.all([call(api.sorts).catch((e) => { disc.error = e.message; return []; }), call(api.featured).catch(() => [])]);
+      disc.sorts = sorts || []; disc.featured = featured || [];
+      await enrich([...disc.featured.map((f) => Number(f.universeId)), ...disc.sorts.flatMap((x) => x.games.slice(0, 12).map((g) => g.universeId))]);
+      disc.at = Date.now();
+    } finally { disc.loading = false; }
+  }
+  const gInfo = (g) => ({ ...g, ...(disc.info[g.universeId] || {}), playing: disc.info[g.universeId]?.playing ?? g.playing });
+  const ratingOf = (g) => (g.up + g.down ? Math.round((g.up / (g.up + g.down)) * 100) + ' %' : '—');
+  function gameCard(g0, big = false) {
+    const g = gInfo(g0);
+    const img = g.thumb || g.icon;
+    return `<button class="gcard ${big ? 'big' : ''}" data-uid="${g.universeId}">
+      <div class="gc-img" ${img ? `style="background-image:url('${esc(img)}')"` : ''}>${g0.label ? `<span class="gc-tag">${esc(g0.label)}</span>` : ''}${gameCfg(g.universeId) ? '<span class="gc-mine">Suivi</span>' : ''}</div>
+      <div class="gc-body"><b>${esc(g.name || '…')}</b><span class="gc-by">${esc(g.creator || '')}</span>
+      <div class="gc-stats"><span><i class="dot on"></i>${nice(g.playing)}</span><span>👍 ${ratingOf(g)}</span>${g.visits != null ? `<span>👁 ${nice(g.visits)}</span>` : ''}</div></div></button>`;
+  }
+  function skeleton(n, big) { return Array.from({ length: n }, () => `<div class="gcard sk ${big ? 'big' : ''}"><div class="gc-img"></div><div class="gc-body"><b></b><span></span></div></div>`).join(''); }
+  function mountHome() {
+    main.innerHTML = `
+      <div class="greet">${greet()}${me ? `, <b>${esc(me.displayName || me.name)}</b>` : ''}</div>
+      <div class="sec-head"><h3>À l’affiche</h3></div>
+      <div class="hrow feat" id="hmFeat">${skeleton(2, true)}</div>
+      <div id="hmSorts"><div class="sec-head"><h3>Tendances</h3></div><div class="hrow">${skeleton(5)}</div></div>`;
+    main.onclick = (e) => { const c = e.target.closest('.gcard[data-uid]'); if (c) go('game:' + c.dataset.uid); };
+    renderHome();
+    loadDiscover().then(() => view === 'home' && renderHome());
+  }
+  function renderHome() {
+    if (!$('#hmFeat')) return;
+    const feat = disc.featured.length ? disc.featured.map((f) => ({ ...f, universeId: Number(f.universeId), label: f.label || 'À l’affiche' })) : [];
+    $('#hmFeat').innerHTML = feat.length ? feat.map((f) => gameCard(f, true)).join('') : disc.at ? '<div class="muted small" style="padding:8px">Aucun jeu à l’affiche pour le moment.</div>' : skeleton(2, true);
+    if (!disc.at && disc.loading) return;
+    $('#hmSorts').innerHTML = disc.sorts.length ? disc.sorts.slice(0, 4).map((x) => `<div class="sec-head"><h3>${esc(x.title)}</h3></div><div class="hrow">${x.games.slice(0, 12).map((g) => gameCard(g)).join('')}</div>`).join('')
+      : `<div class="card"><p class="muted" style="margin:0">Impossible de charger les tendances Roblox pour le moment${disc.error ? ` (${esc(disc.error)})` : ''}.</p><button class="btn" id="hmRetry" style="margin-top:12px">Réessayer</button></div>`;
+    if ($('#hmRetry')) $('#hmRetry').onclick = () => loadDiscover(true).then(renderHome);
+  }
+  function updateHomeLive() { /* les tendances se rafraîchissent toutes les 5 min, pas chaque seconde */
+    if (Date.now() - disc.at > 5 * 60000 && !disc.loading) loadDiscover().then(() => view === 'home' && renderHome());
+  }
+
+  let searchT = null, searchSeq = 0, lastQuery = '';
+  function mountSearch() {
+    main.innerHTML = `
+      <div class="search-box"><svg viewBox="0 0 24 24"><path d="M10 3a7 7 0 0 1 5.6 11.2l5.1 5.1-1.4 1.4-5.1-5.1A7 7 0 1 1 10 3zm0 2a5 5 0 1 0 0 10 5 5 0 0 0 0-10z"/></svg>
+        <input id="sq" placeholder="Rechercher un jeu Roblox, coller un lien ou un ID…" autocomplete="off" spellcheck="false" value="${esc(lastQuery)}"></div>
+      <div class="muted small" id="sInfo" style="margin:10px 4px 16px"></div>
+      <div class="cgrid" id="sRes"></div>`;
+    main.onclick = (e) => { const c = e.target.closest('.gcard[data-uid]'); if (c) go('game:' + c.dataset.uid); };
+    const inp = $('#sq');
+    inp.focus();
+    inp.oninput = () => { clearTimeout(searchT); searchT = setTimeout(() => doSearch(inp.value), 450); };
+    inp.onkeydown = (e) => { if (e.key === 'Enter') { clearTimeout(searchT); doSearch(inp.value); } };
+    if (lastQuery) doSearch(lastQuery); else showSuggestions();
+  }
+  async function showSuggestions() {
+    $('#sInfo').textContent = 'Populaire en ce moment';
+    $('#sRes').innerHTML = skeleton(8);
+    await loadDiscover();
+    if (view !== 'search' || lastQuery) return;
+    const list = (disc.sorts[0]?.games || []).slice(0, 12);
+    $('#sRes').innerHTML = list.map((g) => gameCard(g)).join('') || '';
+  }
+  async function doSearch(q) {
+    q = q.trim(); lastQuery = q;
+    if (!q) return showSuggestions();
+    const seq = ++searchSeq;
+    $('#sInfo').textContent = 'Recherche…';
+    $('#sRes').innerHTML = skeleton(8);
+    try {
+      const res = await call(api.search, q);
+      if (seq !== searchSeq || view !== 'search') return;
+      $('#sInfo').textContent = res.length ? `${res.length} jeu${res.length > 1 ? 'x' : ''} trouvé${res.length > 1 ? 's' : ''}` : 'Aucun jeu trouvé';
+      $('#sRes').innerHTML = res.map((g) => gameCard(g)).join('');
+      await enrich(res.map((g) => g.universeId));
+      if (seq !== searchSeq || view !== 'search') return;
+      $('#sRes').innerHTML = res.map((g) => gameCard(g)).join('');
+    } catch (e) {
+      if (seq !== searchSeq) return;
+      $('#sInfo').textContent = 'Recherche impossible : ' + e.message;
+      $('#sRes').innerHTML = '';
+    }
   }
 
   // ---------- Vue groupe ----------
@@ -706,6 +821,19 @@
   }
   function bindHero(uid) {
     $('#gOpen').onclick = () => live[uid]?.placeId && api.openExternal(`https://www.roblox.com/games/${live[uid].placeId}`);
+    if ($('#gFollow')) {
+      $('#gFollow').onclick = async () => {
+        if (config.games.length >= 30) return toast('30 jeux maximum', true);
+        config.games.push({ universeId: uid, addedAt: Date.now(), name: live[uid]?.name });
+        await saveConfig();
+        window.Sound?.play('success');
+        toast('Jeu ajouté à « Mes jeux »');
+        previewUid = null;
+        renderSidebar();
+        mountGame(uid);
+      };
+      return;
+    }
     $('#gDash').onclick = () => api.openExternal(`https://create.roblox.com/dashboard/creations/experiences/${uid}/overview`);
     $('#gMore').onclick = () => {
       openModal(live[uid]?.name || 'Jeu', `<div class="menu-list">
@@ -775,7 +903,7 @@
         <div class="stat-row"><span>Ping moyen</span><b>${s.avgPing != null ? fmt(s.avgPing) + ' ms' : '—'}</b></div>
       </div>`;
 
-    renderRevenue(uid);
+    if (gameCfg(uid)) renderRevenue(uid); else if ($('#gRevenue').innerHTML) $('#gRevenue').innerHTML = '';
   }
 
   // ---------- Revenus ----------
@@ -1861,7 +1989,7 @@ IMPORTANT: do NOT write any text, letters, numbers, logos or UI in the image.`;
         <div class="field"><label>Couleur</label><div class="swatches">${ACCENTS.map(([n, c]) => `<button class="swatch ${c === t.accent ? 'on' : ''}" title="${n}" style="--c:${c}" data-c="${c}"></button>`).join('')}</div></div>
         ${toggle('apTrend', 'Courbes vert / rouge', 'Vert quand ça monte, rouge quand ça baisse', t.trend)}
         ${toggle('apAnim', 'Animations', 'Transitions et apparitions animées', t.anim)}
-        ${toggle('apSound', 'Sons', 'Petits sons au clic et à chaque vente', t.sound)}
+        ${toggle('apSound', 'Sons', 'Son à chaque vente, record et au démarrage', t.sound)}
       </div>`;
   }
   function bindAppearance() {
@@ -1899,7 +2027,7 @@ IMPORTANT: do NOT write any text, letters, numbers, logos or UI in the image.`;
     me = await call(api.me).catch(() => null);
     renderAccount();
     renderSidebar();
-    mountOverview();
+    go('home');
     refreshFx().then(updateView);
     sales = (await call(api.get, 'sales', [])) || [];
     if (sales.length && me) salesLoaded = true;

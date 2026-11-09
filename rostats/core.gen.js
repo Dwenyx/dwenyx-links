@@ -159,6 +159,43 @@ async function fetchGroups(groupIds) {
   return out;
 }
 
+// ---------- Découverte : tendances, recherche, jeux à l'affiche ----------
+const SITE_URL = 'https://rostats-app.vercel.app';
+const newSession = () => (globalThis.crypto?.randomUUID ? globalThis.crypto.randomUUID() : Date.now().toString(16) + Math.random().toString(16).slice(2));
+function pickGame(x) {
+  const uid = Number(x.universeId || x.universe_id);
+  if (!uid) return null;
+  return { universeId: uid, placeId: x.rootPlaceId || x.placeId || null, name: x.name || '', playing: Number(x.playerCount ?? x.playing ?? 0), up: Number(x.totalUpVotes ?? 0), down: Number(x.totalDownVotes ?? 0), creator: x.creatorName || '' };
+}
+async function exploreSorts() {
+  const r = await getJSON(`https://apis.roblox.com/explore-api/v1/get-sorts?sessionId=${newSession()}&device=computer&country=all`);
+  return (r.sorts || [])
+    .filter((s) => Array.isArray(s.games) && s.games.length)
+    .slice(0, 6)
+    .map((s) => ({ id: s.sortId || '', title: s.sortDisplayName || s.topic || 'Tendances', games: s.games.map(pickGame).filter(Boolean).slice(0, 20) }));
+}
+async function searchGames(q) {
+  q = String(q || '').trim();
+  if (!q) return [];
+  // un lien ou un ID de jeu : on le résout directement
+  if (/roblox\.com\/games\/\d+|^\d{5,}$/.test(q)) {
+    try { const uid = await resolveGame(q); return uid ? [{ universeId: uid }] : []; } catch { /* recherche normale */ }
+  }
+  const r = await getJSON(`https://apis.roblox.com/search-api/omni-search?searchQuery=${encodeURIComponent(q)}&sessionId=${newSession()}&pageType=all`);
+  const out = [];
+  for (const grp of r.searchResults || []) {
+    if (grp.contentGroupType && grp.contentGroupType !== 'Game') continue;
+    for (const c of grp.contents || []) { const g = pickGame(c); if (g && !out.some((o) => o.universeId === g.universeId)) out.push(g); }
+  }
+  return out.slice(0, 30);
+}
+async function featuredGames() {
+  try {
+    const r = await getJSON(`${SITE_URL}/featured.json?t=${Math.floor(Date.now() / 300000)}`);
+    return Array.isArray(r.games) ? r.games.filter((g) => Number(g.universeId)) : [];
+  } catch { return []; }
+}
+
 async function fetchServers(placeId) {
   let cursor = '';
   const servers = [];
@@ -549,7 +586,7 @@ function decrypt(blob) {
 }
 
 window.RoCore = {
-  resolveGame, fetchGames, fetchServers, fetchGroups, importUserGames, importGroupGames,
+  resolveGame, fetchGames, exploreSorts, searchGames, featuredGames, fetchServers, fetchGroups, importUserGames, importGroupGames,
   fetchRevenue, readEntry, utcDay, usdEur, aiGenerate, whoAmI, fetchSalesFor, loadRobloxCookie,
   encrypt, decrypt,
   getRbx: () => rbxCookie,

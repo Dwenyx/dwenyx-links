@@ -1,11 +1,104 @@
 {
   "cleanUrls": true,
   "headers": [
-    { "source": "/dl/install.ps1", "headers": [{ "key": "Content-Type", "value": "text/plain; charset=utf-8" }, { "key": "Cache-Control", "value": "no-store" }] },
-    { "source": "/dl/RoStats.apk", "headers": [{ "key": "Content-Type", "value": "application/vnd.android.package-archive" }, { "key": "Content-Disposition", "value": "attachment; filename=\"RoStats.apk\"" }, { "key": "Cache-Control", "value": "no-store" }] },
-    { "source": "/dl/RoStats-Installer.cmd", "headers": [{ "key": "Content-Type", "value": "application/octet-stream" }, { "key": "Content-Disposition", "value": "attachment; filename=\"RoStats-Installer.cmd\"" }] },
-    { "source": "/dl/app.asar.bin", "headers": [{ "key": "Cache-Control", "value": "no-store" }] },
-    { "source": "/app/(.*)", "headers": [{ "key": "Cache-Control", "value": "no-cache" }] },
-    { "source": "/(.*)", "headers": [{ "key": "X-Content-Type-Options", "value": "nosniff" }, { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }] }
+    {
+      "source": "/(index.html|app.js|core.gen.js|api.js|platform.js|ronative-web.js|style.css|android.css|charts.js|sound.js)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache"
+        }
+      ]
+    },
+    {
+      "source": "/featured.json",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=60"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        }
+      ]
+    },
+    {
+      "source": "/dl/install.ps1",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/plain; charset=utf-8"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        }
+      ]
+    },
+    {
+      "source": "/dl/RoStats.apk",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/vnd.android.package-archive"
+        },
+        {
+          "key": "Content-Disposition",
+          "value": "attachment; filename=\"RoStats.apk\""
+        },
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        }
+      ]
+    },
+    {
+      "source": "/dl/RoStats-Installer.cmd",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/octet-stream"
+        },
+        {
+          "key": "Content-Disposition",
+          "value": "attachment; filename=\"RoStats-Installer.cmd\""
+        }
+      ]
+    },
+    {
+      "source": "/dl/app.asar.bin",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        }
+      ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/app",
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/app/(.*)",
+      "destination": "/",
+      "permanent": false
+    }
   ]
 }

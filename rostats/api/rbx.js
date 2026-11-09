@@ -2,7 +2,7 @@
 // Seuls les domaines utiles à RoStats sont autorisés.
 const ALLOWED = [
   /(^|\.)roblox\.com$/, /(^|\.)rbxcdn\.com$/, /^api\.frankfurter\.dev$/, /^api\.frankfurter\.app$/, /^open\.er-api\.com$/,
-  /\.hf\.space$/, /^huggingface\.co$/,
+  /\.hf\.space$/, /^huggingface\.co$/, /^rostats-(app|seven)\.vercel\.app$/,
 ];
 const DROP = new Set(['host', 'cookie', 'origin', 'referer', 'connection', 'content-length', 'accept-encoding']);
 

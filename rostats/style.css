@@ -797,3 +797,53 @@ html.no-anim .bubble-menu, html.no-anim .bm-item { animation: none !important; }
 .rail.left { position: relative; z-index: 30; overflow: visible; }
 .rail .nav-item::after { z-index: 60; }
 .main { position: relative; z-index: 1; }
+
+/* =====================================================================
+   1.13 — accueil (à l'affiche, tendances), recherche, cartes de jeux
+   ===================================================================== */
+.dl-btn { display: none; align-items: center; gap: 8px; height: 34px; padding: 0 16px; border-radius: 999px; background: #fff; color: #120c1d; font-weight: 800; font-size: 13.5px; text-decoration: none; margin-right: 10px; -webkit-app-region: no-drag; transition: transform .2s var(--ease); }
+.dl-btn svg { width: 16px; height: 16px; fill: currentColor; }
+.dl-btn:hover { transform: scale(1.04); }
+html.web .dl-btn { display: inline-flex; }
+
+/* rangées qui défilent horizontalement */
+.hrow { display: flex; gap: 14px; overflow-x: auto; padding: 4px 2px 18px; margin-bottom: 14px; scroll-snap-type: x mandatory; scrollbar-width: thin; }
+.hrow::-webkit-scrollbar { height: 6px; }
+.hrow::-webkit-scrollbar-thumb { background: rgba(255,255,255,.12); border-radius: 3px; }
+.hrow .gcard { flex: 0 0 210px; scroll-snap-align: start; }
+.hrow.feat .gcard { flex-basis: min(440px, 80%); }
+.cgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
+
+/* carte de jeu */
+.gcard { display: flex; flex-direction: column; padding: 0; border: 1px solid var(--line); border-radius: 20px; overflow: hidden; background: var(--panel); color: var(--text); text-align: left; cursor: pointer; transition: transform .22s var(--ease), border-color .22s, box-shadow .22s; }
+.gcard:hover { transform: translateY(-4px); border-color: rgba(var(--acc), .55); box-shadow: 0 14px 34px rgba(0,0,0,.4); }
+.gcard:active { transform: translateY(-1px) scale(.99); }
+.gc-img { position: relative; aspect-ratio: 16 / 9; background: rgba(255,255,255,.05) center / cover no-repeat; }
+.gcard.big .gc-img { aspect-ratio: 16 / 8; }
+.gc-tag { position: absolute; top: 10px; left: 10px; padding: 5px 11px; border-radius: 999px; background: #fff5c4; color: #2b1d00; font-size: 12px; font-weight: 800; box-shadow: 0 4px 14px rgba(0,0,0,.3); }
+.gc-mine { position: absolute; top: 10px; right: 10px; padding: 4px 10px; border-radius: 999px; background: rgba(var(--acc), .9); color: #fff; font-size: 11.5px; font-weight: 800; }
+.gc-body { padding: 12px 14px 14px; display: flex; flex-direction: column; gap: 3px; min-height: 84px; }
+.gc-body b { font-size: 14.5px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.gcard.big .gc-body b { font-size: 18px; }
+.gc-by { font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-height: 15px; }
+.gc-stats { display: flex; gap: 12px; margin-top: 6px; font-size: 12.5px; color: var(--muted); font-weight: 600; flex-wrap: wrap; }
+.gc-stats .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--up); margin-right: 5px; vertical-align: 1px; box-shadow: 0 0 6px var(--up); }
+/* chargement : cartes « squelette » */
+.gcard.sk { pointer-events: none; }
+.gcard.sk .gc-img, .gcard.sk b, .gcard.sk span { background: linear-gradient(90deg, rgba(255,255,255,.04) 0, rgba(255,255,255,.09) 40%, rgba(255,255,255,.04) 80%); background-size: 300% 100%; animation: shimmer 1.4s linear infinite; }
+.gcard.sk b { height: 14px; width: 70%; border-radius: 6px; }
+.gcard.sk span { height: 10px; width: 45%; border-radius: 6px; margin-top: 6px; }
+@keyframes shimmer { from { background-position: 100% 0; } to { background-position: -100% 0; } }
+
+/* barre de recherche */
+.search-box { display: flex; align-items: center; gap: 12px; height: 58px; padding: 0 20px; border-radius: 999px; background: rgba(255,255,255,.06); border: 1px solid var(--line-2); transition: border-color .2s, box-shadow .2s; }
+.search-box:focus-within { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(var(--acc), .18); }
+.search-box svg { width: 22px; height: 22px; fill: var(--muted); flex-shrink: 0; }
+.search-box input { flex: 1; min-width: 0; height: 100%; background: transparent; border: 0; outline: 0; color: var(--text); font: inherit; font-size: 16px; }
+.search-box input::placeholder { color: var(--faint); }
+
+.btn.follow { background: #fff; color: #120c1d; border-color: transparent; font-weight: 800; }
+.btn.follow:hover { background: #f1ecff; }
+.gc-img { display: block; width: 100%; height: 0; padding-top: 56.25%; aspect-ratio: auto; flex-shrink: 0; }
+.gcard.big .gc-img { padding-top: 50%; }
+.gcard { align-items: stretch; justify-content: flex-start; }
