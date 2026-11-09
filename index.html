@@ -965,13 +965,14 @@ body[data-r="home"] #bg{background:radial-gradient(ellipse at 50% 40%,#9af6ff 0,
 @keyframes crw{0%{transform:translateY(-120px) scale(.2);opacity:0}100%{transform:none;opacity:1}}
 .cm .cbtn{min-width:200px}
 
-/* ===== boutons du menu (tuiles sombres) ===== */
+/* ===== boutons du menu (tuiles sombres, grand écran seulement) ===== */
+@media (orientation:landscape) and (min-width:721px) and (min-height:521px){
 #home .side{gap:30px!important}
 #home .side .sbtn{width:100px;height:90px;padding:0 0 7px;flex-direction:column;justify-content:flex-end;align-items:center;font-size:17px;background:linear-gradient(#3d3f55,#2b2d3f);border:4px solid #0b0b19;border-radius:18px;box-shadow:inset 0 -7px 0 rgba(0,0,0,.3),inset 0 3px 0 rgba(255,255,255,.08),0 4px 0 #0b0b19}
 #home .side .sbtn .ic{top:-24px;left:50%;transform:translateX(-50%);width:66px;height:66px;filter:drop-shadow(0 3px 0 rgba(0,0,0,.35))}
-@media (orientation:portrait),(max-width:720px){#home .side{gap:24px!important}#home .side .sbtn{width:72px;height:66px;font-size:12px;padding-bottom:5px;border-width:3px;border-radius:14px}#home .side .sbtn .ic{width:46px;height:46px;top:-18px}}
-@media (orientation:landscape) and (max-height:520px){#home .side{gap:22px!important}#home .side .sbtn{width:80px;height:64px;font-size:13px;padding-bottom:5px;border-width:3px;border-radius:14px}#home .side .sbtn .ic{width:46px;height:46px;top:-18px}}
 
+
+}
 /* ===== boutique ===== */
 #sShop{background:linear-gradient(#1f63a6,#164a87)}
 #sShop .stabs.top{order:0;justify-content:center;gap:clamp(8px,6vw,80px);background:#123c6e;border-bottom:3px solid #0b2a52;padding-bottom:0}
@@ -1012,10 +1013,9 @@ body[data-r="home"] #bg{background:radial-gradient(ellipse at 50% 40%,#9af6ff 0,
 .fsk{width:22px;height:22px;object-fit:contain;vertical-align:middle;margin:0 6px}
 #death .dk .fsk{width:96px;height:96px;margin:0}
 
-#home .side .sbtn{width:92px;height:76px;font-size:15px}
-#home .side .sbtn .ic{width:58px;height:58px;top:-22px}
-@media (orientation:landscape) and (min-height:521px){#home .side{gap:28px!important;transform:translateY(-58%)}}
-@media (orientation:portrait),(max-width:720px){#home .side .sbtn{width:72px;height:62px;font-size:12px}#home .side .sbtn .ic{width:44px;height:44px;top:-18px}}
+@media (orientation:landscape) and (min-width:721px) and (min-height:521px){#home .side .sbtn{width:92px;height:76px;font-size:15px}
+#home .side .sbtn .ic{width:58px;height:58px;top:-22px}}
+@media (orientation:landscape) and (min-height:521px){#home .side{gap:26px!important;transform:translateY(-66%)}}
 .cm .cimg{max-height:40vh;width:auto;max-width:min(64vw,300px)}
 .cm .cstage{height:min(40vh,300px)}
 .cm #cTitle{flex:none}
@@ -1028,6 +1028,19 @@ body[data-r="home"] #bg{background:radial-gradient(ellipse at 50% 40%,#9af6ff 0,
 }
 @media (orientation:landscape){.cm .cstage{height:min(36vh,300px)}.cm .cimg{max-height:36vh}.crw{padding:8px 14px 6px;min-width:100px}.crw img{width:50px;height:50px}.crw b{font-size:22px}.cm .cbox{gap:8px}.crw.h .cube.h3d{width:70px;height:70px}}
 .cm .cbtn{width:auto!important;min-width:220px;padding-left:40px;padding-right:40px}
+
+/* contour du texte lisse (anneau d'ombres au lieu de text-stroke) */
+.s,.btn,.playbtn .pbt,.elim .en,#death .dt,#death .dp{-webkit-text-stroke:0!important;--sw:min(calc(1.2px + .085em),4.5px);text-shadow:calc(var(--sw)*1.0) calc(var(--sw)*0.0) 0 #0b0b19,calc(var(--sw)*0.924) calc(var(--sw)*0.383) 0 #0b0b19,calc(var(--sw)*0.707) calc(var(--sw)*0.707) 0 #0b0b19,calc(var(--sw)*0.383) calc(var(--sw)*0.924) 0 #0b0b19,calc(var(--sw)*0.0) calc(var(--sw)*1.0) 0 #0b0b19,calc(var(--sw)*-0.383) calc(var(--sw)*0.924) 0 #0b0b19,calc(var(--sw)*-0.707) calc(var(--sw)*0.707) 0 #0b0b19,calc(var(--sw)*-0.924) calc(var(--sw)*0.383) 0 #0b0b19,calc(var(--sw)*-1.0) calc(var(--sw)*0.0) 0 #0b0b19,calc(var(--sw)*-0.924) calc(var(--sw)*-0.383) 0 #0b0b19,calc(var(--sw)*-0.707) calc(var(--sw)*-0.707) 0 #0b0b19,calc(var(--sw)*-0.383) calc(var(--sw)*-0.924) 0 #0b0b19,calc(var(--sw)*-0.0) calc(var(--sw)*-1.0) 0 #0b0b19,calc(var(--sw)*0.383) calc(var(--sw)*-0.924) 0 #0b0b19,calc(var(--sw)*0.707) calc(var(--sw)*-0.707) 0 #0b0b19,calc(var(--sw)*0.924) calc(var(--sw)*-0.383) 0 #0b0b19,calc(var(--sw)*0.508) calc(var(--sw)*0.21) 0 #0b0b19,calc(var(--sw)*0.21) calc(var(--sw)*0.508) 0 #0b0b19,calc(var(--sw)*-0.21) calc(var(--sw)*0.508) 0 #0b0b19,calc(var(--sw)*-0.508) calc(var(--sw)*0.21) 0 #0b0b19,calc(var(--sw)*-0.508) calc(var(--sw)*-0.21) 0 #0b0b19,calc(var(--sw)*-0.21) calc(var(--sw)*-0.508) 0 #0b0b19,calc(var(--sw)*0.21) calc(var(--sw)*-0.508) 0 #0b0b19,calc(var(--sw)*0.508) calc(var(--sw)*-0.21) 0 #0b0b19,0 calc(var(--sw) + .08em) 0 #0b0b19,calc(var(--sw)*.7) calc(var(--sw)*.7 + .08em) 0 #0b0b19,calc(var(--sw)*-.7) calc(var(--sw)*.7 + .08em) 0 #0b0b19!important}
+input,textarea,select{-webkit-text-stroke:0!important;text-shadow:none!important;color:#1b1f3a!important;-webkit-text-fill-color:#1b1f3a}
+input::placeholder{color:#8a93b8!important;-webkit-text-fill-color:#8a93b8}
+/* en-tête au-dessus des onglets */
+.shead{position:relative;z-index:3}
+#sShop .stabs.top{position:relative;z-index:2}
+/* cartes coffres */
+.sk.k-c1 .ska>img.u,.sk.k-c2 .ska>img.u,.sk.k-c3 .ska>img.u{max-height:100%;height:100%;width:100%}
+.ska{overflow:hidden}
+/* indice : gant */
+#hint .tapimg{width:72px;filter:none}
 </style>
 
 </head>
@@ -1123,7 +1136,7 @@ body[data-r="home"] #bg{background:radial-gradient(ellipse at 50% 40%,#9af6ff 0,
     <ol id="lb" class="s"></ol>
   </div>
   <canvas id="mm" width="220" height="220" aria-label="Mini-carte"></canvas>
-  <div id="hint" class="s"><img class="tapimg" src="ui/tap.png" alt="">Glisse pour diriger · Reviens dans ta zone pour capturer</div>
+  <div id="hint" class="s"><img class="tapimg" src="ui/glove.png" alt="">Glisse pour diriger · Reviens dans ta zone pour capturer</div>
 </div>
 <div id="joy" hidden><div id="knob"></div></div>
 <div id="elims"></div>
@@ -1350,7 +1363,7 @@ function addHat(p,h,y=1.03){const M=(g,m,x,yy,z)=>{const o=new THREE.Mesh(g,m);o
  case 'crown':{M(G.crown,toon(0xffc21a,true),0,y+.04,0);for(let k=0;k<5;k++){const a=k/5*Math.PI*2;M(G.spike,toon(0xffc21a),Math.cos(a)*.26,y+.19,Math.sin(a)*.26)}M(G.ball,toon(0x4fb6ff),0,y+.06,.27).scale.setScalar(.7);break}
  case 'halo':{const k=M(G.halo,GLOW,0,y+.32,0);k.rotation.x=Math.PI/2;break}
  }}
-function nameSprite(txt,col){const c=document.createElement('canvas');c.width=256;c.height=64;const x=c.getContext('2d');x.font='38px "Lilita One", "Trebuchet MS", sans-serif';x.textAlign='center';x.textBaseline='middle';x.lineWidth=9;x.lineJoin='round';x.strokeStyle='#122a6b';x.strokeText(txt,128,34);x.fillStyle=col;x.fillText(txt,128,34);const s=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),depthTest:false,transparent:true}));s.scale.set(2.6,.65,1);s.position.y=2.05;s.renderOrder=10;return s}
+function nameSprite(txt,col){const c=document.createElement('canvas');c.width=256;c.height=64;const x=c.getContext('2d');x.font='38px "Lilita One", "Trebuchet MS", sans-serif';x.textAlign='center';x.textBaseline='middle';x.lineWidth=10;x.lineJoin='round';x.miterLimit=2;x.strokeStyle='#0b0b19';x.strokeText(txt,128,34);x.fillStyle=col;x.fillText(txt,128,34);const s=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),depthTest:false,transparent:true}));s.scale.set(2.6,.65,1);s.position.y=2.05;s.renderOrder=10;s.layers.set(2);return s}
 const SKINS=[0xf2c9a0,0xc68a5a,0x7a4a2c],SKIN_TIP=[0xf7d8b8,0xd49f74,0x8e5a3a];
 const NAILC={bulle:0xff5fb8,ombre:0x2a1f4a,lave:0xff3b4f,galaxie:0x8a5cff};
 // Personnage : une main qui court sur deux doigts (peau + tenue du héros)
@@ -1396,7 +1409,7 @@ function makeChar(h,label,me){
  }
  addHat(palm,h,.21);
  const shd=new THREE.Mesh(G.shadow,SHADOW);shd.rotation.x=-Math.PI/2;shd.position.y=.03;g.add(shd);
- g.traverse(o=>{if(o.isMesh&&o!==shd)o.layers.enable(1)});
+ g.traverse(o=>{if(o.isMesh&&o!==shd&&o.material!==OUT)o.layers.enable(1)});
  if(label)g.add(nameSprite(label,me?'#ffd21f':'#ffffff'));
  return{g,inner,palm,eyes,legs,ph:Math.random()*9,blink:2+Math.random()*3,jump:-9}
 }
@@ -1904,7 +1917,7 @@ function frame(){
  const t=performance.now(),dt=Math.min(.05,(t-last)/1000);last=t;now+=dt;
  if(state==='count'){countT-=dt;const n=Math.ceil(countT-.6);if(n!==lastCount&&n>=0){lastCount=n;$('#count').innerHTML=`<span>${n>0?n:'GO !'}</span>`;n>0?sfx.tick():sfx.go()}
   if(countT<=.6){state='play';player.frozen=false;if(simOn)for(const e of ents)if(e&&e.bot)e.frozen=false;if(NET.role==='client'){try{NET.conn.send({t:'go'})}catch(_){}}setTimeout(()=>{$('#count').innerHTML=''},600)}}
- if(state==='play'){keyInput();playT+=dt;if(playT>6)$('#hint').style.opacity=0}
+ if(state==='play'){keyInput();playT+=dt;if(playT>2.6)$('#hint').style.opacity=0}
  if(NET.role==='client')clientTick(dt);
  else if(simOn){
   for(const e of ents){if(!e.alive||(e.frozen&&(state==='count'||!e.bot)))continue;if(e.bot)botThink(e,dt);moveEnt(e,dt)}
@@ -1940,7 +1953,7 @@ OL.mat=new THREE.ShaderMaterial({uniforms:{tMask:{value:OL.rt.texture},px:{value
 function renderAll(){
  R.render(S,cam);
  R.setRenderTarget(OL.rt);R.setClearColor(0x000000,0);R.clear();cam.layers.set(1);S.overrideMaterial=OL.mask;R.render(S,cam);S.overrideMaterial=null;cam.layers.set(0);
- R.setRenderTarget(null);R.autoClear=false;R.render(OL.scene,OL.cam);R.autoClear=true;
+ R.setRenderTarget(null);R.autoClear=false;R.render(OL.scene,OL.cam);cam.layers.set(2);R.render(S,cam);cam.layers.set(0);R.autoClear=true;
 }
 function applyZoom(){const w=innerWidth,h=innerHeight;let z=w>h?Math.min(w/900,h/430):Math.min(w/390,h/780);z=Math.max(.72,Math.min(1.7,z));UIZ=z;document.documentElement.style.setProperty('--z',z)}
 let UIZ=1;applyZoom();addEventListener('resize',applyZoom);
@@ -2158,7 +2171,7 @@ function renderShop(){
  const sb=$('#sShop .sbody'),keep=sb?sb.scrollLeft:0;
  const panel=(k,n,cls,cards,extra='')=>`<section class="shp ${cls}" data-g="${k}"><h4 class="s">${n}${extra}</h4><div class="shg">${cards}</div></section>`;
  const offers=dailyOffers().map(shopCard).join('');
- const boxes=BOXES.map(b=>{const c=CH(b.id);return skCard({cls:`k-${b.id} ${b.big?'big':''}`,attr:`data-box="${b.id}"`,title:c.n,art:`<span class="sitem">${img(c.img)}<em class="s">x1</em></span><small class="skd s">${b.d}</small>`,foot:prc(b.price)})}).join('');
+ const boxes=BOXES.map(b=>{const c=CH(b.id);return skCard({cls:`k-${b.id} ${b.big?'big':''}`,attr:`data-box="${b.id}"`,title:c.n,art:img(c.img),foot:prc(b.price)})}).join('');
  const res=k=>RESS.filter(r=>r.id[0]===k).map(r=>skCard({cls:`k-${k==='k'?'y':'gr'} ${r.big?'big':''}`,attr:`data-res="${r.id}"`,title:r.t,art:img(r.ic),foot:prc(r.price),tags:r.best?'<span class="sktag rib s">MEILLEURE OFFRE</span>':r.hot?'<span class="sktag hot s">POPULAIRE</span>':''})).join('');
  const h=panel('offers','OFFRES DU JOUR','po',offers,` <span class="stm">${ico('timer')}${untilMidnight()}</span>`)+panel('boxes','COFFRES','pb',boxes)+panel('coins','PIÈCES','pc',res('k'))+panel('gems','GEMMES','pg',res('g'));
  const tabs=[['offers','OFFRES'],['boxes','COFFRES'],['coins','PIÈCES'],['gems','GEMMES']].map(([k,n])=>`<button class="s ${shopTab===k?'on':''}" data-stab="${k}">${n}</button>`).join('');
