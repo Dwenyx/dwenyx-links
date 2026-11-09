@@ -1737,7 +1737,7 @@ function roomGone(msg){if(!ROOM)return;const r=ROOM;ROOM=null;try{RT.sb.removeCh
 function roomSync(){if(!ROOM)return;const st=ROOM.ch.presenceState(),ms=[];for(const k in st){const p=st[k][0];if(p)ms.push(p)}
  ms.sort((a,b)=>(b.host?1:0)-(a.host?1:0));ROOM.members=ms;
  const h=ms.find(p=>p.host);if(h)ROOM.hostSid=h.sid;
- groupInv=ms.filter(p=>p.sid!==SID).slice(0,2).map(p=>p.name);
+ groupInv=ms.filter(p=>p.sid!==SID).slice(0,2).map(p=>({name:p.name,hero:p.hero,sid:p.sid}));
  if(tab==='party'&&!$('#party').hidden)renderParty();if(tab==='home')updHome()}
 function roomLaunch(){if(!ROOM||!ROOM.host)return;const r=ROOM;
  startLocal('casual');setupHost(r.ch,r.code);try{r.ch.track(Object.assign({host:true,phase:'game',code:r.code},myInfo()))}catch(_){}
@@ -1868,8 +1868,10 @@ let stageId=null,stageYaw=0,yawV=0,rot=null;
 function setStage(id){if(stageId===id&&detailChar)return;stageId=id;setDetailChar(id);detailChar.g.rotation.y=stageYaw}
 const sidePods=[0,1].map(()=>{const g=new THREE.Group();const rim=new THREE.Mesh(new THREE.CylinderGeometry(2.45,2.55,.2,48),toon(0x7fd8ff));rim.position.y=.1;const top=new THREE.Mesh(new THREE.CylinderGeometry(2.25,2.3,.26,48),toon(0xffffff));top.position.y=.15;const gl=new THREE.Mesh(new THREE.CircleGeometry(2,40),new THREE.MeshBasicMaterial({color:0xbff3ff,transparent:true,opacity:.6}));gl.rotation.x=-Math.PI/2;gl.position.y=.29;g.add(rim,top,gl);S.add(g);return g});
 let friendChars=[null,null],groupInv=[],roomCode=null;
-function syncFriends(){[0,1].forEach(i=>{const f=groupInv[i];if(friendChars[i]&&(!f||friendChars[i].who!==f)){S.remove(friendChars[i].g);friendChars[i]=null}
- if(f&&!friendChars[i]){const fc=makeChar(HEROES[(f.length*3+i)%HEROES.length],f,false);fc.who=f;S.add(fc.g);friendChars[i]=fc}})}
+function syncFriends(){[0,1].forEach(i=>{const f=groupInv[i],w=f?(f.sid||f.name)+'|'+f.hero:null;if(friendChars[i]&&friendChars[i].who!==w){S.remove(friendChars[i].g);friendChars[i]=null}
+ if(f&&!friendChars[i]){const fc=makeChar(HE(f.hero),f.name,false);fc.who=w;S.add(fc.g);friendChars[i]=fc}})}
+// quand je change de héros dans un salon, mes amis le voient aussitôt
+function roomRetrack(){if(!ROOM||ROOM.tracked===save.hero)return;ROOM.tracked=save.hero;try{ROOM.ch.track(Object.assign({host:ROOM.host},ROOM.host?{phase:'lobby',code:ROOM.code}:{},myInfo()))}catch(_){}}
 function sideLayout(){const p=cam.aspect<1;return{x:p?2.55:4.7,z:p?-2.6:-1.2,s:p?.6:.78}}
 function lobbyTick(dt){const L=sideLayout(),show=!detailOpen&&tab==='home';
  sidePods.forEach((g,i)=>{const sg=i?1:-1;g.visible=show;g.position.set(PD.x+sg*L.x,0,PD.z+L.z);g.scale.set(L.s,1,L.s);
@@ -1888,7 +1890,7 @@ cv.addEventListener('pointerup',endRot);cv.addEventListener('pointercancel',endR
 
 function setDot(id,n){const e=$('#'+id);if(!e)return;e.hidden=!n;e.textContent=n>9?'9+':n}
 function updTop(){
- $('#mCo').textContent=fmt(save.coins);$('#mGe').textContent=fmt(save.gems);
+ roomRetrack();$('#mCo').textContent=fmt(save.coins);$('#mGe').textContent=fmt(save.gems);
  $('#avatarBtn').innerHTML=heroIcon(HE(save.hero));$('#pName').textContent=save.name;$('#mTr').textContent=save.stars;
  const nx=roadNext(),pr=[...ROAD].reverse().find(r=>r.t<=save.stars),a=pr?pr.t:0,cl=roadClaimable().length;
  $('#tFill').style.width=(nx?Math.max(4,(save.stars-a)/(nx.t-a)*100):100)+'%';
