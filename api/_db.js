@@ -9,7 +9,7 @@ export async function db(path, { method = 'GET', body, prefer } = {}) {
   const r = await fetch(process.env.SUPABASE_URL.replace(/\/$/, '') + '/rest/v1/' + path, { method, headers: h, body: body ? JSON.stringify(body) : undefined });
   const t = await r.text();
   let data = null; try { data = t ? JSON.parse(t) : null; } catch (_) {}
-  return { ok: r.ok, status: r.status, data };
+  return { ok: r.ok, status: r.status, data, range: r.headers.get('content-range') };
 }
 export const NAME_RE = /^[A-Za-z0-9_\-À-ÖØ-öø-ÿ]{3,12}$/;
 export function cleanName(n) {
