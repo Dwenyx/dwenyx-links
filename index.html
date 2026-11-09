@@ -1044,6 +1044,37 @@ input::placeholder{color:#8a93b8!important;-webkit-text-fill-color:#8a93b8}
 
 /* le contour du texte ne doit pas être coupé par les zones qui tronquent le texte */
 .dban h2,#lb li span,.pcol b,.mtx b,.mtx em,.gslot span,.friend .fn b,.friend .fn small,.prof b,.pstrip,.shead h2,.acct div,.skt,.sitem em{padding-inline:5px!important;margin-inline:-5px!important;padding-block:3px;margin-block:-3px}
+
+/* ===== écran de fin ===== */
+#end{overflow:hidden!important;place-items:center!important;background:radial-gradient(circle at 50% 40%,rgba(20,40,110,.35),rgba(8,12,40,.78))!important;-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)}
+#end .endwrap{display:flex;flex-direction:column;align-items:center;gap:14px;width:min(100%,560px);transform-origin:center center}
+#end .eribbon,#end .ecard,#end .endbtns{animation:ewin .45s cubic-bezier(.2,1.4,.4,1) both}#end .ecard{animation-delay:.08s}#end .endbtns{animation-delay:.16s}
+@keyframes ewin{from{transform:scale(.7);opacity:0}}
+.eribbon{--r1:#ffd84a;--r2:#ff9d00;position:relative;padding:10px 64px 14px;background:linear-gradient(var(--r1),var(--r2));clip-path:polygon(0 0,100% 0,94% 50%,100% 100%,0 100%,6% 50%);filter:drop-shadow(0 5px 0 rgba(0,0,0,.35));text-align:center}
+.eribbon::before{content:"";position:absolute;inset:6px 0 auto;height:4px;background:rgba(255,255,255,.45)}
+#end[data-k="dead"] .eribbon{--r1:#ff6b6b;--r2:#d61f3a}
+#end[data-k="end"] .eribbon,#end[data-k="quit"] .eribbon{--r1:#6fd0ff;--r2:#2a7fe6}
+#endTitle{display:block;transform:none!important;animation:none!important;font-size:clamp(30px,6vw,46px);line-height:1.05;color:#fff;letter-spacing:.02em;white-space:nowrap}
+.ecard{width:100%;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;gap:12px;padding:16px 16px 14px;background:linear-gradient(#2c3a78,#1d2756);border:4px solid #0b0b19;border-radius:22px;box-shadow:inset 0 3px 0 rgba(255,255,255,.12),0 6px 0 #0b0b19}
+#endRank{display:flex;flex-direction:column;align-items:center;line-height:1}
+#endRank b{font-weight:400;font-size:64px;color:#ffd21f}
+#endRank small{font-size:18px;color:#d6e2ff;margin-top:2px}
+#end[data-k="dead"] #endRank b{color:#fff}
+#end .endstats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;margin:0}
+#end .endstats>div{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 4px;background:rgba(0,0,0,.28);border-radius:14px;border:0;min-width:0}
+#end .endstats small{font-size:12px;color:#9fb6ff;letter-spacing:.04em}
+#end .endstats b{font-weight:400;font-size:24px}
+#end .rew{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:0}
+.rchip{display:flex;align-items:center;gap:6px;padding:5px 14px 5px 8px;border-radius:99px;background:#0b0b19;border:3px solid rgba(255,255,255,.18)}
+.rchip .ic{width:30px;height:30px}.rchip b{font-weight:400;font-size:22px}
+.rchip.neg b{color:#ff8a8a}
+#eUnlock{display:flex;flex-direction:column;gap:6px;align-items:center}
+#eUnlock:empty{display:none}
+.eun{display:flex;align-items:center;gap:8px;padding:4px 14px 4px 6px;border-radius:12px;background:linear-gradient(#ffe066,#ffb81c);color:#fff;font-size:15px;box-shadow:0 3px 0 #0b0b19;border:3px solid #0b0b19;animation:ewin .5s .3s both}
+.eun .ic{width:26px;height:26px}
+#end .endbtns{display:flex;gap:14px;margin:0}
+#end .endbtns .btn{min-width:170px;min-height:58px;font-size:24px}
+@media (orientation:landscape) and (max-height:520px){#end .endwrap{gap:8px}#endRank b{font-size:46px}.ecard{gap:8px;padding:10px 14px}#end .endbtns .btn{min-height:48px}}
 </style>
 
 </head>
@@ -1150,22 +1181,25 @@ input::placeholder{color:#8a93b8!important;-webkit-text-fill-color:#8a93b8}
 
 <div id="spec" class="spec s" hidden></div>
 <div id="end" class="screen" hidden>
-  <div class="endwrap">
-    <div id="endTitle"></div>
-    <div id="endRank" class="s"></div>
-    <div class="endstats s">
-      <div><small>TERRITOIRE</small><b id="eP">0%</b></div>
-      <div><small>ÉLIMINATIONS</small><b id="eK">0</b></div>
-      <div><small>RECORD</small><b id="eB">0%</b></div>
+  <div class="endwrap" id="endWrap">
+    <div class="eribbon"><span id="endTitle" class="s"></span></div>
+    <div class="ecard">
+      <div id="endRank" class="s"></div>
+      <div class="endstats s">
+        <div><small>TERRITOIRE</small><b id="eP">0%</b></div>
+        <div><small>ÉLIMINATIONS</small><b id="eK">0</b></div>
+        <div><small>RECORD</small><b id="eB">0%</b></div>
+      </div>
+      <div class="rew">
+        <div id="eSt" class="rchip s"><span class="ic" data-i="cup"></span><b>+0</b></div>
+        <div id="eCo" class="rchip s"><span class="ic" data-i="coin"></span><b>+0</b></div>
+        <div id="eXp" class="rchip xp s"><span class="ic" data-i="star"></span><b>+0 XP</b></div>
+      </div>
+      <div id="eUnlock"></div>
     </div>
-    <div class="rew">
-      <div id="eSt" class="pill big s"><span class="ic" data-i="cup"></span><b style="font-weight:400">+0</b></div>
-      <div id="eCo" class="pill big s"><span class="ic" data-i="coin"></span><b style="font-weight:400">+0</b></div>
-    </div>
-    <div id="eUnlock"></div>
     <div class="endbtns">
-      <button id="againBtn" class="btn btn-green">REJOUER</button>
       <button id="homeBtn" class="btn btn-yellow">MENU</button>
+      <button id="againBtn" class="btn btn-green">REJOUER</button>
     </div>
   </div>
 </div>
@@ -1681,16 +1715,18 @@ function finish(reason){
  setTimeout(()=>showEnd({pl,pct,dS,co,reason,ranked,unl,wasDead,xpG,n:ents.filter(Boolean).length}),reason==='dead'?0:700);
 }
 function countUp(el,to,fmtF,coin){const t0=performance.now(),d=900;let last=-1;const f=()=>{const p=Math.min(1,(performance.now()-t0)/d),v=Math.round(to*(1-Math.pow(1-p,3)));el.textContent=fmtF(v);if(coin&&v!==last&&p<1&&v%5===0)sfx.coin();last=v;if(p<1)requestAnimationFrame(f)};setTimeout(f,450)}
+function fitEnd(){const w=$('#endWrap');if(!w||$('#end').hidden)return;w.style.zoom=1;const e=$('#end'),cs=getComputedStyle(e),z=UIZ||1,avail=innerHeight/z-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom)-16,h=w.offsetHeight;w.style.zoom=h>avail?(avail/h).toFixed(3):1}
+addEventListener('resize',()=>fitEnd());
 function showEnd(o){
  $('#end').hidden=false;specOn=!matchOver;
- $('#endTitle').innerHTML=stitle(o.reason==='win'?'VICTOIRE TOTALE !':o.reason==='quit'?'PARTIE INTERROMPUE':o.wasDead?'ÉLIMINÉ':'FIN DE PARTIE');
- $('#endRank').innerHTML=`#${o.pl}<small>sur ${o.n} joueurs</small>`;
+ const kind=o.reason==='win'?'win':o.reason==='quit'?'quit':o.wasDead?'dead':'end';$('#end').dataset.k=kind;$('#endTitle').textContent=kind==='win'?'VICTOIRE !':kind==='quit'?'PARTIE INTERROMPUE':kind==='dead'?'ÉLIMINÉ':'FIN DE PARTIE';
+ $('#endRank').innerHTML=`<b>#${o.pl}</b><small>sur ${o.n} joueurs</small>`;
  $('#eP').textContent=o.pct.toFixed(1)+'%';$('#eK').textContent=player.kills;$('#eB').textContent=save.best.toFixed(1)+'%';
  const st=$('#eSt');st.hidden=!o.ranked;st.classList.toggle('neg',o.dS<0);
  countUp(st.querySelector('b'),o.dS,v=>(v>=0?'+':'')+v);countUp($('#eCo b'),o.co,v=>'+'+v,true);
- let h=`<div class="unl">${ico('star')}+${o.xpG} XP de passe</div>`;
- h+=o.unl.map(u=>u.t==='road'?`<div class="unl">${ico('cup')}Nouvelle récompense sur la route des trophées !</div>`:`<div class="unl">${ico('pass')}Passe niveau ${u.l} : récompense à récupérer !</div>`).join('');
- $('#eUnlock').innerHTML=h;
+ $('#eXp b').textContent=`+${o.xpG} XP`;
+ $('#eUnlock').innerHTML=o.unl.map(u=>u.t==='road'?`<div class="eun s">${ico('cup')}Nouvelle récompense de route !</div>`:`<div class="eun s">${ico('pass')}Passe niv. ${u.l} : récompense dispo !</div>`).join('');
+ fitEnd();
  if(o.pl<=3)sfx.win();
 }
 
@@ -2017,12 +2053,12 @@ function openChest(c,extra){chestR=rollChest(c.id,extra);chestC=c;chestStage(c.i
 let chestC=null;
 function chestBurst(r){const b=$('#cBurst'),bits=[];for(let i=0;i<14;i++)bits.push(i%3===0&&r.gems?'n_gem':i%5===0?'':'n_coin');
  b.innerHTML=bits.map((n,i)=>{const a=(i/bits.length)*Math.PI*2+Math.random()*.4,d=140+Math.random()*120;return n?`<img src="ui/${n}.png?v=17" style="--x:${Math.cos(a)*d}px;--y:${Math.sin(a)*d-60}px;--r:${(Math.random()*2-1)*260}deg;animation-delay:${Math.random()*.08}s" alt="">`:`<i style="--x:${Math.cos(a)*d}px;--y:${Math.sin(a)*d-60}px;--r:0deg"></i>`}).join('')}
-function countUp(el,to,pre){const t0=performance.now(),d=700;const f=t=>{const k=Math.min(1,(t-t0)/d),v=Math.round(to*(1-Math.pow(1-k,3)));el.textContent=pre+fmt(v);if(k<1)requestAnimationFrame(f)};requestAnimationFrame(f)}
+function countUpC(el,to,pre){const t0=performance.now(),d=700;const f=t=>{const k=Math.min(1,(t-t0)/d),v=Math.round(to*(1-Math.pow(1-k,3)));el.textContent=pre+fmt(v);if(k<1)requestAnimationFrame(f)};requestAnimationFrame(f)}
 $('#cImg').addEventListener('click',()=>{const im=$('#cImg');if(!chestR||!im.classList.contains('idle'))return;ac();
  im.className='cimg charge';$('#cHint').hidden=true;sfx.tick();setTimeout(()=>sfx.tick(),220);
  setTimeout(()=>{const r=chestR,c=chestC;$('#cFlash').className='cflash on';im.src='ui/'+c.open+'.png?v=17';im.className='cimg opened';sfx.win();sfx.kill();chestBurst(r);
   const items=[];if(r.coins)items.push(`<div class="crw"><img src="ui/n_coin.png?v=17" alt=""><b class="s" data-n="${r.coins}">+0</b></div>`);if(r.gems)items.push(`<div class="crw g"><img src="ui/n_gem.png?v=17" alt=""><b class="s" data-n="${r.gems}">+0</b></div>`);if(r.hero)items.push(`<div class="crw h">${heroIcon(r.hero)}<b class="s">${esc(r.hero.name)}</b><small class="s">NOUVEAU HÉROS !</small></div>`);
-  setTimeout(()=>{$('#cRew').innerHTML=items.join('');$('#cRew').querySelectorAll('.crw').forEach((e,i)=>{e.style.animationDelay=(i*.18)+'s';const b=e.querySelector('b[data-n]');if(b)setTimeout(()=>countUp(b,+b.dataset.n,'+'),i*180+200)});
+  setTimeout(()=>{$('#cRew').innerHTML=items.join('');$('#cRew').querySelectorAll('.crw').forEach((e,i)=>{e.style.animationDelay=(i*.18)+'s';const b=e.querySelector('b[data-n]');if(b)setTimeout(()=>countUpC(b,+b.dataset.n,'+'),i*180+200)});
    setTimeout(()=>{$('#cOk').hidden=false;refresh2()},400+items.length*180)},260)},700)});
 function heroReveal(h){chestR=null;chestStage('c2','NOUVEAU HÉROS !');$('#cImg').hidden=true;$('#cHint').hidden=true;$('#cRew').innerHTML=`<div class="crw h big">${heroIcon(h)}<b class="s">${esc(h.name)}</b></div>`;$('#cOk').hidden=false;sfx.win()}
 press($('#cOk'),()=>{$('#chestM').hidden=true;chestR=null;refresh2()});
