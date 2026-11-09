@@ -908,6 +908,25 @@ body[data-r="home"] #bg{background:radial-gradient(ellipse at 50% 40%,#9af6ff 0,
 ::-webkit-scrollbar-button{display:none;width:0;height:0}
 ::-webkit-scrollbar-corner{background:transparent}
 .tabs,.stabs{scrollbar-width:none}.stabs::-webkit-scrollbar{display:none}
+
+/* système prêt */
+.gslot em.rdy{color:#7dff5a}.gslot em.nrdy{color:#ff8a8a}
+.podRdy{position:absolute;transform:translate(-50%,-50%);padding:4px 10px;border-radius:10px;border:3px solid #0b0b19;background:#e2475a;color:#fff;font-size:15px;pointer-events:none;white-space:nowrap;box-shadow:0 3px 0 #0b0b19}
+.podRdy.on{background:#3fcf3a}
+.playbtn.rdyOn{background:linear-gradient(175deg,#b8ff8a 0%,#4fd82a 45%,#2aa415 100%);box-shadow:inset 0 -10px 0 #1f7d10,inset 0 5px 0 rgba(255,255,255,.75),0 6px 0 #0b0b19}
+
+/* portraits 3D */
+.sitem .cube.h3d{width:150px;height:150px;margin-bottom:-14px}
+.rc .cube.h3d,.pcard .cube.h3d,.pvc .cube.h3d{width:76px;height:76px}
+.hcard .cube.h3d{width:88%;margin:-6% 0 -4%}
+.cube.h3d{border:0!important;box-shadow:none!important;border-radius:0!important;background:none!important;object-fit:contain;filter:drop-shadow(2px 0 0 #0b0b19) drop-shadow(-2px 0 0 #0b0b19) drop-shadow(0 2px 0 #0b0b19) drop-shadow(0 -2px 0 #0b0b19) drop-shadow(0 4px 0 rgba(0,0,0,.25));pointer-events:none;-webkit-user-drag:none}
+.hcard.lock .h3d{opacity:.8;filter:grayscale(.35) brightness(.8) drop-shadow(2px 0 0 #0b0b19) drop-shadow(-2px 0 0 #0b0b19) drop-shadow(0 2px 0 #0b0b19) drop-shadow(0 -2px 0 #0b0b19)}
+.avatar .cube.h3d{width:34px;height:34px}
+.hcard.lock{background:linear-gradient(var(--ca),var(--cb))!important;outline:4px solid rgba(255,255,255,.55)!important;outline-offset:-7px;box-shadow:0 0 0 3px #0b0b19,0 7px 0 #0b0b19!important}
+.hcard.lock::before{content:"";position:absolute;inset:0;border-radius:inherit;background:rgba(10,14,40,.38);pointer-events:none}
+.hcard.lock .lk{visibility:visible!important;position:absolute;right:6%;top:5%;width:24%!important;margin:0!important;z-index:2;filter:drop-shadow(0 3px 0 #0b0b19)}
+.hcard.lock .h3d{position:relative;z-index:1}
+.hcard.lock .lv,.hcard.lock .perk{position:relative;z-index:2}
 </style>
 
 </head>
@@ -941,6 +960,7 @@ body[data-r="home"] #bg{background:radial-gradient(ellipse at 50% 40%,#9af6ff 0,
   </div>
   <button id="plusL" class="plus3d" aria-label="Inviter un ami" hidden>+</button>
   <button id="plusR" class="plus3d" aria-label="Inviter un ami" hidden>+</button>
+  <span id="rdyL" class="podRdy s" hidden></span><span id="rdyR" class="podRdy s" hidden></span>
   <div id="heroTag" class="heroTag"></div>
   <div class="lbottom">
     <button id="passCard" class="passc">
@@ -1075,7 +1095,8 @@ Object.assign(I,{coin:img('cur_coin'),gem:img('cur_gem'),star:img('star'),shop:i
 const ico=k=>`<span class="ic">${I[k]}</span>`;
 const stitle=t=>`<span class="stitle"><span class="b1">${t}</span><span class="b2">${t}</span><span class="f">${t}</span></span>`;
 function fillIcons(){document.querySelectorAll('[data-i]').forEach(s=>{if(!s.innerHTML)s.innerHTML=I[s.dataset.i]})}
-const heroIcon=(h,size)=>{const sk=['#f2c9a0','#c68a5a','#7a4a2c'][h.skin||0];return `<div class="cube" style="background:linear-gradient(${sk} 68%,${hex(h.color)} 68%)${size?`;width:${size}px;height:${size}px`:''}"><i></i><i></i></div>`};
+const heroIcon=(h,size)=>{const u=heroShot(h);if(u)return `<img class="cube h3d" src="${u}" alt="" draggable="false"${size?` style="width:${size}px;height:${size}px"`:''}>`;return heroIcon0(h,size)};
+const heroIcon0=(h,size)=>{const sk=['#f2c9a0','#c68a5a','#7a4a2c'][h.skin||0];return `<div class="cube" style="background:linear-gradient(${sk} 68%,${hex(h.color)} 68%)${size?`;width:${size}px;height:${size}px`:''}"><i></i><i></i></div>`};
 const cubeHTML=(c,size)=>`<div class="cube" style="background:${hex(c)}${size?`;width:${size}px;height:${size}px`:''}"><i></i><i></i></div>`;
 
 /* ---------- DONNÉES ---------- */
@@ -1278,6 +1299,19 @@ function makeChar(h,label,me){
  if(label)g.add(nameSprite(label,me?'#ffd21f':'#ffffff'));
  return{g,inner,palm,eyes,legs,ph:Math.random()*9,blink:2+Math.random()*3,jump:-9}
 }
+// portraits 3D des héros (rendu une fois par héros, avec sa peau, sa tenue et ses accessoires)
+const SHOTS={};let HR=null,HS=null,HC=null;
+function heroShot(h){if(SHOTS[h.id])return SHOTS[h.id];
+ try{if(!HR){HR=new THREE.WebGLRenderer({antialias:true,alpha:true,preserveDrawingBuffer:true});HR.setPixelRatio(1);HR.setSize(256,256);HR.setClearColor(0,0);
+   HS=new THREE.Scene();HS.add(new THREE.HemisphereLight(0xffffff,0x6a8fd8,.62));const d=new THREE.DirectionalLight(0xffffff,.75);d.position.set(-.6,1,.9);HS.add(d);
+   HC=new THREE.PerspectiveCamera(26,1,.1,50)}
+  const v=makeChar(h);[...v.g.children].forEach(o=>{if(o.isMesh&&o.material===SHADOW)v.g.remove(o)});
+  try{animChar(v,0,false,0)}catch(_){}
+  v.g.rotation.y=-.45;HS.add(v.g);v.g.updateMatrixWorld(true);
+  const box=new THREE.Box3().setFromObject(v.g),c=box.getCenter(new THREE.Vector3()),sz=box.getSize(new THREE.Vector3()),r=Math.max(sz.x,sz.y,sz.z)*.56;
+  const dist=r/Math.tan(THREE.MathUtils.degToRad(13));HC.position.set(c.x,c.y+r*.55,c.z+dist);HC.lookAt(c.x,c.y,c.z);
+  HR.render(HS,HC);SHOTS[h.id]=HR.domElement.toDataURL('image/png');HS.remove(v.g)}catch(_){return null}
+ return SHOTS[h.id]}
 function animChar(v,dt,moving,t){
  const jt=t-v.jump;let jy=0;
  if(jt<.6){const p=jt/.6;jy=Math.sin(p*Math.PI)*1.2;v.inner.rotation.y=p*Math.PI*2}else v.inner.rotation.y=0;
@@ -1488,6 +1522,7 @@ function beginHud(){specOn=false;
 function rejoinHost(){$('#end').hidden=true;player.kills=0;player.deathCount=0;spawn(player);beginHud()}
 let busy=false;
 async function play(mode){
+ if(ROOM){ac();roomReady();return}
  if(busy)return;ac();
  if(NET.role==='host'&&simOn&&!matchOver&&!player.alive){rejoinHost();return}
  if(ROOM)roomLeave(true);
@@ -1722,7 +1757,7 @@ function feedMsg(t){const f=$('#feed'),d=document.createElement('div');d.classNa
 // salon (lobby)
 async function roomCreate(){if(!RT.on){toast("Connecte-toi sur paint-clash.vercel.app pour créer un salon");return false}
  if(ROOM)return true;const code=newCode();toast('Création du salon…');const ch=await openRoomCh(code);if(!ch){toast('Impossible de créer le salon. Réessaie.');return false}
- ROOM={code,ch,host:true,hostSid:SID,members:[]};try{await ch.track(Object.assign({host:true,phase:'lobby',code},myInfo()))}catch(_){}
+ ROOM={code,ch,host:true,hostSid:SID,members:[],ready:false};roomTrack();
  roomSync();sfx.up();return true}
 async function roomJoin(code){code=String(code||'').trim().toUpperCase();if(code.length!==6){toast('Le code fait 6 caractères');return}
  if(!RT.on){toast("Connecte-toi sur paint-clash.vercel.app pour rejoindre un salon");return}
@@ -1731,9 +1766,9 @@ async function roomJoin(code){code=String(code||'').trim().toUpperCase();if(code
  $('#mmTitle').textContent=`SALON ${code}`;$('#mmTxt').textContent='Connexion…';$('#match').hidden=false;
  const r=await joinRoomCh(code);$('#match').hidden=true;
  if(r.role==='client'){ROOM=null;startClient(r);return}
- if(r.role==='lobby'){ROOM={code,ch:r.ch,host:false,hostSid:r.hs,members:[]};try{await r.ch.track(Object.assign({host:false},myInfo()))}catch(_){}roomSync();go('party');toast(`Tu as rejoint le salon ${code}`);return}
+ if(r.role==='lobby'){ROOM={code,ch:r.ch,host:false,hostSid:r.hs,members:[],ready:false};roomTrack();roomSync();go('party');toast(`Tu as rejoint le salon ${code}`);return}
  toast(r.why==='full'?'Ce salon est complet':'Salon introuvable : vérifie le code ou demande à ton ami de le recréer')}
-function roomLeave(silent){if(!ROOM)return;const r=ROOM;ROOM=null;
+function roomLeave(silent){if(!ROOM)return;const r=ROOM;ROOM=null;clearTimeout(r.goT);
  if(r.host)chSend2(r.ch,'h2c',{f:SID,m:{t:'close'}});
  setTimeout(()=>{try{r.ch.untrack()}catch(_){}try{RT.sb.removeChannel(r.ch)}catch(_){}},300);
  groupInv=[];if(!silent){toast('Tu as quitté le salon');}if(tab==='party')renderParty();updHome()}
@@ -1741,8 +1776,14 @@ function roomGone(msg){if(!ROOM)return;const r=ROOM;ROOM=null;try{RT.sb.removeCh
 function roomSync(){if(!ROOM)return;const st=ROOM.ch.presenceState(),ms=[];for(const k in st){const p=st[k][0];if(p)ms.push(p)}
  ms.sort((a,b)=>(b.host?1:0)-(a.host?1:0));ROOM.members=ms;
  const h=ms.find(p=>p.host);if(h)ROOM.hostSid=h.sid;
- groupInv=ms.filter(p=>p.sid!==SID).slice(0,2).map(p=>({name:p.name,hero:p.hero,sid:p.sid}));
+ groupInv=ms.filter(p=>p.sid!==SID).slice(0,2).map(p=>({name:p.name,hero:p.hero,sid:p.sid,ready:!!p.ready}));
+ roomAutoGo(ms);
  if(tab==='party'&&!$('#party').hidden)renderParty();if(tab==='home')updHome()}
+function allReady(ms){return ms.length>0&&ms.every(p=>p.sid===SID?ROOM&&ROOM.ready:p.ready)}
+function roomAutoGo(ms){if(!ROOM||!ROOM.host)return;
+ if(allReady(ms)){if(ROOM.goT)return;ROOM.goT=setTimeout(()=>{if(!ROOM)return;ROOM.goT=0;const m2=[];const st=ROOM.ch.presenceState();for(const k in st){const p=st[k][0];if(p)m2.push(p)}
+   if(allReady(m2)){toast('Tout le monde est prêt !');roomLaunch()}},1500)}
+ else if(ROOM.goT){clearTimeout(ROOM.goT);ROOM.goT=0}}
 function roomLaunch(){if(!ROOM||!ROOM.host)return;const r=ROOM;
  startLocal('casual');setupHost(r.ch,r.code);try{r.ch.track(Object.assign({host:true,phase:'game',code:r.code},myInfo()))}catch(_){}
  bcast({t:'start'});ROOM=null}
@@ -1875,11 +1916,15 @@ let friendChars=[null,null],groupInv=[],roomCode=null;
 function syncFriends(){[0,1].forEach(i=>{const f=groupInv[i],w=f?(f.sid||f.name)+'|'+f.hero:null;if(friendChars[i]&&friendChars[i].who!==w){S.remove(friendChars[i].g);friendChars[i]=null}
  if(f&&!friendChars[i]){const fc=makeChar(HE(f.hero),f.name,false);fc.who=w;S.add(fc.g);friendChars[i]=fc}})}
 // quand je change de héros dans un salon, mes amis le voient aussitôt
-function roomRetrack(){if(!ROOM||ROOM.tracked===save.hero)return;ROOM.tracked=save.hero;try{ROOM.ch.track(Object.assign({host:ROOM.host},ROOM.host?{phase:'lobby',code:ROOM.code}:{},myInfo()))}catch(_){}}
+function roomTrack(){if(!ROOM)return;ROOM.tracked=save.hero;try{ROOM.ch.track(Object.assign({host:ROOM.host},ROOM.host?{phase:'lobby',code:ROOM.code}:{},myInfo(),{ready:!!ROOM.ready}))}catch(_){}}
+function roomRetrack(){if(!ROOM||ROOM.tracked===save.hero)return;roomTrack()}
+function roomReady(v){if(!ROOM)return;ROOM.ready=v===undefined?!ROOM.ready:!!v;sfx[ROOM.ready?'up':'click']();roomTrack();roomSync();updHome()}
 function sideLayout(){const p=cam.aspect<1;return{x:p?2.55:4.7,z:p?-2.6:-1.2,s:p?.6:.78}}
 function lobbyTick(dt){const L=sideLayout(),show=!detailOpen&&tab==='home';
  sidePods.forEach((g,i)=>{const sg=i?1:-1;g.visible=show;g.position.set(PD.x+sg*L.x,0,PD.z+L.z);g.scale.set(L.s,1,L.s);
   const fc=friendChars[i];if(fc){fc.g.visible=show;fc.g.position.set(g.position.x,.29,g.position.z);fc.g.scale.setScalar(2.2*L.s);fc.g.rotation.y=-sg*.35;animChar(fc,dt,false,now)}
+  const rb=i?$('#rdyR'):$('#rdyL'),gf=groupInv[i];
+  if(show&&fc&&gf){rb.hidden=false;rb.textContent=gf.ready?'PRÊT':'PAS PRÊT';rb.classList.toggle('on',!!gf.ready);pv.set(g.position.x,3.6*L.s+.6,g.position.z).project(cam);rb.style.left=((pv.x+1)/2*innerWidth/UIZ)+'px';rb.style.top=((1-pv.y)/2*innerHeight/UIZ)+'px'}else rb.hidden=true;
   const b=i?$('#plusR'):$('#plusL');if(!show||fc){b.hidden=true;return}b.hidden=false;pv.set(g.position.x,1.7*L.s+.7,g.position.z).project(cam);b.style.left=((pv.x+1)/2*innerWidth/UIZ)+'px';b.style.top=((1-pv.y)/2*innerHeight/UIZ)+'px'})}
 function camMenu(asp,dt){
  if(detailOpen){const f=Math.max(1,.95/asp);tv.set(PD.x,2.1*f,PD.z+9*f);tl.set(PD.x,1.45,PD.z)}
@@ -1911,6 +1956,7 @@ function updHome(){
  $('#mName').textContent=m.n;$('#mSub').textContent=m.sub;$('#mImg').innerHTML=I[m.ic];$('#mImg').style.background=m.bg;$('#mTimer').textContent='Nouveaux défis dans '+untilMidnight();
  const nx=roadNext();$('#pStrip').innerHTML=nx?`Route : prochaine récompense à ${ico('cup')}${nx.t}`:'Route des trophées terminée !';
  syncFriends();
+ const pt=$('#playGo .pbt');if(pt){pt.textContent=ROOM?(ROOM.ready?'PRÊT ✓':'PRÊT'):'JOUER';$('#playGo').classList.toggle('rdyOn',!!(ROOM&&ROOM.ready))}
 }
 function refresh2(){updTop();if(tab==='home')updHome();if(tab==='shop')renderShop();if(tab==='pass')renderPass();if(tab==='road')renderRoad();if(tab==='heroes')renderHeroes();if(tab==='missions')renderMissions()}
 const SCR=['#sShop','#sHeroes','#sMissions','#sPass','#sRoad','#sModes','#party'];
@@ -1939,7 +1985,7 @@ function renderHeroes(){
    if(own){h+=`<div class="hero"><button class="hcard s ${sel?'sel':''}" style="--ca:${RAR[x.rar].ca};--cb:${RAR[x.rar].cb}" data-pick="${x.id}" aria-label="Voir ${x.name}"><span class="perk">${I[x.perk]}</span>${can?`<span class="up">${I.up}</span>`:''}${heroIcon(x)}<span class="lv">Niveau <b>${l}</b></span>${sel?`<span class="chk">${I.check}</span>`:''}</button>`+
     (l>=MAXLV?`<div class="maxed s">NIVEAU MAX</div>`:`<button class="btn btn-green hbtn" data-up="${x.id}" ${save.coins>=cost?'':'disabled'}><span>Améliorer</span><b>${fmt(cost)}${ico('coin')}</b></button>`)+`</div>`}
    else{const u=x.un;
-    h+=`<div class="hero"><button class="hcard lock s" data-lock="${x.id}" aria-label="${x.name} verrouillé"><span class="perk">${I[x.perk]}</span><span class="lk">${I.lock}</span><span class="lv">Verrouillé</span></button>`+
+    h+=`<div class="hero"><button class="hcard lock s" style="--ca:${RAR[x.rar].ca};--cb:${RAR[x.rar].cb}" data-lock="${x.id}" aria-label="${x.name} verrouillé"><span class="perk">${I[x.perk]}</span>${heroIcon(x)}<span class="lk">${I.lock}</span><span class="lv">Verrouillé</span></button>`+
     (u.stars||u.pass?`<div class="maxed s">${lockCond(u)}</div>`:`<button class="btn btn-premium hbtn" data-buy="${x.id}"><span>Débloquer</span><b>${lockCond(u)}</b></button>`)+`</div>`}}
   h+='</div>'});
  show('#sHeroes',shead('HÉROS')+`<div class="sbody">${h}</div>`);
@@ -2123,9 +2169,11 @@ function renderParty(){
  h+=`<h3 class="psec s">SALON</h3>`;
  if(ROOM){const ms=ROOM.members||[];
   h+=`<div class="room"><div class="code"><b>${ROOM.code}</b><button class="btn btn-blue" data-pcopy>COPIER</button></div><div class="group">`;
-  for(let i=0;i<4;i++){const p=ms[i];h+=p?`<div class="gslot ${p.sid===SID?'me':'inv'} s">${heroIcon(HE(p.hero||'cubo'))}<span>${esc(p.name)}</span><em>${p.host?'Hôte':p.sid===SID?'Toi':'Prêt'}</em></div>`:`<div class="gslot add s">+</div>`}
+  for(let i=0;i<4;i++){const p=ms[i];h+=p?`<div class="gslot ${p.sid===SID?'me':'inv'} s">${heroIcon(HE(p.hero||'cubo'))}<span>${esc(p.name)}</span><em class="${(p.sid===SID?ROOM.ready:p.ready)?'rdy':'nrdy'}">${(p.sid===SID?ROOM.ready:p.ready)?'PRÊT':'PAS PRÊT'}</em></div>`:`<div class="gslot add s">+</div>`}
   h+=`</div><p class="note s">${ms.length}/8 joueurs · les places libres seront prises par des bots</p>`;
-  h+=ROOM.host?`<button class="btn btn-green big2" data-proom>LANCER LA PARTIE</button>`:`<p class="note s">En attente du lancement par l'hôte…</p>`;
+  const nr=ms.filter(p=>p.sid===SID?ROOM.ready:p.ready).length;
+  h+=`<p class="note s">${nr===ms.length&&ms.length?'Tout le monde est prêt, lancement…':`Prêts : ${nr}/${ms.length} · la partie se lance quand tout le monde est prêt`}</p>`;
+  h+=ROOM.ready?`<button class="btn btn-grey big2" data-pready>ANNULER PRÊT</button>`:`<button class="btn btn-green big2" data-pready>PRÊT</button>`;
   h+=`<button class="btn btn-red big2" data-pleave>QUITTER LE SALON</button></div>`}
  else{h+=`<button class="btn btn-blue big2" data-pcreate ${canRoom?'':'disabled'}>CRÉER UN SALON</button><div class="frow" style="margin-top:14px"><input id="codeIn" maxlength="6" placeholder="CODE DU SALON" autocomplete="off" style="text-transform:uppercase;letter-spacing:.12em"><button class="btn btn-yellow" data-pjoin ${canRoom?'':'disabled'}>REJOINDRE</button></div>`}
  // amis
@@ -2152,7 +2200,7 @@ $('#party').addEventListener('click',async e=>{const b=e.target.closest('button'
  if(b.hasAttribute('data-pcopy')){const t=ROOM&&ROOM.code;try{navigator.clipboard.writeText(t).then(()=>toast('Code copié !'),()=>toast('Code : '+t))}catch(_){toast('Code : '+t)}return}
  if(b.hasAttribute('data-pcreate')){if(await roomCreate())renderParty();return}
  if(b.hasAttribute('data-pleave')){roomLeave();return}
- if(b.hasAttribute('data-proom')){roomLaunch();return}
+ if(b.hasAttribute('data-pready')){roomReady();return}
  if(b.hasAttribute('data-pjoin')){roomJoin($('#codeIn').value);return}
  if(b.hasAttribute('data-fadd')){const v=($('#fIn').value||'').trim();if(!/#\s*\d{4}$/.test(v)){toast("Écris l'identifiant complet, par exemple Dwenyx#1234");return}
   b.disabled=true;const r=await apiCall('/api/friends','POST',{action:'add',handle:v});b.disabled=false;
@@ -2192,7 +2240,7 @@ function rtLogout(){try{RT.online&&RT.sb.removeChannel(RT.online)}catch(_){}try{
 document.querySelectorAll('[data-go]').forEach(b=>press(b,()=>{const t=b.dataset.go;if(t==='profile')openProfile();else if(t==='party')openParty();else go(t)}));
 press($('#plusL'),()=>openInvite());press($('#plusR'),()=>openInvite());
 press($('#trophyBtn'),()=>go('road'));press($('#passCard'),()=>go('pass'));press($('#modeBtn'),()=>go('modes'));
-press($('#playGo'),()=>{const m=save.mode;if(m==='ranked')play('ranked');else if(m==='quick')play('casual');else openParty()});
+press($('#playGo'),()=>{if(ROOM){ac();roomReady();return}const m=save.mode;if(m==='ranked')play('ranked');else if(m==='quick')play('casual');else openParty()});
 press($('#coinPill'),()=>{go('shop');setTimeout(()=>shopJump('res'),80)});press($('#gemPill'),()=>{go('shop');setTimeout(()=>shopJump('res'),80)});
 press($('#gearBtn'),openSettings);press($('#profileBtn'),()=>openProfile());
 function openSettings(){const p=RT.prof;$('#nameIn').value=p?p.name:save.name;$('#nameTag').textContent=p?'#'+p.tag:'';
