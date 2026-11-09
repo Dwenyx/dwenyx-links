@@ -873,6 +873,26 @@ body[data-r="home"] #bg{background:radial-gradient(ellipse at 50% 40%,#9af6ff 0,
 .acct div{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .acct small{display:block;color:#9cf05a}
 .acct .btn{min-height:38px;font-size:13px;padding:2px 10px}
+.tg{font-style:normal;color:#b9c6ea;margin-left:2px;font-size:.85em}
+.myid{display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.35);border-radius:14px;padding:8px 10px 8px 14px;margin-bottom:6px;flex-wrap:wrap}
+.myid span{font-size:13px;color:#c9d2ee}
+.myid b{font-weight:400;font-size:22px;flex:1;min-width:0}
+.myid .btn{min-height:40px;font-size:14px}
+.friend .cube{width:34px;height:34px;flex:none;border-width:2px}
+.friend.on .dot{background:#5fe05a}
+.friend .fn small{display:flex;align-items:center;gap:4px}
+.friend .fn small .ic{width:14px;height:14px}
+.pend{font-size:13px;color:#ffd21f;white-space:nowrap}
+.room{background:rgba(0,0,0,.25);border-radius:16px;padding:10px 12px 14px}
+.room .big2{margin-top:10px}
+#invPop{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 70px);transform:translateX(-50%);z-index:25;width:min(92vw,380px);background:linear-gradient(#2a6ff0,#1a4fcf);border:3px solid #0b0b19;border-radius:16px;box-shadow:0 6px 0 #0b0b19;padding:12px;display:flex;flex-direction:column;gap:10px;animation:pop .3s cubic-bezier(.2,1.5,.4,1);zoom:var(--z,1)}
+#invPop[hidden]{display:none}
+#invPopTxt{font-size:17px;text-align:center}
+#invPopTxt b{font-weight:400}
+.rn{display:flex;gap:8px;align-items:center}
+.rn input{flex:1;min-width:0}
+.rn .btn{min-height:46px;font-size:15px}
+.rnote{font-size:13px;color:#c9d2ee;margin:4px 0 0}
 </style>
 
 </head>
@@ -944,10 +964,11 @@ body[data-r="home"] #bg{background:radial-gradient(ellipse at 50% 40%,#9af6ff 0,
 <div id="login" hidden><div class="lgbox"><div class="lglogo s">PAINT<span>CLASH</span></div><div class="lgcard"><p class="s">Connecte-toi avec ton compte Google pour jouer et retrouver ta progression sur tous tes appareils.</p><div id="gBtn"></div><div id="loginMsg" class="s"></div></div><p class="lgnote s">Seuls ton adresse e-mail et ton prénom servent à identifier ton compte.</p></div></div>
 <div id="profile" class="modal" hidden><div class="mbox"><h2 class="s">PROFIL</h2><div id="profBox"></div><div class="row2"><button id="profEdit" class="btn btn-blue">MODIFIER</button><button id="profClose" class="btn btn-green">OK</button></div></div></div>
 <div id="invite" class="modal" hidden><div class="mbox"><h2 class="s">INVITER UN AMI</h2><div id="invList" class="flist"></div><div class="row2"><button id="invManage" class="btn btn-blue">GÉRER MES AMIS</button><button id="invClose" class="btn btn-red">FERMER</button></div></div></div>
+<div id="invPop" hidden><div id="invPopTxt" class="s"></div><div class="row2"><button id="invNo" class="btn btn-grey">PLUS TARD</button><button id="invYes" class="btn btn-green">REJOINDRE</button></div></div>
 <div id="settings" class="modal" hidden>
   <div class="mbox">
     <h2 class="s">RÉGLAGES</h2>
-    <label class="s">Pseudo<input id="nameIn" maxlength="12" spellcheck="false"></label>
+    <label class="s">Pseudo<span class="rn"><input id="nameIn" maxlength="12" spellcheck="false" autocomplete="off"><em id="nameTag" class="tg"></em></span></label><p id="rnNote" class="rnote s"></p>
     <button id="soundBtn" class="btn btn-blue">SON : ACTIVÉ</button>
     <button id="setClose" class="btn btn-green">OK</button>
   </div>
@@ -998,7 +1019,6 @@ body[data-r="home"] #bg{background:radial-gradient(ellipse at 50% 40%,#9af6ff 0,
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <script>
 (()=>{
 const $=s=>document.querySelector(s);
@@ -1452,18 +1472,17 @@ function beginHud(){specOn=false;
 }
 function rejoinHost(){$('#end').hidden=true;player.kills=0;player.deathCount=0;spawn(player);beginHud()}
 let busy=false;
-async function play(mode,room){
+async function play(mode){
  if(busy)return;ac();
- if(!room&&NET.role==='host'&&simOn&&!matchOver&&!player.alive){rejoinHost();return}
+ if(NET.role==='host'&&simOn&&!matchOver&&!player.alive){rejoinHost();return}
+ if(ROOM)roomLeave(true);
  NET.leave();simOn=false;busy=true;
- $('#mmTitle').textContent=room?`SALON ${room.code}`:"RECHERCHE D'UNE PARTIE…";$('#mmTxt').textContent='';$('#match').hidden=false;
- let res=null;
- try{res=room?(room.create?await hostRoom(room.code):await joinRoom(room.code)):await findMatch(mode==='ranked'?'r':'q')}catch(_){res=null}
+ $('#mmTitle').textContent="RECHERCHE D'UNE PARTIE…";$('#mmTxt').textContent='';$('#match').hidden=false;
+ let res=null;try{res=await findMatch(mode==='ranked'?'r':'q')}catch(_){res=null}
  busy=false;
- if(room&&!room.create&&!(res&&res.role==='client')){$('#match').hidden=true;toast(res&&res.why==='full'?'Ce salon est complet':'Salon introuvable');return}
  if(res&&res.role==='client'){startClient(res);return}
- if(res&&res.role==='host'){startLocal(mode);setupHost(res.p);return}
- $('#mmTxt').textContent=NET.ok()?'Aucune partie trouvée : partie avec des bots':'Hors ligne : partie avec des bots';
+ if(res&&res.role==='host'){startLocal(mode);setupHost(res.ch,res.code,res.mm,res.pool);return}
+ $('#mmTxt').textContent=RT.on?'Aucune partie trouvée : partie avec des bots':'Hors ligne : partie avec des bots';
  setTimeout(()=>startLocal(mode),900);
 }
 const startGame=m=>play(m);
@@ -1490,7 +1509,7 @@ function finish(reason){
  const unl=[],lvBefore=passLevel();const xpG=60+player.kills*15+Math.floor(pct)+(won?80:0);save.xp=(save.xp||0)+xpG;if(passLevel()>lvBefore)unl.push({t:'pass',l:passLevel()});
  if(ranked&&won)save.gems+=5;
  if(ROAD.some(r=>r.t>oldS&&r.t<=save.stars))unl.push({t:'road'});
- persist();
+ persist();if(RT.prof)apiCall('/api/profile','POST',{action:'sync',hero:save.hero,stars:save.stars});
  $('#hud').hidden=true;$('#joy').hidden=true;
  setTimeout(()=>showEnd({pl,pct,dS,co,reason,ranked,unl,wasDead,xpG,n:ents.filter(Boolean).length}),reason==='dead'?0:700);
 }
@@ -1552,80 +1571,99 @@ const endDrag=e=>{if(drag&&e.pointerId===drag.id){drag=null;joy.hidden=true}};
 cv.addEventListener('pointerup',endDrag);cv.addEventListener('pointercancel',endDrag);
 function keyInput(){let dx=0,dz=0;if(keys.arrowleft||keys.q||keys.a)dx--;if(keys.arrowright||keys.d)dx++;if(keys.arrowup||keys.z||keys.w)dz--;if(keys.arrowdown||keys.s)dz++;if(dx||dz)player.targetH=Math.atan2(dz,dx)}
 
-/* ---------- MULTIJOUEUR (PeerJS) ---------- */
+/* ---------- MULTIJOUEUR (Supabase Realtime : passe par un serveur, marche partout) ---------- */
 let simOn=false,matchOver=false,playT=0;
-const NET={role:'off',peer:null,conns:new Map(),conn:null,ev:[],dirty:new Set(),sendT:0,inT:0,lastH:null,
- ok(){return typeof Peer!=='undefined'&&typeof RTCPeerConnection!=='undefined'},
- opts(){let q=null;try{q=new URLSearchParams(location.search).get('ps')}catch(_){}if(q){const[h,p]=q.split(':');return{host:h,port:+p||9000,path:'/',secure:false,debug:0}}return{debug:0}},
+const SID=(()=>{const a='abcdefghijklmnopqrstuvwxyz0123456789';let s='';for(let i=0;i<14;i++)s+=a[Math.random()*36|0];return s})();
+const RT={sb:null,on:false,prof:null,online:null,inbox:null,onlineSet:new Set(),friends:[],incoming:[],outgoing:[],frLoaded:false};
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+let ROOM=null;
+const NET={role:'off',ch:null,mm:null,mmPool:null,code:null,conns:new Map(),conn:null,hostSid:null,wait:null,ev:[],dirty:new Set(),sendT:0,inT:0,lastH:null,mmT:0,
+ ok(){return RT.on},
  leave(){
-  try{if(NET.role==='host'){for(const{c}of NET.conns.values()){try{c.send({t:'bye'})}catch(_){}}const p=NET.peer;setTimeout(()=>{try{p&&p.destroy()}catch(_){}},400)}
-   else if(NET.role==='client'){const c=NET.conn,p=NET.peer;try{c.send({t:'bye'})}catch(_){}setTimeout(()=>{try{c.close()}catch(_){}try{p&&p.destroy()}catch(_){}},250)}}catch(_){}
-  NET.role='off';NET.peer=null;NET.conn=null;NET.conns.clear();NET.ev=[];NET.dirty.clear()}};
-const PFX='pclash2';
-function mkPeer(id){return new Promise(res=>{let done=false,p;try{p=id?new Peer(id,NET.opts()):new Peer(NET.opts())}catch(_){res({err:'init'});return}
- const t=setTimeout(()=>fin({err:'timeout'}),7000);
- function fin(r){if(done)return;done=true;clearTimeout(t);if(r.err){try{p.destroy()}catch(_){}}res(r)}
- p.on('open',()=>fin({p}));p.on('error',e=>fin({err:(e&&e.type)||'err'}))})}
-function tryJoin(p,id){return new Promise(res=>{let done=false,c=null,t=0;
- const onErr=e=>{if(e&&e.type==='peer-unavailable')fin({ok:false,why:'nohost'})};
- function fin(r){if(done)return;done=true;clearTimeout(t);try{p.off('error',onErr)}catch(_){}if(!r.ok){try{c&&c.close()}catch(_){}}res(r)}
- t=setTimeout(()=>fin({ok:false,why:'nohost'}),9000);p.on('error',onErr);
- try{c=p.connect(id,{serialization:'json',reliable:true})}catch(_){fin({ok:false,why:'nohost'});return}
- c.on('open',()=>{try{c.send({t:'hello',name:save.name,hero:save.hero,st:myStats()})}catch(_){}});
- c.on('data',m=>{if(!m)return;if(m.t==='w')fin({ok:true,c,w:m});else if(m.t==='full')fin({ok:false,why:'full'})});
- c.on('close',()=>fin({ok:false,why:'full'}))})}
+  const ch=NET.ch,mm=NET.mm,wasRoom=ROOM&&ROOM.ch===ch;
+  try{if(NET.role==='host')bcast({t:'bye'});else if(NET.role==='client'&&NET.conn)NET.conn.send({t:'bye'})}catch(_){}
+  NET.role='off';NET.conn=null;NET.conns.clear();NET.ev=[];NET.dirty.clear();NET.ch=null;NET.mm=null;NET.code=null;NET.hostSid=null;NET.wait=null;
+  if(wasRoom)ROOM=null;
+  setTimeout(()=>{try{ch&&RT.sb.removeChannel(ch)}catch(_){}try{mm&&RT.sb.removeChannel(mm)}catch(_){}},400)}};
+function chSend(ev,payload){try{NET.ch&&NET.ch.send({type:'broadcast',event:ev,payload})}catch(_){}}
+function connFor(sid){const i=NET.conns.get(sid);return i?i.c:{peer:sid,send(m){chSend('h2c',{to:sid,f:SID,m})}}}
+function bcast(m,except){chSend('h2c',{f:SID,m,x:except?except.peer:undefined})}
+function myInfo(){const p=RT.prof;return{sid:SID,pid:p?p.id:null,name:p?p.name:save.name,tag:p?p.tag:'',hero:save.hero}}
+function joinCh(name,key,setup){return new Promise(res=>{if(!RT.on){res(null);return}
+ const ch=RT.sb.channel(name,{config:{broadcast:{self:false,ack:false},presence:{key}}});setup&&setup(ch);let done=false;
+ const t=setTimeout(()=>{if(!done){done=true;try{RT.sb.removeChannel(ch)}catch(_){}res(null)}},9000);
+ ch.subscribe(s=>{if(done)return;if(s==='SUBSCRIBED'){done=true;clearTimeout(t);res(ch)}else if(s==='CHANNEL_ERROR'||s==='TIMED_OUT'||s==='CLOSED'){done=true;clearTimeout(t);try{RT.sb.removeChannel(ch)}catch(_){}res(null)}})})}
+// salon : un canal par code, utilisé pour l'attente (lobby) et pour la partie
+function roomSetup(ch){
+ ch.on('broadcast',{event:'c2h'},({payload:p})=>{if(!p||!p.f)return;
+  if(NET.role==='host'&&NET.ch===ch){const i=NET.conns.get(p.f);hostMsg(i?i.c:connFor(p.f),p.m);return}
+  if(ROOM&&ROOM.ch===ch&&ROOM.host&&p.m&&p.m.t==='hello'){chSend2(ch,'h2c',{to:p.f,f:SID,m:{t:'lobby'}})}});
+ ch.on('broadcast',{event:'h2c'},({payload:p})=>{if(!p||(p.to&&p.to!==SID)||p.x===SID)return;const m=p.m;if(!m)return;
+  if(NET.wait&&(m.t==='w'||m.t==='full'||m.t==='lobby')){const w=NET.wait;NET.wait=null;w(m,p.f);return}
+  if(NET.role==='client'&&NET.ch===ch){clientMsg(m);return}
+  if(ROOM&&ROOM.ch===ch&&!ROOM.host){
+   if(m.t==='start')roomGameStart();
+   else if(m.t==='close'){roomGone("L'hôte a fermé le salon")}}});
+ ch.on('presence',{event:'sync'},()=>{if(ROOM&&ROOM.ch===ch)roomSync()});
+ ch.on('presence',{event:'leave'},({key})=>{
+  if(NET.role==='host'&&NET.ch===ch&&NET.conns.has(key)){const i=NET.conns.get(key);hostDrop(i.c)}
+  if(NET.role==='client'&&NET.ch===ch&&key===NET.hostSid){NET.role='off';if(state!=='end'&&state!=='menu'){toast("L'hôte a quitté la partie");finish('quit')}}
+  if(ROOM&&ROOM.ch===ch&&!ROOM.host&&key===ROOM.hostSid&&NET.role!=='client')roomGone("L'hôte a quitté le salon")})}
+function chSend2(ch,ev,payload){try{ch.send({type:'broadcast',event:ev,payload})}catch(_){}}
+async function openRoomCh(code){const ch=await joinCh('pc-room-'+code,SID,roomSetup);if(!ch)return null;return ch}
+function joinRoomCh(code){return new Promise(async res=>{
+ const ch=await joinCh('pc-room-'+code,SID,roomSetup);if(!ch){res({why:'net'});return}
+ let done=false;const fin=r=>{if(done)return;done=true;clearTimeout(t);NET.wait=null;if(!r.role){try{RT.sb.removeChannel(ch)}catch(_){}}res(r)};
+ NET.wait=(m,f)=>{if(m.t==='w')fin({role:'client',ch,w:m,hs:f});else if(m.t==='lobby')fin({role:'lobby',ch,hs:f});else fin({why:'full'})};
+ const t=setTimeout(()=>fin({why:'nohost'}),6000);
+ const hello=()=>chSend2(ch,'c2h',{f:SID,m:Object.assign({t:'hello',st:myStats()},myInfo())});hello();setTimeout(()=>{if(!done)hello()},1800)})}
 async function findMatch(pool){
- if(!NET.ok())return null;
- $('#mmTxt').textContent='Connexion…';
- const cp=await mkPeer();if(cp.err)return null;
- for(let r=0;r<6;r++){const id=`${PFX}-${pool}-${r}`;
-  $('#mmTxt').textContent=`Recherche dans la salle ${r+1}…`;
-  const j=await tryJoin(cp.p,id);
-  if(j.ok){NET.peer=cp.p;return{role:'client',c:j.c,w:j.w}}
-  if(j.why==='full')continue;
-  const h=await mkPeer(id);
-  if(!h.err){try{cp.p.destroy()}catch(_){}return{role:'host',p:h.p}}
-  if(h.err!=='unavailable-id'){try{cp.p.destroy()}catch(_){}return null}
- }
- try{cp.p.destroy()}catch(_){}return null}
-async function hostRoom(code){if(!NET.ok())return null;const h=await mkPeer(`${PFX}-room-${code}`);if(h.err)return null;return{role:'host',p:h.p}}
-async function joinRoom(code){if(!NET.ok())return null;const cp=await mkPeer();if(cp.err)return null;const j=await tryJoin(cp.p,`${PFX}-room-${code}`);if(j.ok){NET.peer=cp.p;return{role:'client',c:j.c,w:j.w}}try{cp.p.destroy()}catch(_){}return{why:j.why}}
+ if(!RT.on)return null;
+ $('#mmTxt').textContent='Recherche de joueurs en ligne…';
+ const mm=await joinCh('pc-mm-'+pool,SID);if(!mm)return null;
+ await wait(1400);
+ const st=mm.presenceState(),hosts=[];for(const k in st)for(const p of st[k])if(p.code&&p.open&&p.n<8)hosts.push(p);
+ hosts.sort((a,b)=>b.n-a.n);
+ for(const h of hosts.slice(0,4)){$('#mmTxt').textContent=`Connexion à une partie (${h.n}/8)…`;const r=await joinRoomCh(h.code);if(r.role==='client'){try{RT.sb.removeChannel(mm)}catch(_){}return r}}
+ const code=newCode(),ch=await openRoomCh(code);if(!ch){try{RT.sb.removeChannel(mm)}catch(_){}return null}
+ return{role:'host',ch,code,mm,pool}}
 // hôte
 const entInfo=e=>({id:e.id,n:e.name,h:e.hero.id,a:e.alive?1:0,x:e.x,z:e.z,d:e.h,k:e.kills});
 const encG=a=>{let r='';for(let i=0;i<a.length;i++)r+=String.fromCharCode(98+a[i]);return r};
 const decG=(s,a)=>{if(typeof s==='string'){for(let i=0;i<a.length;i++)a[i]=s.charCodeAt(i)-98}else for(let i=0;i<a.length;i++)a[i]=s[i]};
 const welcome=id=>({t:'w',you:id,mode:gameMode,ents:ents.map(entInfo),own:encG(own),trail:encG(trail)});
-function setupHost(p){NET.role='host';NET.peer=p;NET.conns.clear();
- p.on('connection',c=>{c.on('data',m=>hostMsg(c,m));c.on('close',()=>hostDrop(c));c.on('error',()=>hostDrop(c))});
- p.on('disconnected',()=>{try{if(NET.role==='host'&&NET.peer===p)p.reconnect()}catch(_){}})}
+function setupHost(ch,code,mm,pool){NET.role='host';NET.ch=ch;NET.code=code;NET.mm=mm||null;NET.mmPool=pool||null;NET.conns.clear();NET.mmT=0;
+ try{ch.track(Object.assign({host:true,phase:'game',code},myInfo()))}catch(_){}}
+function humans(){return ents.filter(e=>e&&!e.bot&&e.alive).length}
 function hostMsg(c,m){if(!m||NET.role!=='host')return;const info=NET.conns.get(c.peer);
- if(m.t==='hello'){if(info)return;
+ if(m.t==='hello'){if(info){try{c.send(welcome(info.id))}catch(_){}return}
   if(matchOver||!simOn){try{c.send({t:'full'})}catch(_){}return}
-  let slot=-1;const bots=ents.filter(e=>e.bot&&e.alive);
+  let slot=-1;const bots=ents.filter(e=>e.bot&&e.alive&&!e.remote);
   if(bots.length){bots.sort((a,b)=>(counts[a.id]||0)-(counts[b.id]||0));slot=bots[0].id}else if(ents.length<8)slot=ents.length;
   if(slot<0){try{c.send({t:'full'})}catch(_){}return}
   if(ents[slot])removeEnt(ents[slot]);
-  const e=newEnt(slot,HE(m.hero),String(m.name||'Joueur').slice(0,12),true),st=m.st||{};
+  const nm=String(m.name||'Joueur').slice(0,12),e=newEnt(slot,HE(m.hero),nm,true),st=m.st||{};
   e.bot=false;e.speed=Math.max(4,Math.min(7,+st.sp||5.2));e.turn=Math.max(5,Math.min(10,+st.tu||7));e.r2=Math.max(4,Math.min(16,+st.r2||5));
   e.remote=c;e.frozen=true;ents[slot]=e;spawn(e);recount();NET.conns.set(c.peer,{c,id:slot});
   try{c.send(welcome(slot))}catch(_){}
-  bcast({t:'j',e:entInfo(e)},c);feedMsg(`${e.name} a rejoint la partie`);return}
+  bcast({t:'j',e:entInfo(e)},c);feedMsg(`${e.name} a rejoint la partie`);NET.mmT=0;return}
  if(!info)return;const e=ents[info.id];if(!e||e.remote!==c)return;
  if(m.t==='i'&&typeof m.h==='number')e.targetH=m.h;
  else if(m.t==='go')e.frozen=false;
  else if(m.t==='bye')hostDrop(c)}
 function hostDrop(c){const info=NET.conns.get(c.peer);if(!info)return;NET.conns.delete(c.peer);const e=ents[info.id];
- if(e&&e.remote===c){e.remote=null;e.frozen=false;botify(e,.45);if(e.alive)feedMsg(`${e.name} a quitté la partie`)}}
+ if(e&&e.remote===c){e.remote=null;e.frozen=false;botify(e,.45);if(e.alive)feedMsg(`${e.name} a quitté la partie`)}NET.mmT=0}
 function removeEnt(e){for(const c of e.trailCells)if(trail[c]===e.id){trail[c]=-1;refresh(c)}for(let c=0;c<TOT;c++)if(own[c]===e.id){own[c]=-1;refresh(c,Math.random()*.3)}e.alive=false;e.trailCells=[];S.remove(e.view.g)}
-function bcast(m,except){for(const{c}of NET.conns.values())if(c!==except){try{c.send(m)}catch(_){}}}
-function hostTick(dt){if(NET.role!=='host'||!NET.conns.size){NET.dirty.clear();NET.ev.length=0;return}
- NET.sendT-=dt;if(NET.sendT>0)return;NET.sendT=1/15;
- const cells=[];let n=0;for(const c of NET.dirty){cells.push(c,own[c],trail[c]);NET.dirty.delete(c);if(++n>=700)break}
+function hostTick(dt){if(NET.role!=='host')return;
+ NET.mmT-=dt;if(NET.mm&&NET.mmT<=0){NET.mmT=4;try{NET.mm.track({code:NET.code,n:humans(),open:!matchOver&&simOn})}catch(_){}}
+ if(!NET.conns.size){NET.dirty.clear();NET.ev.length=0;return}
+ NET.sendT-=dt;if(NET.sendT>0)return;NET.sendT=1/10;
+ const cells=[];let n=0;for(const c of NET.dirty){cells.push(c,own[c],trail[c]);NET.dirty.delete(c);if(++n>=900)break}
  const pk={t:'s',e:ents.map(e=>[e.id,Math.round(e.x*100),Math.round(e.z*100),Math.round(e.h*100),e.alive?1:0,e.kills]),c:cells,v:NET.ev};NET.ev=[];bcast(pk)}
 // client
-function startClient(res){NET.role='client';NET.conn=res.c;applyWelcome(res.w);
- res.c.on('data',clientMsg);
- res.c.on('close',()=>{if(NET.role!=='client'||NET.conn!==res.c)return;NET.role='off';if(state!=='end'&&state!=='menu'){toast("L'hôte a quitté la partie");finish('quit')}})}
+function startClient(res){NET.role='client';NET.ch=res.ch;NET.hostSid=res.hs||null;NET.conn={send(m){chSend('c2h',{f:SID,m})}};
+ try{res.ch.track(Object.assign({host:false},myInfo()))}catch(_){}
+ applyWelcome(res.w)}
 function mkNetEnt(i,me){const e=newEnt(i.id,HE(i.h),i.n,!me);e.bot=false;e.net=true;e.alive=!!i.a;e.x=e.tx=i.x;e.z=e.tz=i.z;e.h=e.th=e.targetH=i.d;e.kills=i.k;e.ci=Math.floor(e.x);e.cj=Math.floor(e.z);e.view.g.visible=e.alive;e.spawnT=now-1;e.dying=0;return e}
 function applyWelcome(w){
  ac();gameMode=w.mode||'casual';closeAll();$('#match').hidden=true;
@@ -1657,11 +1695,46 @@ function netEvent(v){
  else if(v.t==='c'){const e=ents[v.id];if(e===player){sfx.capture(v.g);floatText('+'+(v.g/TOT*100).toFixed(1)+'%',e);shake=Math.max(shake,Math.min(.35,v.g/400));burst(e.x,1.2,e.z,0xffd21f,14,6)}}
  else if(v.t==='end'){matchOver=true;if(state!=='end'&&state!=='menu')finish(ents[v.w]===player?'win':'lost')}}
 function clientTick(dt){
- const k=Math.min(1,dt*14);
+ const k=Math.min(1,dt*10);
  for(const e of ents){if(!e||!e.alive||e.tx===undefined)continue;e.x+=(e.tx-e.x)*k;e.z+=(e.tz-e.z)*k;e.h+=angD(e.th,e.h)*k;
   const ni=Math.max(0,Math.min(N-1,Math.floor(e.x))),nj=Math.max(0,Math.min(N-1,Math.floor(e.z)));if(e===player&&(ni!==e.ci||nj!==e.cj))keyClick(.5);e.ci=ni;e.cj=nj}
- if(state==='play'&&player.alive){NET.inT-=dt;if(NET.inT<=0){NET.inT=.06;if(player.targetH!==NET.lastH){NET.lastH=player.targetH;try{NET.conn.send({t:'i',h:player.targetH})}catch(_){}}}}}
+ if(state==='play'&&player.alive){NET.inT-=dt;if(NET.inT<=0){NET.inT=.1;if(player.targetH!==NET.lastH){NET.lastH=player.targetH;try{NET.conn.send({t:'i',h:player.targetH})}catch(_){}}}}}
 function feedMsg(t){const f=$('#feed'),d=document.createElement('div');d.className='fk';d.innerHTML=`<span>${esc(t)}</span>`;f.prepend(d);while(f.children.length>4)f.lastChild.remove();setTimeout(()=>{d.style.opacity=0;setTimeout(()=>d.remove(),400)},4200)}
+// salon (lobby)
+async function roomCreate(){if(!RT.on){toast("Connecte-toi sur paint-clash.vercel.app pour créer un salon");return false}
+ if(ROOM)return true;const code=newCode();toast('Création du salon…');const ch=await openRoomCh(code);if(!ch){toast('Impossible de créer le salon. Réessaie.');return false}
+ ROOM={code,ch,host:true,hostSid:SID,members:[]};try{await ch.track(Object.assign({host:true,phase:'lobby',code},myInfo()))}catch(_){}
+ roomSync();sfx.up();return true}
+async function roomJoin(code){code=String(code||'').trim().toUpperCase();if(code.length!==6){toast('Le code fait 6 caractères');return}
+ if(!RT.on){toast("Connecte-toi sur paint-clash.vercel.app pour rejoindre un salon");return}
+ if(ROOM&&ROOM.code===code){go('party');return}
+ if(ROOM)roomLeave(true);
+ $('#mmTitle').textContent=`SALON ${code}`;$('#mmTxt').textContent='Connexion…';$('#match').hidden=false;
+ const r=await joinRoomCh(code);$('#match').hidden=true;
+ if(r.role==='client'){ROOM=null;startClient(r);return}
+ if(r.role==='lobby'){ROOM={code,ch:r.ch,host:false,hostSid:r.hs,members:[]};try{await r.ch.track(Object.assign({host:false},myInfo()))}catch(_){}roomSync();go('party');toast(`Tu as rejoint le salon ${code}`);return}
+ toast(r.why==='full'?'Ce salon est complet':'Salon introuvable : vérifie le code ou demande à ton ami de le recréer')}
+function roomLeave(silent){if(!ROOM)return;const r=ROOM;ROOM=null;
+ if(r.host)chSend2(r.ch,'h2c',{f:SID,m:{t:'close'}});
+ setTimeout(()=>{try{r.ch.untrack()}catch(_){}try{RT.sb.removeChannel(r.ch)}catch(_){}},300);
+ groupInv=[];if(!silent){toast('Tu as quitté le salon');}if(tab==='party')renderParty();updHome()}
+function roomGone(msg){if(!ROOM)return;const r=ROOM;ROOM=null;try{RT.sb.removeChannel(r.ch)}catch(_){}groupInv=[];toast(msg);if(tab==='party')renderParty();if(tab==='home')updHome()}
+function roomSync(){if(!ROOM)return;const st=ROOM.ch.presenceState(),ms=[];for(const k in st){const p=st[k][0];if(p)ms.push(p)}
+ ms.sort((a,b)=>(b.host?1:0)-(a.host?1:0));ROOM.members=ms;
+ const h=ms.find(p=>p.host);if(h)ROOM.hostSid=h.sid;
+ groupInv=ms.filter(p=>p.sid!==SID).slice(0,2).map(p=>p.name);
+ if(tab==='party'&&!$('#party').hidden)renderParty();if(tab==='home')updHome()}
+function roomLaunch(){if(!ROOM||!ROOM.host)return;const r=ROOM;
+ startLocal('casual');setupHost(r.ch,r.code);try{r.ch.track(Object.assign({host:true,phase:'game',code:r.code},myInfo()))}catch(_){}
+ bcast({t:'start'});ROOM=null}
+async function roomGameStart(){if(!ROOM)return;const r=ROOM;ROOM=null;
+ $('#mmTitle').textContent='LA PARTIE COMMENCE !';$('#mmTxt').textContent='Connexion…';$('#match').hidden=false;
+ NET.ch=r.ch;
+ const res=await new Promise(resv=>{let done=false;const t=setTimeout(()=>{if(!done){done=true;NET.wait=null;resv(null)}},7000);
+  NET.wait=(m,f)=>{if(done)return;done=true;clearTimeout(t);resv(m.t==='w'?{role:'client',ch:r.ch,w:m,hs:f}:null)};
+  chSend2(r.ch,'c2h',{f:SID,m:Object.assign({t:'hello',st:myStats()},myInfo())})});
+ $('#match').hidden=true;
+ if(res)startClient(res);else{NET.ch=null;try{RT.sb.removeChannel(r.ch)}catch(_){}toast("Impossible de rejoindre la partie de l'hôte")}}
 
 /* ---------- BOUCLE ---------- */
 const camPos=new THREE.Vector3(PV.x,14,PV.z+16),camLook=new THREE.Vector3(PV.x,0,PV.z),tv=new THREE.Vector3(),tl=new THREE.Vector3();
@@ -2001,51 +2074,114 @@ $('#sModes').addEventListener('click',e=>{const b=e.target.closest('button');if(
  if(b.dataset.mtab){modeTab=b.dataset.mtab;renderModes();return}
  if(b.dataset.mode){save.mode=b.dataset.mode;persist();go('home')}});
 
-// AMIS / PARTY / SALON
+// AMIS / SALON (comptes, #, invitations)
 function newCode(){const A='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let c='';for(let i=0;i<6;i++)c+=A[Math.floor(Math.random()*A.length)];return c}
+const handle=p=>p?`${esc(p.name)}<em class="tg">#${esc(p.tag)}</em>`:'';
+const isOn=id=>RT.onlineSet.has(id);
+function frRow(p,kind){const on=isOn(p.id);
+ let btns='';
+ if(kind==='f')btns=`<button class="btn ${on?'btn-green':'btn-grey'}" data-finv="${p.id}" ${on?'':'disabled'}>INVITER</button><button class="ib ib-x" data-fdel="${p.id}" aria-label="Retirer ${esc(p.name)}"></button>`;
+ if(kind==='in')btns=`<button class="btn btn-green" data-facc="${p.id}">ACCEPTER</button><button class="ib ib-x" data-fdel="${p.id}" aria-label="Refuser"></button>`;
+ if(kind==='out')btns=`<span class="pend s">En attente</span><button class="ib ib-x" data-fdel="${p.id}" aria-label="Annuler"></button>`;
+ return `<div class="friend ${on?'on':''}"><span class="dot"></span>${heroIcon(HE(p.hero||'cubo'),34)}<span class="fn s"><b>${handle(p)}</b><small>${kind==='f'?(on?'En ligne':'Hors ligne'):kind==='in'?'Veut être ton ami':'Demande envoyée'} · ${ico('cup')}${p.stars||0}</small></span>${btns}</div>`}
 function renderParty(){
- const me=HE(save.hero);
- let h=`<p class="notice s">${NET.ok()?'Crée un salon et donne le code à tes amis : ils rejoignent ta partie en cours. Les places libres sont prises par des bots.':'Le multijoueur marche sur le site paint-clash.vercel.app. Ici, tu joues contre des bots.'}</p><h3 class="psec s">TON GROUPE</h3><div class="group">`;
- h+=`<div class="gslot me s">${heroIcon(me)}<span>${esc(save.name)}</span><em>Chef</em></div>`;
- for(let i=0;i<3;i++){const f=groupInv[i];h+=f?`<div class="gslot inv s">${heroIcon(HEROES[(f.length*3+i)%HEROES.length])}<span>${esc(f)}</span><em>Invité</em></div>`:`<button class="gslot add s" data-pslot aria-label="Inviter un ami">+</button>`}
- h+=`</div><h3 class="psec s">AMIS</h3><div class="frow"><input id="fIn" maxlength="16" placeholder="Pseudo de ton ami" autocomplete="off"><button class="btn btn-green" data-fadd>AJOUTER</button></div><div class="flist">`;
- if(!save.friends.length)h+=`<p class="note s" style="text-align:left">Ajoute un ami avec son pseudo pour pouvoir l'inviter.</p>`;
- save.friends.forEach((f,i)=>{const inv=groupInv.includes(f);h+=`<div class="friend"><span class="dot"></span><span class="fn s"><b>${esc(f)}</b><small>Hors ligne</small></span><button class="btn ${inv?'btn-grey':'btn-blue'}" data-finv="${i}" ${inv||groupInv.length>=3?'disabled':''}>${inv?'INVITÉ':'INVITER'}</button><button class="ib ib-x" data-fdel="${i}" aria-label="Retirer ${esc(f)}"></button></div>`});
- h+=`</div><h3 class="psec s">SALON PRIVÉ</h3>`;
- h+=roomCode?`<div class="code"><b>${roomCode}</b><button class="btn btn-blue" data-pcopy>COPIER</button></div><p class="note s">Donne ce code à tes amis pour qu'ils rejoignent ton salon.</p><button class="btn btn-green big2" data-proom>LANCER LE SALON</button>`:`<button class="btn btn-blue big2" data-pcreate>CRÉER UN SALON</button>`;
- h+=`<div class="frow" style="margin-top:16px"><input id="codeIn" maxlength="6" placeholder="CODE DU SALON" autocomplete="off" style="text-transform:uppercase;letter-spacing:.12em"><button class="btn btn-yellow" data-pjoin>REJOINDRE</button></div><button class="btn btn-green big2" data-ponline>JOUER EN LIGNE</button>`;
+ const logged=AUTH.on&&RT.prof,canRoom=RT.on;let h='';
+ if(!logged){h+=`<p class="notice s">${!RT.on?'Les amis et les salons marchent sur paint-clash.vercel.app avec ton compte Google. Ici, tu peux jouer contre des bots.':AUTH.on?'Chargement de ton identifiant… Si ça dure, recharge la page.':'Connecte-toi avec Google pour avoir ton identifiant # et ajouter des amis.'}</p>`}
+ else h+=`<div class="myid s"><span>Ton identifiant</span><b>${handle(RT.prof)}</b><button class="btn btn-blue" data-mycopy>COPIER</button></div>`;
+ // salon
+ h+=`<h3 class="psec s">SALON</h3>`;
+ if(ROOM){const ms=ROOM.members||[];
+  h+=`<div class="room"><div class="code"><b>${ROOM.code}</b><button class="btn btn-blue" data-pcopy>COPIER</button></div><div class="group">`;
+  for(let i=0;i<4;i++){const p=ms[i];h+=p?`<div class="gslot ${p.sid===SID?'me':'inv'} s">${heroIcon(HE(p.hero||'cubo'))}<span>${esc(p.name)}</span><em>${p.host?'Hôte':p.sid===SID?'Toi':'Prêt'}</em></div>`:`<div class="gslot add s">+</div>`}
+  h+=`</div><p class="note s">${ms.length}/8 joueurs · les places libres seront prises par des bots</p>`;
+  h+=ROOM.host?`<button class="btn btn-green big2" data-proom>LANCER LA PARTIE</button>`:`<p class="note s">En attente du lancement par l'hôte…</p>`;
+  h+=`<button class="btn btn-red big2" data-pleave>QUITTER LE SALON</button></div>`}
+ else{h+=`<button class="btn btn-blue big2" data-pcreate ${canRoom?'':'disabled'}>CRÉER UN SALON</button><div class="frow" style="margin-top:14px"><input id="codeIn" maxlength="6" placeholder="CODE DU SALON" autocomplete="off" style="text-transform:uppercase;letter-spacing:.12em"><button class="btn btn-yellow" data-pjoin ${canRoom?'':'disabled'}>REJOINDRE</button></div>`}
+ // amis
+ if(logged){
+  h+=`<h3 class="psec s">AMIS</h3><div class="frow"><input id="fIn" maxlength="20" placeholder="Pseudo#1234" autocomplete="off"><button class="btn btn-green" data-fadd>AJOUTER</button></div>`;
+  if(!RT.frLoaded)h+=`<p class="note s">Chargement…</p>`;
+  if(RT.incoming.length)h+=`<div class="flist">${RT.incoming.map(p=>frRow(p,'in')).join('')}</div>`;
+  const fr=RT.friends.slice().sort((a,b)=>(isOn(b.id)?1:0)-(isOn(a.id)?1:0));
+  h+=`<div class="flist">${fr.length?fr.map(p=>frRow(p,'f')).join(''):(RT.frLoaded?'<p class="note s" style="text-align:left">Ajoute un ami avec son identifiant, par exemple Dwenyx#1234.</p>':'')}</div>`;
+  if(RT.outgoing.length)h+=`<div class="flist">${RT.outgoing.map(p=>frRow(p,'out')).join('')}</div>`}
  show('#party',shead('AMIS')+`<div class="sbody">${h}</div>`);
 }
-function openParty(room){if(room&&!roomCode)roomCode=newCode();go('party')}
-function matchmake(title,txt,goFn){$('#mmTitle').textContent=title;$('#mmTxt').textContent='';$('#match').hidden=false;setTimeout(()=>{$('#mmTxt').textContent=txt},1300);setTimeout(()=>{$('#match').hidden=true;goFn()},2800)}
-$('#party').addEventListener('click',e=>{const b=e.target.closest('button');if(!b||b.disabled||b.hasAttribute('data-back')||b.hasAttribute('data-homeb'))return;ac();sfx.click();
- if(b.hasAttribute('data-pslot')){const i=$('#fIn');if(i)i.focus();toast('Ajoute ou invite un ami ci-dessous');return}
- if(b.hasAttribute('data-fadd')){const v=($('#fIn').value||'').trim().slice(0,16);if(!v){toast('Écris le pseudo de ton ami');return}if(save.friends.some(f=>f.toLowerCase()===v.toLowerCase())){toast('Déjà dans tes amis');return}save.friends.push(v);persist();toast(`${v} ajouté à tes amis`);renderParty();return}
- if(b.dataset.finv){const f=save.friends[+b.dataset.finv];if(groupInv.length<3&&!groupInv.includes(f)){groupInv.push(f);toast(`Invitation envoyée à ${f}`)}renderParty();return}
- if(b.dataset.fdel){const f=save.friends[+b.dataset.fdel];save.friends.splice(+b.dataset.fdel,1);groupInv=groupInv.filter(x=>x!==f);persist();renderParty();return}
- if(b.hasAttribute('data-pcreate')){roomCode=newCode();sfx.up();renderParty();return}
- if(b.hasAttribute('data-pcopy')){const t=roomCode;try{navigator.clipboard.writeText(t).then(()=>toast('Code copié !'),()=>toast('Code : '+t))}catch(_){toast('Code : '+t)}return}
- if(b.hasAttribute('data-proom')){play('casual',{code:roomCode,create:true});return}
- if(b.hasAttribute('data-pjoin')){const c=($('#codeIn').value||'').trim().toUpperCase();if(c.length!==6){toast('Le code fait 6 caractères');return}play('casual',{code:c,create:false});return}
- if(b.hasAttribute('data-ponline')){play('casual');return}
+function openParty(){go('party');loadFriends()}
+async function apiCall(path,method,body){if(!AUTH.tok)return{status:401};
+ if(AUTH.exp-Date.now()<60000)refreshTok();
+ try{const r=await fetch(path,{method,headers:{'Authorization':'Bearer '+AUTH.tok,'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined});let j=null;try{j=await r.json()}catch(_){}return{status:r.status,j}}catch(_){return{status:0}}}
+function setLists(j){if(!j)return;if(j.friends){RT.friends=j.friends;RT.incoming=j.incoming||[];RT.outgoing=j.outgoing||[];RT.frLoaded=true}if(tab==='party'&&!$('#party').hidden)renderParty();updTop()}
+async function loadFriends(){if(!AUTH.on||!RT.prof)return;const r=await apiCall('/api/friends','GET');if(r.status===200)setLists(r.j)}
+function ping(id,ev,payload){try{RT.sb.channel('pc-u-'+id).httpSend(ev,payload)}catch(_){}}
+async function inviteFriend(id){const ok=await roomCreate();if(!ok)return;
+ ping(id,'inv',{from:{id:RT.prof.id,name:RT.prof.name,tag:RT.prof.tag},code:ROOM.code});toast('Invitation envoyée !');if(tab==='party')renderParty()}
+$('#party').addEventListener('click',async e=>{const b=e.target.closest('button');if(!b||b.disabled||b.hasAttribute('data-back')||b.hasAttribute('data-homeb'))return;ac();sfx.click();
+ if(b.hasAttribute('data-mycopy')){const t=`${RT.prof.name}#${RT.prof.tag}`;try{navigator.clipboard.writeText(t).then(()=>toast('Identifiant copié !'),()=>toast(t))}catch(_){toast(t)}return}
+ if(b.hasAttribute('data-pcopy')){const t=ROOM&&ROOM.code;try{navigator.clipboard.writeText(t).then(()=>toast('Code copié !'),()=>toast('Code : '+t))}catch(_){toast('Code : '+t)}return}
+ if(b.hasAttribute('data-pcreate')){if(await roomCreate())renderParty();return}
+ if(b.hasAttribute('data-pleave')){roomLeave();return}
+ if(b.hasAttribute('data-proom')){roomLaunch();return}
+ if(b.hasAttribute('data-pjoin')){roomJoin($('#codeIn').value);return}
+ if(b.hasAttribute('data-fadd')){const v=($('#fIn').value||'').trim();if(!/#\s*\d{4}$/.test(v)){toast("Écris l'identifiant complet, par exemple Dwenyx#1234");return}
+  b.disabled=true;const r=await apiCall('/api/friends','POST',{action:'add',handle:v});b.disabled=false;
+  if(r.status===200){const res=r.j.result;toast(res==='sent'?'Demande envoyée !':res==='accepted'?'Vous êtes maintenant amis !':res==='already'?'Vous êtes déjà amis':'Demande déjà envoyée');if(r.j.target)ping(r.j.target.id,'fr',{});setLists(r.j);const i=$('#fIn');if(i)i.value=''}
+  else toast(r.j&&r.j.error==='not-found'?'Aucun joueur avec cet identifiant':r.j&&r.j.error==='self'?"C'est ton propre identifiant !":'Impossible d\'ajouter cet ami');return}
+ if(b.dataset.facc){const r=await apiCall('/api/friends','POST',{action:'accept',id:b.dataset.facc});if(r.status===200){setLists(r.j);ping(b.dataset.facc,'fr',{});toast('Ami ajouté !')}return}
+ if(b.dataset.fdel){const r=await apiCall('/api/friends','POST',{action:'remove',id:b.dataset.fdel});if(r.status===200){setLists(r.j);ping(b.dataset.fdel,'fr',{})}return}
+ if(b.dataset.finv){inviteFriend(b.dataset.finv);return}
 });
+// invitation reçue
+let invData=null;
+function showInvite(p){if(!p||!p.code||!p.from)return;if(ROOM&&ROOM.code===p.code)return;invData=p;
+ $('#invPopTxt').innerHTML=`<b>${handle(p.from)}</b> t'invite dans son salon`;$('#invPop').hidden=false;sfx.up();
+ clearTimeout(showInvite.t);showInvite.t=setTimeout(()=>{$('#invPop').hidden=true},20000)}
+// connexion au temps réel (amis en ligne + invitations)
+async function rtStart(cfg){
+ if(!cfg.supabaseUrl||!cfg.supabaseKey)return;
+ if(!window.supabase){await new Promise(res=>{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js';s.onload=res;s.onerror=res;document.head.appendChild(s)})}
+ if(!window.supabase||!supabase.createClient)return;
+ try{RT.sb=supabase.createClient(cfg.supabaseUrl,cfg.supabaseKey,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false},realtime:{params:{eventsPerSecond:40}}});RT.on=true}catch(_){RT.on=false}}
+async function rtLogin(){if(!RT.on||!AUTH.on)return;
+ const r=await apiCall('/api/profile?name='+encodeURIComponent(save.name||''),'GET');if(r.status!==200)return;
+ RT.prof=r.j;save.name=RT.prof.name;try{localStorage.setItem('paintclash_v2',JSON.stringify(save))}catch(_){}
+ apiCall('/api/profile','POST',{action:'sync',hero:save.hero,stars:save.stars});
+ const pid=RT.prof.id;
+ if(RT.online)try{RT.sb.removeChannel(RT.online)}catch(_){}
+ if(RT.inbox)try{RT.sb.removeChannel(RT.inbox)}catch(_){}
+ RT.online=await joinCh('pc-online',pid,ch=>{ch.on('presence',{event:'sync'},()=>{RT.onlineSet=new Set(Object.keys(ch.presenceState()));if(tab==='party'&&!$('#party').hidden)renderParty()})});
+ if(RT.online)try{RT.online.track({id:pid})}catch(_){}
+ RT.inbox=await joinCh('pc-u-'+pid,'me-'+SID,ch=>{
+  ch.on('broadcast',{event:'inv'},({payload})=>showInvite(payload));
+  ch.on('broadcast',{event:'fr'},()=>loadFriends())});
+ loadFriends();updTop();if(tab==='home')updHome()}
+function rtLogout(){try{RT.online&&RT.sb.removeChannel(RT.online)}catch(_){}try{RT.inbox&&RT.sb.removeChannel(RT.inbox)}catch(_){}RT.online=RT.inbox=null;RT.prof=null;RT.friends=[];RT.incoming=[];RT.outgoing=[];RT.frLoaded=false;RT.onlineSet=new Set();if(ROOM)roomLeave(true)}
 
 // LOBBY : boutons
-document.querySelectorAll('[data-go]').forEach(b=>press(b,()=>{const t=b.dataset.go;if(t==='profile')openProfile();else go(t)}));
+document.querySelectorAll('[data-go]').forEach(b=>press(b,()=>{const t=b.dataset.go;if(t==='profile')openProfile();else if(t==='party')openParty();else go(t)}));
 press($('#plusL'),()=>openInvite());press($('#plusR'),()=>openInvite());
 press($('#trophyBtn'),()=>go('road'));press($('#passCard'),()=>go('pass'));press($('#modeBtn'),()=>go('modes'));
 press($('#playGo'),()=>{const m=save.mode;if(m==='ranked')play('ranked');else if(m==='quick')play('casual');else openParty()});
 press($('#coinPill'),()=>{shopTab='res';go('shop')});press($('#gemPill'),()=>{shopTab='res';go('shop')});
 press($('#gearBtn'),openSettings);press($('#profileBtn'),()=>openProfile());
-function openSettings(){$('#nameIn').value=save.name;$('#settings').hidden=false}
-function openProfile(){const L=LG[leagueIdx(save.stars)],H=HE(save.hero);$('#profBox').innerHTML=`<div class="prh">${heroIcon(H,64)}<div><b class="s">${esc(save.name)}</b><small class="s">${L.n}</small></div><span class="pre">${emblem(L)}</span></div><div class="cstats s"><div>Trophées<b>${save.stars}</b></div><div>Record de territoire<b>${save.best.toFixed(1)}%</b></div><div>Héros débloqués<b>${save.owned.length}/${HEROES.length}</b></div><div>Niveau du passe<b>${passLevel()}</b></div></div>`;$('#profBox').insertAdjacentHTML('beforeend',AUTH.on?`<div class="acct">${AUTH.pic?`<img src="${esc(AUTH.pic)}" alt="" referrerpolicy="no-referrer">`:''}<div class="s">${esc(AUTH.email)}<small id="syncTxt">Sauvegarde en ligne active</small></div><button class="btn btn-red" data-logout>DÉCONNEXION</button></div>`:`<div class="acct"><div class="s">Sauvegarde sur cet appareil uniquement<small>Connexion Google disponible sur paint-clash.vercel.app</small></div></div>`);$('#profile').hidden=false}
-function openInvite(){const fr=save.friends;$('#invList').innerHTML=fr.length?fr.map((f,i)=>{const inv=groupInv.includes(f);return `<div class="friend"><span class="dot"></span><span class="fn s"><b>${esc(f)}</b><small>Hors ligne</small></span><button class="btn ${inv?'btn-grey':'btn-blue'}" data-qinv="${i}" ${inv||groupInv.length>=2?'disabled':''}>${inv?'INVITÉ':'INVITER'}</button></div>`}).join(''):'<p class="note s">Tu n\'as pas encore d\'amis. Ajoute-les depuis l\'écran Amis.</p>';$('#invite').hidden=false}
-$('#invList').addEventListener('click',e=>{const b=e.target.closest('[data-qinv]');if(!b||b.disabled)return;ac();sfx.click();const f=save.friends[+b.dataset.qinv];if(groupInv.length<2&&!groupInv.includes(f)){groupInv.push(f);toast(`${f} a rejoint ton podium`)}$('#invite').hidden=true;updHome()});
-press($('#invClose'),()=>{$('#invite').hidden=true});press($('#invManage'),()=>{$('#invite').hidden=true;go('party')});
+function openSettings(){const p=RT.prof;$('#nameIn').value=p?p.name:save.name;$('#nameTag').textContent=p?'#'+p.tag:'';
+ let note='';if(p){const nx=p.nextRename;note=Date.now()<nx?`Pseudo unique. Prochain changement possible le ${new Date(nx).toLocaleDateString('fr-FR')}.`:'Pseudo unique : tu peux le changer une fois tous les 30 jours.';$('#nameIn').disabled=Date.now()<nx}else $('#nameIn').disabled=false;
+ $('#rnNote').textContent=note;$('#settings').hidden=false}
+function openProfile(){const L=LG[leagueIdx(save.stars)],H=HE(save.hero);$('#profBox').innerHTML=`<div class="prh">${heroIcon(H,64)}<div><b class="s">${RT.prof?handle(RT.prof):esc(save.name)}</b><small class="s">${L.n}</small></div><span class="pre">${emblem(L)}</span></div><div class="cstats s"><div>Trophées<b>${save.stars}</b></div><div>Record de territoire<b>${save.best.toFixed(1)}%</b></div><div>Héros débloqués<b>${save.owned.length}/${HEROES.length}</b></div><div>Niveau du passe<b>${passLevel()}</b></div></div>`;$('#profBox').insertAdjacentHTML('beforeend',AUTH.on?`<div class="acct">${AUTH.pic?`<img src="${esc(AUTH.pic)}" alt="" referrerpolicy="no-referrer">`:''}<div class="s">${esc(AUTH.email)}<small id="syncTxt">Sauvegarde en ligne active</small></div><button class="btn btn-red" data-logout>DÉCONNEXION</button></div>`:`<div class="acct"><div class="s">Sauvegarde sur cet appareil uniquement<small>Connexion Google disponible sur paint-clash.vercel.app</small></div></div>`);$('#profile').hidden=false}
+function openInvite(){if(!AUTH.on||!RT.prof){openParty();return}const fr=RT.friends.filter(p=>isOn(p.id));
+ $('#invList').innerHTML=fr.length?fr.map(p=>`<div class="friend on"><span class="dot"></span>${heroIcon(HE(p.hero||'cubo'),34)}<span class="fn s"><b>${handle(p)}</b><small>En ligne</small></span><button class="btn btn-green" data-qinv="${p.id}">INVITER</button></div>`).join(''):'<p class="note s">Aucun ami en ligne pour le moment.</p>';$('#invite').hidden=false;loadFriends()}
+$('#invList').addEventListener('click',e=>{const b=e.target.closest('[data-qinv]');if(!b||b.disabled)return;ac();sfx.click();$('#invite').hidden=true;inviteFriend(b.dataset.qinv)});
+press($('#invClose'),()=>{$('#invite').hidden=true});
+press($('#invNo'),()=>{$('#invPop').hidden=true});press($('#invYes'),()=>{$('#invPop').hidden=true;if(invData){if(state!=='menu'&&state!=='end'){toast('Termine ta partie avant de rejoindre');return}if(state==='end')goHome();roomJoin(invData.code)}});press($('#invManage'),()=>{$('#invite').hidden=true;go('party')});
 $('#profBox').addEventListener('click',e=>{if(e.target.closest('[data-logout]')){ac();sfx.click();logout()}});
 press($('#profClose'),()=>{$('#profile').hidden=true});press($('#profEdit'),()=>{$('#profile').hidden=true;openSettings()});
 press($('#soundBtn'),()=>{save.muted=!save.muted;persist();updTop()});
-press($('#setClose'),()=>{save.name=($('#nameIn').value.trim()||'Joueur').slice(0,12);persist();$('#settings').hidden=true;updTop()});
+press($('#setClose'),async()=>{const v=($('#nameIn').value||'').trim();const p=RT.prof;
+ if(p){if(v&&v!==p.name&&!$('#nameIn').disabled){if(!/^[A-Za-z0-9_\-À-ÖØ-öø-ÿ]{3,12}$/.test(v)){$('#rnNote').textContent='3 à 12 caractères, lettres, chiffres, _ ou -, sans espace.';return}
+   const r=await apiCall('/api/profile','POST',{action:'rename',name:v});
+   if(r.status===200){RT.prof=r.j;save.name=r.j.name;persist();toast(`Ton pseudo est maintenant ${r.j.name}#${r.j.tag}`)}else{$('#rnNote').textContent=r.status===429?'Tu as déjà changé de pseudo il y a moins de 30 jours.':'Impossible de changer le pseudo.';return}}}
+ else save.name=(v||'Joueur').slice(0,12);
+ persist();$('#settings').hidden=true;updTop()});
 $('#nameIn').addEventListener('keydown',e=>{if(e.key==='Enter')$('#setClose').click()});
 press($('#againBtn'),()=>play(gameMode));
 press($('#homeBtn'),goHome);
@@ -2078,11 +2214,12 @@ async function onCred(resp){const t=resp&&resp.credential,b=t&&jwtBody(t);if(!b)
  if(r.j&&r.j.save){save=Object.assign(JSON.parse(JSON.stringify(DEF)),r.j.save);try{localStorage.setItem('paintclash_v2',JSON.stringify(save))}catch(_){}}
  else{if(!save.name||save.name==='Dwenyx'||save.name==='Joueur')save.name=(AUTH.name||'Joueur').slice(0,12);AUTH.pending=true;cloudPush()}
  ensureMissions();
- $('#login').hidden=true;setSync('Sauvegardé');stageId=null;go('home');toast(`Connecté : ${AUTH.email}`)}
+ $('#login').hidden=true;setSync('Sauvegardé');rtLogin();stageId=null;go('home');toast(`Connecté : ${AUTH.email}`)}
 function showLogin(msg){$('#login').hidden=false;$('#loginMsg').textContent=msg||'';
  const box=$('#gBtn');box.innerHTML='';try{google.accounts.id.renderButton(box,{theme:'filled_blue',size:'large',shape:'pill',text:'continue_with',locale:'fr',width:Math.min(300,innerWidth-80)})}catch(_){}}
 async function authInit(){
  let cfg=null;try{const r=await fetch('/api/config',{cache:'no-store'});if(r.ok)cfg=await r.json()}catch(_){}
+ if(cfg)await rtStart(cfg);
  if(!cfg||!cfg.googleClientId){AUTH.ready=true;return}
  AUTH.cid=cfg.googleClientId;
  $('#login').hidden=false;$('#loginMsg').textContent='Chargement…';
@@ -2094,7 +2231,7 @@ async function authInit(){
  if(!AUTH.on){showLogin('');google.accounts.id.prompt()}
  AUTH.ready=true;
 }
-function logout(){cloudPush();AUTH.on=false;AUTH.tok=null;try{localStorage.removeItem('pc_tok')}catch(_){}try{google.accounts.id.disableAutoSelect()}catch(_){}
+function logout(){cloudPush();rtLogout();AUTH.on=false;AUTH.tok=null;try{localStorage.removeItem('pc_tok')}catch(_){}try{google.accounts.id.disableAutoSelect()}catch(_){}
  $('#profile').hidden=true;showLogin('Tu es déconnecté.')}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'&&AUTH.pending)cloudPush()});
 
