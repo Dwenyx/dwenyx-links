@@ -448,7 +448,7 @@ body[data-r="home"] .halo{opacity:0}
 .tv b{font-weight:400;font-size:24px;font-variant-numeric:tabular-nums}
 .tbar{display:block;width:110px;height:12px;border-radius:99px;background:var(--slateD);overflow:hidden}
 .tbar b{display:block;height:100%;background:linear-gradient(#ffb04a,#f2600a)}
-.tnext{position:relative;width:58px;background:linear-gradient(#ffe86e,#ffbf1a);display:grid;place-items:center;border-left:3px solid var(--slateD)}
+.tnext{position:relative;width:58px;border-radius:0 11px 11px 0;background:linear-gradient(#ffe86e,#ffbf1a);display:grid;place-items:center;border-left:3px solid var(--slateD)}
 .tnext img,.tnext .cube{width:40px;height:40px}
 .tnext .bdg{top:2px;right:2px}
 .lcur{margin-left:auto;display:flex;align-items:flex-start;gap:8px}
@@ -893,6 +893,21 @@ body[data-r="home"] #bg{background:radial-gradient(ellipse at 50% 40%,#9af6ff 0,
 .rn input{flex:1;min-width:0}
 .rn .btn{min-height:46px;font-size:15px}
 .rnote{font-size:13px;color:#c9d2ee;margin:4px 0 0}
+
+/* séparateurs boutique */
+.sbody.hx{position:relative}
+.shsep{flex:none;align-self:stretch;width:34px;display:flex;align-items:center;justify-content:center;margin-right:-8px}
+.shsep span{writing-mode:vertical-rl;transform:rotate(180deg);font-size:18px;letter-spacing:2px;color:var(--yellow);background:rgba(10,14,40,.55);border:3px solid var(--slateD);border-radius:14px;padding:14px 4px}
+.shsep+.shc{margin-left:0}
+/* barres de défilement au thème */
+*{scrollbar-width:thin;scrollbar-color:#ffc21a rgba(10,14,40,.45)}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:rgba(10,14,40,.45);border-radius:10px;margin:0 12px}
+::-webkit-scrollbar-thumb{background:linear-gradient(#ffe86e,#ffbf1a);border:2px solid #1b2350;border-radius:10px}
+::-webkit-scrollbar-thumb:hover{background:linear-gradient(#fff08f,#ffc93a)}
+::-webkit-scrollbar-button{display:none;width:0;height:0}
+::-webkit-scrollbar-corner{background:transparent}
+.tabs,.stabs{scrollbar-width:none}.stabs::-webkit-scrollbar{display:none}
 </style>
 
 </head>
@@ -1974,16 +1989,26 @@ const priceBtn=(p,attr,old)=>{const cur=p.gems?'gems':'coins',v=p[cur];return `$
 function shopCard(o){const done=save.offerBought.includes(o.id)||(o.id==='free'&&save.giftDay===today());
  return `<div class="shc" style="--c1:${o.c1};--c2:${o.c2}"><span class="stime s">${ico('timer')}${untilMidnight()}</span>${o.isNew?'<span class="snew s">NOUVEAU</span>':''}<div class="sttl s">${o.t}</div><div class="sart">${o.items.map(i=>`<span class="sitem">${i.h}<em class="s">${i.q}</em></span>`).join('')}${o.badge?`<span class="sbadge s">${o.badge}</span>`:''}</div><div class="sfoot">${done?'<button class="btn btn-grey" disabled>RÉCUPÉRÉ</button>':o.price?priceBtn(o.price,`data-offer="${o.id}"`,o.old):`<button class="btn btn-green" data-offer="${o.id}">GRATUIT</button>`}</div></div>`}
 function renderShop(){
- let h='';
- if(shopTab==='offers')h=dailyOffers().map(shopCard).join('');
- if(shopTab==='boxes')h=BOXES.map(b=>{const c=CH(b.id);return `<div class="shc" style="--c1:linear-gradient(#5f8cff,#2a4fd8);--c2:#1f3fb0"><div class="sttl s">${c.n.toUpperCase()}</div><div class="sart"><span class="sitem">${img(c.img)}<em class="s">x1</em></span></div><div class="sfoot"><small class="s">${b.d}</small>${priceBtn(b.price,`data-box="${b.id}"`)}</div></div>`}).join('');
- if(shopTab==='res')h=RESS.map(r=>`<div class="shc" style="--c1:${r.give.gems?'linear-gradient(#ff9af0,#c03bd0)':'linear-gradient(#ffe07a,#f2a100)'};--c2:${r.give.gems?'#9a1cb0':'#d88a00'}"><div class="sttl s">${r.t}</div><div class="sart"><span class="sitem">${img(r.ic)}<em class="s">${r.q}</em></span></div><div class="sfoot">${priceBtn(r.price,`data-res="${r.id}"`)}</div></div>`).join('');
+ const sb=$('#sShop .sbody'),keep=sb?sb.scrollLeft:0;
+ const grp=(k,n,cards)=>`<div class="shsep" data-g="${k}"><span class="s">${n}</span></div>`+cards;
+ const offers=dailyOffers().map(shopCard).join('');
+ const boxes=BOXES.map(b=>{const c=CH(b.id);return `<div class="shc" data-g="boxes" style="--c1:linear-gradient(#5f8cff,#2a4fd8);--c2:#1f3fb0"><div class="sttl s">${c.n.toUpperCase()}</div><div class="sart"><span class="sitem">${img(c.img)}<em class="s">x1</em></span></div><div class="sfoot"><small class="s">${b.d}</small>${priceBtn(b.price,`data-box="${b.id}"`)}</div></div>`}).join('');
+ const res=RESS.map(r=>`<div class="shc" data-g="res" style="--c1:${r.give.gems?'linear-gradient(#ff9af0,#c03bd0)':'linear-gradient(#ffe07a,#f2a100)'};--c2:${r.give.gems?'#9a1cb0':'#d88a00'}"><div class="sttl s">${r.t}</div><div class="sart"><span class="sitem">${img(r.ic)}<em class="s">${r.q}</em></span></div><div class="sfoot">${priceBtn(r.price,`data-res="${r.id}"`)}</div></div>`).join('');
+ const h=grp('offers','OFFRES',offers)+grp('boxes','COFFRES',boxes)+grp('res','RESSOURCES',res);
  const tabs=[['offers','OFFRES'],['boxes','COFFRES'],['res','RESSOURCES']].map(([k,n])=>`<button class="s ${shopTab===k?'on':''}" data-stab="${k}">${n}</button>`).join('');
  show('#sShop',shead('BOUTIQUE')+`<div class="sbody hx"><div class="shcards">${h}</div></div><div class="stabs">${tabs}</div>`);
+ const nb=$('#sShop .sbody');if(nb){nb.scrollLeft=keep;nb.addEventListener('scroll',shopSpy,{passive:true})}
 }
+function shopSpy(){const b=$('#sShop .sbody');if(!b||b._lock)return;const x=b.scrollLeft+b.clientWidth*0.35;let cur='offers';
+ b.querySelectorAll('.shsep').forEach(e=>{if(e.offsetLeft<=x)cur=e.dataset.g});
+ if(b.scrollLeft+b.clientWidth>=b.scrollWidth-4)cur='res';
+ if(cur!==shopTab){shopTab=cur;$('#sShop').querySelectorAll('[data-stab]').forEach(t=>t.classList.toggle('on',t.dataset.stab===cur))}}
+function shopJump(k){const b=$('#sShop .sbody'),e=b&&b.querySelector(`.shsep[data-g="${k}"]`);if(!e)return;shopTab=k;
+ $('#sShop').querySelectorAll('[data-stab]').forEach(t=>t.classList.toggle('on',t.dataset.stab===k));
+ b._lock=1;clearTimeout(b._lt);b._lt=setTimeout(()=>b._lock=0,700);b.scrollTo({left:Math.max(0,e.offsetLeft-12),behavior:'smooth'})}
 function pay(p){const cur=p.gems?'gems':'coins';if(save[cur]<p[cur]){sfx.tick();toast(cur==='gems'?'Pas assez de gemmes':'Pas assez de pièces');return false}save[cur]-=p[cur];return true}
 $('#sShop').addEventListener('click',e=>{const b=e.target.closest('button');if(!b||b.disabled||b.hasAttribute('data-back')||b.hasAttribute('data-homeb'))return;ac();sfx.click();
- if(b.dataset.stab){shopTab=b.dataset.stab;renderShop();return}
+ if(b.dataset.stab){shopJump(b.dataset.stab);return}
  if(b.dataset.offer){const o=dailyOffers().find(x=>x.id===b.dataset.offer);if(!o)return;
   if(o.id==='free'){if(save.giftDay===today())return;save.giftDay=today();persist();openChest(CH('wood'));renderShop();return}
   if(!pay(o.price))return;save.offerBought.push(o.id);persist();
@@ -2162,7 +2187,7 @@ document.querySelectorAll('[data-go]').forEach(b=>press(b,()=>{const t=b.dataset
 press($('#plusL'),()=>openInvite());press($('#plusR'),()=>openInvite());
 press($('#trophyBtn'),()=>go('road'));press($('#passCard'),()=>go('pass'));press($('#modeBtn'),()=>go('modes'));
 press($('#playGo'),()=>{const m=save.mode;if(m==='ranked')play('ranked');else if(m==='quick')play('casual');else openParty()});
-press($('#coinPill'),()=>{shopTab='res';go('shop')});press($('#gemPill'),()=>{shopTab='res';go('shop')});
+press($('#coinPill'),()=>{go('shop');setTimeout(()=>shopJump('res'),80)});press($('#gemPill'),()=>{go('shop');setTimeout(()=>shopJump('res'),80)});
 press($('#gearBtn'),openSettings);press($('#profileBtn'),()=>openProfile());
 function openSettings(){const p=RT.prof;$('#nameIn').value=p?p.name:save.name;$('#nameTag').textContent=p?'#'+p.tag:'';
  let note='';if(p){const nx=p.nextRename;note=Date.now()<nx?`Pseudo unique. Prochain changement possible le ${new Date(nx).toLocaleDateString('fr-FR')}.`:'Pseudo unique : tu peux le changer une fois tous les 30 jours.';$('#nameIn').disabled=Date.now()<nx}else $('#nameIn').disabled=false;
@@ -2240,6 +2265,3 @@ requestAnimationFrame(frame);
 })();
 
 </script>
-
-</body>
-</html>
