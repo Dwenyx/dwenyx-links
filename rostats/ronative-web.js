@@ -38,6 +38,15 @@
     version: () => '1.12',
     quit: () => {},
   };
+
+  // Pas de copier-coller, pas de menu « Enregistrer l'image », pas de zoom à deux doigts
+  const editable = (el) => el && el.closest && el.closest('input, textarea, select, [contenteditable="true"]');
+  ['copy', 'cut', 'selectstart', 'dragstart'].forEach((ev) => document.addEventListener(ev, (e) => { if (!editable(e.target)) e.preventDefault(); }, true));
+  document.addEventListener('contextmenu', (e) => { if (!editable(e.target)) e.preventDefault(); }, true);
+  ['gesturestart', 'gesturechange', 'gestureend'].forEach((ev) => document.addEventListener(ev, (e) => e.preventDefault(), { passive: false }));
+  document.addEventListener('touchmove', (e) => { if (e.touches.length > 1) e.preventDefault(); }, { passive: false });
+  let lastTouch = 0;
+  document.addEventListener('touchend', (e) => { const now = Date.now(); if (now - lastTouch < 320 && !editable(e.target)) e.preventDefault(); lastTouch = now; }, { passive: false });
   document.documentElement.classList.add('web');
   // lancée depuis l'écran d'accueil (iPhone / Android) : mode appli, sans bouton Télécharger
   try { if (window.navigator.standalone || matchMedia('(display-mode: standalone)').matches) document.documentElement.classList.add('standalone'); } catch {}

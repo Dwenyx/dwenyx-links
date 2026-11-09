@@ -850,3 +850,10 @@ html.web .dl-btn { display: inline-flex; }
 .gc-img { position: relative; overflow: hidden; }
 .gc-img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
 .gc-tag, .gc-mine { z-index: 1; }
+
+/* 1.13.2 — pas de sélection / copie de texte, pas de copie d'images */
+html, body { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+input, textarea, select, [contenteditable="true"] { -webkit-user-select: text; user-select: text; -webkit-touch-callout: default; }
+img, svg, canvas, .gc-img, .hero-img { -webkit-user-drag: none; user-drag: none; -webkit-touch-callout: none; }
+::selection { background: transparent; }
+input::selection, textarea::selection { background: rgba(var(--acc), .35); }
