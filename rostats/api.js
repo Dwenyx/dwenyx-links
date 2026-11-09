@@ -87,7 +87,7 @@
       if (r.error) throw new Error(r.error);
       return r.path;
     }),
-    info: wrap(() => ({ version: N.version() + ' (Android)', dataDir: '' })),
+    info: wrap(() => ({ version: N.version() + ' (' + (N.platform ? N.platform() : 'Android') + ')', dataDir: '' })),
     openData: wrap(() => true),
     copyTracker: wrap(() => { N.copyText(N.readAsset('www/RoStatsTracker.lua')); return true; }),
     quit: wrap(() => { N.quit(); return true; }),

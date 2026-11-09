@@ -35,7 +35,8 @@
     openUrl: (url) => window.open(url, '_blank', 'noopener'),
     copyText: (t) => { try { navigator.clipboard.writeText(t); } catch {} },
     notify(title, body) { try { if (window.Notification && Notification.permission === 'granted') new Notification(title, { body, icon: 'logo.png' }); } catch {} },
-    version: () => '1.12',
+    version: () => '1.13.3',
+    platform: () => (/iPhone|iPad|iPod/.test(navigator.userAgent) ? 'iPhone' : 'Web'),
     quit: () => {},
   };
 
@@ -50,4 +51,14 @@
   document.documentElement.classList.add('web');
   // lancée depuis l'écran d'accueil (iPhone / Android) : mode appli, sans bouton Télécharger
   try { if (window.navigator.standalone || matchMedia('(display-mode: standalone)').matches) document.documentElement.classList.add('standalone'); } catch {}
+  // iPhone (appli écran d'accueil) : iOS laisse une bande noire en bas → on prend toute la hauteur de l'écran
+  const fitScreen = () => {
+    const portrait = window.innerHeight >= window.innerWidth;
+    const full = portrait ? Math.max(screen.height, screen.width) : Math.min(screen.height, screen.width);
+    const h = document.documentElement.classList.contains('standalone') ? Math.max(window.innerHeight, full) : window.innerHeight;
+    document.documentElement.style.setProperty('--app-h', h + 'px');
+  };
+  fitScreen();
+  window.addEventListener('resize', fitScreen);
+  window.addEventListener('orientationchange', () => setTimeout(fitScreen, 300));
 })();

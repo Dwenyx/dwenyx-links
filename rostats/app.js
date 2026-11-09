@@ -1851,10 +1851,10 @@ IMPORTANT: do NOT write any text, letters, numbers, logos or UI in the image.`;
     const info = await call(api.info).catch(() => ({}));
     main.innerHTML = `
       <div class="page-head"><div class="grow"><h1>Paramètres</h1><div class="sub">RoStats ${esc(info.version || '')}</div></div></div>
-      <div class="card" style="max-width:760px">
+      ${IS_WEB ? '' : `<div class="card" style="max-width:760px">
         <div class="switch"><div class="s-text"><b>Compte Roblox</b><span>${me ? `Connecté en tant que ${esc(me.displayName)} (@${esc(me.name)}) — permet de voir tes jeux restreints` : 'Non connecté — nécessaire si Roblox masque un de tes jeux'}</span></div>
           ${me ? '<button class="btn" id="sLogout">Se déconnecter</button>' : '<button class="btn primary" id="sLogin">Se connecter</button>'}</div>
-      </div>
+      </div>`}
       ${appearanceHTML()}
       <div class="card" style="max-width:760px">
         <div class="switch"><div class="s-text"><b>Fréquence d’actualisation</b><span>Joueurs, visites, favoris et notes</span></div>
@@ -1863,7 +1863,7 @@ IMPORTANT: do NOT write any text, letters, numbers, logos or UI in the image.`;
           <select class="input" id="sDevex" style="width:250px">${[[0.0038, 'Standard · 0,0038 $'], [0.0054, 'Joueurs US 18+ vérifiés · 0,0054 $'], [0.0035, 'Avant sept. 2025 · 0,0035 $']].map(([v, l]) => `<option value="${v}" ${v === s.devex ? 'selected' : ''}>${l}</option>`).join('')}</select></div>
         ${toggle('sSales', 'Notification à chaque vente', 'Une alerte Windows quand des Robux arrivent', s.notifySales)}
         ${toggle('sRec', 'Notification de record', 'Quand un jeu bat son record de joueurs connectés', s.notifyRecord)}
-        ${toggle('sTray', 'Continuer en arrière-plan', 'Fermer la fenêtre la réduit près de l’horloge pour garder le suivi et les alertes', s.trayOnClose)}
+        ${IS_WEB ? '' : toggle('sTray', 'Continuer en arrière-plan', 'Fermer la fenêtre la réduit près de l’horloge pour garder le suivi et les alertes', s.trayOnClose)}
       </div>
       <div class="card" style="max-width:760px">
         <div class="card-head"><h3>Données</h3></div>
@@ -1878,7 +1878,7 @@ IMPORTANT: do NOT write any text, letters, numbers, logos or UI in the image.`;
     $('#sDevex').onchange = (e) => { upd('devex', Number(e.target.value)); };
     $('#sSales').onchange = (e) => upd('notifySales', e.target.checked);
     $('#sRec').onchange = (e) => upd('notifyRecord', e.target.checked);
-    $('#sTray').onchange = (e) => upd('trayOnClose', e.target.checked);
+    if ($('#sTray')) $('#sTray').onchange = (e) => upd('trayOnClose', e.target.checked);
     $('#sCopy').onclick = copyTracker;
     $('#sData').onclick = () => api.openData();
     $('#sQuit').onclick = () => { saveHistory(); api.quit(); };
