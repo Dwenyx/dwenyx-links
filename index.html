@@ -858,6 +858,21 @@ body[data-r="home"] #bg{background:radial-gradient(ellipse at 50% 40%,#9af6ff 0,
 .pvr.reach .pvl span{-webkit-text-stroke:0;color:#0b0b19;text-shadow:none!important}
 #end{background:rgba(0,0,0,.28)}
 .spec{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 10px);transform:translateX(-50%);z-index:12;background:rgba(0,0,0,.6);border-radius:8px;padding:3px 12px;font-size:14px;pointer-events:none;zoom:var(--z,1)}
+#login{position:fixed;inset:0;z-index:30;display:grid;place-items:center;background:radial-gradient(ellipse at 50% 35%,#9af6ff,#45cdf9 35%,#1a98ee 70%,#0b6ad6);pointer-events:auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+#login[hidden]{display:none}
+.lgbox{zoom:var(--z,1);width:min(calc(100vw / var(--z,1) - 32px),360px);display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center}
+.lglogo{font-size:58px;line-height:.9;transform:rotate(-4deg)}
+.lglogo span{display:block}
+.lgcard{width:100%;background:rgba(0,0,0,.45);border:3px solid #0b0b19;border-radius:18px;padding:18px 16px;display:flex;flex-direction:column;align-items:center;gap:14px;box-shadow:0 5px 0 #0b0b19}
+.lgcard p{margin:0;font-size:16px;line-height:1.3}
+#gBtn{min-height:44px;display:flex;justify-content:center}
+#loginMsg{font-size:14px;min-height:18px;color:#ffd21f}
+.lgnote{font-size:12px;color:#d6e6ff;opacity:.9}
+.acct{display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.3);border-radius:12px;padding:8px 10px;margin:10px 0 0;font-size:13px;text-align:left}
+.acct img{width:34px;height:34px;border-radius:50%;flex:none}
+.acct div{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.acct small{display:block;color:#9cf05a}
+.acct .btn{min-height:38px;font-size:13px;padding:2px 10px}
 </style>
 
 </head>
@@ -926,6 +941,7 @@ body[data-r="home"] #bg{background:radial-gradient(ellipse at 50% 40%,#9af6ff 0,
   <div class="dbtns" id="dBtns"></div>
 </div>
 
+<div id="login" hidden><div class="lgbox"><div class="lglogo s">PAINT<span>CLASH</span></div><div class="lgcard"><p class="s">Connecte-toi avec ton compte Google pour jouer et retrouver ta progression sur tous tes appareils.</p><div id="gBtn"></div><div id="loginMsg" class="s"></div></div><p class="lgnote s">Seuls ton adresse e-mail et ton prénom servent à identifier ton compte.</p></div></div>
 <div id="profile" class="modal" hidden><div class="mbox"><h2 class="s">PROFIL</h2><div id="profBox"></div><div class="row2"><button id="profEdit" class="btn btn-blue">MODIFIER</button><button id="profClose" class="btn btn-green">OK</button></div></div></div>
 <div id="invite" class="modal" hidden><div class="mbox"><h2 class="s">INVITER UN AMI</h2><div id="invList" class="flist"></div><div class="row2"><button id="invManage" class="btn btn-blue">GÉRER MES AMIS</button><button id="invClose" class="btn btn-red">FERMER</button></div></div></div>
 <div id="settings" class="modal" hidden>
@@ -1063,7 +1079,7 @@ const MTYPES=[{k:'play',d:n=>`Joue ${n} parties`,r:[3,5]},{k:'pct',d:n=>`Capture
 const DEF={stars:0,coins:400,gems:15,owned:['cubo','pepin'],levels:{cubo:1,pepin:1},hero:'cubo',name:'Dwenyx',best:0,claimed:[],muted:false,region:0,regionPct:0,missions:[],missDay:'',giftDay:'',xp:0,passClaimed:[],friends:[],mode:'ranked',roadClaimed:[],passPrem:false,passClaimedP:[],offerDay:'',offerBought:[]};
 let save=JSON.parse(JSON.stringify(DEF));
 try{const s=JSON.parse(localStorage.getItem('paintclash_v2')||'null');if(s)save=Object.assign(save,s)}catch(e){}
-const persist=()=>{try{localStorage.setItem('paintclash_v2',JSON.stringify(save))}catch(e){}};
+const persist=()=>{try{localStorage.setItem('paintclash_v2',JSON.stringify(save))}catch(e){}if(typeof cloudQueue==='function')cloudQueue()};
 function ensureMissions(){if(save.missDay===today()&&save.missions.length)return;const pool=MTYPES.slice().sort(()=>Math.random()-.5).slice(0,3);save.missions=pool.map((m,i)=>{const n=m.r[0]+Math.floor(Math.random()*(m.r[1]-m.r[0]+1));return{k:m.k,n,p:0,rw:i===2?{gems:8}:{coins:150+n*(m.k==='pct'?3:25)},done:false}});save.missDay=today();persist()}
 ensureMissions();
 
@@ -2022,10 +2038,11 @@ press($('#playGo'),()=>{const m=save.mode;if(m==='ranked')play('ranked');else if
 press($('#coinPill'),()=>{shopTab='res';go('shop')});press($('#gemPill'),()=>{shopTab='res';go('shop')});
 press($('#gearBtn'),openSettings);press($('#profileBtn'),()=>openProfile());
 function openSettings(){$('#nameIn').value=save.name;$('#settings').hidden=false}
-function openProfile(){const L=LG[leagueIdx(save.stars)],H=HE(save.hero);$('#profBox').innerHTML=`<div class="prh">${heroIcon(H,64)}<div><b class="s">${esc(save.name)}</b><small class="s">${L.n}</small></div><span class="pre">${emblem(L)}</span></div><div class="cstats s"><div>Trophées<b>${save.stars}</b></div><div>Record de territoire<b>${save.best.toFixed(1)}%</b></div><div>Héros débloqués<b>${save.owned.length}/${HEROES.length}</b></div><div>Niveau du passe<b>${passLevel()}</b></div></div>`;$('#profile').hidden=false}
+function openProfile(){const L=LG[leagueIdx(save.stars)],H=HE(save.hero);$('#profBox').innerHTML=`<div class="prh">${heroIcon(H,64)}<div><b class="s">${esc(save.name)}</b><small class="s">${L.n}</small></div><span class="pre">${emblem(L)}</span></div><div class="cstats s"><div>Trophées<b>${save.stars}</b></div><div>Record de territoire<b>${save.best.toFixed(1)}%</b></div><div>Héros débloqués<b>${save.owned.length}/${HEROES.length}</b></div><div>Niveau du passe<b>${passLevel()}</b></div></div>`;$('#profBox').insertAdjacentHTML('beforeend',AUTH.on?`<div class="acct">${AUTH.pic?`<img src="${esc(AUTH.pic)}" alt="" referrerpolicy="no-referrer">`:''}<div class="s">${esc(AUTH.email)}<small id="syncTxt">Sauvegarde en ligne active</small></div><button class="btn btn-red" data-logout>DÉCONNEXION</button></div>`:`<div class="acct"><div class="s">Sauvegarde sur cet appareil uniquement<small>Connexion Google disponible sur paint-clash.vercel.app</small></div></div>`);$('#profile').hidden=false}
 function openInvite(){const fr=save.friends;$('#invList').innerHTML=fr.length?fr.map((f,i)=>{const inv=groupInv.includes(f);return `<div class="friend"><span class="dot"></span><span class="fn s"><b>${esc(f)}</b><small>Hors ligne</small></span><button class="btn ${inv?'btn-grey':'btn-blue'}" data-qinv="${i}" ${inv||groupInv.length>=2?'disabled':''}>${inv?'INVITÉ':'INVITER'}</button></div>`}).join(''):'<p class="note s">Tu n\'as pas encore d\'amis. Ajoute-les depuis l\'écran Amis.</p>';$('#invite').hidden=false}
 $('#invList').addEventListener('click',e=>{const b=e.target.closest('[data-qinv]');if(!b||b.disabled)return;ac();sfx.click();const f=save.friends[+b.dataset.qinv];if(groupInv.length<2&&!groupInv.includes(f)){groupInv.push(f);toast(`${f} a rejoint ton podium`)}$('#invite').hidden=true;updHome()});
 press($('#invClose'),()=>{$('#invite').hidden=true});press($('#invManage'),()=>{$('#invite').hidden=true;go('party')});
+$('#profBox').addEventListener('click',e=>{if(e.target.closest('[data-logout]')){ac();sfx.click();logout()}});
 press($('#profClose'),()=>{$('#profile').hidden=true});press($('#profEdit'),()=>{$('#profile').hidden=true;openSettings()});
 press($('#soundBtn'),()=>{save.muted=!save.muted;persist();updTop()});
 press($('#setClose'),()=>{save.name=($('#nameIn').value.trim()||'Joueur').slice(0,12);persist();$('#settings').hidden=true;updTop()});
@@ -2037,7 +2054,51 @@ document.addEventListener('wheel',e=>{const el=e.target.closest('.hx,.rwrap,.psc
 setInterval(()=>{if(state==='menu'&&tab==='home')$('#mTimer').textContent='Nouveaux défis dans '+untilMidnight()},30000);
 
 fillIcons();$('#gearBtn').innerHTML=I.menu;$('#dPrev').innerHTML=I.chevL;$('#dNext').innerHTML=I.chevR;
-snapCam=true;go('home');
+/* ---------- COMPTE GOOGLE + SAUVEGARDE EN LIGNE ---------- */
+var AUTH={cid:null,tok:null,exp:0,email:'',name:'',pic:'',on:false,pushT:0,pending:false,ready:false};
+const jwtBody=t=>{try{return JSON.parse(decodeURIComponent(escape(atob(t.split('.')[1].replace(/-/g,'+').replace(/_/g,'/')))))}catch(_){return null}};
+function cloudQueue(){if(!AUTH||!AUTH.on)return;AUTH.pending=true;clearTimeout(AUTH.pushT);AUTH.pushT=setTimeout(cloudPush,2500)}
+async function api(method,body){if(!AUTH.tok)return{status:401};
+ if(AUTH.exp-Date.now()<60000){refreshTok();if(AUTH.exp<Date.now())return{status:401}}
+ try{const r=await fetch('/api/save',{method,headers:{'Authorization':'Bearer '+AUTH.tok,'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined,keepalive:method!=='GET'&&JSON.stringify(body||{}).length<60000});
+  let j=null;try{j=await r.json()}catch(_){}return{status:r.status,j}}catch(_){return{status:0}}}
+async function cloudPush(){if(!AUTH.on||!AUTH.pending)return;AUTH.pending=false;const r=await api('PUT',{save});
+ if(r.status!==200){AUTH.pending=true;setSync(r.status===401?'Reconnexion…':'Hors ligne · sera envoyée plus tard');if(r.status===401)refreshTok();else AUTH.pushT=setTimeout(cloudPush,15000)}else setSync('Sauvegardé')}
+function setSync(t){const e=$('#syncTxt');if(e)e.textContent=t}
+function refreshTok(){try{if(window.google&&google.accounts)google.accounts.id.prompt()}catch(_){}}
+function loadGsi(){return new Promise(res=>{if(window.google&&google.accounts&&google.accounts.id){res(true);return}const s=document.createElement('script');s.src='https://accounts.google.com/gsi/client';s.async=true;s.onload=()=>res(true);s.onerror=()=>res(false);document.head.appendChild(s)})}
+async function onCred(resp){const t=resp&&resp.credential,b=t&&jwtBody(t);if(!b)return;
+ const first=!AUTH.on;AUTH.tok=t;AUTH.exp=b.exp*1000;AUTH.email=b.email||'';AUTH.name=b.given_name||b.name||'';AUTH.pic=b.picture||'';
+ try{localStorage.setItem('pc_tok',t)}catch(_){}
+ if(!first){if(AUTH.pending)cloudPush();return}
+ $('#loginMsg').textContent='Chargement de ta sauvegarde…';
+ const r=await api('GET');
+ if(r.status!==200){$('#loginMsg').textContent=r.status===503?"La connexion n'est pas encore activée sur ce site.":"Impossible de joindre le serveur. Réessaie.";AUTH.tok=null;try{localStorage.removeItem('pc_tok')}catch(_){}return}
+ AUTH.on=true;
+ if(r.j&&r.j.save){save=Object.assign(JSON.parse(JSON.stringify(DEF)),r.j.save);try{localStorage.setItem('paintclash_v2',JSON.stringify(save))}catch(_){}}
+ else{if(!save.name||save.name==='Dwenyx'||save.name==='Joueur')save.name=(AUTH.name||'Joueur').slice(0,12);AUTH.pending=true;cloudPush()}
+ ensureMissions();
+ $('#login').hidden=true;setSync('Sauvegardé');stageId=null;go('home');toast(`Connecté : ${AUTH.email}`)}
+function showLogin(msg){$('#login').hidden=false;$('#loginMsg').textContent=msg||'';
+ const box=$('#gBtn');box.innerHTML='';try{google.accounts.id.renderButton(box,{theme:'filled_blue',size:'large',shape:'pill',text:'continue_with',locale:'fr',width:Math.min(300,innerWidth-80)})}catch(_){}}
+async function authInit(){
+ let cfg=null;try{const r=await fetch('/api/config',{cache:'no-store'});if(r.ok)cfg=await r.json()}catch(_){}
+ if(!cfg||!cfg.googleClientId){AUTH.ready=true;return}
+ AUTH.cid=cfg.googleClientId;
+ $('#login').hidden=false;$('#loginMsg').textContent='Chargement…';
+ if(!await loadGsi()){$('#loginMsg').textContent='Impossible de charger la connexion Google. Vérifie ta connexion internet.';return}
+ google.accounts.id.initialize({client_id:AUTH.cid,callback:onCred,auto_select:true,cancel_on_tap_outside:false,itp_support:true,use_fedcm_for_prompt:true});
+ let t=null;try{t=localStorage.getItem('pc_tok')}catch(_){}
+ const b=t&&jwtBody(t);
+ if(b&&b.exp*1000>Date.now()+60000&&b.aud===AUTH.cid){await onCred({credential:t})}
+ if(!AUTH.on){showLogin('');google.accounts.id.prompt()}
+ AUTH.ready=true;
+}
+function logout(){cloudPush();AUTH.on=false;AUTH.tok=null;try{localStorage.removeItem('pc_tok')}catch(_){}try{google.accounts.id.disableAutoSelect()}catch(_){}
+ $('#profile').hidden=true;showLogin('Tu es déconnecté.')}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'&&AUTH.pending)cloudPush()});
+
+snapCam=true;go('home');authInit();
 requestAnimationFrame(frame);
 })();
 
