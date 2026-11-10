@@ -1030,8 +1030,8 @@ body[data-r="home"] #bg{background:radial-gradient(ellipse at 50% 40%,#9af6ff 0,
 .cm .cbtn{width:auto!important;min-width:220px;padding-left:40px;padding-right:40px}
 
 /* contour du texte lisse (anneau d'ombres au lieu de text-stroke) */
-.s,.btn,.playbtn .pbt,.elim .en,#death .dt,#death .dp{-webkit-text-stroke:0!important;text-shadow:var(--ts)!important}
-input,textarea,select{-webkit-text-stroke:0!important;text-shadow:none!important;color:#1b1f3a!important;-webkit-text-fill-color:#1b1f3a}
+.s,.btn,.playbtn .pbt,.elim .en,#death .dt,#death .dp{-webkit-text-stroke:calc(2.5px + .2em) #0b0b19!important;paint-order:stroke fill!important;text-shadow:var(--ts)!important}
+input,textarea,select{-webkit-text-stroke:0!important;paint-order:normal;text-shadow:none!important;color:#1b1f3a!important;-webkit-text-fill-color:#1b1f3a}
 input::placeholder{color:#8a93b8!important;-webkit-text-fill-color:#8a93b8}
 /* en-tête au-dessus des onglets */
 .shead{position:relative;z-index:3}
@@ -1116,8 +1116,8 @@ html.app #topbar{padding-top:max(8px,env(safe-area-inset-top,0px))}
 
 /* contour noir de tous les textes */
 
-body,body *{--ts:0.1em 0.0em 0 #0b0b19,0.092em 0.038em 0 #0b0b19,0.071em 0.071em 0 #0b0b19,0.038em 0.092em 0 #0b0b19,0.0em 0.1em 0 #0b0b19,-0.038em 0.092em 0 #0b0b19,-0.071em 0.071em 0 #0b0b19,-0.092em 0.038em 0 #0b0b19,-0.1em 0.0em 0 #0b0b19,-0.092em -0.038em 0 #0b0b19,-0.071em -0.071em 0 #0b0b19,-0.038em -0.092em 0 #0b0b19,-0.0em -0.1em 0 #0b0b19,0.038em -0.092em 0 #0b0b19,0.071em -0.071em 0 #0b0b19,0.092em -0.038em 0 #0b0b19,0.06em 0.0em 0 #0b0b19,0.042em 0.042em 0 #0b0b19,0.0em 0.06em 0 #0b0b19,-0.042em 0.042em 0 #0b0b19,-0.06em 0.0em 0 #0b0b19,-0.042em -0.042em 0 #0b0b19,-0.0em -0.06em 0 #0b0b19,0.042em -0.042em 0 #0b0b19,1.386px 0.574px 0 #0b0b19,0.574px 1.386px 0 #0b0b19,-0.574px 1.386px 0 #0b0b19,-1.386px 0.574px 0 #0b0b19,-1.386px -0.574px 0 #0b0b19,-0.574px -1.386px 0 #0b0b19,0.574px -1.386px 0 #0b0b19,1.386px -0.574px 0 #0b0b19,0 .15em 0 #0b0b19,.07em .14em 0 #0b0b19,-.07em .14em 0 #0b0b19}
-body *:not(input):not(textarea):not(select){text-shadow:var(--ts)}
+body,body *{--ts:0 .1em 0 #0b0b19,.04em .1em 0 #0b0b19,-.04em .1em 0 #0b0b19}
+body *:not(input):not(textarea):not(select){text-shadow:var(--ts);-webkit-text-stroke:calc(2.5px + .2em) #0b0b19;paint-order:stroke fill}
 body{text-shadow:var(--ts)}
 input,textarea,select,.pvclaim b,.istep>b,.pcol.reach .pnode,.pvr.reach .pvl span{text-shadow:none!important}
 
@@ -1202,7 +1202,7 @@ input,textarea,select,.pvclaim b,.istep>b,.pcol.reach .pnode,.pvr.reach .pvl spa
 .lglogo2{width:min(78vw,420px);height:auto;display:block;margin:0 auto 10px;filter:drop-shadow(0 6px 0 rgba(0,0,0,.25));animation:ewin .5s cubic-bezier(.2,1.4,.4,1)}
 
 /* textes sombres : pas de contour noir */
-.ribbon,.ribbon *,.box,.box *,.marker,.marker *,#toast div,#toast div *,.unl,.unl *,.lvb,.lvb *,.mtile .tag,.code b,.plv,.plv *,.heroTag .hp,.pcol.reach .pnode,.pvclaim b,.pvr.reach .pvl span,.istep>b{--ts:none!important;text-shadow:none!important}
+.ribbon,.ribbon *,.box,.box *,.marker,.marker *,#toast div,#toast div *,.unl,.unl *,.lvb,.lvb *,.mtile .tag,.code b,.plv,.plv *,.heroTag .hp,.pcol.reach .pnode,.pvclaim b,.pvr.reach .pvl span,.istep>b{--ts:none!important;text-shadow:none!important;-webkit-text-stroke:0!important}
 /* profil */
 .pfb{display:flex!important;flex-direction:row!important;gap:16px;align-items:flex-start;padding-top:10px!important}
 .plf{flex:none;width:300px;display:flex;flex-direction:column;gap:14px}
