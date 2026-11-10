@@ -1,21 +1,20 @@
 {
- "name": "Paint Clash",
- "short_name": "Paint Clash",
- "start_url": "/",
- "display": "fullscreen",
- "orientation": "portrait",
- "background_color": "#2f8cf5",
- "theme_color": "#2f62f2",
- "icons": [
-  {
-   "src": "/icon-192.png",
-   "sizes": "192x192",
-   "type": "image/png"
-  },
-  {
-   "src": "/icon-512.png",
-   "sizes": "512x512",
-   "type": "image/png"
-  }
- ]
+  "id": "/",
+  "name": "Paint Clash",
+  "short_name": "Paint Clash",
+  "description": "Capture le clavier géant avec ta main ! Classique, Équipes 5v5 et parties entre amis.",
+  "lang": "fr",
+  "start_url": "/?source=app",
+  "scope": "/",
+  "display": "fullscreen",
+  "display_override": ["fullscreen", "standalone"],
+  "orientation": "any",
+  "background_color": "#1f5fd8",
+  "theme_color": "#1f5fd8",
+  "categories": ["games"],
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
 }

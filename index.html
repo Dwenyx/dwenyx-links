@@ -2,14 +2,18 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
-<meta name="theme-color" content="#2f62f2">
-<meta name="description" content="Paint Clash — capture le clavier géant avec ta main, mode Party et Classé.">
-<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#1f5fd8">
+<meta name="description" content="Paint Clash — capture le clavier géant avec ta main ! Classique, Équipes 5v5 et parties entre amis.">
 <meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Paint Clash">
+<meta name="application-name" content="Paint Clash">
+<meta name="format-detection" content="telephone=no">
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" type="image/png" href="/icon-192.png">
-<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <style>body{margin:0}</style>
 <title>Paint Clash</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1094,6 +1098,20 @@ input::placeholder{color:#8a93b8!important;-webkit-text-fill-color:#8a93b8}
 #timer span{font-size:inherit}
 .sbtn[data-go="lead"]{font-size:12px!important;letter-spacing:-.02em}
 @media (orientation:landscape) and (min-width:721px) and (min-height:521px){#home .side .sbtn[data-go="lead"]{font-size:13px!important}}
+
+/* appli installable */
+html,body{overscroll-behavior:none;-webkit-touch-callout:none}
+.instbar{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 10px);transform:translateX(-50%);z-index:60;display:flex;align-items:center;gap:10px;padding:8px 8px 8px 10px;width:min(calc(100% - 24px),460px);box-sizing:border-box;background:linear-gradient(#34407a,#232c58);border:3px solid #0b0b19;border-radius:18px;box-shadow:0 5px 0 #0b0b19;zoom:var(--z,1);animation:ewin .4s cubic-bezier(.2,1.4,.4,1)}
+.instbar img{width:46px;height:46px;border-radius:12px;flex:none}
+.instbar span{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.1}.instbar b{font-weight:400;font-size:17px}.instbar small{font-size:12px;color:#c9d6ff}
+.instbar .btn{min-height:42px;font-size:15px;padding:0 12px}
+.inst{display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center}
+.instIc{width:84px;height:84px;border-radius:20px;border:3px solid #0b0b19;box-shadow:0 4px 0 #0b0b19}
+#instBody{display:flex;flex-direction:column;gap:8px;text-align:left;width:100%}#instBody p{margin:0;font-size:15px;text-align:center}
+.istep{display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.25);border-radius:12px;padding:8px 10px;font-size:15px}
+.istep>b{flex:none;width:30px;height:30px;border-radius:50%;background:#ffd21f;color:#0b0b19;display:grid;place-items:center;font-weight:400;text-shadow:none!important}
+.shr{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:6px;background:#2f8dff;font-size:14px}
+html.app #topbar{padding-top:max(8px,env(safe-area-inset-top,0px))}
 </style>
 
 </head>
@@ -1173,10 +1191,18 @@ input::placeholder{color:#8a93b8!important;-webkit-text-fill-color:#8a93b8}
     <h2 class="s">RÉGLAGES</h2>
     <label class="s">Pseudo<span class="rn"><input id="nameIn" maxlength="12" spellcheck="false" autocomplete="off"><em id="nameTag" class="tg"></em></span></label><p id="rnNote" class="rnote s"></p>
     <button id="soundBtn" class="btn btn-blue">SON : ACTIVÉ</button>
+    <button id="installBtn" class="btn btn-yellow" hidden>INSTALLER L'APPLI</button>
     <button id="setClose" class="btn btn-green">OK</button>
   </div>
 </div>
 
+<div id="installM" class="modal" hidden><div class="mbox inst">
+  <img class="instIc" src="icon-192.png" alt="">
+  <h2 class="s">INSTALLER PAINT CLASH</h2>
+  <div id="instBody"></div>
+  <button id="instOk" class="btn btn-green">OK</button>
+</div></div>
+<div id="installBar" class="instbar" hidden><img src="icon-192.png" alt=""><span class="s"><b>Paint Clash</b><small>Installe l'appli : plein écran, plus fluide</small></span><button id="instGo" class="btn btn-yellow">INSTALLER</button><button id="instX" class="ib ib-x" aria-label="Plus tard"></button></div>
 <div id="chestM" class="modal cm" hidden><div class="cmpat"></div><div class="cmrays"></div><span class="spk a"></span><span class="spk b"></span><span class="spk c"></span><span class="spk d"></span><div id="cFlash" class="cflash"></div><div class="cbox"><div id="cTitle"></div><div class="cstage"><div id="cBurst" class="cburst"></div><img id="cImg" class="cimg" alt="Coffre"></div><div id="cHint" class="chint s">Touche le coffre pour l'ouvrir !</div><div id="cRew" class="crew"></div><button id="cOk" class="btn btn-green cbtn" hidden>SUPER !</button></div></div>
 
 <div id="hud" class="screen" hidden>
@@ -2510,6 +2536,31 @@ press($('#trophyBtn'),()=>go('road'));press($('#passCard'),()=>go('pass'));press
 press($('#playGo'),()=>{if(ROOM){ac();roomReady();return}const m=save.mode;if(m==='party')openParty();else play(m)});
 press($('#coinPill'),()=>{go('shop');setTimeout(()=>shopJump('coins'),80)});press($('#gemPill'),()=>{go('shop');setTimeout(()=>shopJump('gems'),80)});
 press($('#gearBtn'),openSettings);press($('#profileBtn'),()=>openProfile());
+
+/* ---------- APPLI INSTALLABLE ---------- */
+const STANDALONE=matchMedia('(display-mode: fullscreen)').matches||matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+const IOS=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+const MOBILE=IOS||/android|mobile/i.test(navigator.userAgent);
+let deferredInstall=null;
+if('serviceWorker' in navigator&&location.protocol==='https:'&&location.hostname.endsWith('vercel.app'))addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}));
+addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstall=e;updInstall()});
+addEventListener('appinstalled',()=>{deferredInstall=null;$('#installBar').hidden=true;updInstall();toast('Paint Clash est installé !')});
+function canInstall(){return !STANDALONE&&location.hostname.endsWith('vercel.app')&&(!!deferredInstall||IOS)}
+function updInstall(){$('#installBtn').hidden=!canInstall();
+ let later=0;try{later=+localStorage.getItem('pc_inst_later')||0}catch(_){}
+ $('#installBar').hidden=!(canInstall()&&MOBILE&&Date.now()-later>3*864e5&&state==='menu')}
+async function doInstall(){
+ if(deferredInstall){const d=deferredInstall;deferredInstall=null;try{d.prompt();const r=await d.userChoice;if(r&&r.outcome==='accepted')$('#installBar').hidden=true}catch(_){}updInstall();return}
+ const step=(n,t)=>`<div class="istep s"><b>${n}</b><span>${t}</span></div>`;
+ $('#instBody').innerHTML=IOS?
+  `<p class="s">Sur iPhone et iPad, ouvre le jeu dans <b>Safari</b> puis :</p>${step(1,'Touche le bouton <b>Partager</b> <span class="shr">⬆︎</span> en bas de l\'écran')}${step(2,'Choisis <b>Sur l\'écran d\'accueil</b>')}${step(3,'Touche <b>Ajouter</b> : l\'icône Paint Clash apparaît sur ton écran')}`:
+  `<p class="s">Ouvre le menu <b>⋮</b> de ton navigateur puis choisis <b>Installer l'application</b> ou <b>Ajouter à l'écran d'accueil</b>.</p>`;
+ $('#installM').hidden=false}
+press($('#installBtn'),doInstall);press($('#instGo'),doInstall);press($('#instOk'),()=>{$('#installM').hidden=true});
+press($('#instX'),()=>{try{localStorage.setItem('pc_inst_later',Date.now())}catch(_){}$('#installBar').hidden=true});
+setTimeout(updInstall,2500);
+if(STANDALONE){document.documentElement.classList.add('app');addEventListener('contextmenu',e=>e.preventDefault());
+ document.addEventListener('gesturestart',e=>e.preventDefault());document.addEventListener('dblclick',e=>e.preventDefault(),{passive:false})}
 function openSettings(){const p=RT.prof;$('#nameIn').value=p?p.name:save.name;$('#nameTag').textContent=p?'#'+p.tag:'';
  let note='';if(p){const nx=p.nextRename;note=Date.now()<nx?`Pseudo unique. Prochain changement possible le ${new Date(nx).toLocaleDateString('fr-FR')}.`:'Pseudo unique : tu peux le changer une fois tous les 30 jours.';$('#nameIn').disabled=Date.now()<nx}else $('#nameIn').disabled=false;
  $('#rnNote').textContent=note;$('#settings').hidden=false}
@@ -2531,7 +2582,7 @@ press($('#setClose'),async()=>{const v=($('#nameIn').value||'').trim();const p=R
 $('#nameIn').addEventListener('keydown',e=>{if(e.key==='Enter')$('#setClose').click()});
 press($('#againBtn'),()=>play(gameMode));
 press($('#homeBtn'),goHome);
-function goHome(){specOn=false;NET.leave();simOn=false;matchOver=false;state='menu';$('#end').hidden=true;$('#hud').hidden=true;for(const e of ents)if(e)e.view.g.visible=false;snapCam=true;go('home')}
+function goHome(){setTimeout(updInstall,600);specOn=false;NET.leave();simOn=false;matchOver=false;state='menu';$('#end').hidden=true;$('#hud').hidden=true;for(const e of ents)if(e)e.view.g.visible=false;snapCam=true;go('home')}
 document.addEventListener('wheel',e=>{const el=e.target.closest('.hx,.rwrap,.pscroll');if(el&&Math.abs(e.deltaY)>Math.abs(e.deltaX)){el.scrollLeft+=e.deltaY;e.preventDefault()}},{passive:false});
 setInterval(()=>{if(state==='menu'&&tab==='home')$('#mTimer').textContent='Nouveaux défis dans '+untilMidnight()},30000);
 
