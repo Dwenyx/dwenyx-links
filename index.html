@@ -1029,7 +1029,7 @@ body[data-r="home"] #bg{background:radial-gradient(ellipse at 50% 40%,#9af6ff 0,
 .cm .cbtn{width:auto!important;min-width:220px;padding-left:40px;padding-right:40px}
 
 /* contour du texte lisse (anneau d'ombres au lieu de text-stroke) */
-.s,.btn,.playbtn .pbt,.elim .en,#death .dt,#death .dp{-webkit-text-stroke:0!important;--sw:min(calc(.9px + .05em),3px);text-shadow:calc(var(--sw)*1.0) calc(var(--sw)*0.0) 0 #0b0b19,calc(var(--sw)*0.924) calc(var(--sw)*0.383) 0 #0b0b19,calc(var(--sw)*0.707) calc(var(--sw)*0.707) 0 #0b0b19,calc(var(--sw)*0.383) calc(var(--sw)*0.924) 0 #0b0b19,calc(var(--sw)*0.0) calc(var(--sw)*1.0) 0 #0b0b19,calc(var(--sw)*-0.383) calc(var(--sw)*0.924) 0 #0b0b19,calc(var(--sw)*-0.707) calc(var(--sw)*0.707) 0 #0b0b19,calc(var(--sw)*-0.924) calc(var(--sw)*0.383) 0 #0b0b19,calc(var(--sw)*-1.0) calc(var(--sw)*0.0) 0 #0b0b19,calc(var(--sw)*-0.924) calc(var(--sw)*-0.383) 0 #0b0b19,calc(var(--sw)*-0.707) calc(var(--sw)*-0.707) 0 #0b0b19,calc(var(--sw)*-0.383) calc(var(--sw)*-0.924) 0 #0b0b19,calc(var(--sw)*-0.0) calc(var(--sw)*-1.0) 0 #0b0b19,calc(var(--sw)*0.383) calc(var(--sw)*-0.924) 0 #0b0b19,calc(var(--sw)*0.707) calc(var(--sw)*-0.707) 0 #0b0b19,calc(var(--sw)*0.924) calc(var(--sw)*-0.383) 0 #0b0b19,calc(var(--sw)*0.508) calc(var(--sw)*0.21) 0 #0b0b19,calc(var(--sw)*0.21) calc(var(--sw)*0.508) 0 #0b0b19,calc(var(--sw)*-0.21) calc(var(--sw)*0.508) 0 #0b0b19,calc(var(--sw)*-0.508) calc(var(--sw)*0.21) 0 #0b0b19,calc(var(--sw)*-0.508) calc(var(--sw)*-0.21) 0 #0b0b19,calc(var(--sw)*-0.21) calc(var(--sw)*-0.508) 0 #0b0b19,calc(var(--sw)*0.21) calc(var(--sw)*-0.508) 0 #0b0b19,calc(var(--sw)*0.508) calc(var(--sw)*-0.21) 0 #0b0b19,calc(var(--sw)*1.0) calc(var(--sw)*0.0 + .07em) 0 #0b0b19,calc(var(--sw)*0.924) calc(var(--sw)*0.383 + .07em) 0 #0b0b19,calc(var(--sw)*0.707) calc(var(--sw)*0.707 + .07em) 0 #0b0b19,calc(var(--sw)*0.383) calc(var(--sw)*0.924 + .07em) 0 #0b0b19,calc(var(--sw)*0.0) calc(var(--sw)*1.0 + .07em) 0 #0b0b19,calc(var(--sw)*-0.383) calc(var(--sw)*0.924 + .07em) 0 #0b0b19,calc(var(--sw)*-0.707) calc(var(--sw)*0.707 + .07em) 0 #0b0b19,calc(var(--sw)*-0.924) calc(var(--sw)*0.383 + .07em) 0 #0b0b19,calc(var(--sw)*-1.0) calc(var(--sw)*0.0 + .07em) 0 #0b0b19!important}
+.s,.btn,.playbtn .pbt,.elim .en,#death .dt,#death .dp{-webkit-text-stroke:0!important;text-shadow:var(--ts)!important}
 input,textarea,select{-webkit-text-stroke:0!important;text-shadow:none!important;color:#1b1f3a!important;-webkit-text-fill-color:#1b1f3a}
 input::placeholder{color:#8a93b8!important;-webkit-text-fill-color:#8a93b8}
 /* en-tête au-dessus des onglets */
@@ -1112,6 +1112,24 @@ html,body{overscroll-behavior:none;-webkit-touch-callout:none}
 .istep>b{flex:none;width:30px;height:30px;border-radius:50%;background:#ffd21f;color:#0b0b19;display:grid;place-items:center;font-weight:400;text-shadow:none!important}
 .shr{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:6px;background:#2f8dff;font-size:14px}
 html.app #topbar{padding-top:max(8px,env(safe-area-inset-top,0px))}
+
+/* contour noir de tous les textes */
+
+body,body *{--sw:min(calc(.9px + .06em),3px);--ts:calc(var(--sw)*1.0) calc(var(--sw)*0.0) 0 #0b0b19,calc(var(--sw)*0.707) calc(var(--sw)*0.707) 0 #0b0b19,calc(var(--sw)*0.0) calc(var(--sw)*1.0) 0 #0b0b19,calc(var(--sw)*-0.707) calc(var(--sw)*0.707) 0 #0b0b19,calc(var(--sw)*-1.0) calc(var(--sw)*0.0) 0 #0b0b19,calc(var(--sw)*-0.707) calc(var(--sw)*-0.707) 0 #0b0b19,calc(var(--sw)*-0.0) calc(var(--sw)*-1.0) 0 #0b0b19,calc(var(--sw)*0.707) calc(var(--sw)*-0.707) 0 #0b0b19,calc(var(--sw)*0.424) calc(var(--sw)*0.424) 0 #0b0b19,calc(var(--sw)*-0.424) calc(var(--sw)*0.424) 0 #0b0b19,calc(var(--sw)*-0.424) calc(var(--sw)*-0.424) 0 #0b0b19,calc(var(--sw)*0.424) calc(var(--sw)*-0.424) 0 #0b0b19,0 calc(var(--sw) + .06em) 0 #0b0b19}
+body{text-shadow:var(--ts)}
+input,textarea,select,.pvclaim b,.istep>b,.pcol.reach .pnode,.pvr.reach .pvl span{text-shadow:none!important}
+
+/* aide « glisse pour diriger » en bas, discrète */
+#hint{bottom:calc(env(safe-area-inset-bottom,0px) + 14px)!important;font-size:14px;display:flex;align-items:center;justify-content:center;gap:8px;pointer-events:none}
+#hint .tapimg{width:40px!important;margin:0!important}
+
+/* forcer le paysage */
+#rotate{position:fixed;inset:0;z-index:999;display:none;flex-direction:column;align-items:center;justify-content:center;gap:18px;background:linear-gradient(#2f8dff,#1f4fd8);text-align:center;padding:24px}
+#rotate .ph{width:70px;height:118px;border:6px solid #fff;border-radius:16px;box-shadow:0 5px 0 #0b0b19;animation:rotph 1.8s ease-in-out infinite}
+#rotate b{font-weight:400;font-size:26px}#rotate small{font-size:16px;color:#d9e6ff}
+@keyframes rotph{0%,25%{transform:rotate(0)}55%,100%{transform:rotate(-90deg)}}
+@media (orientation:portrait) and (pointer:coarse){#rotate{display:flex}}
+#hint .tapimg{animation:none!important;transform:rotate(-20deg)}
 </style>
 
 </head>
@@ -1196,6 +1214,7 @@ html.app #topbar{padding-top:max(8px,env(safe-area-inset-top,0px))}
   </div>
 </div>
 
+<div id="rotate"><div class="ph"></div><b class="s">TOURNE TON TÉLÉPHONE</b><small class="s">Paint Clash se joue à l'horizontale</small></div>
 <div id="installM" class="modal" hidden><div class="mbox inst">
   <img class="instIc" src="icon-192.png" alt="">
   <h2 class="s">INSTALLER PAINT CLASH</h2>
@@ -1365,8 +1384,10 @@ const sfx={
 /* ---------- THREE ---------- */
 const N=56,TOT=N*N,H_N=.42,H_TR=.42,H_OWN=.42;
 const cv=$('#cv');
-const R=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true});
-R.setPixelRatio(Math.min(window.devicePixelRatio||1,2));R.setClearColor(0x000000,0);
+const LOWDEV=matchMedia('(pointer:coarse)').matches||/android|iphone|ipad|mobile/i.test(navigator.userAgent);
+const R=new THREE.WebGLRenderer({canvas:cv,antialias:!LOWDEV,alpha:true,powerPreference:'high-performance'});
+let PR_MAX=Math.min(window.devicePixelRatio||1,LOWDEV?1.5:2),PR=LOWDEV?Math.min(PR_MAX,1.25):PR_MAX;
+R.setPixelRatio(PR);R.setClearColor(0x000000,0);
 const S=new THREE.Scene();
 const cam=new THREE.PerspectiveCamera(46,1,.1,500);
 S.add(new THREE.HemisphereLight(0xffffff,0x6a8fd8,.58));
@@ -2059,8 +2080,12 @@ async function roomGameStart(){if(!ROOM)return;const r=ROOM;ROOM=null;
 /* ---------- BOUCLE ---------- */
 const camPos=new THREE.Vector3(PV.x,14,PV.z+16),camLook=new THREE.Vector3(PV.x,0,PV.z),tv=new THREE.Vector3(),tl=new THREE.Vector3();
 let last=performance.now();const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+let fpsAcc=0,fpsN=0,fpsT=0;
+function adaptRes(ms){fpsAcc+=ms;fpsN++;fpsT+=ms;if(fpsT<1500)return;const avg=fpsAcc/fpsN;fpsAcc=fpsN=fpsT=0;
+ let np=PR;if(avg>21&&PR>.7)np=Math.max(.7,PR-.15);else if(avg<14&&PR<PR_MAX)np=Math.min(PR_MAX,PR+.1);
+ if(Math.abs(np-PR)>.01){PR=np;resize()}}
 function frame(){
- const t=performance.now(),dt=Math.min(.05,(t-last)/1000);last=t;now+=dt;
+ const t=performance.now(),dt=Math.min(.05,(t-last)/1000);adaptRes(t-last);last=t;now+=dt;
  if(state==='count'){countT-=dt;const n=Math.ceil(countT-.6);if(n!==lastCount&&n>=0){lastCount=n;$('#count').innerHTML=`<span>${n>0?n:'GO !'}</span>`;n>0?sfx.tick():sfx.go()}
   if(countT<=.6){state='play';player.frozen=false;if(simOn)for(const e of ents)if(e&&e.bot)e.frozen=false;if(NET.role==='client'){try{NET.conn.send({t:'go'})}catch(_){}}setTimeout(()=>{$('#count').innerHTML=''},600)}}
  if(state==='play'){keyInput();playT+=dt;if(playT>2.6)$('#hint').style.opacity=0}
@@ -2071,7 +2096,7 @@ function frame(){
   for(const e of ents)if(e.alive&&(counts[e.id]||0)>=PTOT&&gameMode!=='team'){matchWon(e);break}
   if(simOn)hostTick(dt);
  }
- if(state==='play'||state==='dead'||state==='count'){hudT-=dt;if(hudT<=0){hudT=.15;updHud()}}
+ if(state==='play'||state==='dead'||state==='count'){hudT-=dt;if(hudT<=0){hudT=LOWDEV?.3:.15;updHud()}}
  const live=simOn||NET.role==='client';
  for(const e of ents){if(!e)continue;const v=e.view;if(!v.g.visible)continue;
   v.g.position.x=e.x;v.g.position.z=e.z;const gc=ix(Math.min(N-1,Math.max(0,e.ci)),Math.min(N-1,Math.max(0,e.cj))),gy=curH[gc]-pressD[gc];v.g.position.y+=(gy-v.g.position.y)*Math.min(1,dt*15);
@@ -2093,7 +2118,7 @@ OL.mat=new THREE.ShaderMaterial({uniforms:{tMask:{value:OL.rt.texture},px:{value
  vertexShader:'varying vec2 vUv;void main(){vUv=uv;gl_Position=vec4(position.xy,0.,1.);}',
  fragmentShader:`uniform sampler2D tMask;uniform vec2 px;uniform vec3 col;uniform float thick;varying vec2 vUv;
  void main(){if(texture2D(tMask,vUv).r>.5)discard;float a=0.;
-  for(int i=0;i<12;i++){float an=float(i)*.5235988;vec2 d=vec2(cos(an),sin(an))*px;a=max(a,texture2D(tMask,vUv+d*thick).r);a=max(a,texture2D(tMask,vUv+d*thick*.55).r);}
+  for(int i=0;i<8;i++){float an=float(i)*.7853982;vec2 d=vec2(cos(an),sin(an))*px;a=max(a,texture2D(tMask,vUv+d*thick).r);}
   if(a<.02)discard;gl_FragColor=vec4(col,a);}`});
 {const q=new THREE.Mesh(new THREE.PlaneGeometry(2,2),OL.mat);q.frustumCulled=false;OL.scene.add(q)}
 function renderAll(){
@@ -2103,7 +2128,7 @@ function renderAll(){
 }
 function applyZoom(){const w=innerWidth,h=innerHeight;let z=w>h?Math.min(w/900,h/430):Math.min(w/390,h/780);z=Math.max(.72,Math.min(1.7,z));UIZ=z;document.documentElement.style.setProperty('--z',z)}
 let UIZ=1;applyZoom();addEventListener('resize',applyZoom);
-function resize(){R.setSize(innerWidth,innerHeight,false);cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();const w=R.domElement.width,h=R.domElement.height;OL.rt.setSize(w,h);OL.mat.uniforms.px.value.set(1/w,1/h);OL.mat.uniforms.thick.value=4.5*R.getPixelRatio()}
+function resize(){R.setPixelRatio(PR);R.setSize(innerWidth,innerHeight,false);cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();const w=R.domElement.width,h=R.domElement.height;OL.rt.setSize(w,h);OL.mat.uniforms.px.value.set(1/w,1/h);OL.mat.uniforms.thick.value=4.5*R.getPixelRatio()}
 addEventListener('resize',resize);resize();
 
 /* ---------- INTERFACE ---------- */
@@ -2559,6 +2584,9 @@ async function doInstall(){
 press($('#installBtn'),doInstall);press($('#instGo'),doInstall);press($('#instOk'),()=>{$('#installM').hidden=true});
 press($('#instX'),()=>{try{localStorage.setItem('pc_inst_later',Date.now())}catch(_){}$('#installBar').hidden=true});
 setTimeout(updInstall,2500);
+async function lockLand(){try{if(STANDALONE||document.fullscreenElement){await screen.orientation.lock('landscape')}}catch(_){}}
+lockLand();
+addEventListener('pointerdown',async function fsOnce(){if(!MOBILE||IOS||STANDALONE)return;removeEventListener('pointerdown',fsOnce);try{await document.documentElement.requestFullscreen({navigationUI:'hide'});await screen.orientation.lock('landscape')}catch(_){}},{passive:true});
 if(STANDALONE){document.documentElement.classList.add('app');addEventListener('contextmenu',e=>e.preventDefault());
  document.addEventListener('gesturestart',e=>e.preventDefault());document.addEventListener('dblclick',e=>e.preventDefault(),{passive:false})}
 function openSettings(){const p=RT.prof;$('#nameIn').value=p?p.name:save.name;$('#nameTag').textContent=p?'#'+p.tag:'';
