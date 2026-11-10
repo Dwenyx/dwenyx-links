@@ -4,18 +4,18 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover, user-scalable=no">
 <meta name="theme-color" content="#1f5fd8">
-<meta name="description" content="Paint Clash — capture le clavier géant avec ta main ! Classique, Équipes 5v5 et parties entre amis.">
+<meta name="description" content="Keyboard Rivals — capture le clavier géant avec ta main ! Classique, Équipes 5v5 et parties entre amis.">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Paint Clash">
-<meta name="application-name" content="Paint Clash">
+<meta name="apple-mobile-web-app-title" content="Keyboard Rivals">
+<meta name="application-name" content="Keyboard Rivals">
 <meta name="format-detection" content="telephone=no">
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" type="image/png" href="/icon-192.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <style>body{margin:0}</style>
-<title>Paint Clash</title>
+<title>Keyboard Rivals</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lilita+One&display=swap">
 <style>
@@ -1197,6 +1197,7 @@ input,textarea,select,.pvclaim b,.istep>b,.pcol.reach .pnode,.pvr.reach .pvl spa
 #specQ .mbox p{font-size:15px;line-height:1.35;margin:4px 0 8px}
 #specQ .endbtns{display:flex;gap:10px;width:100%}#specQ .endbtns .btn{flex:1}
 #specWho .rv{font-weight:400;color:#7dff5a}
+.lglogo2{width:min(78vw,420px);height:auto;display:block;margin:0 auto 10px;filter:drop-shadow(0 6px 0 rgba(0,0,0,.25));animation:ewin .5s cubic-bezier(.2,1.4,.4,1)}
 </style>
 
 </head>
@@ -1267,7 +1268,7 @@ input,textarea,select,.pvclaim b,.istep>b,.pcol.reach .pnode,.pvr.reach .pvl spa
   <div class="dbtns" id="dBtns"></div>
 </div>
 
-<div id="login" hidden><div class="lgbox"><div class="lglogo s">PAINT<span>CLASH</span></div><div class="lgcard"><p class="s">Connecte-toi avec ton compte Google pour jouer et retrouver ta progression sur tous tes appareils.</p><div id="gBtn"></div><div id="loginMsg" class="s"></div></div><p class="lgnote s">Seuls ton adresse e-mail et ton prénom servent à identifier ton compte.</p></div></div>
+<div id="login" hidden><div class="lgbox"><img class="lglogo2" src="ui/logo.png?v=17" alt="Keyboard Rivals"><div class="lgcard"><p class="s">Connecte-toi avec ton compte Google pour jouer et retrouver ta progression sur tous tes appareils.</p><div id="gBtn"></div><div id="loginMsg" class="s"></div></div><p class="lgnote s">Seuls ton adresse e-mail et ton prénom servent à identifier ton compte.</p></div></div>
 <div id="profile" class="modal" hidden><div class="mbox"><h2 class="s">PROFIL</h2><div id="profBox"></div><div class="row2"><button id="profEdit" class="btn btn-blue">MODIFIER</button><button id="profClose" class="btn btn-green">OK</button></div></div></div>
 <div id="invite" class="modal" hidden><div class="mbox"><h2 class="s">INVITER UN AMI</h2><div id="invList" class="flist"></div><div class="row2"><button id="invManage" class="btn btn-blue">GÉRER MES AMIS</button><button id="invClose" class="btn btn-red">FERMER</button></div></div></div>
 <div id="invPop" hidden><div id="invPopTxt" class="s"></div><div class="row2"><button id="invNo" class="btn btn-grey">PLUS TARD</button><button id="invYes" class="btn btn-green">REJOINDRE</button></div></div>
@@ -1283,14 +1284,14 @@ input,textarea,select,.pvclaim b,.istep>b,.pcol.reach .pnode,.pvr.reach .pvl spa
   </div>
 </div>
 
-<div id="rotate"><div class="ph"></div><b class="s">TOURNE TON TÉLÉPHONE</b><small class="s">Paint Clash se joue à l'horizontale</small></div>
+<div id="rotate"><div class="ph"></div><b class="s">TOURNE TON TÉLÉPHONE</b><small class="s">Keyboard Rivals se joue à l'horizontale</small></div>
 <div id="installM" class="modal" hidden><div class="mbox inst">
   <img class="instIc" src="icon-192.png" alt="">
-  <h2 class="s">INSTALLER PAINT CLASH</h2>
+  <h2 class="s">INSTALLER KEYBOARD RIVALS</h2>
   <div id="instBody"></div>
   <button id="instOk" class="btn btn-green">OK</button>
 </div></div>
-<div id="installBar" class="instbar" hidden><img src="icon-192.png" alt=""><span class="s"><b>Paint Clash</b><small>Installe l'appli : plein écran, plus fluide</small></span><button id="instGo" class="btn btn-yellow">INSTALLER</button><button id="instX" class="ib ib-x" aria-label="Plus tard"></button></div>
+<div id="installBar" class="instbar" hidden><img src="icon-192.png" alt=""><span class="s"><b>Keyboard Rivals</b><small>Installe l'appli : plein écran, plus fluide</small></span><button id="instGo" class="btn btn-yellow">INSTALLER</button><button id="instX" class="ib ib-x" aria-label="Plus tard"></button></div>
 <div id="chestM" class="modal cm" hidden><div class="cmpat"></div><div class="cmrays"></div><span class="spk a"></span><span class="spk b"></span><span class="spk c"></span><span class="spk d"></span><div id="cFlash" class="cflash"></div><div class="cbox"><div id="cTitle"></div><div class="cstage"><div id="cBurst" class="cburst"></div><img id="cImg" class="cimg" alt="Coffre"></div><div id="cHint" class="chint s">Touche le coffre pour l'ouvrir !</div><div id="cRew" class="crew"></div><button id="cOk" class="btn btn-green cbtn" hidden>SUPER !</button></div></div>
 
 <div id="hud" class="screen" hidden>
@@ -2677,7 +2678,7 @@ const MOBILE=IOS||/android|mobile/i.test(navigator.userAgent);
 let deferredInstall=null;
 if('serviceWorker' in navigator&&location.protocol==='https:'&&location.hostname.endsWith('vercel.app'))addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}));
 addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstall=e;updInstall()});
-addEventListener('appinstalled',()=>{deferredInstall=null;$('#installBar').hidden=true;updInstall();toast('Paint Clash est installé !')});
+addEventListener('appinstalled',()=>{deferredInstall=null;$('#installBar').hidden=true;updInstall();toast('Keyboard Rivals est installé !')});
 function canInstall(){return !STANDALONE&&location.hostname.endsWith('vercel.app')&&(!!deferredInstall||IOS)}
 function updInstall(){$('#installBtn').hidden=!canInstall();
  let later=0;try{later=+localStorage.getItem('pc_inst_later')||0}catch(_){}
@@ -2686,7 +2687,7 @@ async function doInstall(){
  if(deferredInstall){const d=deferredInstall;deferredInstall=null;try{d.prompt();const r=await d.userChoice;if(r&&r.outcome==='accepted')$('#installBar').hidden=true}catch(_){}updInstall();return}
  const step=(n,t)=>`<div class="istep s"><b>${n}</b><span>${t}</span></div>`;
  $('#instBody').innerHTML=IOS?
-  `<p class="s">Sur iPhone et iPad, ouvre le jeu dans <b>Safari</b> puis :</p>${step(1,'Touche le bouton <b>Partager</b> <span class="shr">⬆︎</span> en bas de l\'écran')}${step(2,'Choisis <b>Sur l\'écran d\'accueil</b>')}${step(3,'Touche <b>Ajouter</b> : l\'icône Paint Clash apparaît sur ton écran')}`:
+  `<p class="s">Sur iPhone et iPad, ouvre le jeu dans <b>Safari</b> puis :</p>${step(1,'Touche le bouton <b>Partager</b> <span class="shr">⬆︎</span> en bas de l\'écran')}${step(2,'Choisis <b>Sur l\'écran d\'accueil</b>')}${step(3,'Touche <b>Ajouter</b> : l\'icône Keyboard Rivals apparaît sur ton écran')}`:
   `<p class="s">Ouvre le menu <b>⋮</b> de ton navigateur puis choisis <b>Installer l'application</b> ou <b>Ajouter à l'écran d'accueil</b>.</p>`;
  $('#installM').hidden=false}
 press($('#installBtn'),doInstall);press($('#instGo'),doInstall);press($('#instOk'),()=>{$('#installM').hidden=true});
