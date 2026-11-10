@@ -702,7 +702,8 @@ body[data-r="home"] .halo{opacity:0}
 .ri.claim .rc b{visibility:hidden}
 /* ===== COULEURS FAÇON BRAWL + ÉCHELLE ===== */
 :root{--ink:#0b0b19;--slate1:#4d5679;--slate2:#2a3050;--slateD:#0b0b19;--royal:#1f64e8;--royalD:#1648b8;--deep:#0b0b19}
-#topbar,#home,.scr,#detail,#hud,#end,.modal,#toast,#count,#banner,#match,#elims,#death{zoom:var(--z,1)}
+#topbar,#home,#detail,#hud,#end,#toast,#count,#banner,#match,#elims,#death{zoom:var(--z,1)}
+.scr,.modal{zoom:calc(var(--z,1) * .85)}
 body[data-r="home"] #bg{background:radial-gradient(ellipse at 50% 40%,#9af6ff 0,#45cdf9 34%,#1a98ee 66%,#0b6ad6 100%)}
 .scr{background:radial-gradient(circle,rgba(10,40,150,.35) 0 30px,transparent 31px) 0 0/140px 140px,radial-gradient(circle,rgba(10,40,150,.3) 0 18px,transparent 19px) 70px 70px/140px 140px,linear-gradient(#2468ec,#1a4fcf)}
 .full{background:linear-gradient(#2468ec,#1a4fcf)}
@@ -1198,6 +1199,50 @@ input,textarea,select,.pvclaim b,.istep>b,.pcol.reach .pnode,.pvr.reach .pvl spa
 #specQ .endbtns{display:flex;gap:10px;width:100%}#specQ .endbtns .btn{flex:1}
 #specWho .rv{font-weight:400;color:#7dff5a}
 .lglogo2{width:min(78vw,420px);height:auto;display:block;margin:0 auto 10px;filter:drop-shadow(0 6px 0 rgba(0,0,0,.25));animation:ewin .5s cubic-bezier(.2,1.4,.4,1)}
+
+/* textes sombres : pas de contour noir */
+.ribbon,.ribbon *,.box,.box *,.marker,.marker *,#toast div,#toast div *,.unl,.unl *,.lvb,.lvb *,.mtile .tag,.code b,.plv,.plv *,.heroTag .hp,.pcol.reach .pnode,.pvclaim b,.pvr.reach .pvl span,.istep>b{--ts:none!important;text-shadow:none!important}
+/* profil */
+.pfb{display:flex!important;flex-direction:row!important;gap:16px;align-items:flex-start;padding-top:10px!important}
+.plf{flex:none;width:300px;display:flex;flex-direction:column;gap:14px}
+.pid{display:flex;gap:10px;align-items:center}
+.pav{position:relative;padding:0;border:0;background:none;cursor:pointer}
+.picn{display:grid;place-items:center;width:44px;height:44px;border-radius:10px;background:radial-gradient(circle at 50% 35%,rgba(255,255,255,.35),transparent 60%),var(--ib);border:3px solid #0b0b19;overflow:hidden}
+.picn .ic{width:70%;height:70%}.picn .cube.h3d{width:120%!important;height:120%!important;margin-top:18%}
+.picn.big{width:86px;height:86px;border-radius:14px;box-shadow:0 4px 0 #0b0b19}
+.ped{position:absolute;right:-8px;top:-8px;width:26px;height:26px;border-radius:50%;background:#fff;border:3px solid #0b0b19;display:grid;place-items:center}.ped svg{width:16px;height:16px}
+.pnm{display:flex;flex-direction:column;gap:6px;min-width:0;flex:1}
+.pnb{position:relative;font-size:22px;padding:8px 14px;border-radius:12px;background:#2b2d3f;border:3px solid #0b0b19;color:#ffd21f;text-align:left;cursor:pointer;box-shadow:inset 0 -4px 0 rgba(0,0,0,.3)}
+.ptag{font-size:15px;color:#bcd2ff}
+.bcard{position:relative;display:flex;flex-direction:column;align-items:center;width:100%;aspect-ratio:1/1.05;padding:0;border:4px solid #fff;border-radius:6px;overflow:hidden;cursor:pointer;transform:rotate(-2deg);box-shadow:0 6px 0 rgba(0,0,0,.3);background:none}
+.bcbg{position:absolute;inset:0;background:repeating-conic-gradient(from 10deg at 30% 70%,rgba(255,240,150,.35) 0 6deg,transparent 6deg 22deg),linear-gradient(135deg,#ffcf4a,#d98a12)}
+.bcard .cube.h3d{position:relative;width:88%!important;height:auto!important;margin-top:4%}
+.bcn{position:absolute;left:0;right:0;bottom:0;padding:6px 10px;background:rgba(11,11,25,.82);text-align:left;display:flex;flex-direction:column}
+.bcn b{font-weight:400;font-size:22px;color:#e88bff}.bcn small{font-size:15px;color:#ffd21f}
+.bcl{position:absolute;right:8px;top:8px;width:46px}
+.prt{flex:1;min-width:0;display:flex;flex-direction:column;gap:12px;background:linear-gradient(#3a2fb0,#2a2287);border:4px solid #0b0b19;border-radius:16px;padding:12px}
+.pblk h4{margin:0 0 8px;font-weight:400;font-size:18px;display:flex;justify-content:space-between;gap:8px}.pblk h4 span{font-size:14px;color:#cfd7ff}
+.ptro{display:flex;align-items:center;gap:16px;background:rgba(0,0,0,.25);border-radius:12px;padding:8px 14px}
+.pemb{width:60px}.pbig{display:flex;align-items:center;gap:6px;font-size:36px}.pbig .ic{width:36px;height:36px}
+.psm{margin-left:auto;display:flex;flex-direction:column;align-items:center;font-size:24px}.psm small{font-size:12px;color:#cfd7ff}
+.phg{display:flex;flex-wrap:wrap;gap:8px}
+.phr{width:54px;height:54px;border-radius:12px;background:#4a3fd0;border:3px solid #0b0b19;display:grid;place-items:center;overflow:hidden}
+.phr .cube.h3d{width:64px!important;height:64px!important}.phr.lk{filter:grayscale(1) brightness(.5)}
+.pst{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.pst>div{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;column-gap:8px;align-items:center;background:rgba(0,0,0,.25);border-radius:12px;padding:8px 10px}
+.pst .ic,.pst .fsk{grid-row:span 2;width:30px;height:30px;margin:0}.pst small{font-size:12px;color:#cfd7ff}.pst b{font-weight:400;font-size:22px}
+.pblk.acc{display:flex;align-items:center;justify-content:space-between;gap:10px;background:rgba(0,0,0,.25);border-radius:12px;padding:8px 12px}
+.pblk.acc span{display:flex;flex-direction:column;font-size:14px;min-width:0;overflow:hidden;text-overflow:ellipsis}.pblk.acc small{font-size:12px;color:#7dff5a}
+.prt.pick h4{margin:0;font-weight:400;font-size:20px;text-align:center}
+.pig{display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:10px}
+.pio{padding:0;border:0;background:none;cursor:pointer;display:grid;place-items:center}
+.pio .picn{width:76px;height:76px;border-radius:12px}.pio.on .picn{outline:4px solid #ffd21f;outline-offset:2px}
+.ptl{display:flex;flex-direction:column;gap:8px}
+.pti{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px;border:3px solid #0b0b19;border-radius:12px;background:linear-gradient(#5cb8ff,#2f86e8);box-shadow:inset 0 -4px 0 #1f5fb8;cursor:pointer}
+.pti b{font-weight:400;font-size:20px;color:#ffd21f}.pti small{display:flex;gap:4px;align-items:center;font-size:12px}.pti small .ic{width:14px;height:14px}
+.pti.on{outline:3px solid #fff;outline-offset:2px}.pti.lk{filter:grayscale(.8) brightness(.7);cursor:not-allowed}
+@media (orientation:portrait){.pfb{flex-direction:column!important;align-items:stretch}.plf{width:auto}.bcard{width:70%;align-self:center}.pst{grid-template-columns:repeat(2,1fr)}}
+#avatarBtn .picn{width:100%;height:100%;border:0;border-radius:inherit}
 </style>
 
 </head>
@@ -1256,6 +1301,7 @@ input,textarea,select,.pvclaim b,.istep>b,.pcol.reach .pnode,.pvr.reach .pvl spa
 <div id="sPass" class="scr" hidden></div>
 <div id="sRoad" class="scr" hidden></div>
 <div id="sLead" class="scr" hidden></div>
+<div id="sProf" class="scr" hidden></div>
 <div id="sModes" class="scr" hidden></div>
 <div id="party" class="scr" hidden></div>
 <div id="match" class="full mmk" hidden><div class="spin"></div><h2 id="mmTitle" class="s">RECHERCHE DE JOUEURS…</h2><p id="mmTxt" class="s"></p></div>
@@ -1379,7 +1425,7 @@ const I={
  gift:'<svg viewBox="0 0 48 48"><rect x="7" y="18" width="34" height="10" rx="2" fill="#ff5a63" stroke="#122a6b" stroke-width="3"/><rect x="10" y="28" width="28" height="15" fill="#ff8a90" stroke="#122a6b" stroke-width="3"/><path d="M24 18v25" stroke="#ffd21f" stroke-width="5"/><path d="M24 18c-6-9-14-6-10 0zM24 18c6-9 14-6 10 0z" fill="#ffd21f" stroke="#122a6b" stroke-width="2.5"/></svg>'
 };
 const img=n=>`<img class="u" src="ui/${n}.png?v=17" alt="">`;
-Object.assign(I,{coin:img('n_coin'),gem:img('n_gem'),star:img('star'),shop:img('nav_shop'),heroes:img('nav_deck'),missions:img('missions'),world:img('nav_portal'),play:img('nav_play'),chest:img('ch_wood'),gift:img('ch_gold'),lock:img('i_lock'),check:img('i_check'),x:img('i_x'),gear:img('i_info')});
+Object.assign(I,{coin:img('n_coin'),gem:img('n_gem'),star:img('star'),shop:img('nav_shop'),heroes:img('nav_deck'),missions:img('missions'),world:img('nav_portal'),play:img('nav_play'),chest:img('ch_wood'),gift:img('ch_gold'),lock:img('i_lock'),check:img('i_check'),x:img('i_x'),gear:img('i_info'),shield:img('p_shield'),bomb:img('p_bomb'),clap:img('p_clap'),calendar:img('p_calendar')});
 const ico=k=>`<span class="ic">${I[k]}</span>`;
 const stitle=t=>`<span class="stitle"><span class="b1">${t}</span><span class="b2">${t}</span><span class="f">${t}</span></span>`;
 function fillIcons(){document.querySelectorAll('[data-i]').forEach(s=>{if(!s.innerHTML)s.innerHTML=I[s.dataset.i]})}
@@ -1418,9 +1464,9 @@ const TROPH_TXT=['Classique (Solo/Duo/Trio) : +0,6 par %, +15 si 100 %','Équipe
 const leagueIdx=s=>{let k=0;LG.forEach((l,i)=>{if(s>=l.t)k=i});return k};
 const REGIONS=['Île Guimauve','Baie Pastèque','Mont Sorbet','Récif Bonbon','Plaine Caramel','Volcan Piment','Archipel Kiwi','Pic Myrtille','Lagon Menthe','Dune Praliné'];
 const BOTN=['Kiwi','Zapp','Mochi','Turbo','Pixel','Nova','Gnocchi','Fizz','Taco','Bulle','Yuzu','Rex','Pruneau','Lulu','Krok'];
-const MTYPES=[{k:'play',d:n=>`Joue ${n} parties`,r:[3,5]},{k:'pct',d:n=>`Capture ${n} % au total`,r:[40,90]},{k:'kill',d:n=>`Élimine ${n} adversaires`,r:[3,7]},{k:'top3',d:n=>`Finis ${n} fois dans le top 3`,r:[2,4]},{k:'stars',d:n=>`Gagne ${n} trophées en Classé`,r:[15,30]}];
+const MTYPES=[{k:'play',d:n=>`Joue ${n} parties`,r:[3,5]},{k:'pct',d:n=>`Capture ${n} % au total`,r:[40,90]},{k:'kill',d:n=>`Élimine ${n} adversaires`,r:[3,7]},{k:'top3',d:n=>`Finis ${n} fois dans le top 3`,r:[2,4]},{k:'stars',d:n=>`Gagne ${n} trophées`,r:[15,30]}];
 
-const DEF={stars:0,coins:400,gems:15,owned:['cubo','pepin'],levels:{cubo:1,pepin:1},hero:'cubo',name:'Dwenyx',best:0,claimed:[],muted:false,region:0,regionPct:0,missions:[],missDay:'',giftDay:'',xp:0,passClaimed:[],friends:[],mode:'ranked',roadClaimed:[],passPrem:false,passClaimedP:[],offerDay:'',offerBought:[]};
+const DEF={stars:0,coins:400,gems:15,owned:['cubo','pepin'],levels:{cubo:1,pepin:1},hero:'cubo',name:'Dwenyx',best:0,claimed:[],muted:false,region:0,regionPct:0,missions:[],missDay:'',giftDay:'',xp:0,passClaimed:[],friends:[],mode:'ranked',roadClaimed:[],passPrem:false,passClaimedP:[],offerDay:'',offerBought:[],icon:'h:cubo',title:'t0',hiStars:0,wins:0,teamWins:0,games:0,kills:0};
 let save=JSON.parse(JSON.stringify(DEF));
 try{const s=JSON.parse(localStorage.getItem('paintclash_v2')||'null');if(s)save=Object.assign(save,s)}catch(e){}
 const persist=()=>{try{localStorage.setItem('paintclash_v2',JSON.stringify(save))}catch(e){}if(typeof cloudQueue==='function')cloudQueue()};
@@ -1928,7 +1974,7 @@ function finish(reason){
  const pl=won?1:1+ents.filter(e=>e&&e!==player&&sc(e)>my).length;
  let dS=0;if(ranked){if(gameMode==='team'){dS=(won?12:-6)+player.kills*3+Math.round(pct*.4);dS=Math.max(-10,Math.min(30,dS))}else{dS=Math.round(pct*.6+player.kills*3-6)+(won?15:0);dS=Math.max(-10,Math.min(40,dS))}if(save.stars+dS<0)dS=-save.stars}
  const co=Math.round((20+pct*3+player.kills*15+(won?150:0))*coinMult);
- const oldS=save.stars;save.stars+=dS;save.coins+=co;if(pct>save.best)save.best=pct;
+ const oldS=save.stars;save.stars+=dS;save.coins+=co;if(pct>save.best)save.best=pct;save.hiStars=Math.max(save.hiStars||0,save.stars);save.games=(save.games||0)+1;save.kills=(save.kills||0)+player.kills;if(won){if(gameMode==='team'||tSize()>1)save.teamWins=(save.teamWins||0)+1;else save.wins=(save.wins||0)+1}
  ensureMissions();
  const mp={play:1,pct:Math.floor(pct),kill:player.kills,top3:pl<=3?1:0,stars:Math.max(0,dS)};
  save.missions.forEach(m=>{if(!m.done)m.p=Math.min(m.n,m.p+(mp[m.k]||0))});
@@ -2337,7 +2383,7 @@ cv.addEventListener('pointerup',endRot);cv.addEventListener('pointercancel',endR
 function setDot(id,n){const e=$('#'+id);if(!e)return;e.hidden=!n;e.textContent=n>9?'9+':n}
 function updTop(){
  roomRetrack();$('#mCo').textContent=fmt(save.coins);$('#mGe').textContent=fmt(save.gems);
- $('#avatarBtn').innerHTML=heroIcon(HE(save.hero));$('#pName').textContent=save.name;$('#mTr').textContent=save.stars;
+ $('#avatarBtn').innerHTML=iconHTML(save.icon);$('#pName').textContent=save.name;$('#mTr').textContent=save.stars;
  const nx=roadNext(),pr=[...ROAD].reverse().find(r=>r.t<=save.stars),a=pr?pr.t:0,cl=roadClaimable().length;
  $('#tFill').style.width=(nx?Math.max(4,(save.stars-a)/(nx.t-a)*100):100)+'%';
  $('#tNext').innerHTML=(cl?img('p_chest'):nx?rewArt(nx).h:img('p_crown'));
@@ -2356,14 +2402,14 @@ function updHome(){
  const pt=$('#playGo .pbt');if(pt){pt.textContent=ROOM?(ROOM.ready?'PRÊT ✓':'PRÊT'):'JOUER';$('#playGo').classList.toggle('rdyOn',!!(ROOM&&ROOM.ready))}
 }
 function refresh2(){updTop();if(tab==='home')updHome();if(tab==='shop')renderShop();if(tab==='pass')renderPass();if(tab==='road')renderRoad();if(tab==='heroes')renderHeroes();if(tab==='missions')renderMissions()}
-const SCR=['#sLead','#sShop','#sHeroes','#sMissions','#sPass','#sRoad','#sModes','#party'];
+const SCR=['#sProf','#sLead','#sShop','#sHeroes','#sMissions','#sPass','#sRoad','#sModes','#party'];
 function closeAll(){[...SCR,'#settings','#profile','#invite','#detail','#chestM','#match'].forEach(s=>$(s).hidden=true);detailOpen=false}
 function go(t){
  tab=t;closeAll();document.body.dataset.tab=t;document.body.dataset.r='home';
  const lob=t==='home';$('#home').hidden=!lob;$('#topbar').hidden=!lob;
  setStage(save.hero);
  if(lob)updHome();
- if(t==='shop')renderShop();if(t==='heroes')renderHeroes();if(t==='missions')renderMissions();if(t==='pass')renderPass();if(t==='road')renderRoad();if(t==='modes'){modePick=null;renderModes()}if(t==='party')renderParty();if(t==='lead')renderLead();
+ if(t==='shop')renderShop();if(t==='heroes')renderHeroes();if(t==='missions')renderMissions();if(t==='pass')renderPass();if(t==='road')renderRoad();if(t==='modes'){modePick=null;renderModes()}if(t==='party')renderParty();if(t==='lead')renderLead();if(t==='prof'){profTab=null;renderProf()}
  updTop();
 }
 const setTab=go;
@@ -2664,12 +2710,12 @@ async function rtLogin(){if(!RT.on||!AUTH.on)return;
 function rtLogout(){try{RT.online&&RT.sb.removeChannel(RT.online)}catch(_){}try{RT.inbox&&RT.sb.removeChannel(RT.inbox)}catch(_){}RT.online=RT.inbox=null;RT.prof=null;RT.friends=[];RT.incoming=[];RT.outgoing=[];RT.frLoaded=false;RT.onlineSet=new Set();if(ROOM)roomLeave(true)}
 
 // LOBBY : boutons
-document.querySelectorAll('[data-go]').forEach(b=>press(b,()=>{const t=b.dataset.go;if(t==='profile')openProfile();else if(t==='party')openParty();else go(t)}));
+document.querySelectorAll('[data-go]').forEach(b=>press(b,()=>{const t=b.dataset.go;if(t==='profile')go('prof');else if(t==='party')openParty();else go(t)}));
 press($('#plusL'),()=>openInvite());press($('#plusR'),()=>openInvite());
 press($('#trophyBtn'),()=>go('road'));press($('#passCard'),()=>go('pass'));press($('#modeBtn'),()=>go('modes'));
 press($('#playGo'),()=>{if(ROOM){ac();roomReady();return}const m=save.mode;if(m==='party')openParty();else play(m)});
 press($('#coinPill'),()=>{go('shop');setTimeout(()=>shopJump('coins'),80)});press($('#gemPill'),()=>{go('shop');setTimeout(()=>shopJump('gems'),80)});
-press($('#gearBtn'),openSettings);press($('#profileBtn'),()=>openProfile());
+press($('#gearBtn'),openSettings);press($('#profileBtn'),()=>go('prof'));
 
 /* ---------- APPLI INSTALLABLE ---------- */
 const STANDALONE=matchMedia('(display-mode: fullscreen)').matches||matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
@@ -2702,6 +2748,38 @@ function openSettings(){const p=RT.prof;$('#nameIn').value=p?p.name:save.name;$(
  let note='';if(p){const nx=p.nextRename;note=Date.now()<nx?`Pseudo unique. Prochain changement possible le ${new Date(nx).toLocaleDateString('fr-FR')}.`:'Pseudo unique : tu peux le changer une fois tous les 30 jours.';$('#nameIn').disabled=Date.now()<nx}else $('#nameIn').disabled=false;
  $('#rnNote').textContent=note;$('#settings').hidden=false}
 function openProfile(){const L=LG[leagueIdx(save.stars)],H=HE(save.hero);$('#profBox').innerHTML=`<div class="prh">${heroIcon(H,64)}<div><b class="s">${RT.prof?handle(RT.prof):esc(save.name)}</b><small class="s">${L.n}</small></div><span class="pre">${emblem(L)}</span></div><div class="cstats s"><div>Trophées<b>${save.stars}</b></div><div>Record de territoire<b>${save.best.toFixed(1)}%</b></div><div>Héros débloqués<b>${save.owned.length}/${HEROES.length}</b></div><div>Niveau du passe<b>${passLevel()}</b></div></div>`;$('#profBox').insertAdjacentHTML('beforeend',AUTH.on?`<div class="acct">${AUTH.pic?`<img src="${esc(AUTH.pic)}" alt="" referrerpolicy="no-referrer">`:''}<div class="s">${esc(AUTH.email)}<small id="syncTxt">Sauvegarde en ligne active</small></div><button class="btn btn-red" data-logout>DÉCONNEXION</button></div>`:`<div class="acct"><div class="s">Sauvegarde sur cet appareil uniquement<small>Connexion Google disponible sur paint-clash.vercel.app</small></div></div>`);$('#profile').hidden=false}
+
+// PROFIL façon carte de combat
+const ICOLS=['#2f8dff','#ffb81c','#d23ad8','#1f9d55','#e2475a','#7c5cff','#16b5c9','#ff7a1a'];
+const PICONS=['cup','star','crown','swords','heart','gem','bolt','gift','key','shield','bomb','clap'];
+const TITLES=[{id:'t0',n:'Nouveau rival'},{id:'t1',n:'Touche-à-tout',need:()=>save.games>=10,how:'Joue 10 parties'},{id:'t2',n:'Peintre fou',need:()=>(save.wins||0)>=1,how:'Gagne une partie en Solo'},
+ {id:'t3',n:'Roi du clavier',need:()=>(save.wins||0)>=10,how:'Gagne 10 parties en Solo'},{id:'t4',n:'Esprit d\'équipe',need:()=>(save.teamWins||0)>=5,how:'Gagne 5 parties en équipe'},
+ {id:'t5',n:'Le Sniper',need:()=>(save.kills||0)>=50,how:'Fais 50 éliminations'},{id:'t6',n:'Collectionneur',need:()=>save.owned.length>=6,how:'Débloque 6 héros'},
+ {id:'t7',n:'Légende',need:()=>save.stars>=1000,how:'Atteins 1000 trophées'},{id:'t8',n:'Main de fer',need:()=>(save.kills||0)>=200,how:'Fais 200 éliminations'}];
+const titleOf=()=>(TITLES.find(t=>t.id===save.title)||TITLES[0]).n;
+function iconHTML(id,cls=''){id=id||'h:cubo';if(id.startsWith('h:')){const h=HE(id.slice(2));return `<span class="picn ${cls}" style="--ib:${RAR[h.rar].ca}">${heroIcon(h)}</span>`}
+ const [k,c]=id.split(':');return `<span class="picn ${cls}" style="--ib:${ICOLS[+c||0]}">${ico(k)}</span>`}
+let profTab=null;
+function renderProf(){const L=LG[leagueIdx(save.stars)],H=HE(save.hero),hs=Math.max(save.hiStars||0,save.stars);
+ const nm=RT.prof?esc(RT.prof.name):esc(save.name),tag=RT.prof?'#'+RT.prof.tag:'';
+ const card=`<button class="bcard" data-ptab="title"><span class="bcbg"></span>${heroIcon(H)}<span class="bcn"><b class="s">${nm}</b><small class="s">${esc(titleOf())}</small></span><span class="bcl">${emblem(L)}</span></button>`;
+ const heroes=HEROES.map(h=>`<span class="phr ${save.owned.includes(h.id)?'':'lk'}">${heroIcon(h)}</span>`).join('');
+ let right='';
+ if(!profTab){right=`<div class="prt"><div class="pblk"><h4 class="s">ROUTE DES TROPHÉES</h4><div class="ptro"><span class="pemb">${emblem(L)}</span><span class="pbig s">${ico('cup')}${fmt(save.stars)}</span><span class="psm s"><small>RECORD</small>${fmt(hs)}</span></div></div>
+  <div class="pblk"><h4 class="s">HÉROS <span>${save.owned.length} / ${HEROES.length} débloqués</span></h4><div class="phg">${heroes}</div></div>
+  <div class="pblk"><h4 class="s">STATISTIQUES</h4><div class="pst s"><div>${ico('cup')}<small>Victoires solo</small><b>${fmt(save.wins||0)}</b></div><div>${ico('swords')}<small>Victoires équipe</small><b>${fmt(save.teamWins||0)}</b></div><div><img class="fsk" src="ui/n_skull.png" alt=""><small>Éliminations</small><b>${fmt(save.kills||0)}</b></div><div>${ico('calendar')}<small>Parties</small><b>${fmt(save.games||0)}</b></div><div>${ico('star')}<small>Record de territoire</small><b>${(save.best||0).toFixed(1)} %</b></div><div>${ico('pass')}<small>Niveau du passe</small><b>${passLevel()}</b></div></div></div>
+  <div class="pblk acc">${AUTH.on?`<span class="s">${esc(AUTH.email)}<small id="syncTxt">Sauvegarde en ligne active</small></span><button class="btn btn-red" data-logout>DÉCONNEXION</button>`:`<span class="s">Sauvegarde sur cet appareil uniquement</span>`}</div></div>`}
+ else if(profTab==='icon'){const opts=[...HEROES.filter(h=>save.owned.includes(h.id)).map(h=>'h:'+h.id),...PICONS.map((k,i)=>k+':'+(i%ICOLS.length))];
+  right=`<div class="prt pick"><h4 class="s">CHOISIS TON ICÔNE</h4><div class="pig">${opts.map(o=>`<button class="pio ${save.icon===o?'on':''}" data-icon="${o}">${iconHTML(o)}</button>`).join('')}</div></div>`}
+ else if(profTab==='title'){right=`<div class="prt pick"><h4 class="s">CHOISIS TON TITRE</h4><div class="ptl">${TITLES.map(t=>{const ok=!t.need||t.need();return `<button class="pti ${save.title===t.id?'on':''} ${ok?'':'lk'}" data-title="${t.id}" ${ok?'':'disabled'}><b class="s">${esc(t.n)}</b>${ok?'':`<small class="s">${ico('lock')}${t.how}</small>`}</button>`}).join('')}</div></div>`}
+ const left=`<div class="plf"><div class="pid"><button class="pav" data-ptab="icon">${iconHTML(save.icon,'big')}<span class="ped"><svg viewBox="0 0 24 24"><path d="M4 20l1-5L15 5l4 4L9 19z" fill="#ffd21f" stroke="#0b0b19" stroke-width="2.4" stroke-linejoin="round"/></svg></span></button><div class="pnm"><button class="pnb s" data-pedit>${nm}<span class="ped"><svg viewBox="0 0 24 24"><path d="M4 20l1-5L15 5l4 4L9 19z" fill="#ffd21f" stroke="#0b0b19" stroke-width="2.4" stroke-linejoin="round"/></svg></span></button><span class="ptag s">${tag||'Hors ligne'}</span></div></div>${card}</div>`;
+ show('#sProf',shead(profTab==='icon'?'ICÔNE':profTab==='title'?'TITRE':'PROFIL')+`<div class="sbody pfb">${left}${right}</div>`)}
+$('#sProf').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+ if(b.dataset.ptab){ac();sfx.click();profTab=profTab===b.dataset.ptab?null:b.dataset.ptab;renderProf();return}
+ if(b.dataset.icon){ac();sfx.click();save.icon=b.dataset.icon;persist();profTab=null;renderProf();updTop();return}
+ if(b.dataset.title&&!b.disabled){ac();sfx.click();save.title=b.dataset.title;persist();profTab=null;renderProf();return}
+ if(b.hasAttribute('data-pedit')){ac();sfx.click();openSettings();return}
+ if(b.hasAttribute('data-logout')){ac();sfx.click();logout();go('home')}});
 function openInvite(){if(!AUTH.on||!RT.prof){openParty();return}const fr=RT.friends.filter(p=>isOn(p.id));
  $('#invList').innerHTML=fr.length?fr.map(p=>`<div class="friend on"><span class="dot"></span>${heroIcon(HE(p.hero||'cubo'),34)}<span class="fn s"><b>${handle(p)}</b><small>En ligne</small></span><button class="btn btn-green" data-qinv="${p.id}">INVITER</button></div>`).join(''):'<p class="note s">Aucun ami en ligne pour le moment.</p>';$('#invite').hidden=false;loadFriends()}
 $('#invList').addEventListener('click',e=>{const b=e.target.closest('[data-qinv]');if(!b||b.disabled)return;ac();sfx.click();$('#invite').hidden=true;inviteFriend(b.dataset.qinv)});
@@ -2709,7 +2787,7 @@ press($('#invClose'),()=>{$('#invite').hidden=true});
 press($('#invNo'),()=>{$('#invPop').hidden=true});press($('#invYes'),()=>{$('#invPop').hidden=true;if(invData){if(state!=='menu'&&state!=='end'){toast('Termine ta partie avant de rejoindre');return}if(state==='end')goHome();roomJoin(invData.code)}});press($('#invManage'),()=>{$('#invite').hidden=true;go('party')});
 $('#profBox').addEventListener('click',e=>{if(e.target.closest('[data-logout]')){ac();sfx.click();logout()}});
 press($('#profClose'),()=>{$('#profile').hidden=true});press($('#profEdit'),()=>{$('#profile').hidden=true;openSettings()});
-press($('#specQuit'),()=>{$('#specQ').hidden=false});press($('#specStay'),()=>{$('#specQ').hidden=true});press($('#specLeave'),()=>{$('#specQ').hidden=true;finish('dead')});
+press($('#specQuit'),()=>{if(tSize()===1){finish('dead');return}$('#specQ').hidden=false});press($('#specStay'),()=>{$('#specQ').hidden=true});press($('#specLeave'),()=>{$('#specQ').hidden=true;finish('dead')});
 press($('#soundBtn'),()=>{save.muted=!save.muted;persist();updTop()});
 const QTXT={low:'Plus fluide : moins de détails, pas de contour sur les persos',med:'Bon équilibre pour la plupart des téléphones',high:'Le plus beau, pour les PC et téléphones puissants',auto:"S'adapte tout seul pour rester fluide"};
 function updQ(){$('#qSel').querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.q===QUAL));$('#qNote').textContent=QTXT[QUAL]}
