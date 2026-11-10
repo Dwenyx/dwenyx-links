@@ -1130,6 +1130,25 @@ input,textarea,select,.pvclaim b,.istep>b,.pcol.reach .pnode,.pvr.reach .pvl spa
 @keyframes rotph{0%,25%{transform:rotate(0)}55%,100%{transform:rotate(-90deg)}}
 @media (orientation:portrait) and (pointer:coarse){#rotate{display:flex}}
 #hint .tapimg{animation:none!important;transform:rotate(-20deg)}
+
+/* tous les boutons au style du bouton JOUER */
+.btn{--t:#8fd2ff;--m:#3fa2ff;--b:#1f6fe0;--d:#1450b0;border:4px solid #0b0b19!important;border-radius:16px!important;overflow:hidden;
+ background:linear-gradient(175deg,var(--t) 0%,var(--m) 40%,var(--b) 100%)!important;
+ box-shadow:inset 0 -7px 0 var(--d),inset 0 4px 0 rgba(255,255,255,.7),0 5px 0 #0b0b19,0 9px 14px rgba(0,0,0,.22)!important;color:#fff;transition:transform .08s}
+.btn::after{content:"";position:absolute;top:-30%;bottom:-30%;width:30%;left:-60%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-20deg);animation:pbShine 3.4s ease-in-out infinite;pointer-events:none}
+.btn:active,.btn.press{transform:translateY(4px) scale(.98)!important;box-shadow:inset 0 -4px 0 var(--d),inset 0 4px 0 rgba(255,255,255,.7),0 1px 0 #0b0b19!important;filter:none}
+.btn>*{position:relative;z-index:1}
+.btn-blue{--t:#8fd2ff;--m:#3fa2ff;--b:#1f6fe0;--d:#1450b0}
+.btn-green{--t:#c9ff8a;--m:#6fdc3a;--b:#2fa61c;--d:#1f7d10}
+.btn-yellow{--t:#fff58a;--m:#ffd21f;--b:#ffaa00;--d:#e07d00}
+.btn-red{--t:#ffa0aa;--m:#ff4d5e;--b:#d61f3a;--d:#a1102a}
+.btn-grey{--t:#d7deeb;--m:#a3aec4;--b:#7f8ba6;--d:#5b6680}
+.btn-premium{--t:#ffb6f6;--m:#ef5ce4;--b:#b52ac8;--d:#7d1694;background:linear-gradient(175deg,var(--t) 0%,var(--m) 40%,var(--b) 100%)!important}
+.btn[disabled]:not(.is-eq){--t:#d7deeb;--m:#a3aec4;--b:#7f8ba6;--d:#5b6680}
+.btn[disabled]::after{display:none}
+.btn[disabled]:active{transform:none!important}
+.shead .hb,.lsq{border:4px solid #0b0b19!important;border-radius:14px!important;background:linear-gradient(175deg,#8fd2ff 0%,#3fa2ff 40%,#1f6fe0 100%)!important;box-shadow:inset 0 -6px 0 #1450b0,inset 0 3px 0 rgba(255,255,255,.7),0 4px 0 #0b0b19!important}
+.shead .hb:active,.lsq:active{transform:translateY(3px);box-shadow:inset 0 -3px 0 #1450b0,inset 0 3px 0 rgba(255,255,255,.7),0 1px 0 #0b0b19!important}
 </style>
 
 </head>
