@@ -1714,14 +1714,14 @@ function cutFx(v,k){if(v===player){sfx.out();shake=Math.max(shake,.3);banner('CO
 function burnTick(e,dt){if(!e.cut||!e.alive)return;e.cut.acc+=FUSE*dt;
  while(e.cut&&e.cut.acc>=1){e.cut.acc-=1;const q=e.trailCells.shift();
   if(q===undefined){const k=ents[e.cut.by];e.cut=null;kill(e,k||null);return}
-  if(trail[q]===e.id){trail[q]=-1;refresh(q,0);if(player&&Math.abs(q%N-player.x)+Math.abs(((q/N)|0)-player.z)<26)burst(q%N+.5,.8,((q/N)|0)+.5,0xff9a1f,2,4)}}}
+  if(trail[q]===e.id){trail[q]=-1;refresh(q,0);if(player&&Math.abs(q%N-EAR().x)+Math.abs(((q/N)|0)-EAR().z)<26)burst(q%N+.5,.8,((q/N)|0)+.5,0xff9a1f,2,4)}}}
 function savedFx(e){if(e===player){banner('SAUVÉ !');sfx.up();setTimeout(()=>{if($('#banner').textContent.includes('SAUV'))$('#banner').innerHTML=''},1100)}else feedMsg(`${e.name} s'en est sorti !`)}
 function kill(v,k){
  if(!v.alive)return;v.alive=false;v.cut=null;v.deathCount=counts[v.id]||0;if(NET.role==='host')NET.ev.push({t:'k',v:v.id,k:k?k.id:-1,p:v.deathCount});
  for(const c of v.trailCells)if(trail[c]===v.id){trail[c]=-1;refresh(c,Math.random()*.15)}
  v.trailCells=[];
  {const heir=gameMode==='team'?ents.find(o=>o&&o!==v&&o.alive&&o.team===v.team):null;for(let c=0;c<TOT;c++)if(own[c]===v.id){if(heir)own[c]=heir.id;else{own[c]=-1;refresh(c,.1+Math.random()*.5)}}}
- const near=Math.hypot(v.x-player.x,v.z-player.z)<22;
+ const near=Math.hypot(v.x-EAR().x,v.z-EAR().z)<22;
  if(near){burst(v.x,1,v.z,v.color,40,7);burst(v.x,1,v.z,0x122a6b,10,5)}
  v.dying=now;recount();
  if(k&&k!==v){k.kills++;feedKill(k,v);if(k===player){elimToast(v);sfx.kill();shake=.55}else if(near)sfx.boom()}
@@ -1740,12 +1740,13 @@ function capture(e){
  e.trailCells=[];recount();if(NET.role==='host')NET.ev.push({t:'c',id:e.id,g:gained});
  victims.forEach(v=>kill(ents[v],e));
  {const ts=gameMode==='team'?teamScores():null;for(const o of ents)if(o&&o.alive&&foe(e,o)&&(ts?ts[o.team]:counts[o.id])===0)kill(o,e)}
- if(Math.hypot(e.x-player.x,e.z-player.z)<24)for(const c of samples)burst(c%N+.5,1,((c/N)|0)+.5,e.color,2,4);
+ if(Math.hypot(e.x-EAR().x,e.z-EAR().z)<24)for(const c of samples)burst(c%N+.5,1,((c/N)|0)+.5,e.color,2,4);
+ if(e!==player&&e===EAR())sfx.capture(gained);
  if(e===player){sfx.capture(gained);floatText('+'+(gained/PTOT*100).toFixed(1)+'%',e);shake=Math.max(shake,Math.min(.35,gained/400));burst(e.x,1.2,e.z,0xffd21f,14,6)}
 }
 function enterCell(e,i,j){
  const c=ix(i,j);e.ci=i;e.cj=j;const t=trail[c];
- if(e===player)keyClick(.5);else if(player&&Math.abs(e.x-player.x)+Math.abs(e.z-player.z)<7)keyClick(.15);
+ if(e===EAR())keyClick(.5);else if(player&&Math.abs(e.x-EAR().x)+Math.abs(e.z-EAR().z)<7)keyClick(.15);
  if(t>=0){if(t===e.id){const n=e.trailCells.length;if(e.trailCells.lastIndexOf(c)>=n-4)return;kill(e,e);return}
   const o=ents[t];if(foe(e,o))cutTrail(o,e,c);else{if(mineC(e,c))homeIn(e);return}}
  if(mineC(e,c))homeIn(e)
@@ -1885,7 +1886,8 @@ async function play(mode){
 }
 const startGame=m=>play(m);
 let specOn=false;
-let specOn2=false,specCur=null;
+let specOn2=false,specCur=null,earE=null;
+function EAR(){return earE||player}
 function specTarget(){if(player.alive||player.dying&&now-player.dying<1.6)return player;
  if(specCur&&specCur.alive&&(player.team<0||specCur.team===player.team))return specCur;
  const al=ents.filter(e=>e&&e.alive&&e!==player);let pool=player.team>=0?al.filter(e=>e.team===player.team):al;
@@ -2110,19 +2112,19 @@ function clientMsg(m){if(!m||NET.role!=='client')return;
  else if(m.t==='bye'){NET.role='off';if(state!=='end'&&state!=='menu'){toast("L'hôte a quitté la partie");finish('quit')}}}
 function netEvent(v){
  if(v.t==='k'){const vic=ents[v.v],k=v.k>=0?ents[v.k]:null;if(!vic)return;
-  const near=player&&Math.hypot(vic.x-player.x,vic.z-player.z)<22;if(near)burst(vic.x,1,vic.z,vic.color,40,7);
+  const near=player&&Math.hypot(vic.x-EAR().x,vic.z-EAR().z)<22;if(near)burst(vic.x,1,vic.z,vic.color,40,7);
   feedKill(k&&k!==vic?k:null,vic);vic.deathCount=v.p;
   if(k===player&&vic!==player){elimToast(vic);sfx.kill();shake=.55}else if(near&&vic!==player)sfx.boom();
   if(vic===player){if(player.alive){player.alive=false;player.dying=now;sfx.die();shake=.8;state='dead';deathScreen(k&&k!==vic?k:null);setTimeout(enterSpec,2200)}}
   else{vic.alive=false;vic.dying=now}}
- else if(v.t==='c'){const e=ents[v.id];if(e===player){sfx.capture(v.g);floatText('+'+(v.g/PTOT*100).toFixed(1)+'%',e);shake=Math.max(shake,Math.min(.35,v.g/400));burst(e.x,1.2,e.z,0xffd21f,14,6)}}
+ else if(v.t==='c'){const e=ents[v.id];if(e&&e!==player&&e===EAR())sfx.capture(v.g);if(e===player){sfx.capture(v.g);floatText('+'+(v.g/PTOT*100).toFixed(1)+'%',e);shake=Math.max(shake,Math.min(.35,v.g/400));burst(e.x,1.2,e.z,0xffd21f,14,6)}}
  else if(v.t==='end'){matchOver=true;if(v.tm!==undefined){banner(gameMode==='team'?`VICTOIRE DES ${TEAMN[v.tm]} !`:player.team===v.tm?'VICTOIRE !':'DÉFAITE');setTimeout(()=>{$('#banner').innerHTML='';if(state!=='end'&&state!=='menu')finish(player.team===v.tm?'win':'lost')},1400)}else if(state!=='end'&&state!=='menu')finish(ents[v.w]===player?'win':'lost')}
  else if(v.t==='cut'){const vv=ents[v.v],kk=ents[v.k];if(vv)cutFx(vv,kk)}
  else if(v.t==='sv'){const e=ents[v.id];if(e)savedFx(e)}}
 function clientTick(dt){
  const k=Math.min(1,dt*10);
  for(const e of ents){if(!e||!e.alive||e.tx===undefined)continue;e.x+=(e.tx-e.x)*k;e.z+=(e.tz-e.z)*k;e.h+=angD(e.th,e.h)*k;
-  const ni=Math.max(0,Math.min(N-1,Math.floor(e.x))),nj=Math.max(0,Math.min(N-1,Math.floor(e.z)));if(e===player&&(ni!==e.ci||nj!==e.cj))keyClick(.5);e.ci=ni;e.cj=nj}
+  const ni=Math.max(0,Math.min(N-1,Math.floor(e.x))),nj=Math.max(0,Math.min(N-1,Math.floor(e.z)));if((ni!==e.ci||nj!==e.cj)){if(e===EAR())keyClick(.5);else if(Math.abs(e.x-EAR().x)+Math.abs(e.z-EAR().z)<7)keyClick(.15)}e.ci=ni;e.cj=nj}
  if(state==='play'&&player.alive){NET.inT-=dt;if(NET.inT<=0){NET.inT=.1;if(player.targetH!==NET.lastH){NET.lastH=player.targetH;try{NET.conn.send({t:'i',h:player.targetH})}catch(_){}}}}}
 function feedMsg(t){const f=$('#feed'),d=document.createElement('div');d.className='fk';d.innerHTML=`<span>${esc(t)}</span>`;f.prepend(d);while(f.children.length>4)f.lastChild.remove();setTimeout(()=>{d.style.opacity=0;setTimeout(()=>d.remove(),400)},4200)}
 // salon (lobby)
@@ -2175,6 +2177,7 @@ function adaptRes(ms){if(QUAL!=='auto')return;fpsAcc+=ms;fpsN++;fpsT+=ms;if(fpsT
  let np=PR;if(avg>21&&PR>.7)np=Math.max(.7,PR-.15);else if(avg<14&&PR<PR_MAX)np=Math.min(PR_MAX,PR+.1);
  if(Math.abs(np-PR)>.01){PR=np;resize()}}
 function frame(){
+ earE=(player&&!player.alive&&specOn2)?specTarget():player;
  const t=performance.now(),dt=Math.min(.05,(t-last)/1000);adaptRes(t-last);last=t;now+=dt;
  if(state==='count'){countT-=dt;const n=Math.ceil(countT-.6);if(n!==lastCount&&n>=0){lastCount=n;$('#count').innerHTML=`<span>${n>0?n:'GO !'}</span>`;n>0?sfx.tick():sfx.go()}
   if(countT<=.6){state='play';player.frozen=false;if(simOn)for(const e of ents)if(e&&e.bot)e.frozen=false;if(NET.role==='client'){try{NET.conn.send({t:'go'})}catch(_){}}setTimeout(()=>{$('#count').innerHTML=''},600)}}
