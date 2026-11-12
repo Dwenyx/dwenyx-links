@@ -1030,7 +1030,7 @@ body[data-r="home"] #bg{background:radial-gradient(ellipse at 50% 40%,#9af6ff 0,
 .cm .cbtn{width:auto!important;min-width:220px;padding-left:40px;padding-right:40px}
 
 /* contour du texte lisse (anneau d'ombres au lieu de text-stroke) */
-.s,.btn,.playbtn .pbt,.elim .en,#death .dt,#death .dp{-webkit-text-stroke:calc(2.5px + .2em) #0b0b19!important;paint-order:stroke fill!important;text-shadow:var(--ts)!important}
+.s,.btn,.playbtn .pbt,.elim .en,#death .dt,#death .dp{-webkit-text-stroke:0!important;text-shadow:var(--ts)!important}
 input,textarea,select{-webkit-text-stroke:0!important;paint-order:normal;text-shadow:none!important;color:#1b1f3a!important;-webkit-text-fill-color:#1b1f3a}
 input::placeholder{color:#8a93b8!important;-webkit-text-fill-color:#8a93b8}
 /* en-tête au-dessus des onglets */
@@ -1116,8 +1116,8 @@ html.app #topbar{padding-top:max(8px,env(safe-area-inset-top,0px))}
 
 /* contour noir de tous les textes */
 
-body,body *{--ts:0 .06em 0 #0b0b19}
-body *:not(input):not(textarea):not(select):not(.stitle):not(.stitle *){text-shadow:var(--ts);-webkit-text-stroke:calc(2.5px + .2em) #0b0b19;paint-order:stroke fill}
+body,body *{--o:clamp(1.7px,.11em,4px);--od:calc(var(--o)*.72);--ts:var(--o) 0 0 #0b0b19,calc(var(--o)*-1) 0 0 #0b0b19,0 var(--o) 0 #0b0b19,0 calc(var(--o)*-1) 0 #0b0b19,var(--od) var(--od) 0 #0b0b19,calc(var(--od)*-1) var(--od) 0 #0b0b19,var(--od) calc(var(--od)*-1) 0 #0b0b19,calc(var(--od)*-1) calc(var(--od)*-1) 0 #0b0b19,0 calc(var(--o) + .07em) 0 #0b0b19,var(--od) calc(var(--o) + .05em) 0 #0b0b19,calc(var(--od)*-1) calc(var(--o) + .05em) 0 #0b0b19}
+body *:not(input):not(textarea):not(select):not(.stitle):not(.stitle *){text-shadow:var(--ts);-webkit-text-stroke:0}
 body{text-shadow:var(--ts)}
 input,textarea,select,.pvclaim b,.istep>b,.pcol.reach .pnode,.pvr.reach .pvl span{text-shadow:none!important}
 
@@ -1618,8 +1618,8 @@ input,textarea{-webkit-user-select:text;user-select:text}
 .ri.claim .rc{animation:none!important;box-shadow:0 0 22px 6px rgba(255,255,255,.35)!important}
 .vc{border-bottom-color:#1b2580!important}.vc:active{border-bottom-width:4px!important;transform:translateY(3px)}
 /* contour des textes : épaisseur régulière */
-.s,.btn,.playbtn .pbt,.elim .en,#death .dt,#death .dp{-webkit-text-stroke:clamp(3px,.17em,7px) #0b0b19!important}
-body *:not(input):not(textarea):not(select):not(.stitle):not(.stitle *){-webkit-text-stroke-width:clamp(3px,.17em,7px)}
+.s,.btn,.playbtn .pbt,.elim .en,#death .dt,#death .dp{-webkit-text-stroke:0!important}
+body *:not(input):not(textarea):not(select):not(.stitle):not(.stitle *):not(.rtitle){-webkit-text-stroke-width:0}
 
 /* bouton central : bascule 3D play <-> yeux */
 #bnPlay{perspective:400px;transition:scale .35s cubic-bezier(.3,1.5,.5,1),transform .08s,box-shadow .08s}
@@ -1653,6 +1653,54 @@ body *:not(input):not(textarea):not(select):not(.stitle):not(.stitle *){-webkit-
  #home .modec .mtx b{font-size:16px!important;max-width:100%}
  #home .modec .mtx em{font-size:11px!important;color:#fff3c4;max-width:100%}
 }
+
+/* contour noir : ombres (pas de -webkit-text-stroke qui mange les lettres) */
+.bdg,.plus3d,#death .db,.sfoot s.old{text-shadow:var(--ts)!important}
+
+/* menus sans en-tête */
+#sHeroes .sbody,#sMissions .sbody,#sLead .sbody{padding-top:calc(env(safe-area-inset-top,0px) + 18px)}
+/* fond animé de tous les menus */
+.scr{background:linear-gradient(180deg,#2f55ff,#1f8cff 60%,#25b2ff)!important;isolation:isolate;overflow:hidden}
+.scr::before{content:"";position:absolute;left:-120px;top:-120px;right:0;bottom:0;z-index:-1;pointer-events:none;background:radial-gradient(circle,rgba(255,255,255,.08) 0 26px,transparent 27px) 0 0/120px 120px,radial-gradient(circle,rgba(255,255,255,.055) 0 15px,transparent 16px) 60px 60px/120px 120px;animation:scrPan 9s linear infinite;will-change:transform}
+.scr::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(ellipse at 50% 0%,rgba(255,255,255,.18),transparent 60%)}
+@keyframes scrPan{to{transform:translate(120px,120px)}}
+@media (prefers-reduced-motion:reduce){.scr::before{animation:none}}
+
+/* notifications rondes */
+.bdg{min-width:0!important;width:26px!important;height:26px!important;padding:0!important;border-radius:50%!important;font-size:13px!important;line-height:1!important;letter-spacing:-.02em}
+#bnav .bn .bdg{width:25px!important;height:25px!important;font-size:12px!important}
+/* avatar qui remplit tout le carré */
+#avatarBtn{overflow:hidden;background:transparent!important;padding:0!important}
+#avatarBtn .picn{border-radius:0!important;width:100%!important;height:100%!important}
+
+/* PC / paysage : passe dans la barre du haut */
+#passTop{position:relative;overflow:visible;display:flex;align-items:center;gap:8px;padding:4px 10px 4px 6px;min-width:190px;background:linear-gradient(#ffe86e,#ffbf1a);border-color:#0b0b19;box-shadow:0 4px 0 #0b0b19;color:#fff;font:inherit;cursor:pointer}
+#passTop .ptk2{width:44px;height:44px;flex:none;display:grid;place-items:center;transform:rotate(-8deg)}
+#passTop .ptk2 img,#passTop .ptk2 svg{width:44px;height:44px}
+#passTop .ptl{flex:1;display:flex;flex-direction:column;gap:5px;min-width:0;align-items:flex-start}
+#passTop .ptl b{font-weight:400;font-size:18px;line-height:1}
+#passTop .ptbar{display:block;width:100%;height:12px;border-radius:99px;background:#5a3a10;border:2px solid #0b0b19;overflow:hidden}
+#passTop .ptbar i{display:block;height:100%;background:linear-gradient(#ffb04a,#f07a12);width:0}
+#passTop .ptlv{flex:none;width:34px;height:34px;border-radius:50%;background:#2c2c3a;border:3px solid #0b0b19;display:grid;place-items:center;font-size:16px}
+#passTop:active{transform:translateY(3px)}
+#passTop .bdg{top:-10px;right:-10px}
+@media (orientation:portrait){#passTop{display:none!important}}
+@media (orientation:landscape){
+ #home .passc{display:none!important}
+ #home .lbottom{display:block!important;left:auto!important;right:-16px!important;width:min(330px,calc(50% - 63px + 16px))!important;bottom:calc(81px + env(safe-area-inset-bottom,0px))!important;padding:0!important;grid-template-columns:none!important}
+ #home .modec{zoom:1!important;position:relative;display:block;width:100%!important;background:none;border:0;box-shadow:none;border-radius:0;overflow:visible;padding:0;filter:drop-shadow(0 4px 0 rgba(11,11,25,.25));transition:transform .12s,scale .12s}
+ #home .modec:active{transform:none!important;scale:.95}
+ #home .modec .mstrip{display:none!important}
+ #home .modec::before{content:"";position:absolute;inset:0;background:#1b2580;clip-path:polygon(24px 0,100% 0,100% 100%,24px 100%,0 50%)}
+ #home .modec::after{content:"";position:absolute;inset:4px 0 8px 6px;background:linear-gradient(#ff8a7a,#ec4b55 60%,#d6334a);clip-path:polygon(20px 0,100% 0,100% 100%,20px 100%,0 50%)}
+ #home .modec .mbody{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:0;padding:32px 22px 13px 24px!important;min-height:78px;box-sizing:border-box;background:none!important}
+ #home .modec .mbody::after{content:none!important}
+ #home .modec .mimg{position:absolute;top:-36px;left:calc(50% + 1px);transform:translateX(-50%);width:66px!important;height:66px!important;border:0!important;border-radius:0;box-shadow:none;background:none!important;overflow:visible}
+ #home .modec .mimg img,#home .modec .mimg svg{width:62px!important;height:62px!important;filter:drop-shadow(0 3px 0 #1b2580) drop-shadow(0 0 1.5px #1b2580)}
+ #home .modec .mtx{align-items:center;text-align:center;max-width:100%}
+ #home .modec .mtx b{font-size:17px!important;max-width:100%}
+ #home .modec .mtx em{font-size:12px!important;color:#fff3c4;max-width:100%}
+}
 </style>
 
 <div id="bg"><div class="halo"></div></div>
@@ -1666,6 +1714,7 @@ body *:not(input):not(textarea):not(select):not(.stitle):not(.stitle *){-webkit-
     <span class="tl"><span class="tv"><span class="ic" data-i="cup"></span><b id="mTr" class="s">0</b></span><span class="tbar"><b id="tFill"></b></span></span>
     <span class="tnext" id="tNext"></span>
   </button>
+  <button id="passTop" class="lcard passT" aria-label="Passe"><span class="ptk2" data-i="pass"></span><span class="ptl"><b class="s">PASSE</b><span class="ptbar"><i id="ptFill"></i></span></span><span class="ptlv s" id="ptLv">1</span><i class="bdg" id="passDot2" hidden></i></button>
   <div class="lcur">
     <button id="coinPill" class="cpill s"><span class="ic" data-i="coin"></span><b id="mCo">0</b></button>
     <button id="gemPill" class="cpill s"><span class="ic" data-i="gem"></span><b id="mGe">0</b></button>
@@ -1865,10 +1914,10 @@ const cubeHTML=(c,size)=>`<div class="cube" style="background:${hex(c)}${size?`;
 /* ---------- DONNÉES ---------- */
 const RAR=[{n:'Commun',c:'#bdf0ff',c2:'#5fd0ff',ca:'#86e8ff',cb:'#2f9cf0'},{n:'Rare',c:'#d3ffbf',c2:'#6ade4a',ca:'#b6f58a',cb:'#3fb83a'},{n:'Épique',c:'#ead2ff',c2:'#b06bff',ca:'#dcb0ff',cb:'#8a4ae8'},{n:'Légendaire',c:'#ffe7a8',c2:'#ffb21f',ca:'#ffe07a',cb:'#f2861a'}];
 const PERKS={
- speed:{n:'Vitesse',role:'Sprinteur',ab:'Turbo Rush',u:'de vitesse',v:l=>8+(l-1)*2,c:'#4cc72a'},
- turn:{n:'Agile',role:'Acrobate',ab:'Virage Éclair',u:'de virage',v:l=>30+(l-1)*5,c:'#ff6cb6'},
- coins:{n:'Fortune',role:'Banquier',ab:"Pluie d'Or",u:'de pièces',v:l=>30+(l-1)*6,c:'#ffbf1a'},
- zone:{n:'Bastion',role:'Bâtisseur',ab:'Grand Fort',u:'de zone de départ',v:l=>100+(l-1)*15,c:'#5f8cff'}};
+ speed:{n:'Vitesse',role:'Sprinteur',ab:'Turbo Rush',u:'de vitesse',v:l=>5+(l-1),c:'#4cc72a'},
+ turn:{n:'Agile',role:'Acrobate',ab:'Virage Éclair',u:'de virage',v:l=>20+(l-1)*3,c:'#ff6cb6'},
+ coins:{n:'Fortune',role:'Banquier',ab:"Pluie d'Or",u:'de pièces',v:l=>25+(l-1)*5,c:'#ffbf1a'},
+ zone:{n:'Bastion',role:'Bâtisseur',ab:'Grand Fort',u:'de zone de départ',v:l=>60+(l-1)*8,c:'#5f8cff'}};
 const HEROES=[
  {id:'cubo',name:'Classique',color:0x4fb6ff,hat:'none',rar:0,perk:'speed',un:{},skin:0,acc:[]},
  {id:'pepin',name:'Pépin',color:0x6fdc4a,hat:'leaf',rar:0,perk:'turn',un:{},skin:0,acc:['band']},
@@ -2481,8 +2530,8 @@ const maxP=()=>gameMode==='surv'?SURV_P:gameMode==='team'?10:(gameMode==='classi
 const teamOf=id=>{const t=tSize();return t>1?Math.floor(id/t):-1};
 const modeLabel=(m=save.mode,sb=save.sub)=>(m==='classic'||m==='surv')?`${MODES[m].n} · ${(SUBS[sb]||SUBS.solo).n}`:MODES[m].n;
 function newEnt(id,h,name,bot){const e={id,hero:h,name,bot,color:h.color,team:-1,col:new THREE.Color(h.color),trCol:new THREE.Color(mixHex(h.color,0xffffff,.3)),kills:0,deathCount:0,alive:false,trailCells:[],speed:5.2,turn:7,r2:5,x:0,z:0,h:0,targetH:0,ci:0,cj:0};e.view=makeChar(h,name,!bot&&!e.net);S.add(e.view.g);return e}
-function myStats(){const H=HE(save.hero),lv=save.levels[H.id]||1,b=PERKS[H.perk].v(lv)/100;return{sp:5.2*(1+.01*(lv-1))*(H.perk==='speed'?1+b:1),tu:7*(H.perk==='turn'?1+b:1),r2:H.perk==='zone'?Math.round(10*b):5}}
-function setCoinMult(){const H=HE(save.hero),lv=save.levels[H.id]||1,b=PERKS[H.perk].v(lv)/100;coinMult=(H.perk==='coins'?1+b:1)*(1+.02*(lv-1))}
+function myStats(){const H=HE(save.hero),lv=save.levels[H.id]||1,b=PERKS[H.perk].v(lv)/100;return{sp:5.2*(1+.005*(lv-1))*(H.perk==='speed'?1+b:1),tu:7*(H.perk==='turn'?1+b:1),r2:H.perk==='zone'?Math.round(5*(1+b)):5}}
+function setCoinMult(){const H=HE(save.hero),lv=save.levels[H.id]||1,b=PERKS[H.perk].v(lv)/100;coinMult=(H.perk==='coins'?1+b:1)*(1+.01*(lv-1))}
 function startLocal(mode,sub){
  ac();gameMode=mode;gameSub=(mode==='classic'||mode==='surv')?(sub||'solo'):'solo';closeAll();$('#match').hidden=true;
  for(const e of ents)S.remove(e.view.g);
@@ -2563,7 +2612,7 @@ function finish(reason){
  const won=reason==='win',TM=tSize()>1&&gameMode!=='team',my=(won&&gameMode!=='team'&&gameMode!=='surv'&&tSize()===1)?PTOT:TM?(ents.some(o=>o&&o.alive&&o.team===player.team)?(teamScores()[player.team]||0):(player.deathCount||0)):(player.alive?(counts[player.id]||0):(player.deathCount||0)),pct=Math.min(100,my/PTOT*100),ranked=gameMode!=='party';
  const sc=e=>e.alive?(counts[e.id]||0):(e.deathCount||0);
  const nE=ents.filter(Boolean).length,surv=gameMode==='surv',pl=won?1:surv?(player.place||1+(tSize()>1?new Set(ents.filter(e=>e&&e.alive&&e.team!==player.team).map(e=>e.team)).size:ents.filter(e=>e&&e.alive&&e!==player).length)):TM?1+Object.entries(teamScores()).filter(([t,v])=>+t!==player.team&&v>my).length:1+ents.filter(e=>e&&e!==player&&sc(e)>my).length;
- let dS=0;if(ranked){if(surv){const nT=tSize()>1?Math.ceil(nE/tSize()):nE;dS=Math.round(32*(1-(pl-1)/Math.max(1,nT-1))-8)+player.kills*2+(won?12:0);dS=Math.max(-8,Math.min(45,dS))}else if(gameMode==='team'){dS=(won?12:-6)+player.kills*3+Math.round(pct*.4);dS=Math.max(-10,Math.min(30,dS))}else{dS=Math.round(pct*.6+player.kills*3-6)+(won?15:0);dS=Math.max(-10,Math.min(40,dS))}if(save.stars+dS<0)dS=-save.stars}
+ let dS=0;if(ranked){const tier=Math.min(1,save.stars/2000),gm=1-.5*tier,sc=(r,lo,hi)=>{r=r>0?r*gm:r-8*tier;return Math.max(lo,Math.min(hi,Math.round(r)))};if(surv){const nT=tSize()>1?Math.ceil(nE/tSize()):nE;dS=sc(26*(1-(pl-1)/Math.max(1,nT-1))-10+player.kills*1.5+(won?10:0),-18,36)}else if(gameMode==='team'){dS=sc((won?10:-7)+player.kills*2+pct*.25,-18,24)}else{dS=sc(pct*.45+player.kills*2+(won?10:0)-8,-18,30)}if(save.stars+dS<0)dS=-save.stars}
  const co=Math.round((20+pct*3+player.kills*15+(won?150:0)+(surv?Math.max(0,50-pl)*4:0)+((player.bestStreak||0)>=2?player.bestStreak*10:0))*coinMult);
  const oldS=save.stars;save.stars+=dS;save.coins+=co;if(pct>save.best)save.best=pct;save.hiStars=Math.max(save.hiStars||0,save.stars);save.games=(save.games||0)+1;save.kills=(save.kills||0)+player.kills;if(won){if(gameMode==='team'||tSize()>1)save.teamWins=(save.teamWins||0)+1;else save.wins=(save.wins||0)+1}
  ensureMissions();
@@ -3008,14 +3057,14 @@ function updTop(){
  const nx=roadNext(),pr=[...ROAD].reverse().find(r=>r.t<=save.stars),a=pr?pr.t:0,cl=roadClaimable().length;
  $('#tFill').style.width=(nx?Math.max(4,(save.stars-a)/(nx.t-a)*100):100)+'%';
  $('#tNext').innerHTML=(cl?img('p_chest'):nx?rewArt(nx).h:img('p_crown'));
- setDot('roadDot',cl);setDot('passDot',passClaimable());setDot('missDot',save.missions.filter(m=>!m.done&&m.p>=m.n).length);setDot('frDot',(RT.incoming||[]).length);
+ setDot('roadDot',cl);setDot('passDot',passClaimable());setDot('passDot2',passClaimable());setDot('missDot',save.missions.filter(m=>!m.done&&m.p>=m.n).length);setDot('frDot',(RT.incoming||[]).length);
  setDot('heroDot',HEROES.filter(h=>save.owned.includes(h.id)&&(save.levels[h.id]||1)<MAXLV&&save.coins>=upCost(save.levels[h.id]||1)).length);
  setDot('shopDot',save.giftDay!==today()?1:0);
 }
 function updHome(){
  const H=HE(save.hero),m=MODES[save.mode],lv=passLevel(),x=(save.xp||0)%XP_LV,P=PERKS[H.perk];
  $('#heroTag').innerHTML=`<span class="hn s">${esc(H.name)}</span><span class="hl s">NIV. ${save.levels[H.id]||1}</span><span class="hp">${I[H.perk]}${P.role}</span>`;
- $('#pmLv').textContent=lv;$('#pmTxt').textContent=lv>=PASS_MAX?'MAX':`${x}/${XP_LV}`;$('#pmXp').style.width=(lv>=PASS_MAX?100:x/XP_LV*100)+'%';
+ $('#pmLv').textContent=lv;$('#ptLv').textContent=lv;$('#ptFill').style.width=(lv>=PASS_MAX?100:x/XP_LV*100)+'%';$('#pmTxt').textContent=lv>=PASS_MAX?'MAX':`${x}/${XP_LV}`;$('#pmXp').style.width=(lv>=PASS_MAX?100:x/XP_LV*100)+'%';
  $('#mName').textContent=modeLabel();$('#mSub').textContent=save.mode==='surv'?'50 joueurs · dernier survivant':save.mode==='classic'?`En ligne · ${save.sub==='trio'?9:8} joueurs`:m.sub;$('#mImg').innerHTML=I[m.ic];$('#mImg').style.background=m.bg;$('#mTimer').textContent='Nouveaux défis dans '+untilMidnight();
  const nx=roadNext();$('#pStrip').innerHTML=nx?`Route : prochaine récompense à ${ico('cup')}${nx.t}`:'Route des trophées terminée !';
  syncFriends();
@@ -3058,7 +3107,7 @@ function renderHeroes(){
     h+=`<div class="hero"><button class="hcard lock s" style="--ca:${RAR[x.rar].ca};--cb:${RAR[x.rar].cb}" data-lock="${x.id}" aria-label="${x.name} verrouillé"><span class="perk">${I[x.perk]}</span>${heroIcon(x)}<span class="lk">${I.lock}</span><span class="lv">Verrouillé</span></button>`+
     (u.stars||u.pass?`<div class="maxed s">${lockCond(u)}</div>`:`<button class="btn btn-premium hbtn" data-buy="${x.id}"><span>Débloquer</span><b>${lockCond(u)}</b></button>`)+`</div>`}}
   h+='</div>'});
- show('#sHeroes',shead('HÉROS')+`<div class="sbody">${h}</div>`);
+ show('#sHeroes',`<div class="sbody">${h}</div>`);
 }
 $('#sHeroes').addEventListener('click',e=>{const b=e.target.closest('button');if(!b||b.hasAttribute('data-back')||b.hasAttribute('data-homeb'))return;ac();
  if(b.dataset.pick||b.dataset.lock){openDetail(b.dataset.pick||b.dataset.lock)}
@@ -3160,7 +3209,7 @@ function renderMissions(){
  let h=`<p class="sub2 s">Nouvelles missions dans ${untilMidnight()}</p>`;
  save.missions.forEach((m,i)=>{const T=MTYPES.find(x=>x.k===m.k),rw=m.rw.gems?`${ico('gem')}${m.rw.gems}`:`${ico('coin')}${fmt(m.rw.coins)}`,ok=m.p>=m.n;
   h+=`<div class="box ${m.done?'done':''}"><div class="rico big">${I.missions}</div><div class="tx"><h3>${T.d(m.n)}</h3><div class="mbarw"><b style="width:${m.p/m.n*100}%"></b><span>${m.p} / ${m.n}</span></div></div>${m.done?'<span style="font-size:15px">FAIT</span>':`<button class="btn ${ok?'btn-green':'btn-grey'}" data-claim="${i}" ${ok?'':'disabled'}>${rw}</button>`}</div>`});
- show('#sMissions',shead('MISSIONS')+`<div class="sbody">${h}</div>`);
+ show('#sMissions',`<div class="sbody">${h}</div>`);
 }
 $('#sMissions').addEventListener('click',e=>{const b=e.target.closest('[data-claim]');if(!b)return;const m=save.missions[+b.dataset.claim];if(m.done||m.p<m.n)return;m.done=true;if(m.rw.gems)save.gems+=m.rw.gems;else save.coins+=m.rw.coins;persist();sfx.win();banner('MISSION ACCOMPLIE !');setTimeout(()=>$('#banner').innerHTML='',1300);renderMissions();updTop()});
 
@@ -3179,7 +3228,7 @@ function renderPassV(){
  ${cl?`<button class="pvclaim s" data-pjump><b>${cl}</b>À RÉCUPÉRER</button>`:''}
  <div class="pvh s"><span>GRATUIT</span><span>PREMIUM</span></div><div class="pvrows">${rows}</div></div>`;
  show('#sPass',shead('PASSE')+`<div class="sbody">${h}</div>`);
- requestAnimationFrame(()=>{if(kept('#sPass'))return;const r=$('#pvr'+Math.max(1,L-1)),b=$('#sPass .sbody');if(r&&b)b.scrollTop=r.offsetTop-80});
+ centerSoon('#sPass .sbody','#pvr'+L,'y','#sPass');
 }
 let passRZ=0;addEventListener('resize',()=>{cancelAnimationFrame(passRZ);passRZ=requestAnimationFrame(()=>{if(tab==='pass'&&!$('#sPass').hidden)renderPass()})});
 
@@ -3194,7 +3243,7 @@ function renderPass(){
  const h=`<div class="phd"><div><h3 class="s">SAISON 1 · TOUCHE À TOUT</h3><small class="s">Fin de saison dans ${untilMonthEnd()}</small></div><div class="pxp"><span class="tok">${I.star}</span><span class="pb"><b style="width:${L>=PASS_MAX?100:x/XP_LV*100}%"></b><em class="s">${L>=PASS_MAX?'MAX':`${x}/${XP_LV}`}</em></span><span class="plv s">${L}</span></div></div>
  <div class="pgrid"><div class="pside"><div class="ptk prem s">${I.pass}PASSE PREMIUM${save.passPrem?'<button class="btn btn-grey" disabled>ACTIVÉ</button>':`<button class="btn btn-yellow" data-pbuy>${ico('gem')}${PASS_PRICE}</button>`}</div><div class="ptk free s">${I.pass}PASSE GRATUIT</div></div><div class="pscroll" id="pscroll"><div class="pcols">${cols}</div></div></div>`;
  show('#sPass',shead('PASSE')+`<div class="sbody">${h}</div>`);fitH($('#sPass .pgrid'));
- requestAnimationFrame(()=>{if(kept('#sPass'))return;const c=$('#sPass .pcol.cur'),s=$('#pscroll');if(c&&s)s.scrollLeft=c.offsetLeft-s.clientWidth/2+60});
+ centerSoon('#pscroll','#sPass .pcol.cur','x','#sPass');
 }
 $('#sPass').addEventListener('click',e=>{const b=e.target.closest('button');if(!b||b.hasAttribute('data-back')||b.hasAttribute('data-homeb'))return;ac();
  if(b.hasAttribute('data-pjump')){const c=$('#sPass .pvc.claim');if(c)c.scrollIntoView({block:'center',behavior:'smooth'});return}
@@ -3205,6 +3254,10 @@ $('#sPass').addEventListener('click',e=>{const b=e.target.closest('button');if(!
 });
 
 // ROUTE DES TROPHÉES
+// centre le conteneur sur l'élément courant (fiable même avec zoom CSS)
+function centerOn(cs,es,ax){const c=$(cs),e=$(es);if(!c||!e)return;const cr=c.getBoundingClientRect(),er=e.getBoundingClientRect();if(!cr.width)return;
+ if(ax==='y'){c.scrollTop+= (er.top+er.height/2)-(cr.top+cr.height/2)}else{c.scrollLeft+=(er.left+er.width/2)-(cr.left+cr.width/2)}}
+function centerSoon(cs,es,ax,keepId){if(keepId&&kept(keepId))return;requestAnimationFrame(()=>{centerOn(cs,es,ax);setTimeout(()=>centerOn(cs,es,ax),260)})}
 function fitH(el,max=2.4){if(!el||innerHeight>innerWidth*1.1)return;el.style.zoom='';const sb=el.closest('.sbody');if(!sb)return;
  const r=el.getBoundingClientRect(),b=sb.getBoundingClientRect(),avail=b.bottom-r.top-14,z=Math.max(1,Math.min(max,avail/Math.max(1,r.height)));if(z>1.03)el.style.zoom=z.toFixed(3)}
 addEventListener('resize',()=>{clearTimeout(fitH._t);fitH._t=setTimeout(()=>{if(tab==='pass')fitH($('#sPass .pgrid'));if(tab==='road')fitH($('#rwrap'))},150)});
@@ -3222,8 +3275,8 @@ function renderRoad(){if(innerHeight>innerWidth*1.1)return renderRoadV();
   h+=`<span class="rlg" style="left:${x}px;top:${lineY-8}px" title="${L.n}">${emblem(L)}</span>`});
  h+=`<span class="rmark s" style="left:${mx}px;top:${lineY+(small?50:58)}px">${ico('cup')}${s}</span>`;
  const bar=TROPH_TXT.map(t=>`<span class="s">${t}</span>`).join('');
- show('#sRoad',shead('ROUTE DES TROPHÉES')+`<div class="sbody" style="display:flex;flex-direction:column;overflow:hidden"><p class="sub2 s">Ligue ${LG[leagueIdx(s)].n} · gagne des trophées en Classique et en Équipes pour débloquer les récompenses</p><div class="bareme2">${bar}</div><div class="rwrap" id="rwrap"><div class="rtrack" style="width:${total}px;height:${lineY+100}px">${h}</div></div></div>`);fitH($('#rwrap .rtrack'));
- requestAnimationFrame(()=>{const w=$('#rwrap');if(w){w.scrollLeft=roadKeep!==null?roadKeep:mx-w.clientWidth/2;roadKeep=null}});
+ show('#sRoad',shead('ROUTE DES TROPHÉES')+`<div class="sbody" style="display:flex;flex-direction:column;overflow:hidden"><p class="sub2 s">Ligue ${LG[leagueIdx(s)].n} · gagne des trophées en Classique et en Équipes pour débloquer les récompenses</p><div class="rwrap" id="rwrap"><div class="rtrack" style="width:${total}px;height:${lineY+100}px">${h}</div></div></div>`);fitH($('#rwrap .rtrack'));
+ if(roadKeep!==null){const k=roadKeep;roadKeep=null;requestAnimationFrame(()=>{const w=$('#rwrap');if(w)w.scrollLeft=k})}else centerSoon('#rwrap','#rwrap .rmark','x');
 }
 $('#sRoad').addEventListener('click',e=>{const b=e.target.closest('[data-road]');if(!b)return;ac();const t=+b.dataset.road,r=ROAD.find(x=>x.t===t);if(!r||save.roadClaimed.includes(t)||t>save.stars)return;
  const ri=b.closest('.ri'),w=$('#rwrap'),keep=w?(w.classList.contains('v')?w.scrollTop:w.scrollLeft):0;const tg=b.querySelector('.rtag');if(tg)tg.remove();b.removeAttribute('data-road');ri.classList.add('pop');save.roadClaimed.push(t);
@@ -3242,8 +3295,8 @@ function renderRoadV(){
  LG.forEach((L,i)=>{if(!i)return;h+=`<span class="rlg v" style="left:${LX}px;top:${at(L.t)-19}px" title="${L.n}">${emblem(L)}</span>`});
  h+=`<span class="rmark v s" style="left:${LX}px;top:${my-17}px">${ico('cup')}${s}</span>`;
  const bar=TROPH_TXT.map(t=>`<span class="s">${t}</span>`).join('');
- show('#sRoad',shead('ROUTE DES TROPHÉES')+`<div class="sbody" style="display:flex;flex-direction:column;overflow:hidden"><p class="sub2 s">Ligue ${LG[leagueIdx(s)].n} · gagne des trophées en Classique et en Équipes pour débloquer les récompenses</p><div class="bareme2">${bar}</div><div class="rwrap v" id="rwrap"><div class="rtrack" style="height:${total}px">${h}</div></div></div>`);
- requestAnimationFrame(()=>{const w=$('#rwrap');if(w){w.scrollTop=roadKeep!==null?roadKeep:my-w.clientHeight/2;roadKeep=null}});
+ show('#sRoad',shead('ROUTE DES TROPHÉES')+`<div class="sbody" style="display:flex;flex-direction:column;overflow:hidden"><p class="sub2 s">Ligue ${LG[leagueIdx(s)].n} · gagne des trophées en Classique et en Équipes pour débloquer les récompenses</p><div class="rwrap v" id="rwrap"><div class="rtrack" style="height:${total}px">${h}</div></div></div>`);
+ if(roadKeep!==null){const k=roadKeep;roadKeep=null;requestAnimationFrame(()=>{const w=$('#rwrap');if(w)w.scrollTop=k})}else centerSoon('#rwrap','#rwrap .rmark','y');
 }
 
 // CLASSEMENT
@@ -3255,7 +3308,7 @@ async function renderLead(){
   else{const me=RT.prof?RT.prof.id:null;
    h+='<div class="ldl">'+d.top.map((p,i)=>`<div class="ldr ${p.id===me?'me':''} ${i<3?'t'+(i+1):''}"><span class="lrk s">${i+1}</span>${heroIcon(HE(p.hero||'cubo'),46)}<span class="lnm s"><b>${handle(p)}</b></span><span class="lst s">${ico('cup')}${fmt(p.stars||0)}</span></div>`).join('')+'</div>';
    if(d.me&&!d.top.some(p=>p.id===d.me.id))h+=`<div class="ldr me sticky"><span class="lrk s">${d.me.rank}</span>${heroIcon(HE(d.me.hero||'cubo'),46)}<span class="lnm s"><b>${handle(d.me)}</b></span><span class="lst s">${ico('cup')}${fmt(d.me.stars||0)}</span></div>`}
-  show('#sLead',shead('LEADERBOARD')+`<div class="sbody"><p class="sub2 s">Les meilleurs joueurs du monde par trophées</p>${h}</div>`)};
+  show('#sLead',`<div class="sbody"><p class="sub2 s">Les meilleurs joueurs du monde par trophées</p>${h}</div>`)};
  draw();
  if(!RT.on){leadData={err:'Le classement mondial marche sur paint-clash.vercel.app.'};draw();return}
  try{const hd=AUTH&&AUTH.tok?{Authorization:'Bearer '+AUTH.tok}:{};const r=await fetch('/api/leaderboard',{headers:hd});const j=await r.json();
@@ -3366,7 +3419,7 @@ function rtLogout(){try{RT.online&&RT.sb.removeChannel(RT.online)}catch(_){}try{
 // LOBBY : boutons
 document.querySelectorAll('[data-go]').forEach(b=>press(b,()=>{const t=b.dataset.go;if(t==='profile')go('prof');else if(t==='party')openParty();else go(t)}));
 press($('#plusL'),()=>openInvite());press($('#plusR'),()=>openInvite());
-press($('#trophyBtn'),()=>go('road'));press($('#passCard'),()=>go('pass'));press($('#modeBtn'),()=>go('modes'));
+press($('#trophyBtn'),()=>go('road'));press($('#passCard'),()=>go('pass'));press($('#passTop'),()=>go('pass'));press($('#modeBtn'),()=>go('modes'));
 press($('#playGo'),()=>{if(ROOM){ac();roomReady();return}const m=save.mode;if(m==='party')openParty();else play(m)});
 $('#bnav').addEventListener('click',e=>{const b=e.target.closest('[data-nav]');if(b){ac();sfx.click();if(tab!==b.dataset.nav)go(b.dataset.nav);return}
  if(e.target.closest('#bnPlay')){const bp=$('#bnPlay');bp.classList.add('prs');setTimeout(()=>bp.classList.remove('prs'),140);ac();if(tab!=='home'){sfx.click();go('home');return}playS('play',.95);sfx._mute=true;$('#playGo').click();sfx._mute=false}});
