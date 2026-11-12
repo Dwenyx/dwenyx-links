@@ -1430,6 +1430,8 @@ button:active:not(:disabled){scale:.93;transition-duration:.08s}
 #home .passc,#home .modec{zoom:.78}
 @media (orientation:portrait){#home .lbottom{display:flex!important;justify-content:center}#home .modec{width:min(100%,330px)}}
 .scr,.modal,.mbox{will-change:auto}
+
+.sbody,.hx,.rwrap,.pscroll,.langl{scroll-behavior:auto!important;overscroll-behavior:contain}
 </style>
 
 <div id="bg"><div class="halo"></div></div>
@@ -3228,7 +3230,27 @@ async function partyRestore(){const P=PARTY;if(!P||ROOM||!RT.on)return;
   if(r.role==='client'){try{RT.sb.removeChannel(r.ch)}catch(_){}}}
  if(PARTY&&!ROOM){PARTY=null;toast("Le groupe n'est plus disponible")}}
 function goHome(){exitSpec();boostClear();leader=null;zone=null;setTimeout(partyRestore,50);setTimeout(updInstall,600);specOn=false;NET.leave();simOn=false;matchOver=false;state='menu';$('#end').hidden=true;$('#hud').hidden=true;for(const e of ents)if(e)e.view.g.visible=false;snapCam=true;go('home')}
-document.addEventListener('wheel',e=>{const el=e.target.closest('.hx,.rwrap,.pscroll');if(el&&Math.abs(e.deltaY)>Math.abs(e.deltaX)){el.scrollLeft+=e.deltaY;e.preventDefault()}},{passive:false});
+// défilement fluide à la molette (vertical et horizontal), avec inertie douce
+const SMW=new Map();
+function smoothScroll(el,ax,d){let st=SMW.get(el);const max=ax==='x'?el.scrollWidth-el.clientWidth:el.scrollHeight-el.clientHeight;
+ if(!st){st={x:el.scrollLeft,y:el.scrollTop,run:false};SMW.set(el,st)}
+ if(!st.run){st.x=el.scrollLeft;st.y=el.scrollTop}
+ st[ax]=Math.max(0,Math.min(max,st[ax]+d));
+ if(st.run)return;st.run=true;
+ const step=()=>{if(!st.run)return;const cx=el.scrollLeft,cy=el.scrollTop,nx=cx+(st.x-cx)*.18,ny=cy+(st.y-cy)*.18;
+  el.scrollLeft=Math.abs(st.x-nx)<.6?st.x:nx;el.scrollTop=Math.abs(st.y-ny)<.6?st.y:ny;
+  if(Math.abs(el.scrollLeft-st.x)<1&&Math.abs(el.scrollTop-st.y)<1){st.run=false;return}requestAnimationFrame(step)};
+ requestAnimationFrame(step)}
+function scrollAxisOf(t){for(let el=t;el&&el!==document.body;el=el.parentElement){if(el.closest&&el.matches('canvas'))return null;
+  const cs=getComputedStyle(el);if(el.matches('.hx,.rwrap:not(.v),.pscroll')&&el.scrollWidth>el.clientWidth+2)return[el,'x'];
+  if(/(auto|scroll)/.test(cs.overflowY)&&el.scrollHeight>el.clientHeight+2)return[el,'y'];
+  if(/(auto|scroll)/.test(cs.overflowX)&&el.scrollWidth>el.clientWidth+2)return[el,'x']}return null}
+document.addEventListener('wheel',e=>{if(e.ctrlKey)return;const r=scrollAxisOf(e.target);if(!r)return;const[el,ax]=r;
+ let d=Math.abs(e.deltaY)>=Math.abs(e.deltaX)?e.deltaY:e.deltaX;if(e.deltaMode===1)d*=40;else if(e.deltaMode===2)d*=el.clientHeight;
+ const pad=e.deltaMode===0&&Math.abs(d)<40&&!Number.isInteger(e.deltaY/100);
+ if(pad){if(ax==='x'&&Math.abs(e.deltaY)>Math.abs(e.deltaX)){e.preventDefault();el.scrollLeft+=e.deltaY}return}
+ e.preventDefault();smoothScroll(el,ax,d*1.1)},{passive:false});
+['pointerdown','touchstart'].forEach(ev=>addEventListener(ev,()=>{for(const st of SMW.values())st.run=false},{passive:true}));
 setInterval(()=>{if(state==='menu'&&tab==='home')$('#mTimer').textContent='Nouveaux défis dans '+untilMidnight()},30000);
 
 fillIcons();$('#gearBtn').innerHTML=I.menu;$('#dPrev').innerHTML=I.chevL;$('#dNext').innerHTML=I.chevR;
