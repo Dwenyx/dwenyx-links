@@ -1851,11 +1851,14 @@ function burnTick(e,dt){if(!e.cut||!e.alive)return;e.cut.acc+=FUSE*dt;
   if(q===undefined){const k=ents[e.cut.by];e.cut=null;kill(e,k||null);return}
   if(trail[q]===e.id){trail[q]=-1;refresh(q,0);if(player&&Math.abs(q%N-EAR().x)+Math.abs(((q/N)|0)-EAR().z)<26)burst(q%N+.5,.8,((q/N)|0)+.5,n2c(),3,4)}}}
 function savedFx(e){saveAnim(e);if(e===player){banner('SAUVÉ !');sfx.up();setTimeout(()=>{if($('#banner').textContent.includes('SAUV'))$('#banner').innerHTML=''},1100)}else feedMsg(`${e.name} s'en est sorti !`)}
+const lootOK=(v,k)=>!!k&&k!==v&&k.alive&&!k.dying&&gameMode!=='team'&&foe(k,v);
 function kill(v,k){
  if(!v.alive)return;v.alive=false;v.cut=null;v.revAt=v.team>=0&&tSize()>1&&gameMode!=='surv'?now+revDelay():0;markPlace(v);v.deathCount=counts[v.id]||0;if(NET.role==='host')NET.ev.push({t:'k',v:v.id,k:k?k.id:-1,p:v.deathCount});
  for(const c of v.trailCells)if(trail[c]===v.id){trail[c]=-1;refresh(c,Math.random()*.15)}
  v.trailCells=[];
- {const heir=v.team>=0?ents.find(o=>o&&o!==v&&o.alive&&o.team===v.team):null;for(let c=0;c<TOT;c++)if(own[c]===v.id){if(heir)own[c]=heir.id;else{own[c]=-1;refresh(c,.1+Math.random()*.5)}}}
+ {const heir=v.team>=0?ents.find(o=>o&&o!==v&&o.alive&&o.team===v.team):null,taker=!heir&&lootOK(v,k)?k:null;
+  for(let c=0;c<TOT;c++)if(own[c]===v.id){if(heir)own[c]=heir.id;else if(taker){own[c]=taker.id;refresh(c,Math.min(.8,Math.hypot(c%N+.5-v.x,((c/N)|0)+.5-v.z)*.03),.1)}else{own[c]=-1;refresh(c,.1+Math.random()*.5)}}
+  if(taker&&taker===player){const n=counts[v.id]||0;if(n)floatText('+'+(n/PTOT*100).toFixed(1)+'%',player)}}
  const near=Math.hypot(v.x-EAR().x,v.z-EAR().z)<22;
  if(near)deathFx(v);
  v.dying=now;recount();
@@ -2126,6 +2129,7 @@ function beginHud(){specOn=false;
 function rejoinHost(){$('#end').hidden=true;player.kills=0;player.deathCount=0;spawn(player);beginHud()}
 let busy=false;
 async function play(mode){
+ if(fsAuto)goFull();
  if(ROOM){ac();roomReady();return}
  if(busy)return;ac();
  if(NET.role==='host'&&simOn&&!matchOver&&!player.alive&&gameMode!=='team'&&mode===gameMode&&(save.sub||'solo')===gameSub){rejoinHost();return}
@@ -2379,7 +2383,7 @@ function clientMsg(m){if(!m||NET.role!=='client')return;
  else if(m.t==='bye'){NET.role='off';if(state!=='end'&&state!=='menu'){toast("L'hôte a quitté la partie");finish('quit')}}}
 function netEvent(v){
  if(v.t==='k'){const vic=ents[v.v],k=v.k>=0?ents[v.k]:null;if(!vic)return;
-  if(!(vic.team>=0&&tSize()>1&&ents.some(o=>o&&o!==vic&&o.alive&&o.team===vic.team))){for(let c=0;c<TOT;c++)if(own[c]===vic.id){own[c]=-1;refresh(c,.05)}}for(let c=0;c<TOT;c++)if(trail[c]===vic.id){trail[c]=-1;refresh(c,0)}recount();
+  if(!(vic.team>=0&&tSize()>1&&ents.some(o=>o&&o!==vic&&o.alive&&o.team===vic.team))){const tk=lootOK(vic,k)?k:null;for(let c=0;c<TOT;c++)if(own[c]===vic.id){own[c]=tk?tk.id:-1;refresh(c,.05)}}for(let c=0;c<TOT;c++)if(trail[c]===vic.id){trail[c]=-1;refresh(c,0)}recount();
   const near=player&&Math.hypot(vic.x-EAR().x,vic.z-EAR().z)<22;vic.cut=null;if(near)deathFx(vic);
   feedKill(k&&k!==vic?k:null,vic);vic.deathCount=v.p;
   if(k===player&&vic!==player){elimToast(vic);sfx.kill();shake=.55}else if(near&&vic!==player)sfx.boom();
@@ -2985,7 +2989,10 @@ press($('#instX'),()=>{try{localStorage.setItem('pc_inst_later',Date.now())}catc
 setTimeout(updInstall,2500);
 async function lockLand(){try{if(STANDALONE||document.fullscreenElement){await screen.orientation.lock('portrait')}}catch(_){}}
 lockLand();
-let fsT=0;addEventListener('pointerdown',async()=>{if(!MOBILE||IOS||document.fullscreenElement||Date.now()-fsT<1500)return;fsT=Date.now();try{const el=document.documentElement;await(el.requestFullscreen?el.requestFullscreen({navigationUI:'hide'}):el.webkitRequestFullscreen&&el.webkitRequestFullscreen());await screen.orientation.lock('portrait')}catch(_){}},{passive:true});
+let fsAuto=false,fsWas=false;
+async function goFull(){if(!MOBILE||IOS||document.fullscreenElement||document.hidden)return;try{const el=document.documentElement;await(el.requestFullscreen?el.requestFullscreen({navigationUI:'hide'}):el.webkitRequestFullscreen&&el.webkitRequestFullscreen());await screen.orientation.lock('portrait')}catch(_){}}
+addEventListener('pointerdown',function fsFirst(){if(fsAuto)return;fsAuto=true;removeEventListener('pointerdown',fsFirst);goFull()},{passive:true});
+document.addEventListener('fullscreenchange',()=>{if(document.fullscreenElement)fsWas=true});
 if(STANDALONE){document.documentElement.classList.add('app');addEventListener('contextmenu',e=>e.preventDefault());
  document.addEventListener('gesturestart',e=>e.preventDefault());document.addEventListener('dblclick',e=>e.preventDefault(),{passive:false})}
 function openSettings(){const v=Math.round((save.muted?0:(save.vol===undefined?.8:save.vol))*100);$('#volIn').value=v;$('#volTxt').textContent=v+' %';accRow();updQ();$('#settings').hidden=false}
