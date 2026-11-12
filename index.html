@@ -1558,6 +1558,15 @@ input,textarea{-webkit-user-select:text;user-select:text}
  #res.t5 .rbg,#res.t5.k-dead .rbg,#res.t5.k-end .rbg{background:linear-gradient(180deg,#3f7bff 0 50%,#e8323f 50% 100%)!important}
  #res.t5{grid-template-rows:auto minmax(0,1fr) auto}
 }
+
+/* retraits : coches vertes, curseur de volume propre */
+.hcard .chk,.pcard .ok,.rc .ok{display:none!important}
+#volIn{-webkit-appearance:none;appearance:none;width:100%;height:28px;background:transparent!important;margin:0;padding:0;cursor:pointer;border:0!important;box-shadow:none!important;outline:0}
+#volIn::-webkit-slider-runnable-track{height:10px;border-radius:6px;background:linear-gradient(90deg,#ffd21f var(--p,80%),#2a2c45 var(--p,80%));border:0}
+#volIn::-moz-range-track{height:10px;border-radius:6px;background:#2a2c45;border:0}
+#volIn::-moz-range-progress{height:10px;border-radius:6px;background:#ffd21f}
+#volIn::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;margin-top:-7px;border-radius:50%;background:#ffd21f;border:3px solid #0b0b19}
+#volIn::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:#ffd21f;border:3px solid #0b0b19}
 </style>
 
 <div id="bg"><div class="halo"></div></div>
@@ -3198,8 +3207,7 @@ function renderParty(){
  if(!logged){h+=`<p class="notice s">${!RT.on?'Les amis et les salons marchent sur paint-clash.vercel.app avec ton compte Google. Ici, tu peux jouer contre des bots.':AUTH.on?'Chargement de ton identifiant… Si ça dure, recharge la page.':'Connecte-toi avec Google pour avoir ton identifiant # et ajouter des amis.'}</p>`}
  else h+=`<div class="myid s"><span>Ton identifiant</span><b>${handle(RT.prof)}</b><button class="btn btn-blue" data-mycopy>COPIER</button></div>`;
  // salon
- h+=`<h3 class="psec s">SALON</h3>`;
- if(ROOM){const ms=ROOM.members||[];
+ if(ROOM){h+=`<h3 class="psec s">SALON</h3>`;const ms=ROOM.members||[];
   h+=`<div class="room"><div class="code"><b>${ROOM.code}</b><button class="btn btn-blue" data-pcopy>COPIER</button></div><div class="group">`;
   for(let i=0;i<4;i++){const p=ms[i];h+=p?`<button class="gslot ${p.sid===SID?'me':'inv'} s" data-mem="${p.sid}">${heroIcon(HE(p.hero||'cubo'))}<span>${esc(p.name)}</span><em class="${(p.sid===SID?ROOM.ready:p.ready)?'rdy':'nrdy'}">${(p.sid===SID?ROOM.ready:p.ready)?'PRÊT':'PAS PRÊT'}</em></button>`:`<div class="gslot add s">+</div>`}
   h+=`</div><p class="note s">${ms.length}/8 joueurs · les places libres seront prises par des bots</p>`;
@@ -3207,7 +3215,6 @@ function renderParty(){
   h+=`<p class="note s">${nr===ms.length&&ms.length?'Tout le monde est prêt, lancement…':`Prêts : ${nr}/${ms.length} · la partie se lance quand tout le monde est prêt`}</p>`;
   h+=ROOM.ready?`<button class="btn btn-grey big2" data-pready>ANNULER PRÊT</button>`:`<button class="btn btn-green big2" data-pready>PRÊT</button>`;
   h+=`<button class="btn btn-red big2" data-pleave>QUITTER LE GROUPE</button></div>`}
- else{h+=`<button class="btn btn-blue big2" data-pcreate ${canRoom?'':'disabled'}>CRÉER UN SALON</button><div class="frow" style="margin-top:14px"><input id="codeIn" maxlength="6" placeholder="CODE DU SALON" autocomplete="off" style="text-transform:uppercase;letter-spacing:.12em"><button class="btn btn-yellow" data-pjoin ${canRoom?'':'disabled'}>REJOINDRE</button></div>`}
  // amis
  if(logged){
   h+=`<h3 class="psec s">AMIS</h3><div class="frow"><input id="fIn" maxlength="20" placeholder="Pseudo#1234" autocomplete="off"><button class="btn btn-green" data-fadd>AJOUTER</button></div>`;
@@ -3310,7 +3317,7 @@ addEventListener('pointerdown',function fsFirst(){if(fsAuto)return;fsAuto=true;r
 document.addEventListener('fullscreenchange',()=>{if(document.fullscreenElement)fsWas=true});
 if(STANDALONE){document.documentElement.classList.add('app');addEventListener('contextmenu',e=>e.preventDefault());
  document.addEventListener('gesturestart',e=>e.preventDefault());document.addEventListener('dblclick',e=>e.preventDefault(),{passive:false})}
-function openSettings(){const v=Math.round((save.muted?0:(save.vol===undefined?.8:save.vol))*100);$('#volIn').value=v;$('#volTxt').textContent=v+' %';accRow();updQ();updMusTog();$('#settings').hidden=false}
+function openSettings(){const v=Math.round((save.muted?0:(save.vol===undefined?.8:save.vol))*100);$('#volIn').value=v;$('#volIn').style.setProperty('--p',v+'%');$('#volTxt').textContent=v+' %';accRow();updQ();updMusTog();$('#settings').hidden=false}
 function updMusTog(){const b=$('#musTog');if(b){const on=save.music!==false;b.textContent=on?'ACTIVÉE':'COUPÉE';b.className='btn '+(on?'btn-green':'btn-grey')}}
 press($('#musTog'),()=>{save.music=save.music===false;persist();updMusTog();const w=musWant;if(save.music===false){for(const k in MUS)MUS[k].pause();musCur=null;musWant=w}else{musCur=null;musicTo(w)}});
 function openRename(){const p=RT.prof;$('#nameIn').value=p?p.name:save.name;$('#nameTag').textContent=p?'#'+p.tag:'';
@@ -3332,10 +3339,9 @@ let profTab=null;
 function renderProf(){const L=LG[leagueIdx(save.stars)],H=HE(save.hero),hs=Math.max(save.hiStars||0,save.stars);
  const nm=RT.prof?esc(RT.prof.name):esc(save.name),tag=RT.prof?'#'+RT.prof.tag:'';
  const card=`<button class="bcard" data-ptab="title"><span class="bcbg"></span>${heroIcon(H)}<span class="bcn"><b class="s">${nm}</b><small class="s">${esc(titleOf())}</small></span><span class="bcl">${emblem(L)}</span></button>`;
- const heroes=HEROES.map(h=>`<span class="phr ${save.owned.includes(h.id)?'':'lk'}">${heroIcon(h)}</span>`).join('');
+ 
  let right='';
  if(!profTab){right=`<div class="prt"><div class="pblk"><h4 class="s">ROUTE DES TROPHÉES</h4><div class="ptro"><span class="pemb">${emblem(L)}</span><span class="pbig s">${ico('cup')}${fmt(save.stars)}</span><span class="psm s"><small>RECORD</small>${fmt(hs)}</span></div></div>
-  <div class="pblk"><h4 class="s">HÉROS <span>${save.owned.length} / ${HEROES.length} débloqués</span></h4><div class="phg">${heroes}</div></div>
   <div class="pblk"><h4 class="s">STATISTIQUES</h4><div class="pst s"><div>${ico('cup')}<small>Victoires solo</small><b>${fmt(save.wins||0)}</b></div><div>${ico('swords')}<small>Victoires équipe</small><b>${fmt(save.teamWins||0)}</b></div><div><img class="fsk" src="ui/n_skull.png" alt=""><small>Éliminations</small><b>${fmt(save.kills||0)}</b></div><div>${ico('calendar')}<small>Parties</small><b>${fmt(save.games||0)}</b></div><div>${ico('star')}<small>Record de territoire</small><b>${(save.best||0).toFixed(1)} %</b></div><div>${ico('pass')}<small>Niveau du passe</small><b>${passLevel()}</b></div></div></div>
 </div></div>`}
  else if(profTab==='icon'){const opts=[...HEROES.filter(h=>save.owned.includes(h.id)).map(h=>'h:'+h.id),...PICONS.map((k,i)=>k+':'+(i%ICOLS.length))];
@@ -3366,7 +3372,7 @@ press($('#invNo'),()=>{$('#invPop').hidden=true});press($('#invYes'),()=>{$('#in
 $('#profBox').addEventListener('click',e=>{if(e.target.closest('[data-logout]')){ac();sfx.click();logout()}});
 press($('#profClose'),()=>{$('#profile').hidden=true});press($('#profEdit'),()=>{$('#profile').hidden=true;openSettings()});
 press($('#specQuit'),()=>{if(tSize()===1){finish('dead');return}$('#specQ').hidden=false});press($('#specStay'),()=>{$('#specQ').hidden=true});press($('#specLeave'),()=>{$('#specQ').hidden=true;finish('dead')});
-$('#volIn').addEventListener('input',e=>{save.vol=+e.target.value/100;save.muted=false;$('#volTxt').textContent=e.target.value+' %';setVol()});
+$('#volIn').addEventListener('input',e=>{e.target.style.setProperty('--p',e.target.value+'%');save.vol=+e.target.value/100;save.muted=false;$('#volTxt').textContent=e.target.value+' %';setVol()});
 $('#volIn').addEventListener('change',()=>{persist();ac();sfx.click()});
 function updInvTog(){$('#invTog').textContent=save.blockInv?'BLOQUÉES':'AUTORISÉES';$('#invTog').className='btn '+(save.blockInv?'btn-red':'btn-green');$('#invTxt').textContent=save.blockInv?'Tu ne reçois plus d\'invitations':'Tes amis peuvent t\'inviter'}
 press($('#invTog'),()=>{save.blockInv=!save.blockInv;persist();updInvTog()});
