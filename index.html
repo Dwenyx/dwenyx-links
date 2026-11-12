@@ -1416,6 +1416,20 @@ body[data-tab=shop] .scr,body[data-tab=heroes] .scr,body[data-tab=missions] .scr
 .vtm,.vtm *{-webkit-text-stroke:0!important;text-shadow:none!important;color:#1b2580!important;font-size:15px}
 .vpan.g3 .vc.o-hero,.vpan.g3 .vc.o-myst{grid-column:1/-1;min-height:150px}
 .vpan.g3 .vc.o-hero .va img,.vpan.g3 .vc.o-myst .va img{max-height:110px}
+
+/* ===== LOT perf/anim ===== */
+.h3d{transition:opacity .35s ease}.h3d.ld{opacity:0}
+@media (max-width:760px),(orientation:portrait){.hgrid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:16px 10px!important;justify-content:stretch!important}
+ .hcard .lv{font-size:clamp(12px,3.4vw,16px)!important}.hbtn{font-size:11px!important;padding:3px 2px 5px!important}.hbtn b{font-size:13px}.hero{gap:8px}.maxed{font-size:11px}}
+/* boutons : animation douce partout */
+button{transition:scale .22s cubic-bezier(.3,1.7,.5,1),filter .18s ease,box-shadow .18s ease}
+button:active:not(:disabled){scale:.93;transition-duration:.08s}
+@media (hover:hover){button:hover:not(:disabled){filter:brightness(1.08)}}
+.vc:active,.btn:active{transform:none}
+/* boutons Passe et Modes plus compacts */
+#home .passc,#home .modec{zoom:.78}
+@media (orientation:portrait){#home .lbottom{display:flex!important;justify-content:center}#home .modec{width:min(100%,330px)}}
+.scr,.modal,.mbox{will-change:auto}
 </style>
 
 <div id="bg"><div class="halo"></div></div>
@@ -1616,7 +1630,7 @@ Object.assign(I,{coin:img('n_coin'),gem:img('n_gem'),star:img('star'),shop:img('
 const ico=k=>`<span class="ic">${I[k]}</span>`;
 const stitle=t=>`<span class="stitle"><span class="b1">${t}</span><span class="b2">${t}</span><span class="f">${t}</span></span>`;
 function fillIcons(){document.querySelectorAll('[data-i]').forEach(s=>{if(!s.innerHTML)s.innerHTML=I[s.dataset.i]})}
-const heroIcon=(h,size)=>{const u=heroShot(h);if(u)return `<img class="cube h3d" src="${u}" alt="" draggable="false"${size?` style="width:${size}px;height:${size}px"`:''}>`;return heroIcon0(h,size)};
+const heroIcon=(h,size)=>{const u=SHOTS[h.id],st=size?` style="width:${size}px;height:${size}px"`:'';if(u)return `<img class="cube h3d" src="${u}" alt="" draggable="false"${st}>`;queueShot(h);return `<img class="cube h3d ld" data-shot="${h.id}" src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt="" draggable="false"${st}>`};
 const heroIcon0=(h,size)=>{const sk=['#f2c9a0','#c68a5a','#7a4a2c'][h.skin||0];return `<div class="cube" style="background:linear-gradient(${sk} 68%,${hex(h.color)} 68%)${size?`;width:${size}px;height:${size}px`:''}"><i></i><i></i></div>`};
 const cubeHTML=(c,size)=>`<div class="cube" style="background:${hex(c)}${size?`;width:${size}px;height:${size}px`:''}"><i></i><i></i></div>`;
 
@@ -1842,7 +1856,11 @@ function makeChar(h,label,me){
  return{g,inner,palm,eyes,legs,ph:Math.random()*9,blink:2+Math.random()*3,jump:-9}
 }
 // portraits 3D des héros (rendu une fois par héros, avec sa peau, sa tenue et ses accessoires)
-const SHOTS={};let HR=null,HS=null,HC=null;
+const SHOTS={},SHOT_KEY='pc_shots_v2';let HR=null,HS=null,HC=null;try{Object.assign(SHOTS,JSON.parse(localStorage.getItem(SHOT_KEY)||'{}'))}catch(_){}
+const SHOTQ=[];let shotBusy=false;const idle=f=>(window.requestIdleCallback?requestIdleCallback(f,{timeout:150}):setTimeout(f,30));
+function queueShot(h){if(SHOTS[h.id]||SHOTQ.includes(h))return;SHOTQ.push(h);if(!shotBusy){shotBusy=true;idle(shotStep)}}
+function shotStep(){const h=SHOTQ.shift();if(h){const u=heroShot(h);if(u)document.querySelectorAll(`img[data-shot="${h.id}"]`).forEach(im=>{im.src=u;im.classList.remove('ld')})}
+ if(SHOTQ.length)idle(shotStep);else{shotBusy=false;try{localStorage.setItem(SHOT_KEY,JSON.stringify(SHOTS))}catch(_){}}}
 function heroShot(h){if(SHOTS[h.id])return SHOTS[h.id];
  try{if(!HR){HR=new THREE.WebGLRenderer({antialias:true,alpha:true,preserveDrawingBuffer:true});HR.setPixelRatio(1);HR.setSize(256,256);HR.setClearColor(0,0);
    HS=new THREE.Scene();HS.add(new THREE.HemisphereLight(0xffffff,0x6a8fd8,.62));const d=new THREE.DirectionalLight(0xffffff,.75);d.position.set(-.6,1,.9);HS.add(d);
@@ -2567,8 +2585,9 @@ function adaptRes(ms){if(QUAL!=='auto')return;fpsAcc+=ms;fpsN++;fpsT+=ms;if(fpsT
  let np=PR;if(avg>21&&PR>.7)np=Math.max(.7,PR-.15);else if(avg>21&&!OLOFF&&state!=='menu')OLOFF=true;else if(avg<12&&OLOFF)OLOFF=false;else if(avg<14&&PR<PR_MAX)np=Math.min(PR_MAX,PR+.1);
  if(Math.abs(np-PR)>.01){PR=np;resize()}}
 function frame(){
+ {const tt=performance.now(),cap=state==='menu'&&tab!=='home'&&!detailOpen?95:12.5;if(tt-last<cap){requestAnimationFrame(frame);return}}
  earE=(player&&!player.alive&&specOn2)?specTarget():player;
- const t=performance.now(),dt=Math.min(.05,(t-last)/1000);adaptRes(t-last);last=t;now+=dt;
+ const t=performance.now(),dt=Math.min(.05,(t-last)/1000);if(state!=='menu'||tab==='home')adaptRes(t-last);last=t;now+=dt;
  if(state==='count'){countT-=dt;const n=Math.ceil(countT-.6);if(n!==lastCount&&n>=0){lastCount=n;$('#count').innerHTML=`<span>${n>0?n:'GO !'}</span>`;n>0?sfx.tick():sfx.go()}
   if(countT<=.6){state='play';player.frozen=false;if(simOn)for(const e of ents)if(e&&e.bot)e.frozen=false;if(NET.role==='client'){try{NET.conn.send({t:'go'})}catch(_){}}setTimeout(()=>{$('#count').innerHTML=''},600)}}
  if(state==='play'){keyInput();playT+=dt;if(playT>2.6)$('#hint').style.opacity=0}
