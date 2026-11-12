@@ -2,19 +2,55 @@
   "id": "/",
   "name": "Keyboard Rivals",
   "short_name": "Keyboard Rivals",
-  "description": "Capture le clavier géant avec ta main ! Classique, Équipes 5v5 et parties entre amis.",
+  "description": "Capture le clavier géant ! Classique, Survivant 50 joueurs, Équipes 5v5 et parties entre amis.",
   "lang": "fr",
   "start_url": "/?source=app",
   "scope": "/",
   "display": "fullscreen",
-  "display_override": ["fullscreen", "standalone"],
+  "display_override": [
+    "fullscreen",
+    "standalone"
+  ],
   "orientation": "portrait",
   "background_color": "#1f5fd8",
   "theme_color": "#1f5fd8",
-  "categories": ["games"],
+  "categories": [
+    "games"
+  ],
   "icons": [
-    { "src": "/icon-192.png?v=2", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "/icon-512.png?v=2", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "/icon-maskable-512.png?v=2", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    {
+      "src": "/icon-192.png?v=2",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png?v=2",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-maskable-512.png?v=2",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  },
+  "prefer_related_applications": false,
+  "shortcuts": [
+    {
+      "name": "Jouer",
+      "url": "/?source=shortcut",
+      "icons": [
+        {
+          "src": "/icon-192.png?v=2",
+          "sizes": "192x192"
+        }
+      ]
+    }
   ]
 }
