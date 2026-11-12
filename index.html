@@ -829,7 +829,7 @@ body[data-r="home"] #bg{background:radial-gradient(ellipse at 50% 40%,#9af6ff 0,
 .pvc .cube{width:56px;height:56px}
 .pvc b{font-weight:400;font-size:16px}
 .pvc.locked>img,.pvc.locked>.cube{opacity:.7}
-.pvc.got>img,.pvc.got>.cube,.pvc.got>b{opacity:.45}
+.pvc.got>img,.pvc.got>.cube,.pvc.got>b{opacity:.85}
 .pvc.claim>img{animation:bob .8s ease-in-out infinite alternate}
 .pvc:active{filter:brightness(.92)}
 .pvl{position:absolute;left:50%;top:50%;width:46px;height:46px;margin:-23px 0 0 -23px;transform:rotate(45deg);background:linear-gradient(135deg,#9aa6c0,#6b7690);border:3px solid #0b0b19;border-radius:9px;display:grid;place-items:center;z-index:2;box-shadow:0 3px 0 #0b0b19;pointer-events:none}
@@ -1609,8 +1609,8 @@ input,textarea{-webkit-user-select:text;user-select:text}
 #bnPlay .bpt{display:grid;place-items:center}
 #bnPlay .ptri{width:50px;height:54px;margin-left:8px;filter:drop-shadow(0 3px 0 rgba(20,40,120,.35))}
 .heroTag{display:none!important}
-.ri.got .rc,.pcard.got,.pvc.got{filter:grayscale(1) brightness(.82)!important}
-.ri.got .rc img,.pcard.got img{opacity:.75}
+.ri.got .rc,.pcard.got,.pvc.got{filter:grayscale(.5) brightness(.88)!important}
+.ri.got .rc img,.pcard.got img{opacity:.9}
 .rtag{animation:none!important;left:0!important;right:0!important;margin:0 auto;width:max-content;transform:none!important}
 /* cadres : relief en bas sans « jours » dans les coins */
 .rc,.pcard,.lcard,.lsq,.vc{box-shadow:none!important;border-bottom-width:7px!important}
@@ -1632,6 +1632,25 @@ body *:not(input):not(textarea):not(select):not(.stitle):not(.stitle *){-webkit-
 #bnPlay .bface .eyes{display:block!important;width:74px;height:44px}
 #bnPlay .bface.bpt,#bnPlay .bface .bpt{display:grid!important}
 #bnav.away #bnPlay .bpt{display:grid!important}
+
+/* pass : pas d'espace entre colonnes (ligne bleue) */
+#sPass .pvr,.pvr{gap:0!important;column-gap:0!important}
+/* badges du bas plus petits (ne passent pas sous le bouton play) */
+#bnav .bn .bdg{min-width:21px;height:21px;padding:0 5px;font-size:12px;line-height:15px;border-width:2px;top:-1px;right:calc(50% - 30px)}
+/* mobile portrait : sélection du mode en panneau à droite du bouton play */
+@media (orientation:portrait){
+ #home .lbottom{display:block!important;left:auto!important;right:0!important;width:calc(50% - 63px);bottom:calc(81px + env(safe-area-inset-bottom,0px))!important;padding:0!important}
+ #home .modec{zoom:1!important;position:relative;display:block;width:100%!important;background:none;border:0;box-shadow:none;border-radius:0;overflow:visible;padding:0;filter:drop-shadow(0 4px 0 rgba(11,11,25,.25))}
+ #home .modec::before{content:"";position:absolute;inset:0;background:#1b2580;clip-path:polygon(24px 0,100% 0,100% 100%,24px 100%,0 50%)}
+ #home .modec::after{content:"";position:absolute;inset:4px 0 8px 6px;background:linear-gradient(#ff8a7a,#ec4b55 60%,#d6334a);clip-path:polygon(20px 0,100% 0,100% 100%,20px 100%,0 50%)}
+ #home .modec .mbody{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:0;padding:32px 6px 13px 24px!important;min-height:78px;box-sizing:border-box}
+ #home .modec .mbody::after{content:none!important}
+ #home .modec .mimg{position:absolute;top:-30px;left:calc(50% + 9px);transform:translateX(-50%);width:58px!important;height:58px!important;border:3px solid #1b2580;border-radius:16px;box-shadow:0 4px 0 #1b2580}
+ #home .modec .mimg img{width:44px!important;height:44px!important}
+ #home .modec .mtx{align-items:center;text-align:center;max-width:100%}
+ #home .modec .mtx b{font-size:16px!important;max-width:100%}
+ #home .modec .mtx em{font-size:11px!important;color:#fff3c4;max-width:100%}
+}
 </style>
 
 <div id="bg"><div class="halo"></div></div>
