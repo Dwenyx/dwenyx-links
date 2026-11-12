@@ -1966,15 +1966,15 @@ function roundedBox(w,h,d,r,seg){const g=new THREE.BoxGeometry(w,h,d,seg,seg,seg
  for(let i=0;i<p.count;i++){v.fromBufferAttribute(p,i);c.copy(v).clamp(mn,mx);n.copy(v).sub(c);if(n.lengthSq()<1e-9)n.fromBufferAttribute(nr,i);n.normalize();v.copy(c).addScaledVector(n,r);p.setXYZ(i,v.x,v.y,v.z);nr.setXYZ(i,n.x,n.y,n.z)}return g}
 
 // eau (accueil) + bureau et corps du clavier (arène)
-const water=new THREE.Mesh(new THREE.PlaneGeometry(800,800),toon(0x3cc6f2));water.rotation.x=-Math.PI/2;water.position.set(N/2,-.6,N/2);S.add(water);
-const desk=new THREE.Mesh(new THREE.PlaneGeometry(190,190),toon(0xd99a5f));desk.rotation.x=-Math.PI/2;desk.position.set(N/2,-.55,N/2);S.add(desk);
-for(let k=-9;k<=9;k++){const pl=new THREE.Mesh(new THREE.PlaneGeometry(190,.25),toon(0xc4844c));pl.rotation.x=-Math.PI/2;pl.position.set(N/2,-.54,N/2+k*10);S.add(pl)}
-const base=new THREE.Mesh(roundedBox(N+2.4,.9,N+2.4,.3,2),toon(0x2c3350));base.position.set(N/2,-.35,N/2);S.add(base);
+const water=new THREE.Mesh(new THREE.PlaneGeometry(800,800),toon(0x2ccfff));water.rotation.x=-Math.PI/2;water.position.set(N/2,-.6,N/2);S.add(water);
+const desk=new THREE.Mesh(new THREE.PlaneGeometry(190,190),toon(0xffad5e));desk.rotation.x=-Math.PI/2;desk.position.set(N/2,-.55,N/2);S.add(desk);
+for(let k=-9;k<=9;k++){const pl=new THREE.Mesh(new THREE.PlaneGeometry(190,.25),toon(0xf28f45));pl.rotation.x=-Math.PI/2;pl.position.set(N/2,-.54,N/2+k*10);S.add(pl)}
+const base=new THREE.Mesh(roundedBox(N+2.4,.9,N+2.4,.3,2),toon(0x3048d6));base.position.set(N/2,-.35,N/2);S.add(base);
 const baseO=new THREE.Mesh(base.geometry,OUT);baseO.scale.set(1.006,1.08,1.006);baseO.position.copy(base.position);S.add(baseO);
-const rim=new THREE.Mesh(new THREE.BoxGeometry(N+.6,.12,N+.6),toon(0x3d4566));rim.position.set(N/2,.06,N/2);S.add(rim);
-const rbase=new THREE.Mesh(new THREE.CylinderGeometry(N/2+1.2,N/2+1.2,.9,96),toon(0x2c3350));rbase.position.set(N/2,-.35,N/2);S.add(rbase);
+const rim=new THREE.Mesh(new THREE.BoxGeometry(N+.6,.12,N+.6),toon(0x5a78ff));rim.position.set(N/2,.06,N/2);S.add(rim);
+const rbase=new THREE.Mesh(new THREE.CylinderGeometry(N/2+1.2,N/2+1.2,.9,96),toon(0x3048d6));rbase.position.set(N/2,-.35,N/2);S.add(rbase);
 const rbaseO=new THREE.Mesh(rbase.geometry,OUT);rbaseO.scale.set(1.006,1.08,1.006);rbaseO.position.copy(rbase.position);S.add(rbaseO);
-const rrim=new THREE.Mesh(new THREE.CylinderGeometry(N/2+.3,N/2+.3,.12,96),toon(0x3d4566));rrim.position.set(N/2,.06,N/2);S.add(rrim);
+const rrim=new THREE.Mesh(new THREE.CylinderGeometry(N/2+.3,N/2+.3,.12,96),toon(0x5a78ff));rrim.position.set(N/2,.06,N/2);S.add(rrim);
 rbase.visible=rbaseO.visible=rrim.visible=false;
 function setMap(round){ROUND=!!round;PTOT=0;const R0=N/2-.2;
  for(let c=0;c<TOT;c++){const i=c%N,j=(c/N)|0;PLAY[c]=(!round||Math.hypot(i+.5-N/2,j+.5-N/2)<=R0)?1:0;PTOT+=PLAY[c]}
@@ -1984,7 +1984,7 @@ function setMap(round){ROUND=!!round;PTOT=0;const R0=N/2-.2;
 const KEYROWS=['AZERTYUIOP','QSDFGHJKLM','WXCVBNPOIU'];
 const atlasC=document.createElement('canvas');atlasC.width=atlasC.height=512;
 const atlas=new THREE.CanvasTexture(atlasC);atlas.anisotropy=4;
-function drawAtlas(){const x=atlasC.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,512,512);x.textAlign='center';x.textBaseline='middle';x.font='38px "Lilita One","Arial Black",sans-serif';x.fillStyle='#7a84a6';
+function drawAtlas(){const x=atlasC.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,512,512);x.textAlign='center';x.textBaseline='middle';x.font='38px "Lilita One","Arial Black",sans-serif';x.fillStyle='#7d86d8';
  const all=KEYROWS.join('');for(let k=0;k<all.length;k++){const cx=(k%8)*64+32,cy=((k/8)|0)*64+34;x.fillText(all[k],cx,cy)}atlas.needsUpdate=true}
 drawAtlas();if(document.fonts&&document.fonts.ready)document.fonts.ready.then(drawAtlas);
 function keycapGeo(){const g=roundedBox(1,.72,1,.16,3),p=g.attributes.position;for(let i=0;i<p.count;i++){const y=p.getY(i);if(y>0){const k=1-.2*(y/.36);p.setX(i,p.getX(i)*k);p.setZ(i,p.getZ(i)*k)}}return g}
@@ -2009,13 +2009,13 @@ function updPress(dt){const under=new Set();if(state!=='menu')for(const e of ent
   if(!down&&Math.abs(pressD[c])<.002&&Math.abs(pressV[c])<.02){pressD[c]=0;pressV[c]=0;pressSet.delete(c)}
   if(!anim.has(c)){setTile(c,curH[c]);ch=true}}
  if(ch)tiles.instanceMatrix.needsUpdate=true}
-const checker=c=>((((c/N)|0)%4)===0)?C2:C1;
+const NEU=[],GH=new Float32Array(TMAX),GL=new Float32Array(TMAX);const checker=c=>NEU[c]||(((((c/N)|0)%4)===0)?C2:C1);
 for(let c=0;c<TMAX;c++)tiles.setColorAt(c,C1);
 function initBoard(){for(let c=0;c<TOT;c++){const i=c%N,j=(c/N)|0,r=j%3;keyIdx[c]=r*10+((i+r*3)%10);curH[c]=H_N;pressD[c]=pressV[c]=0;setTile(c,H_N);tiles.setColorAt(c,checker(c))}
  if(keyGeo.attributes.aKey)keyGeo.attributes.aKey.needsUpdate=true;tiles.instanceMatrix.needsUpdate=true;tiles.instanceColor.needsUpdate=true}
 initBoard();tiles.count=TOT;
 keyGeo.setAttribute('aKey',new THREE.InstancedBufferAttribute(keyIdx,1));
-function setBoardN(n){if(n===N)return;N=n;TOT=N*N;tiles.count=TOT;PLAY.fill(1);own.fill(-1);trail.fill(-1);anim.clear();pressSet.clear();initBoard();calcJit();
+function setBoardN(n){if(n===N)return;N=n;TOT=N*N;tiles.count=TOT;PLAY.fill(1);own.fill(-1);trail.fill(-1);anim.clear();pressSet.clear();calcJit();initBoard();
  const sq=(N+2.4)/58.4;base.scale.set(sq,1,sq);baseO.scale.set(sq*1.006,1.08,sq*1.006);const rq=(N+.6)/56.6;rim.scale.set(rq,1,rq);
  const cq=(N/2+1.2)/29.2;rbase.scale.set(cq,1,cq);rbaseO.scale.set(cq*1.006,1.08,cq*1.006);const cr=(N/2+.3)/28.3;rrim.scale.set(cr,1,cr);
  [base,baseO,rim,rbase,rbaseO,rrim,desk].forEach(m=>{m.position.x=N/2;m.position.z=N/2});mmOff.width=mmOff.height=N;mmImg=mmo.createImageData(N,N)}
@@ -2176,11 +2176,11 @@ const own=new Int16Array(TMAX),trail=new Int16Array(TMAX);let counts=[],ents=[],
 const anim=new Map();const CUTC=new THREE.Color(0xff2a2a),PCOL=new THREE.Color(),n2c=()=>Math.random()<.5?0xff3b30:0xff8a1f;
 // peinture : légères variations de teinte façon coups de pinceau
 const JIT=new Float32Array(TMAX);function calcJit(){const hs=(i,j)=>{const v=Math.sin(i*127.1+j*311.7)*43758.5453;return v-Math.floor(v)},vn=(x,y)=>{const i=Math.floor(x),j=Math.floor(y),fx=x-i,fy=y-j,sx=fx*fx*(3-2*fx),sy=fy*fy*(3-2*fy),a=hs(i,j),b=hs(i+1,j),c=hs(i,j+1),d=hs(i+1,j+1);return a+(b-a)*sx+(c-a)*sy+(a-b-c+d)*sx*sy};
- for(let c=0;c<TOT;c++){const i=c%N,j=(c/N)|0;JIT[c]=.93+.09*vn(i/3.2,j/2.4)+.035*hs(i*3,j*7)}}calcJit();
+ for(let c=0;c<TOT;c++){const i=c%N,j=(c/N)|0;JIT[c]=.93+.09*vn(i/3.2,j/2.4)+.035*hs(i*3,j*7);const v=vn(i/3.2,j/2.4),w=vn(i/7+9,j/7+3);GH[c]=(v-.5)*.035;GL[c]=(v-.5)*.09+.012*(hs(i*3,j*7)-.5);const t=(i+j)/(2*N);(NEU[c]||(NEU[c]=new THREE.Color())).setHSL(.555+.2*t+.05*(w-.5),.9,((j%4)===0?.82:.86)+.025*(v-.5))}}calcJit();for(let c=0;c<TOT;c++)tiles.setColorAt(c,checker(c));tiles.instanceColor.needsUpdate=true;
 const cellVis=c=>{const t=trail[c];if(t>=0){const e=ents[t];return[H_TR,e.cut?CUTC:e.trCol,1]}const o=own[c];if(o>=0)return[H_OWN,ents[o].col,1];return[H_N,checker(c),0]};
 function refresh(c,delay=0,from){if(NET.role==='host')NET.dirty.add(c);const[h,col,p]=cellVis(c);anim.set(c,{t0:now+delay,from:from===undefined?curH[c]:from,to:h,col,p,cs:0})}
 function eob(p){const c1=2.2,c3=c1+1;return 1+c3*Math.pow(p-1,3)+c1*Math.pow(p-1,2)}
-function updTiles(){let md=false,cd=false;for(const[c,a]of anim){if(now<a.t0)continue;if(!a.cs){tiles.setColorAt(c,a.p?PCOL.copy(a.col).multiplyScalar(JIT[c]):a.col);cd=true;a.cs=1}const p=(now-a.t0)/.45;if(p>=1){curH[c]=a.to;setTile(c,a.to);anim.delete(c)}else{const h=a.from+(a.to-a.from)*eob(p);curH[c]=h;setTile(c,Math.max(.04,h))}md=true}if(md)tiles.instanceMatrix.needsUpdate=true;if(cd)tiles.instanceColor.needsUpdate=true}
+function updTiles(){let md=false,cd=false;for(const[c,a]of anim){if(now<a.t0)continue;if(!a.cs){tiles.setColorAt(c,a.p?PCOL.copy(a.col).offsetHSL(GH[c],.06,GL[c]):a.col);cd=true;a.cs=1}const p=(now-a.t0)/.45;if(p>=1){curH[c]=a.to;setTile(c,a.to);anim.delete(c)}else{const h=a.from+(a.to-a.from)*eob(p);curH[c]=h;setTile(c,Math.max(.04,h))}md=true}if(md)tiles.instanceMatrix.needsUpdate=true;if(cd)tiles.instanceColor.needsUpdate=true}
 function recount(){counts=ents.map(()=>0);for(let c=0;c<TOT;c++)if(own[c]>=0)counts[own[c]]=(counts[own[c]]||0)+1}
 
 function spotFree(ci,cj,r,e,mate){for(let dj=-r;dj<=r;dj++)for(let di=-r;di<=r;di++){const i=ci+di,j=cj+dj;if(i<1||j<1||i>=N-1||j>=N-1)return false;const c=ix(i,j);if(!PLAY[c]||trail[c]!==-1)return false;if(own[c]!==-1&&!(mate&&mineC(e,c)))return false}
@@ -2462,7 +2462,7 @@ function botThink(e,dt){
 function botify(e,d){Object.assign(e,{bot:true,diff:d,speed:4.6+.6*d+Math.random()*.25,turn:4.6+.8*d,aggr:.15+.5*d,caution:1.1+1.4*d,reach:6+8*d,maxTrail:18+22*d,state:'idle',thinkT:.2+Math.random()*.6,wps:[]})}
 
 /* ---------- PARTIE ---------- */
-const PAL=[0x3fa9ff,0xff4d5e,0x4cd964,0xffc21a,0xb05cff,0xff8a1f,0x2fe0d0,0xff5fb8,0x8b5a2b,0x1f4fd8,0xa3e635,0x6d28d9,0xdc2626,0x0d9488];
+const PAL=[0x2f9bff,0xff3b52,0x3ee05a,0xffc414,0xa64dff,0xff7d14,0x1fe3d2,0xff4fb4,0xff6b3d,0x2457ff,0x9cf01f,0x7a2cff,0xf0232f,0x10c9a0];
 const PAL_T=[[0x2f8dff,0x1f5fd8,0x62b8ff,0x0e7ad1,0x4a6cff,0x8fd4ff],[0xff4d5e,0xd61f3a,0xff7a85,0xb3122c,0xff3b6b,0xe8504a]];
 const TEAMC=['#4fb4ff','#ff5a6a'],TEAMN=['BLEUS','ROUGES'];
 const TEAMCOL=[0x2f8dff,0xff4d5e];
