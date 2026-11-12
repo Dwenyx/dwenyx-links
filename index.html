@@ -1604,6 +1604,22 @@ input,textarea{-webkit-user-select:text;user-select:text}
 /* résultats : emblème de ligue à côté de la barre */
 .rrk{position:relative;padding-left:4px}.rrk .rlg{flex:none;width:52px;height:52px;display:grid;place-items:center;position:relative;z-index:2}.rrk .rlg>*{width:100%!important;height:100%!important}
 #sPass .sbody{padding-left:max(16px,env(safe-area-inset-left,0px))!important;padding-right:max(16px,env(safe-area-inset-right,0px))!important}
+
+/* ===== finitions : gris récupéré, CLAIM centré, contours propres ===== */
+#bnPlay .bpt{display:grid;place-items:center}
+#bnPlay .ptri{width:50px;height:54px;margin-left:8px;filter:drop-shadow(0 3px 0 rgba(20,40,120,.35))}
+.heroTag{display:none!important}
+.ri.got .rc,.pcard.got,.pvc.got{filter:grayscale(1) brightness(.82)!important}
+.ri.got .rc img,.pcard.got img{opacity:.75}
+.rtag{animation:none!important;left:0!important;right:0!important;margin:0 auto;width:max-content;transform:none!important}
+/* cadres : relief en bas sans « jours » dans les coins */
+.rc,.pcard,.lcard,.lsq,.vc{box-shadow:none!important;border-bottom-width:7px!important}
+.rc{border-color:#0b0b19!important}.lcard,.lsq{border-bottom-color:#0b0b19!important}
+.ri.claim .rc{animation:none!important;box-shadow:0 0 22px 6px rgba(255,255,255,.35)!important}
+.vc{border-bottom-color:#1b2580!important}.vc:active{border-bottom-width:4px!important;transform:translateY(3px)}
+/* contour des textes : épaisseur régulière */
+.s,.btn,.playbtn .pbt,.elim .en,#death .dt,#death .dp{-webkit-text-stroke:clamp(3px,.17em,7px) #0b0b19!important}
+body *:not(input):not(textarea):not(select):not(.stitle):not(.stitle *){-webkit-text-stroke-width:clamp(3px,.17em,7px)}
 </style>
 
 <div id="bg"><div class="halo"></div></div>
@@ -1655,7 +1671,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
 <nav id="bnav" hidden><div class="bnin"><i class="bnind"></i>
   <button class="bn" data-nav="shop"><span class="ic" data-i="shop"></span><b class="s">BOUTIQUE</b><i class="bdg" id="shopDot" hidden></i></button>
   <button class="bn" data-nav="heroes"><span class="ic" data-i="heroes"></span><b class="s">HÉROS</b><i class="bdg" id="heroDot" hidden></i></button>
-  <span class="bnmid"><button id="bnPlay" aria-label="Jouer"><span class="bpt s">JOUER</span><svg class="eyes" viewBox="0 0 124 70" aria-hidden="true"><g class="ey"><ellipse cx="32" cy="35" rx="26" ry="30" fill="#cfe6fb"/><ellipse cx="32" cy="32" rx="24" ry="27" fill="#fff"/><circle class="pu" cx="39" cy="34" r="12.5" fill="#1d4b8f"/><ellipse cx="32" cy="35" rx="26" ry="30" fill="none" stroke="#0b0b19" stroke-width="5"/></g><g class="ey"><ellipse cx="92" cy="35" rx="26" ry="30" fill="#cfe6fb"/><ellipse cx="92" cy="32" rx="24" ry="27" fill="#fff"/><circle class="pu" cx="85" cy="34" r="12.5" fill="#1d4b8f"/><ellipse cx="92" cy="35" rx="26" ry="30" fill="none" stroke="#0b0b19" stroke-width="5"/></g></svg></button></span>
+  <span class="bnmid"><button id="bnPlay" aria-label="Jouer"><span class="bpt"><svg class="ptri" viewBox="0 0 64 70" aria-hidden="true"><path d="M14 8 Q8 4.5 8 11.5 V58.5 Q8 65.5 14 62 L56 39 Q62 35 56 31 Z" fill="#fff" stroke="#1b2580" stroke-width="6" stroke-linejoin="round"/><path d="M14 47 V58.5 L50 38.5 Q40 44 14 47 Z" fill="#d9e6ff"/></svg></span><svg class="eyes" viewBox="0 0 124 70" aria-hidden="true"><g class="ey"><ellipse cx="32" cy="35" rx="26" ry="30" fill="#cfe6fb"/><ellipse cx="32" cy="32" rx="24" ry="27" fill="#fff"/><circle class="pu" cx="39" cy="34" r="12.5" fill="#1d4b8f"/><ellipse cx="32" cy="35" rx="26" ry="30" fill="none" stroke="#0b0b19" stroke-width="5"/></g><g class="ey"><ellipse cx="92" cy="35" rx="26" ry="30" fill="#cfe6fb"/><ellipse cx="92" cy="32" rx="24" ry="27" fill="#fff"/><circle class="pu" cx="85" cy="34" r="12.5" fill="#1d4b8f"/><ellipse cx="92" cy="35" rx="26" ry="30" fill="none" stroke="#0b0b19" stroke-width="5"/></g></svg></button></span>
   <button class="bn" data-nav="missions"><span class="ic" data-i="missions"></span><b class="s">MISSIONS</b><i class="bdg" id="missDot" hidden></i></button>
   <button class="bn" data-nav="lead"><span class="ic" data-i="cup"></span><b class="s">CLASSEMENT</b></button>
 </div></nav>
@@ -3321,7 +3337,7 @@ press($('#trophyBtn'),()=>go('road'));press($('#passCard'),()=>go('pass'));press
 press($('#playGo'),()=>{if(ROOM){ac();roomReady();return}const m=save.mode;if(m==='party')openParty();else play(m)});
 $('#bnav').addEventListener('click',e=>{const b=e.target.closest('[data-nav]');if(b){ac();sfx.click();if(tab!==b.dataset.nav)go(b.dataset.nav);return}
  if(e.target.closest('#bnPlay')){const bp=$('#bnPlay');bp.classList.add('prs');setTimeout(()=>bp.classList.remove('prs'),140);ac();if(tab!=='home'){sfx.click();go('home');return}playS('play',.95);sfx._mute=true;$('#playGo').click();sfx._mute=false}});
-setInterval(()=>{if(state!=='menu'&&$('#bnav').hidden)return;updNav();const t=$('#playGo .pbt'),bp=$('#bnPlay .bpt');if(t&&bp&&bp.textContent!==t.textContent)bp.textContent=t.textContent;$('#bnPlay').classList.toggle('rdyOn',$('#playGo').classList.contains('rdyOn'))},200);
+setInterval(()=>{if(state!=='menu'&&$('#bnav').hidden)return;updNav();$('#bnPlay').classList.toggle('rdyOn',$('#playGo').classList.contains('rdyOn'))},200);
 press($('#coinPill'),()=>{go('shop');setTimeout(()=>shopJump('coins'),80)});press($('#gemPill'),()=>{go('shop');setTimeout(()=>shopJump('gems'),80)});
 press($('#gearBtn'),openSettings);press($('#profileBtn'),()=>go('prof'));press($('#xpTop'),()=>go('prof'));
 
