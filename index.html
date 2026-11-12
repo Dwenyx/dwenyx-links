@@ -1583,11 +1583,33 @@ input,textarea{-webkit-user-select:text;user-select:text}
 @media (orientation:portrait){#res .rhimg img{left:-6%;width:112%!important}}
 #res .rh:nth-child(odd) .rhimg{z-index:1}
 @media (orientation:portrait){#res .rheroes{gap:6px}}
+
+/* ===== ÉCRAN DE CHARGEMENT ===== */
+#boot{position:fixed;inset:0;z-index:999;display:flex;flex-direction:column;align-items:center;overflow:hidden;pointer-events:auto;transition:opacity .55s ease,transform .55s ease}
+#boot.out{opacity:0;transform:scale(1.04);pointer-events:none}
+#boot .bt-bg{position:absolute;inset:0;z-index:-1;background:url(ui/boot.jpg) center/cover no-repeat,radial-gradient(circle at 50% 18%,rgba(255,255,255,.55) 0 6%,transparent 22%),radial-gradient(ellipse 60% 18% at 15% 62%,rgba(255,255,255,.85) 0 60%,transparent 62%),radial-gradient(ellipse 50% 14% at 88% 74%,rgba(255,255,255,.8) 0 60%,transparent 62%),linear-gradient(180deg,#39a9ff 0%,#7fd0ff 55%,#ffd36a 78%,#ffae2b 100%)}
+#boot .bt-pub{margin-top:calc(env(safe-area-inset-top,0px) + 7vh);font-size:clamp(16px,4.2vw,26px);opacity:.85;letter-spacing:.04em;animation:btIn .7s .05s both}
+#boot .bt-logo{width:min(86vw,520px);margin-top:1vh;filter:drop-shadow(0 8px 0 rgba(10,20,80,.25));animation:btLogo .9s cubic-bezier(.2,1.4,.4,1) both}
+#boot .bt-spin{position:absolute;bottom:calc(env(safe-area-inset-bottom,0px) + 7vh);left:50%;width:62px;height:62px;margin-left:-31px;border-radius:50%;background:rgba(255,255,255,.28);box-shadow:0 0 0 6px rgba(255,255,255,.18),0 0 24px rgba(255,255,255,.35);display:grid;place-items:center}
+#boot .bt-spin i{width:38px;height:38px;border-radius:50%;border:6px solid rgba(255,255,255,.95);border-right-color:transparent;animation:btSpin .8s linear infinite}
+@keyframes btSpin{to{transform:rotate(360deg)}}
+@keyframes btLogo{from{opacity:0;transform:scale(.6) translateY(-20px)}}
+@keyframes btIn{from{opacity:0}}
+/* passe vertical recentré + sans coches */
+#sPass .pv{width:100%;max-width:560px;box-sizing:border-box;margin:0 auto}
+#sPass .pvr{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+#sPass .pvrows{box-sizing:border-box;width:100%}
+#sPass .pvc{min-width:0;box-sizing:border-box}
+.pvt.k{display:none!important}
+/* résultats : emblème de ligue à côté de la barre */
+.rrk{position:relative;padding-left:4px}.rrk .rlg{flex:none;width:52px;height:52px;display:grid;place-items:center;position:relative;z-index:2}.rrk .rlg>*{width:100%!important;height:100%!important}
+#sPass .sbody{padding-left:max(16px,env(safe-area-inset-left,0px))!important;padding-right:max(16px,env(safe-area-inset-right,0px))!important}
 </style>
 
 <div id="bg"><div class="halo"></div></div>
 <canvas id="cv"></canvas>
 
+<div id="boot"><div class="bt-bg"></div><div class="bt-pub s">Dwenyx Games</div><img class="bt-logo" src="ui/logo.png?v=19" alt="Keyboard Rivals"><div class="bt-spin"><i></i></div></div>
 <header id="topbar" class="lbar">
   <button id="profileBtn" class="lcard prof" aria-label="Profil et réglages"><span id="avatarBtn" class="avatar"></span><span class="pnm"><b id="pName" class="s"></b><small id="pTitle" class="s"></small></span></button>
   <button id="xpTop" class="lxp" aria-label="Passe"><span class="xlv s" id="xLv">1</span><span class="xbar"><i id="xFill"></i><b class="s" id="xTxt">0</b></span></button>
@@ -3534,6 +3556,8 @@ press($('#langBtn'),openLang);press($('#langX'),()=>{$('#langM').hidden=true});
 $('#langList').addEventListener('click',e=>{const b=e.target.closest('[data-lang]');if(!b)return;ac();sfx.click();setLang(b.dataset.lang);$('#langList').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));if(tab&&tab!=='home')go(tab)});
 updLangBtn();musWant='lobby';
 snapCam=true;go('home');authInit();
+{const t0=performance.now(),bt=document.getElementById('boot');const done=()=>{if(!bt||bt.classList.contains('out'))return;bt.classList.add('out');setTimeout(()=>bt.remove(),650)};
+ Promise.all([document.fonts&&document.fonts.ready||Promise.resolve(),new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))),new Promise(r=>setTimeout(r,Math.max(900,2200-performance.now())))]).then(done);setTimeout(done,4000)}
 requestAnimationFrame(frame);
 })();
 
