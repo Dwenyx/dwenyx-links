@@ -1521,13 +1521,39 @@ input,textarea{-webkit-user-select:text;user-select:text}
 }
 
 #bnav .bn.on .bdg{display:none!important}
+
+/* ===== BARRE DU HAUT MOBILE (portrait) façon Clash Royale ===== */
+#xpTop{display:none}
+#profileBtn .pnm{display:flex;flex-direction:column;align-items:flex-start;min-width:0;line-height:1.05}
+#pTitle{display:none}
+@media (orientation:portrait){
+ #topbar{display:grid!important;grid-template-columns:minmax(0,1fr) auto auto;grid-template-areas:"xp co ge" "pr tr gear";gap:8px 6px!important;align-items:center;padding-left:max(8px,env(safe-area-inset-left,0px))!important;padding-right:max(8px,env(safe-area-inset-right,0px))!important}
+ #topbar .lcur{display:contents}
+ #topbar>*{min-width:0}
+ #xpTop{grid-area:xp;display:flex;align-items:center;height:36px;min-width:0;font:inherit;color:#fff;background:none;border:0;padding:0 0 0 2px;cursor:pointer}
+ #xpTop .xlv{position:relative;z-index:1;display:grid;place-items:center;width:40px;height:40px;flex:none;font-size:19px;background:linear-gradient(#5fb0ff,#1f5fd8);border:3px solid #0b0b19;clip-path:polygon(50% 0,93% 25%,93% 75%,50% 100%,7% 75%,7% 25%)}
+ #xpTop .xbar{position:relative;flex:1;min-width:0;height:28px;margin-left:-10px;background:rgba(10,20,60,.75);border:3px solid #0b0b19;border-radius:8px;overflow:hidden}
+ #xpTop .xbar i{position:absolute;inset:0 auto 0 0;background:linear-gradient(#7fd6ff,#2f9cf0)}
+ #xpTop .xbar b{position:relative;display:block;text-align:center;font-weight:400;font-size:15px;line-height:22px;padding-left:8px;white-space:nowrap}
+ #coinPill{grid-area:co}#gemPill{grid-area:ge}
+ #coinPill,#gemPill{height:36px!important;font-size:16px!important;padding:2px 10px 2px 3px!important;white-space:nowrap}
+ #coinPill .ic,#gemPill .ic{width:28px!important;height:28px!important}
+ #profileBtn{grid-area:pr;display:flex!important;align-items:center;gap:8px;height:56px;padding:3px 10px 3px 4px!important;min-width:0;overflow:hidden}
+ #profileBtn .avatar{width:46px!important;height:46px!important;flex:none}
+ #profileBtn #pName{font-size:18px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block}
+ #pTitle{display:block;font-size:12px;color:#8fd0ff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+ #trophyBtn{grid-area:tr;height:56px;min-width:0;width:auto!important}
+ #gearBtn{grid-area:gear;width:52px!important;height:52px!important}
+ .heroTag{top:calc(env(safe-area-inset-top,0px) + 122px)!important}
+}
 </style>
 
 <div id="bg"><div class="halo"></div></div>
 <canvas id="cv"></canvas>
 
 <header id="topbar" class="lbar">
-  <button id="profileBtn" class="lcard prof" aria-label="Profil et réglages"><span id="avatarBtn" class="avatar"></span><b id="pName" class="s"></b></button>
+  <button id="profileBtn" class="lcard prof" aria-label="Profil et réglages"><span id="avatarBtn" class="avatar"></span><span class="pnm"><b id="pName" class="s"></b><small id="pTitle" class="s"></small></span></button>
+  <button id="xpTop" class="lxp" aria-label="Passe"><span class="xlv s" id="xLv">1</span><span class="xbar"><i id="xFill"></i><b class="s" id="xTxt">0</b></span></button>
   <button id="trophyBtn" class="lcard troph" aria-label="Route des trophées"><i class="bdg" id="roadDot" hidden></i>
     <span class="tl"><span class="tv"><span class="ic" data-i="cup"></span><b id="mTr" class="s">0</b></span><span class="tbar"><b id="tFill"></b></span></span>
     <span class="tnext" id="tNext"></span>
@@ -2869,7 +2895,7 @@ cv.addEventListener('pointerup',endRot);cv.addEventListener('pointercancel',endR
 function setDot(id,n){const e=$('#'+id);if(!e)return;e.hidden=!n;e.textContent=n>9?'9+':n}
 function updTop(){
  roomRetrack();$('#mCo').textContent=fmt(save.coins);$('#mGe').textContent=fmt(save.gems);
- $('#avatarBtn').innerHTML=iconHTML(save.icon);$('#pName').textContent=save.name;$('#mTr').textContent=save.stars;
+ $('#avatarBtn').innerHTML=iconHTML(save.icon);$('#pName').textContent=save.name;{const t=(TITLES.find(x=>x.id===save.title)||TITLES[0]);$('#pTitle').textContent=t?t.n:'';const L=passLevel(),xi=(save.xp||0)%XP_LV;$('#xLv').textContent=L;$('#xFill').style.width=(L>=PASS_MAX?100:xi/XP_LV*100)+'%';$('#xTxt').textContent=L>=PASS_MAX?'MAX':xi+'/'+XP_LV}$('#mTr').textContent=save.stars;
  const nx=roadNext(),pr=[...ROAD].reverse().find(r=>r.t<=save.stars),a=pr?pr.t:0,cl=roadClaimable().length;
  $('#tFill').style.width=(nx?Math.max(4,(save.stars-a)/(nx.t-a)*100):100)+'%';
  $('#tNext').innerHTML=(cl?img('p_chest'):nx?rewArt(nx).h:img('p_crown'));
@@ -3239,7 +3265,7 @@ $('#bnav').addEventListener('click',e=>{const b=e.target.closest('[data-nav]');i
  if(e.target.closest('#bnPlay')){const bp=$('#bnPlay');bp.classList.add('prs');setTimeout(()=>bp.classList.remove('prs'),140);ac();if(tab!=='home'){sfx.click();go('home');return}playS('play',.95);sfx._mute=true;$('#playGo').click();sfx._mute=false}});
 setInterval(()=>{if(state!=='menu'&&$('#bnav').hidden)return;updNav();const t=$('#playGo .pbt'),bp=$('#bnPlay .bpt');if(t&&bp&&bp.textContent!==t.textContent)bp.textContent=t.textContent;$('#bnPlay').classList.toggle('rdyOn',$('#playGo').classList.contains('rdyOn'))},200);
 press($('#coinPill'),()=>{go('shop');setTimeout(()=>shopJump('coins'),80)});press($('#gemPill'),()=>{go('shop');setTimeout(()=>shopJump('gems'),80)});
-press($('#gearBtn'),openSettings);press($('#profileBtn'),()=>go('prof'));
+press($('#gearBtn'),openSettings);press($('#profileBtn'),()=>go('prof'));press($('#xpTop'),()=>go('pass'));
 
 /* ---------- APPLI INSTALLABLE ---------- */
 const STANDALONE=matchMedia('(display-mode: fullscreen)').matches||matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
