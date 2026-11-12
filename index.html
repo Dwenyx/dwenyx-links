@@ -1639,14 +1639,16 @@ body *:not(input):not(textarea):not(select):not(.stitle):not(.stitle *){-webkit-
 #bnav .bn .bdg{min-width:21px;height:21px;padding:0 5px;font-size:12px;line-height:15px;border-width:2px;top:-1px;right:calc(50% - 30px)}
 /* mobile portrait : sélection du mode en panneau à droite du bouton play */
 @media (orientation:portrait){
- #home .lbottom{display:block!important;left:auto!important;right:0!important;width:calc(50% - 63px);bottom:calc(81px + env(safe-area-inset-bottom,0px))!important;padding:0!important}
+ #home .lbottom{display:block!important;left:auto!important;right:0!important;width:calc(50% - 63px + 16px);right:-16px!important;bottom:calc(92px + env(safe-area-inset-bottom,0px))!important;padding:0!important}
  #home .modec{zoom:1!important;position:relative;display:block;width:100%!important;background:none;border:0;box-shadow:none;border-radius:0;overflow:visible;padding:0;filter:drop-shadow(0 4px 0 rgba(11,11,25,.25))}
  #home .modec::before{content:"";position:absolute;inset:0;background:#1b2580;clip-path:polygon(24px 0,100% 0,100% 100%,24px 100%,0 50%)}
  #home .modec::after{content:"";position:absolute;inset:4px 0 8px 6px;background:linear-gradient(#ff8a7a,#ec4b55 60%,#d6334a);clip-path:polygon(20px 0,100% 0,100% 100%,20px 100%,0 50%)}
- #home .modec .mbody{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:0;padding:32px 6px 13px 24px!important;min-height:78px;box-sizing:border-box}
+ #home .modec .mbody{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:0;padding:32px 22px 13px 24px!important;min-height:78px;box-sizing:border-box}
  #home .modec .mbody::after{content:none!important}
- #home .modec .mimg{position:absolute;top:-30px;left:calc(50% + 9px);transform:translateX(-50%);width:58px!important;height:58px!important;border:3px solid #1b2580;border-radius:16px;box-shadow:0 4px 0 #1b2580}
- #home .modec .mimg img{width:44px!important;height:44px!important}
+ #home .modec .mimg{position:absolute;top:-36px;left:calc(50% + 1px);transform:translateX(-50%);width:66px!important;height:66px!important;border:0!important;border-radius:0;box-shadow:none;background:none!important;overflow:visible}
+ #home .modec .mimg img,#home .modec .mimg svg{width:62px!important;height:62px!important;filter:drop-shadow(0 3px 0 #1b2580) drop-shadow(0 0 1.5px #1b2580)}
+ #home .modec{transition:transform .12s,scale .12s}
+ #home .modec:active{transform:none!important;scale:.95}
  #home .modec .mtx{align-items:center;text-align:center;max-width:100%}
  #home .modec .mtx b{font-size:16px!important;max-width:100%}
  #home .modec .mtx em{font-size:11px!important;color:#fff3c4;max-width:100%}
