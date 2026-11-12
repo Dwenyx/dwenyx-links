@@ -1473,7 +1473,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
 .rstage{grid-area:stage;position:relative;display:flex;align-items:flex-end;justify-content:center;min-height:0}
 .rstage .rmain{position:relative;z-index:2;height:min(calc(70vh / var(--z,1) * 1.3),560px);aspect-ratio:1;animation:rHero .6s .1s cubic-bezier(.2,1.3,.4,1) both}
 .rstage .rmain img,.rstage .rsd img{width:100%!important;height:100%!important;object-fit:contain;filter:drop-shadow(0 10px 0 rgba(0,0,40,.25));animation:rBob 2.6s ease-in-out infinite}
-.rstage .rsd{position:absolute;bottom:6%;height:min(46vh,340px);aspect-ratio:1;z-index:1;filter:brightness(.38) saturate(.6) contrast(1.1);animation:rHero .6s .3s cubic-bezier(.2,1.3,.4,1) both}
+.rstage .rsd{position:absolute;bottom:6%;height:min(46vh,340px);aspect-ratio:1;z-index:1;filter:brightness(.82) saturate(.9);animation:rHero .6s .3s cubic-bezier(.2,1.3,.4,1) both}
 .rstage .rsd.l{right:62%}.rstage .rsd.r{left:62%}.rstage .rsd img{animation-delay:-1.3s}
 .rfloor{position:absolute;bottom:2%;left:50%;width:min(46vh,360px);height:40px;margin-left:calc(min(46vh,360px)/-2);border-radius:50%;background:rgba(10,20,90,.35);z-index:0}
 .rside{grid-area:side;display:flex;flex-direction:column;gap:10px;justify-content:center;z-index:2;min-width:0}
@@ -1527,7 +1527,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
 #profileBtn .pnm{display:flex;flex-direction:column;align-items:flex-start;min-width:0;line-height:1.05}
 #pTitle{display:none}
 @media (orientation:portrait){
- #topbar{display:grid!important;grid-template-columns:minmax(0,1fr) auto auto;grid-template-areas:"xp co ge" "pr tr gear";gap:8px 6px!important;align-items:center;padding-left:max(8px,env(safe-area-inset-left,0px))!important;padding-right:max(8px,env(safe-area-inset-right,0px))!important}
+ #topbar:not([hidden]){display:grid!important;grid-template-columns:minmax(0,1fr) auto auto;grid-template-areas:"xp co ge" "pr tr gear";gap:8px 6px!important;align-items:center;padding-left:max(8px,env(safe-area-inset-left,0px))!important;padding-right:max(8px,env(safe-area-inset-right,0px))!important}
  #topbar .lcur{display:contents}
  #topbar>*{min-width:0}
  #xpTop{grid-area:xp;display:flex;align-items:center;height:36px;min-width:0;font:inherit;color:#fff;background:none;border:0;padding:0 0 0 2px;cursor:pointer}
@@ -1545,6 +1545,17 @@ input,textarea{-webkit-user-select:text;user-select:text}
  #trophyBtn{grid-area:tr;height:56px;min-width:0;width:auto!important}
  #gearBtn{grid-area:gear;width:52px!important;height:52px!important}
  .heroTag{top:calc(env(safe-area-inset-top,0px) + 122px)!important}
+}
+
+/* 5v5 : chaque équipe reste dans sa couleur */
+#res.t5 .rbg,#res.t5.k-dead .rbg,#res.t5.k-end .rbg{background:linear-gradient(90deg,#3f7bff 0 50%,#e8323f 50% 100%)!important}
+.rsplit{gap:0}
+.rsplit{margin:0 calc(-1*max(18px,env(safe-area-inset-right,0px))) 0 calc(-1*max(18px,env(safe-area-inset-left,0px)))!important}
+@media (orientation:portrait){.rhalf.blue{background:#3f7bff}.rhalf.red{background:#e8323f}}
+.rhalf{padding:10px 12px}
+@media (orientation:portrait){
+ #res.t5 .rbg,#res.t5.k-dead .rbg,#res.t5.k-end .rbg{background:linear-gradient(180deg,#3f7bff 0 50%,#e8323f 50% 100%)!important}
+ #res.t5{grid-template-rows:auto minmax(0,1fr) auto}
 }
 </style>
 
@@ -2461,7 +2472,7 @@ function finish(reason){
  ensureMissions();
  const mp={play:1,pct:Math.floor(pct),kill:player.kills,top3:pl<=3?1:0,stars:Math.max(0,dS)};
  save.missions.forEach(m=>{if(!m.done)m.p=Math.min(m.n,m.p+(mp[m.k]||0))});
- const unl=[],lvBefore=passLevel();const xpG=60+player.kills*15+Math.floor(pct)+(won?80:0);save.xp=(save.xp||0)+xpG;if(passLevel()>lvBefore)unl.push({t:'pass',l:passLevel()});
+ const unl=[],lvBefore=passLevel();const xpG=60+player.kills*15+Math.floor(pct)+(won?80:0);save.xp=(save.xp||0)+xpG;const accBefore=accLv()[0];save.accXp=(save.accXp===undefined?(save.xp-xpG):save.accXp)+xpG;if(passLevel()>lvBefore)unl.push({t:'pass',l:passLevel()});
  if(ranked&&won)save.gems+=5;
  if(ROAD.some(r=>r.t>oldS&&r.t<=save.stars))unl.push({t:'road'});
  persist();if(RT.prof)apiCall('/api/profile','POST',{action:'sync',hero:save.hero,stars:save.stars});
@@ -2485,10 +2496,10 @@ function showEnd(o){
   const all=ents.filter(Boolean),mvp=all.reduce((m,e)=>sc(e)>sc(m)?e:m,all[0]),tk=all.reduce((m,e)=>(e.kills||0)>(m.kills||0)?e:m,all[0]);
   const half=(t,cls)=>`<div class="rhalf ${cls}"><div class="rheroes">${side(t).map((e,i)=>`<div class="rh" style="--i:${i}">${e===mvp?'<span class="rstar s">MVP</span>':''}<div class="rhimg">${heroIcon(e.hero)}</div><div class="rcard ${e===player?'me':''}"><b class="s" style="color:${hex(e.color)}">${esc(e.name)}</b><span class="s">${SKULL}${e.kills||0}</span><span class="s">${ico('heroes')}${pc(e)}</span>${e===tk&&(e.kills||0)>0?'<em class="s">MEILLEUR TUEUR</em>':''}</div></div>`).join('')}</div></div>`;
   body=`<div class="rsplit">${half(my,'blue')}${half(1-my,'red')}</div>`}
- else{const side=(tSize()>1?ents.filter(e=>e&&e!==player&&e.team===player.team):ents.filter(e=>e&&e!==player).sort((a,b)=>sc(b)-sc(a))).slice(0,2);
+ else{const side=tSize()>1?ents.filter(e=>e&&e!==player&&e.team===player.team).slice(0,2):[];
   const stage=`<div class="rstage">${side[0]?`<div class="rsd l">${heroIcon(side[0].hero)}</div>`:''}<div class="rmain">${heroIcon(player.hero)}</div>${side[1]?`<div class="rsd r">${heroIcon(side[1].hero)}</div>`:''}<i class="rfloor"></i></div>`;
   const stats=`<div class="rstats s"><span><small>PLACE</small><b>#${o.pl}<em>/${o.n}</em></b></span><span><small>TERRITOIRE</small><b>${o.pct.toFixed(1)}%</b></span><span><small>ÉLIMINATIONS</small><b>${player.kills}</b></span></div>`;
-  const xpP=`<div class="rpan s"><h3>EXPÉRIENCE</h3><div class="rrow"><span>Partie</span><b>${ico('star')}<b class="cu" data-to="${o.xpG}">0</b></b></div><div class="rlv"><span class="rlvn">${L}</span><span class="rbar xp"><i style="width:${L>=PASS_MAX?100:xin/XP_LV*100}%"></i><em>${L>=PASS_MAX?'MAX':xin+' / '+XP_LV}</em></span></div></div>`;
+  const xpP=`<div class="rpan s"><h3>EXPÉRIENCE</h3><div class="rrow"><span>Partie</span><b>${ico('star')}<b class="cu" data-to="${o.xpG}">0</b></b></div>${(()=>{const[al,ax,an]=accLv();return `<div class="rlv"><span class="rlvn">${al}</span><span class="rbar xp"><i style="width:${ax/an*100}%"></i><em>${ax} / ${an}</em></span></div>`})()}</div>`;
   const rw=`<div class="rpan s"><h3>RÉCOMPENSES</h3><div class="rrow"><span>${kind==='win'?'Victoire':'Partie'}</span><b>${ico('coin')}${fmt(o.co-((player.bestStreak||0)>=2?player.bestStreak*10:0))}</b></div>${(player.bestStreak||0)>=2?`<div class="rrow"><span>Série x${player.bestStreak}</span><b>${ico('coin')}${player.bestStreak*10}</b></div>`:''}${o.ranked&&kind==='win'?`<div class="rrow"><span>Bonus</span><b>${ico('gem')}5</b></div>`:''}<h3 class="rtot">TOTAL</h3><div class="rtotv">${ico('coin')}<b class="cu" data-to="${o.co}" data-coin="1">0</b></div></div>`;
   body=`${stage}<div class="rside">${stats}${xpP}${rw}${o.unl.map(u=>u.t==='road'?`<div class="eun s">${ico('cup')}Nouvelle récompense de route !</div>`:`<div class="eun s">${ico('pass')}Passe niv. ${u.l} : récompense dispo !</div>`).join('')}</div>`}
  R0.className=`res ${team?'t5':'solo'} k-${kind}`;R0.innerHTML=`<div class="rbg"></div>${head}${body}${btns}`;R0.hidden=false;
@@ -2893,9 +2904,10 @@ const endRot=e=>{if(!rot||e.pointerId!==rot.id)return;if(rot.moved<6&&detailChar
 cv.addEventListener('pointerup',endRot);cv.addEventListener('pointercancel',endRot);
 
 function setDot(id,n){const e=$('#'+id);if(!e)return;e.hidden=!n;e.textContent=n>9?'9+':n}
+function accLv(x){if(x===undefined)x=save.accXp===undefined?(save.xp||0):save.accXp;let l=1,need=100;while(x>=need&&l<500){x-=need;l++;need=100+40*(l-1)}return[l,x,need]}
 function updTop(){
  roomRetrack();$('#mCo').textContent=fmt(save.coins);$('#mGe').textContent=fmt(save.gems);
- $('#avatarBtn').innerHTML=iconHTML(save.icon);$('#pName').textContent=save.name;{const t=(TITLES.find(x=>x.id===save.title)||TITLES[0]);$('#pTitle').textContent=t?t.n:'';const L=passLevel(),xi=(save.xp||0)%XP_LV;$('#xLv').textContent=L;$('#xFill').style.width=(L>=PASS_MAX?100:xi/XP_LV*100)+'%';$('#xTxt').textContent=L>=PASS_MAX?'MAX':xi+'/'+XP_LV}$('#mTr').textContent=save.stars;
+ $('#avatarBtn').innerHTML=iconHTML(save.icon);$('#pName').textContent=save.name;{const t=(TITLES.find(x=>x.id===save.title)||TITLES[0]);$('#pTitle').textContent=t?t.n:'';const[al,ax,an]=accLv();$('#xLv').textContent=al;$('#xFill').style.width=(ax/an*100)+'%';$('#xTxt').textContent=ax+'/'+an}$('#mTr').textContent=save.stars;
  const nx=roadNext(),pr=[...ROAD].reverse().find(r=>r.t<=save.stars),a=pr?pr.t:0,cl=roadClaimable().length;
  $('#tFill').style.width=(nx?Math.max(4,(save.stars-a)/(nx.t-a)*100):100)+'%';
  $('#tNext').innerHTML=(cl?img('p_chest'):nx?rewArt(nx).h:img('p_crown'));
@@ -3265,7 +3277,7 @@ $('#bnav').addEventListener('click',e=>{const b=e.target.closest('[data-nav]');i
  if(e.target.closest('#bnPlay')){const bp=$('#bnPlay');bp.classList.add('prs');setTimeout(()=>bp.classList.remove('prs'),140);ac();if(tab!=='home'){sfx.click();go('home');return}playS('play',.95);sfx._mute=true;$('#playGo').click();sfx._mute=false}});
 setInterval(()=>{if(state!=='menu'&&$('#bnav').hidden)return;updNav();const t=$('#playGo .pbt'),bp=$('#bnPlay .bpt');if(t&&bp&&bp.textContent!==t.textContent)bp.textContent=t.textContent;$('#bnPlay').classList.toggle('rdyOn',$('#playGo').classList.contains('rdyOn'))},200);
 press($('#coinPill'),()=>{go('shop');setTimeout(()=>shopJump('coins'),80)});press($('#gemPill'),()=>{go('shop');setTimeout(()=>shopJump('gems'),80)});
-press($('#gearBtn'),openSettings);press($('#profileBtn'),()=>go('prof'));press($('#xpTop'),()=>go('pass'));
+press($('#gearBtn'),openSettings);press($('#profileBtn'),()=>go('prof'));press($('#xpTop'),()=>go('prof'));
 
 /* ---------- APPLI INSTALLABLE ---------- */
 const STANDALONE=matchMedia('(display-mode: fullscreen)').matches||matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
