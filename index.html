@@ -1567,6 +1567,22 @@ input,textarea{-webkit-user-select:text;user-select:text}
 #volIn::-moz-range-progress{height:10px;border-radius:6px;background:#ffd21f}
 #volIn::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;margin-top:-7px;border-radius:50%;background:#ffd21f;border:3px solid #0b0b19}
 #volIn::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:#ffd21f;border:3px solid #0b0b19}
+
+/* écran de fin : corrections */
+#res .rhead{padding-top:18px}
+#res .rtitle{padding:.12em .1em 0 .05em;overflow:visible}
+#res .rcard{box-sizing:border-box}
+#res .rheroes{gap:10px;height:100%;align-items:stretch}
+#res .rhalf{align-items:stretch;min-height:0;padding-top:4px}
+#res .rh{max-width:none;justify-content:flex-end;min-height:0}
+#res .rhimg{flex:1 1 auto;min-height:0;width:100%;aspect-ratio:auto;display:flex;align-items:flex-end;justify-content:center}
+#res .rhimg img{width:100%!important;height:100%!important;max-height:100%;object-fit:contain;object-position:50% 100%}
+#res .rcard{position:relative}#res .rstar{position:absolute;top:-14px;right:6px;margin:0}
+#res .rhimg{position:relative}#res .rhimg img{position:absolute;top:0;bottom:0;left:-18%;width:136%!important;height:100%!important;margin:0;object-fit:contain;object-position:50% 100%}
+#res .rhalf{overflow:hidden}
+@media (orientation:portrait){#res .rhimg img{left:-6%;width:112%!important}}
+#res .rh:nth-child(odd) .rhimg{z-index:1}
+@media (orientation:portrait){#res .rheroes{gap:6px}}
 </style>
 
 <div id="bg"><div class="halo"></div></div>
@@ -2495,7 +2511,7 @@ addEventListener('resize',()=>fitEnd());
 function showEnd(o){
  $('#end').hidden=true;specOn=!matchOver;const R0=$('#res');
  const kind=o.reason==='win'?'win':o.reason==='quit'?'quit':o.wasDead?'dead':'end';
- const title=kind==='win'?'VICTOIRE !':kind==='quit'?'PARTIE INTERROMPUE':o.pl<=3&&kind!=='dead'?`TOP ${o.pl} !`:kind==='dead'?'ÉLIMINÉ':'FIN DE PARTIE';
+ const title=gameMode==='team'&&kind!=='quit'?(kind==='win'?'VICTOIRE !':'DÉFAITE'):kind==='win'?'VICTOIRE !':kind==='quit'?'PARTIE INTERROMPUE':o.pl<=3&&kind!=='dead'?`TOP ${o.pl} !`:kind==='dead'?'ÉLIMINÉ':'FIN DE PARTIE';
  const team=gameMode==='team',sc=e=>e.alive?(counts[e.id]||0):(e.deathCount||0),pc=e=>(sc(e)/PTOT*100).toFixed(1)+'%';
  const L=passLevel(),xin=(save.xp||0)%XP_LV,nx=roadNext();
  const tro=o.ranked?`<div class="rtro s">${ico('cup')}<b class="cu" data-to="${o.dS}" data-sg="1">${o.dS>=0?'+':''}0</b></div>`:'';
@@ -2504,7 +2520,7 @@ function showEnd(o){
  let body='';
  if(team){const my=player.team,side=t=>ents.filter(e=>e&&e.team===t).sort((a,b)=>(b===player)-(a===player)||sc(b)-sc(a));
   const all=ents.filter(Boolean),mvp=all.reduce((m,e)=>sc(e)>sc(m)?e:m,all[0]),tk=all.reduce((m,e)=>(e.kills||0)>(m.kills||0)?e:m,all[0]);
-  const half=(t,cls)=>`<div class="rhalf ${cls}"><div class="rheroes">${side(t).map((e,i)=>`<div class="rh" style="--i:${i}">${e===mvp?'<span class="rstar s">MVP</span>':''}<div class="rhimg">${heroIcon(e.hero)}</div><div class="rcard ${e===player?'me':''}"><b class="s" style="color:${hex(e.color)}">${esc(e.name)}</b><span class="s">${SKULL}${e.kills||0}</span><span class="s">${ico('heroes')}${pc(e)}</span>${e===tk&&(e.kills||0)>0?'<em class="s">MEILLEUR TUEUR</em>':''}</div></div>`).join('')}</div></div>`;
+  const half=(t,cls)=>`<div class="rhalf ${cls}"><div class="rheroes">${side(t).map((e,i)=>`<div class="rh" style="--i:${i}"><div class="rhimg">${heroIcon(e.hero)}</div><div class="rcard ${e===player?'me':''}">${e===mvp?'<span class="rstar s">MVP</span>':''}<b class="s" style="color:${hex(e.color)}">${esc(e.name)}</b><span class="s">${SKULL}${e.kills||0}</span><span class="s">${ico('heroes')}${pc(e)}</span>${e===tk&&(e.kills||0)>0?'<em class="s">MEILLEUR TUEUR</em>':''}</div></div>`).join('')}</div></div>`;
   body=`<div class="rsplit">${half(my,'blue')}${half(1-my,'red')}</div>`}
  else{const side=tSize()>1?ents.filter(e=>e&&e!==player&&e.team===player.team).slice(0,2):[];
   const stage=`<div class="rstage">${side[0]?`<div class="rsd l">${heroIcon(side[0].hero)}</div>`:''}<div class="rmain">${heroIcon(player.hero)}</div>${side[1]?`<div class="rsd r">${heroIcon(side[1].hero)}</div>`:''}<i class="rfloor"></i></div>`;
