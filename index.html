@@ -1335,6 +1335,22 @@ button:active,.btn:active,.btn.press,.sbtn:active,.lsq:active,.hb:active,.lcard:
 #home .lbottom{grid-template-columns:minmax(0,1fr) minmax(0,1.4fr)!important;grid-template-areas:"pass mode"!important}
 @media (orientation:portrait){#home .lbottom{grid-template-columns:1fr!important;grid-template-areas:"mode"!important}#home .side{bottom:calc(env(safe-area-inset-bottom,0px) + 250px)!important}}
 body[data-tab=shop] .scr,body[data-tab=heroes] .scr,body[data-tab=missions] .scr,body[data-tab=lead] .scr{bottom:calc(99px + env(safe-area-inset-bottom,0px))}
+
+/* onglet actif : section bleue + animation */
+#bnav .bnin{position:relative}
+#bnav .bnind{position:absolute;top:-4px;bottom:calc(-1*env(safe-area-inset-bottom,0px));width:0;left:0;border-radius:14px 14px 0 0;background:linear-gradient(#5b8ff0,#3a6fe0);border:4px solid #0b0b19;border-bottom:0;box-shadow:inset 0 4px 0 rgba(255,255,255,.35);opacity:0;transition:left .28s cubic-bezier(.3,1.4,.5,1),width .28s,opacity .2s;z-index:0;pointer-events:none}
+#bnav .bn{z-index:1}
+#bnav .bn b{display:none;font-size:13px;white-space:nowrap;overflow:visible;max-width:none;position:relative;z-index:2}
+#bnav .bn.on b{display:block;animation:bnLbl .3s cubic-bezier(.2,1.6,.4,1)}
+#bnav .bn .ic{width:48px;height:48px;transition:transform .25s cubic-bezier(.2,1.6,.4,1)}
+#bnav .bn.on .ic{transform:translateY(-14px) scale(1.32) rotate(-6deg)}
+#bnav .bn.on::before{display:none}
+#bnav .bn.pop .ic{animation:bnPop .45s cubic-bezier(.2,1.6,.4,1)}
+#bnav .bn{padding-bottom:10px;justify-content:flex-end;height:78px}
+@keyframes bnPop{0%{transform:translateY(0) scale(1)}55%{transform:translateY(-22px) scale(1.45) rotate(8deg)}100%{transform:translateY(-14px) scale(1.32) rotate(-6deg)}}
+@keyframes bnLbl{from{transform:scale(.3);opacity:0}}
+.bnmid::before{content:"";position:absolute;left:50%;bottom:1px;width:136px;height:136px;margin-left:-68px;border-radius:50%;background:#f4f8ff;border:4px solid #0b0b19;clip-path:inset(0 0 59px 0)}
+.bnmid{z-index:1}
 </style>
 
 <div id="bg"><div class="halo"></div></div>
@@ -1381,7 +1397,7 @@ body[data-tab=shop] .scr,body[data-tab=heroes] .scr,body[data-tab=missions] .scr
   </div>
 </div>
 
-<nav id="bnav" hidden><div class="bnin">
+<nav id="bnav" hidden><div class="bnin"><i class="bnind"></i>
   <button class="bn" data-nav="shop"><span class="ic" data-i="shop"></span><b class="s">BOUTIQUE</b><i class="bdg" id="shopDot" hidden></i></button>
   <button class="bn" data-nav="heroes"><span class="ic" data-i="heroes"></span><b class="s">HÉROS</b><i class="bdg" id="heroDot" hidden></i></button>
   <span class="bnmid"><button id="bnPlay" aria-label="Jouer"><span class="bpt s">JOUER</span><svg class="eyes" viewBox="0 0 124 70" aria-hidden="true"><g class="ey"><ellipse cx="32" cy="35" rx="26" ry="30" fill="#cfe6fb"/><ellipse cx="32" cy="32" rx="24" ry="27" fill="#fff"/><circle class="pu" cx="39" cy="34" r="12.5" fill="#1d4b8f"/><ellipse cx="32" cy="35" rx="26" ry="30" fill="none" stroke="#0b0b19" stroke-width="5"/></g><g class="ey"><ellipse cx="92" cy="35" rx="26" ry="30" fill="#cfe6fb"/><ellipse cx="92" cy="32" rx="24" ry="27" fill="#fff"/><circle class="pu" cx="85" cy="34" r="12.5" fill="#1d4b8f"/><ellipse cx="92" cy="35" rx="26" ry="30" fill="none" stroke="#0b0b19" stroke-width="5"/></g></svg></button></span>
@@ -1867,8 +1883,8 @@ function spawn(e,strict){
 const FUSE=22;
 function cutTrail(v,k,c){if(!v||!v.alive)return;const i=v.trailCells.indexOf(c);if(i<0)return;
  for(let n=0;n<=i;n++){const q=v.trailCells[n];if(trail[q]===v.id&&q!==c){trail[q]=-1;refresh(q,n*.008)}}
- v.trailCells.splice(0,i+1);
- const first=!v.cut;v.cut={by:k.id,acc:v.cut?v.cut.acc:0};
+ const cutC=v.trailCells.slice(0,i+1);v.trailCells.splice(0,i+1);
+ const first=!v.cut;v.cut={by:k.id,acc:v.cut?v.cut.acc:0,cells:(v.cut&&v.cut.cells||[]).concat(cutC,v.trailCells)};
  if(!v.trailCells.length){kill(v,k);return}
  if(!first)return;
  for(const q of v.trailCells)if(trail[q]===v.id)refresh(q,0);
@@ -1879,13 +1895,14 @@ function cutFx(v,k){if(v===player){sfx.out();shake=Math.max(shake,.3);banner('CO
  else if(k===player){sfx.tick();feedMsg(`Tu as coupé ${v.name} !`)}}
 function burnTick(e,dt){if(!e.cut||!e.alive)return;e.cut.acc+=FUSE*dt;
  while(e.cut&&e.cut.acc>=1){e.cut.acc-=1;const q=e.trailCells.shift();
-  if(q===undefined){const k=ents[e.cut.by];e.cut=null;kill(e,k||null);return}
+  if(q===undefined){const k=ents[e.cut.by];kill(e,k||null);e.cut=null;return}
   if(trail[q]===e.id){trail[q]=-1;refresh(q,0);if(player&&Math.abs(q%N-EAR().x)+Math.abs(((q/N)|0)-EAR().z)<26)burst(q%N+.5,.8,((q/N)|0)+.5,n2c(),3,4)}}}
 function savedFx(e){saveAnim(e);if(e===player){banner('SAUVÉ !');sfx.up();setTimeout(()=>{if($('#banner').textContent.includes('SAUV'))$('#banner').innerHTML=''},1100)}else feedMsg(`${e.name} s'en est sorti !`)}
 const lootOK=(v,k)=>!!k&&k!==v&&k.alive&&!k.dying&&gameMode!=='team'&&foe(k,v);
 function kill(v,k){
- if(!v.alive)return;v.alive=false;v.cut=null;v.revAt=v.team>=0&&tSize()>1&&gameMode!=='surv'?now+revDelay():0;markPlace(v);v.deathCount=(tSize()>1&&gameMode!=='team')?(teamScores()[v.team]||0):(counts[v.id]||0);if(NET.role==='host')NET.ev.push({t:'k',v:v.id,k:k?k.id:-1,p:v.deathCount});
- {const tk=lootOK(v,k)?k:null;for(let c=0;c<TOT;c++)if(trail[c]===v.id){trail[c]=-1;if(tk&&!mineC(tk,c))own[c]=tk.id;refresh(c,Math.random()*.15)}}
+ if(!v.alive)return;const lootC=v.cut&&v.cut.cells||[];v.alive=false;v.cut=null;v.revAt=v.team>=0&&tSize()>1&&gameMode!=='surv'?now+revDelay():0;markPlace(v);v.deathCount=(tSize()>1&&gameMode!=='team')?(teamScores()[v.team]||0):(counts[v.id]||0);if(NET.role==='host')NET.ev.push({t:'k',v:v.id,k:k?k.id:-1,p:v.deathCount});
+ {const tk=lootOK(v,k)?k:null;for(let c=0;c<TOT;c++)if(trail[c]===v.id){trail[c]=-1;if(tk&&!mineC(tk,c))own[c]=tk.id;refresh(c,Math.random()*.15)}
+  if(tk)for(const c of lootC)if(PLAY[c]&&trail[c]===-1&&(own[c]===-1||own[c]===v.id)){own[c]=tk.id;refresh(c,Math.random()*.2,.1)}}
  v.trailCells=[];
  {const heir=v.team>=0?ents.find(o=>o&&o!==v&&o.alive&&o.team===v.team):null,taker=!heir&&lootOK(v,k)?k:null;
   for(let c=0;c<TOT;c++)if(own[c]===v.id){if(heir)own[c]=heir.id;else if(taker){own[c]=taker.id;refresh(c,Math.min(.8,Math.hypot(c%N+.5-v.x,((c/N)|0)+.5-v.z)*.03),.1)}else{own[c]=-1;refresh(c,.1+Math.random()*.5)}}
@@ -2119,11 +2136,10 @@ const TEAMCOL=[0x2f8dff,0xff4d5e];
 const mineC=(e,c)=>{const o=own[c];return o===e.id||(e.team>=0&&o>=0&&!!ents[o]&&ents[o].team===e.team)};
 const foe=(a,b)=>!!a&&!!b&&a!==b&&(a.team<0||a.team!==b.team);
 function setEntColor(e,c){e.color=c;e.col.set(c);e.trCol.set(mixHex(c,0xffffff,.3));if(tSize()>1&&e.view){const old=e.view.g.children.find(o=>o.isSprite);if(old){e.view.g.remove(old);e.view.g.add(nameSprite(e.name,hex(c)))}}}
-function freeColor(team){if(gameMode==='team'&&team>=0)return TEAMCOL[team];if(team>=0){const m=ents.find(o=>o&&o.team===team);if(m)return m.color}const used=new Set(ents.filter(Boolean).map(e=>e.color)),pool=(gameMode==='team'&&team>=0)?PAL_T[team]:PAL;return pool.find(c=>!used.has(c))||PAL.find(c=>!used.has(c))||(Math.random()*0xffffff|0)}
+function freeColor(team){if(gameMode==='team'&&team>=0)return TEAMCOL[team];const used=new Set(ents.filter(Boolean).map(e=>e.color)),pool=bigPal(Math.max(60,ents.length+8));return pool.find(c=>!used.has(c))||PAL.find(c=>!used.has(c))||(Math.random()*0xffffff|0)}
 function bigPal(n){const out=PAL.slice(),c=new THREE.Color();for(let k=0;out.length<n;k++){c.setHSL((k*.618034+.05)%1,.62+.2*((k>>1)%2),.48+.1*(k%3)/2);out.push(c.getHex())}return out}
 function assignColors(){const sh=a=>a.slice().sort(()=>Math.random()-.5),PAL=bigPal(ents.length);
  if(gameMode==='team'){for(const e of ents)setEntColor(e,TEAMCOL[e.team])}
- else if(tSize()>1){const p=sh(PAL),tc={};for(const e of ents){if(tc[e.team]===undefined)tc[e.team]=p.shift();setEntColor(e,tc[e.team])}}
  else{const p=sh(PAL);for(const e of ents)setEntColor(e,p.shift())}}
 const revDelay=()=>gameMode==='team'?10:gameSub==='trio'?25:15;
 const SUBS={solo:{n:'SOLO',ts:1},duo:{n:'DUO',ts:2},trio:{n:'TRIO',ts:3}};
@@ -2163,7 +2179,7 @@ async function play(mode){
  if(fsAuto)goFull();
  if(ROOM){ac();roomReady();return}
  if(busy)return;ac();
- if(NET.role==='host'&&simOn&&!matchOver&&!player.alive&&gameMode!=='team'&&mode===gameMode&&(save.sub||'solo')===gameSub){rejoinHost();return}
+ if(NET.role==='host'&&simOn&&!matchOver&&!player.alive&&gameMode!=='team'&&gameMode!=='surv'&&mode===gameMode&&(save.sub||'solo')===gameSub){rejoinHost();return}
  if(ROOM)roomLeave(true);
  NET.leave();simOn=false;busy=true;
  $('#mmTitle').textContent="RECHERCHE D'UNE PARTIE…";$('#mmTxt').textContent='';$('#match').hidden=false;
@@ -2660,7 +2676,8 @@ function refresh2(){updTop();if(tab==='home')updHome();if(tab==='shop')renderSho
 const SCR=['#sProf','#sLead','#sShop','#sHeroes','#sMissions','#sPass','#sRoad','#sModes','#party'];
 function closeAll(){[...SCR,'#settings','#profile','#invite','#detail','#chestM','#match'].forEach(s=>$(s).hidden=true);detailOpen=false}
 const NAVT=['home','shop','heroes','missions','lead'];
-function updNav(){const nv=$('#bnav');if(!nv)return;const on=state==='menu'&&NAVT.includes(tab)&&!(tab==='heroes'&&detailOpen);nv.hidden=!on;nv.classList.toggle('away',tab!=='home');nv.querySelectorAll('[data-nav]').forEach(b=>b.classList.toggle('on',b.dataset.nav===tab))}
+function updNav(){const nv=$('#bnav');if(!nv)return;const on=state==='menu'&&NAVT.includes(tab)&&!(tab==='heroes'&&detailOpen);nv.hidden=!on;nv.classList.toggle('away',tab!=='home');nv.querySelectorAll('[data-nav]').forEach(b=>{const on=b.dataset.nav===tab;if(on&&!b.classList.contains('on')){b.classList.remove('pop');void b.offsetWidth;b.classList.add('pop');sfx.pop&&sfx.pop(3)}b.classList.toggle('on',on)});
+ const a=nv.querySelector('.bn.on'),ind=nv.querySelector('.bnind');if(ind){if(a&&!nv.hidden){ind.style.left=(a.offsetLeft-2)+'px';ind.style.width=(a.offsetWidth+4)+'px';ind.style.opacity=1}else ind.style.opacity=0}}
 function go(t){
  tab=t;closeAll();document.body.dataset.tab=t;document.body.dataset.r='home';setTimeout(updNav,0);
  const lob=t==='home';$('#home').hidden=!lob;$('#topbar').hidden=!lob;
