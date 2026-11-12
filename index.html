@@ -1309,7 +1309,8 @@ button:active,.btn:active,.btn.press,.sbtn:active,.lsq:active,.hb:active,.lcard:
 #langBtn{min-width:150px}
 
 /* ===== BARRE DU BAS (Boutique · Héros · JOUER · Missions · Classement) ===== */
-#bnav{position:fixed;left:0;right:0;bottom:0;z-index:11;pointer-events:none;padding-bottom:env(safe-area-inset-bottom,0px);background:linear-gradient(#f4f8ff,#d9e6fb);border-top:4px solid #0b0b19;box-shadow:0 -4px 0 rgba(255,255,255,.5) inset;zoom:var(--z,1)}
+#bnav{position:fixed;left:0;right:0;bottom:0;z-index:11;pointer-events:none;padding-bottom:env(safe-area-inset-bottom,0px);background:linear-gradient(#f4f8ff,#d9e6fb);border-top:4px solid #0b0b19;box-shadow:0 -4px 0 rgba(255,255,255,.5) inset}
+#bnav .bnin{zoom:var(--z,1)}
 #bnav .bnin{pointer-events:auto;display:grid;grid-template-columns:1fr 1fr 124px 1fr 1fr;align-items:end;max-width:560px;margin:0 auto;height:78px;padding:0 8px}
 #bnav .bn{position:relative;font:inherit;background:none;border:0;padding:0 0 6px;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;color:#fff;transition:transform .12s}
 #bnav .bn .ic{width:50px;height:50px;filter:drop-shadow(0 3px 0 rgba(11,11,25,.35));transition:transform .15s}
@@ -1319,9 +1320,9 @@ button:active,.btn:active,.btn.press,.sbtn:active,.lsq:active,.hb:active,.lcard:
 #bnav .bn.on::before{content:"";position:absolute;inset:4px 6px 2px;border-radius:14px;background:rgba(47,98,242,.16);z-index:-1}
 #bnav .bn .bdg{top:0;right:calc(50% - 34px)}
 .bnmid{position:relative;height:78px}
-#bnPlay{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);width:118px;height:118px;border-radius:50%;border:5px solid #0b0b19;cursor:pointer;padding:0;display:grid;place-items:center;
- background:radial-gradient(circle at 34% 28%,#fffbd0 0 9%,transparent 10%),radial-gradient(circle at 50% 45%,#fff36b,#ffd21f 55%,#f2a100);box-shadow:inset 0 -9px 0 rgba(190,110,0,.45),inset 0 6px 0 rgba(255,255,255,.65),0 6px 0 #0b0b19;font:inherit;color:#fff;transition:transform .15s}
-#bnPlay:active{transform:translateX(-50%) scale(.94)}
+#bnPlay{position:absolute;left:50%;bottom:14px;margin-left:-55px;width:110px;height:110px;box-sizing:border-box;border-radius:50%;border:5px solid #0b0b19;cursor:pointer;padding:0;display:grid;place-items:center;
+ background:radial-gradient(circle at 34% 28%,#eaffd9 0 9%,transparent 10%),radial-gradient(circle at 50% 45%,#a6f27e,#5fd94a 55%,#2fae2c);box-shadow:inset 0 -9px 0 rgba(20,110,30,.45),inset 0 6px 0 rgba(255,255,255,.55),0 7px 0 #0b0b19;font:inherit;color:#fff;transform:none;transition:transform .08s,box-shadow .08s}
+#bnPlay:active,#bnPlay.prs{transform:translateY(6px)!important;box-shadow:inset 0 -4px 0 rgba(20,110,30,.45),inset 0 6px 0 rgba(255,255,255,.55),0 1px 0 #0b0b19}
 #bnPlay .bpt{font-size:27px;letter-spacing:.5px;line-height:1}
 #bnPlay .eyes{width:74px;height:44px;display:none}
 #bnav.away #bnPlay .eyes{display:block}#bnav.away #bnPlay .bpt{display:none}
@@ -1329,7 +1330,7 @@ button:active,.btn:active,.btn.press,.sbtn:active,.lsq:active,.hb:active,.lcard:
 #bnPlay .eyes .pu{animation:lookE 6s ease-in-out infinite}
 @keyframes blinkE{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
 @keyframes lookE{0%,40%,100%{transform:translate(0,0)}50%,70%{transform:translate(-5px,-2px)}80%,90%{transform:translate(4px,1px)}}
-#bnPlay.rdyOn{background:radial-gradient(circle at 50% 45%,#9cf27a,#4cd964 55%,#2fae2c)}
+#bnPlay.rdyOn{background:radial-gradient(circle at 50% 45%,#ffe97a,#ffd21f 55%,#f2a100);box-shadow:inset 0 -9px 0 rgba(190,110,0,.45),inset 0 6px 0 rgba(255,255,255,.6),0 7px 0 #0b0b19}
 #home .lbottom{bottom:calc(126px + env(safe-area-inset-bottom,0px))!important;padding-bottom:4px!important}
 #home .playc{display:none!important}
 #home .lbottom{grid-template-columns:minmax(0,1fr) minmax(0,1.4fr)!important;grid-template-areas:"pass mode"!important}
@@ -1338,18 +1339,20 @@ body[data-tab=shop] .scr,body[data-tab=heroes] .scr,body[data-tab=missions] .scr
 
 /* onglet actif : section bleue + animation */
 #bnav .bnin{position:relative}
-#bnav .bnind{position:absolute;top:-4px;bottom:calc(-1*env(safe-area-inset-bottom,0px));width:0;left:0;border-radius:14px 14px 0 0;background:linear-gradient(#5b8ff0,#3a6fe0);border:4px solid #0b0b19;border-bottom:0;box-shadow:inset 0 4px 0 rgba(255,255,255,.35);opacity:0;transition:left .28s cubic-bezier(.3,1.4,.5,1),width .28s,opacity .2s;z-index:0;pointer-events:none}
+#bnav .bnind{position:absolute;top:0;box-sizing:border-box;bottom:calc(-1*env(safe-area-inset-bottom,0px));width:0;left:0;border-radius:14px 14px 0 0;background:linear-gradient(#5b8ff0,#3a6fe0);border:4px solid #0b0b19;border-bottom:0;box-shadow:inset 0 4px 0 rgba(255,255,255,.35);opacity:0;transition:left .28s cubic-bezier(.3,1.4,.5,1),width .28s,opacity .2s;z-index:0;pointer-events:none}
 #bnav .bn{z-index:1}
 #bnav .bn b{display:none;font-size:13px;white-space:nowrap;overflow:visible;max-width:none;position:relative;z-index:2}
 #bnav .bn.on b{display:block;animation:bnLbl .3s cubic-bezier(.2,1.6,.4,1)}
 #bnav .bn .ic{width:48px;height:48px;transition:transform .25s cubic-bezier(.2,1.6,.4,1)}
-#bnav .bn.on .ic{transform:translateY(-14px) scale(1.32) rotate(-6deg)}
+#bnav .bn .ic{transform-origin:50% 100%}
+#bnav .bn.on .ic{transform:translateY(-8px) scale(1.25)}
+#bnav .bn:active .ic{transform:translateY(-2px) scale(1.05)}
 #bnav .bn.on::before{display:none}
 #bnav .bn.pop .ic{animation:bnPop .45s cubic-bezier(.2,1.6,.4,1)}
 #bnav .bn{padding-bottom:10px;justify-content:flex-end;height:78px}
-@keyframes bnPop{0%{transform:translateY(0) scale(1)}55%{transform:translateY(-22px) scale(1.45) rotate(8deg)}100%{transform:translateY(-14px) scale(1.32) rotate(-6deg)}}
+@keyframes bnPop{0%{transform:translateY(0) scale(1)}30%{transform:translateY(4px) scale(.82,.78)}70%{transform:translateY(-12px) scale(1.32)}100%{transform:translateY(-8px) scale(1.25)}}
 @keyframes bnLbl{from{transform:scale(.3);opacity:0}}
-.bnmid::before{content:"";position:absolute;left:50%;bottom:1px;width:136px;height:136px;margin-left:-68px;border-radius:50%;background:#f4f8ff;border:4px solid #0b0b19;clip-path:inset(0 0 59px 0)}
+
 .bnmid{z-index:1}
 </style>
 
@@ -2677,7 +2680,7 @@ const SCR=['#sProf','#sLead','#sShop','#sHeroes','#sMissions','#sPass','#sRoad',
 function closeAll(){[...SCR,'#settings','#profile','#invite','#detail','#chestM','#match'].forEach(s=>$(s).hidden=true);detailOpen=false}
 const NAVT=['home','shop','heroes','missions','lead'];
 function updNav(){const nv=$('#bnav');if(!nv)return;const on=state==='menu'&&NAVT.includes(tab)&&!(tab==='heroes'&&detailOpen);nv.hidden=!on;nv.classList.toggle('away',tab!=='home');nv.querySelectorAll('[data-nav]').forEach(b=>{const on=b.dataset.nav===tab;if(on&&!b.classList.contains('on')){b.classList.remove('pop');void b.offsetWidth;b.classList.add('pop');sfx.pop&&sfx.pop(3)}b.classList.toggle('on',on)});
- const a=nv.querySelector('.bn.on'),ind=nv.querySelector('.bnind');if(ind){if(a&&!nv.hidden){ind.style.left=(a.offsetLeft-2)+'px';ind.style.width=(a.offsetWidth+4)+'px';ind.style.opacity=1}else ind.style.opacity=0}}
+ const a=nv.querySelector('.bn.on'),ind=nv.querySelector('.bnind');if(ind){if(a&&!nv.hidden){const w=Math.min(a.offsetWidth+6,84);ind.style.left=(a.offsetLeft+a.offsetWidth/2-w/2)+'px';ind.style.width=w+'px';ind.style.opacity=1}else ind.style.opacity=0}}
 function go(t){
  tab=t;closeAll();document.body.dataset.tab=t;document.body.dataset.r='home';setTimeout(updNav,0);
  const lob=t==='home';$('#home').hidden=!lob;$('#topbar').hidden=!lob;
@@ -3013,7 +3016,7 @@ press($('#plusL'),()=>openInvite());press($('#plusR'),()=>openInvite());
 press($('#trophyBtn'),()=>go('road'));press($('#passCard'),()=>go('pass'));press($('#modeBtn'),()=>go('modes'));
 press($('#playGo'),()=>{if(ROOM){ac();roomReady();return}const m=save.mode;if(m==='party')openParty();else play(m)});
 $('#bnav').addEventListener('click',e=>{const b=e.target.closest('[data-nav]');if(b){ac();sfx.click();if(tab!==b.dataset.nav)go(b.dataset.nav);return}
- if(e.target.closest('#bnPlay')){ac();sfx.click();if(tab!=='home'){go('home');return}$('#playGo').click()}});
+ if(e.target.closest('#bnPlay')){const bp=$('#bnPlay');bp.classList.add('prs');setTimeout(()=>bp.classList.remove('prs'),140);ac();sfx.click();if(tab!=='home'){go('home');return}$('#playGo').click()}});
 setInterval(()=>{updNav();const t=$('#playGo .pbt'),bp=$('#bnPlay .bpt');if(t&&bp&&bp.textContent!==t.textContent)bp.textContent=t.textContent;$('#bnPlay').classList.toggle('rdyOn',$('#playGo').classList.contains('rdyOn'))},200);
 press($('#coinPill'),()=>{go('shop');setTimeout(()=>shopJump('coins'),80)});press($('#gemPill'),()=>{go('shop');setTimeout(()=>shopJump('gems'),80)});
 press($('#gearBtn'),openSettings);press($('#profileBtn'),()=>go('prof'));
