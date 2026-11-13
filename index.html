@@ -2101,7 +2101,8 @@ const I={
  chest:'<svg viewBox="0 0 48 48"><path d="M6 21c0-8 8-13 18-13s18 5 18 13z" fill="#ec8e2e" stroke="#122a6b" stroke-width="3" stroke-linejoin="round"/><rect x="6" y="21" width="36" height="19" rx="3" fill="#c96a1c" stroke="#122a6b" stroke-width="3"/><path d="M14 9.5V40M34 9.5V40" stroke="#9fb2d4" stroke-width="4"/><path d="M14 9.5V40M34 9.5V40" stroke="#122a6b" stroke-width="1.2" stroke-dasharray="0 6" stroke-linecap="round"/><rect x="19" y="22" width="10" height="11" rx="2" fill="#ffd21f" stroke="#122a6b" stroke-width="2.5"/><circle cx="24" cy="27" r="1.8" fill="#122a6b"/></svg>',
  gift:'<svg viewBox="0 0 48 48"><rect x="7" y="18" width="34" height="10" rx="2" fill="#ff5a63" stroke="#122a6b" stroke-width="3"/><rect x="10" y="28" width="28" height="15" fill="#ff8a90" stroke="#122a6b" stroke-width="3"/><path d="M24 18v25" stroke="#ffd21f" stroke-width="5"/><path d="M24 18c-6-9-14-6-10 0zM24 18c6-9 14-6 10 0z" fill="#ffd21f" stroke="#122a6b" stroke-width="2.5"/></svg>'
 };
-const img=n=>`<img class="u" src="ui/${n}.png?v=17" alt="">`;
+const IMGC=new Map();const imgKeep=n=>{if(IMGC.has(n))return;const i=new Image();i.decoding='async';i.src=`ui/${n}.png?v=17`;IMGC.set(n,i);if(i.decode)i.decode().catch(()=>{})};
+const img=n=>{imgKeep(n);return `<img class="u" src="ui/${n}.png?v=17" alt="" decoding="async">`};
 Object.assign(I,{coin:img('n_coin'),gem:img('n_gem'),star:img('star'),shop:img('nav_shop'),heroes:img('nav_deck'),missions:img('missions'),world:img('nav_portal'),play:img('nav_play'),chest:img('ch_wood'),gift:img('ch_gold'),lock:img('i_lock'),check:img('i_check'),x:img('i_x'),gear:img('i_info'),shield:img('p_shield'),bomb:img('p_bomb'),clap:img('p_clap'),calendar:img('p_calendar')});
 const ico=k=>`<span class="ic">${I[k]}</span>`;
 const stitle=t=>`<span class="stitle"><span class="b1">${t}</span><span class="b2">${t}</span><span class="f">${t}</span></span>`;
@@ -3313,7 +3314,7 @@ function go(t){
 const setTab=go;
 function press(btn,fn){btn.addEventListener('click',e=>{ac();sfx.click();btn.classList.add('press');setTimeout(()=>btn.classList.remove('press'),110);fn(e)})}
 document.addEventListener('click',e=>{const b=e.target.closest('[data-back],[data-homeb]');if(!b)return;ac();sfx.click();if(b.hasAttribute('data-back')&&detailOpen){go('heroes');return}go('home')});
-function show(id,html){const el=$(id),re=!el.hidden&&el.innerHTML!=='';let keep=[];
+function show(id,html){const el=$(id);if(el._h===html&&el.innerHTML!==''){el.hidden=false;return}el._h=html;const re=!el.hidden&&el.innerHTML!=='';let keep=[];
  if(re)el.querySelectorAll('*').forEach((n,i)=>{if(n.scrollTop||n.scrollLeft)keep.push([i,n.className,n.scrollTop,n.scrollLeft])});
  el.innerHTML=html;el.hidden=false;
  if(re&&keep.length){const all=el.querySelectorAll('*');for(const [i,c,t,l] of keep){const n=all[i];if(n&&n.className===c){n.scrollTop=t;n.scrollLeft=l}}el._kept=performance.now()}}
