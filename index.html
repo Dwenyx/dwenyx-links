@@ -1897,6 +1897,10 @@ html.wk .stitle .b1,html.wk .stitle .b2,html.wk .rtitle{-webkit-text-stroke:reve
 .mqped{background:radial-gradient(ellipse at 50% 35%,#e6fbff 0 45%,#7fd0ff 46% 70%,#4a12b8 71%);box-shadow:0 4px 0 rgba(50,0,120,.45)}
 .mqchest>img{filter:drop-shadow(0 4px 0 rgba(50,0,120,.4))}
 #sLead.scr{background:radial-gradient(ellipse 120% 60% at 50% 25%,#ff9a8a 0,#ff4a55 30%,#e8152e 62%,#b0001f 100%)!important}
+
+.ldspin{display:grid;place-items:center;padding:70px 0}
+.ldspin .bt-spin{width:62px;height:62px;border-radius:50%;background:rgba(255,255,255,.28);box-shadow:0 0 0 6px rgba(255,255,255,.18),0 0 24px rgba(255,255,255,.35);display:grid;place-items:center}
+.ldspin .bt-spin i{width:38px;height:38px;border-radius:50%;border:6px solid rgba(255,255,255,.95);border-right-color:transparent;animation:btSpin .8s linear infinite}
 </style>
 
 <div id="bg"><div class="halo"></div></div>
@@ -3555,7 +3559,7 @@ function renderRoadV(){
 let leadData=null;
 async function renderLead(){
  const draw=()=>{let h='';const d=leadData;
-  if(!d){h='<p class="note s">Chargement…</p>'}
+  if(!d){h='<div class="ldspin"><span class="bt-spin"><i></i></span></div>'}
   else if(d.err){h=`<p class="notice s">${d.err}</p>`}
   else{const me=RT.prof?RT.prof.id:null;
    h+='<div class="ldl">'+d.top.map((p,i)=>`<div class="ldr ${p.id===me?'me':''} ${i<3?'t'+(i+1):''}" data-lp="${i}"><span class="lrk s">${i+1}</span>${heroIcon(HE(p.hero||'cubo'),46)}<span class="lnm s"><b>${handle(p)}</b></span><span class="lst s">${ico('cup')}${fmt(p.stars||0)}</span></div>`).join('')+'</div>';
