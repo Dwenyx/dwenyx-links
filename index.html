@@ -1783,6 +1783,41 @@ html.wk .stitle .b1,html.wk .stitle .b2,html.wk .rtitle{-webkit-text-stroke:reve
 #home:not([hidden]) .passL{animation:scrIn .32s cubic-bezier(.2,.8,.2,1)}
 #home .passL{transition:transform .12s,scale .12s}
 #home .passL::after,#home .modec::after{box-shadow:none}
+
+/* ===== THÈME VIF / CARTOON : couleurs saturées partout ===== */
+:root{--slate1:#3d8bff;--slate2:#1554f0;--royal:#1f7bff;--royalD:#0a4fe0;--nvd:#141c8c}
+.shead,.stabs{background:linear-gradient(#3458ff,#1a2fd6)!important;border-bottom:4px solid #0b0b19}
+.stabs{border-bottom:0;border-top:4px solid #0b0b19}
+.cpill,.hcur .cpill{background:var(--nvd)!important}
+.pill{background:linear-gradient(#2a36c8,#141c8c)!important}
+.mstrip,.pstrip{background:var(--nvd)!important;color:#dfe6ff!important}
+.hinfo{background:linear-gradient(#4a6bff,#2038e0)!important;border:3px solid #0b0b19;box-shadow:0 4px 0 #0b0b19}
+#home .side .sbtn{background:linear-gradient(#c56bff,#7a22f5)!important;box-shadow:inset 0 -6px 0 rgba(60,0,140,.45),inset 0 4px 0 rgba(255,255,255,.45),0 4px 0 #0b0b19!important}
+.langl button{background:linear-gradient(#3d8bff,#1554f0)}
+.qsel{background:var(--nvd)}
+.pnb{background:linear-gradient(#2a36c8,#141c8c)}
+#lb{background:rgba(20,28,140,.86)!important;border-color:#0b0b19!important}
+#pctBox,#timer:not(.hot),#killBox,.pill.big{background:linear-gradient(#2a36c8,#141c8c)!important;border-color:#0b0b19!important}
+.rpan{background:linear-gradient(#49a4ff,#1f5ff5);border-color:#0b0b19;box-shadow:0 4px 0 #0b0b19}
+.rpan h3{color:#fff36b}
+.rstats span{background:linear-gradient(#2a36c8,#141c8c);border:3px solid #0b0b19}
+.pst>div{background:linear-gradient(#2a36c8,#141c8c)}
+.endstats div{background:linear-gradient(#2a36c8,#141c8c)}
+.mbox{background:linear-gradient(#2f7bff,#1554f0)!important}
+.acrow{background:rgba(20,28,140,.55)}
+/* boutique */
+.vc.o-pack{background:linear-gradient(#ffcf4a,#ff7a00)}.vc.o-royal{background:linear-gradient(#6fe0ff,#148cff)}.vc.o-myst{background:linear-gradient(#cf8aff,#6a1ff0)}
+.vc.b-c1{background:linear-gradient(#ff7a8a,#ff1f4a)}.vc.b-c2{background:linear-gradient(#ffe94a,#ff9d00)}.vc.b-c3{background:linear-gradient(#cf8aff,#7a22f5)}
+.vc.r-g{background:linear-gradient(#b4fb6a,#35c81f)}.vc.r-k{background:linear-gradient(#fff04a,#ffa600)}
+.vb-gem{background:linear-gradient(90deg,#9cf25a,#1fb82a)}.vb-coin{background:linear-gradient(90deg,#ffe94a,#ff8a00)}.vb-off{background:linear-gradient(90deg,#ffa01f,#ff2440)}
+/* passe + route */
+.pvc.free{background:linear-gradient(135deg,#3fc0ff,#0a62f5)}
+.pvc.prem{background:radial-gradient(circle,rgba(255,255,255,.22) 0 1.5px,transparent 2.5px) 0 0/20px 20px,linear-gradient(135deg,#cf5cff,#6a1ff0)}
+.pvr.reach .pvl{background:linear-gradient(135deg,#fff04a,#ffa600)}
+.pvt.l,.pvclaim{background:linear-gradient(#fff04a,#ffa600)}
+.tnext{background:linear-gradient(#fff04a,#ffb400)}
+/* missions */
+.box{border-color:#0b0b19}
 </style>
 
 <div id="bg"><div class="halo"></div></div>
@@ -1993,7 +2028,7 @@ const heroIcon0=(h,size)=>{const sk=['#f2c9a0','#c68a5a','#7a4a2c'][h.skin||0];r
 const cubeHTML=(c,size)=>`<div class="cube" style="background:${hex(c)}${size?`;width:${size}px;height:${size}px`:''}"><i></i><i></i></div>`;
 
 /* ---------- DONNÉES ---------- */
-const RAR=[{n:'Commun',c:'#bdf0ff',c2:'#5fd0ff',ca:'#86e8ff',cb:'#2f9cf0'},{n:'Rare',c:'#d3ffbf',c2:'#6ade4a',ca:'#b6f58a',cb:'#3fb83a'},{n:'Épique',c:'#ead2ff',c2:'#b06bff',ca:'#dcb0ff',cb:'#8a4ae8'},{n:'Légendaire',c:'#ffe7a8',c2:'#ffb21f',ca:'#ffe07a',cb:'#f2861a'}];
+const RAR=[{n:'Commun',c:'#9fe8ff',c2:'#2fb8ff',ca:'#5fdcff',cb:'#1487ff'},{n:'Rare',c:'#c4ff9e',c2:'#5fe03a',ca:'#b4fb6a',cb:'#35c81f'},{n:'Épique',c:'#e3b8ff',c2:'#a34dff',ca:'#d98aff',cb:'#7a22f5'},{n:'Légendaire',c:'#ffe98a',c2:'#ffb400',ca:'#ffe44a',cb:'#ff8a00'}];
 const PERKS={
  speed:{n:'Vitesse',role:'Sprinteur',ab:'Turbo Rush',u:'de vitesse',v:l=>5+(l-1),c:'#4cc72a'},
  turn:{n:'Agile',role:'Acrobate',ab:'Virage Éclair',u:'de virage',v:l=>20+(l-1)*3,c:'#ff6cb6'},
@@ -2099,8 +2134,8 @@ function roundedBox(w,h,d,r,seg){const g=new THREE.BoxGeometry(w,h,d,seg,seg,seg
 
 // eau (accueil) + bureau et corps du clavier (arène)
 const water=new THREE.Mesh(new THREE.PlaneGeometry(800,800),toon(0x2ccfff));water.rotation.x=-Math.PI/2;water.position.set(N/2,-.6,N/2);S.add(water);
-const desk=new THREE.Mesh(new THREE.PlaneGeometry(190,190),toon(0xffad5e));desk.rotation.x=-Math.PI/2;desk.position.set(N/2,-.55,N/2);S.add(desk);
-for(let k=-9;k<=9;k++){const pl=new THREE.Mesh(new THREE.PlaneGeometry(190,.25),toon(0xf28f45));pl.rotation.x=-Math.PI/2;pl.position.set(N/2,-.54,N/2+k*10);S.add(pl)}
+const desk=new THREE.Mesh(new THREE.PlaneGeometry(190,190),toon(0xff9a2e));desk.rotation.x=-Math.PI/2;desk.position.set(N/2,-.55,N/2);S.add(desk);
+for(let k=-9;k<=9;k++){const pl=new THREE.Mesh(new THREE.PlaneGeometry(190,.25),toon(0xff7a1a));pl.rotation.x=-Math.PI/2;pl.position.set(N/2,-.54,N/2+k*10);S.add(pl)}
 const base=new THREE.Mesh(roundedBox(N+2.4,.9,N+2.4,.3,2),toon(0x3048d6));base.position.set(N/2,-.35,N/2);S.add(base);
 const baseO=new THREE.Mesh(base.geometry,OUT);baseO.scale.set(1.006,1.08,1.006);baseO.position.copy(base.position);S.add(baseO);
 const rim=new THREE.Mesh(new THREE.BoxGeometry(N+.6,.12,N+.6),toon(0x5a78ff));rim.position.set(N/2,.06,N/2);S.add(rim);
