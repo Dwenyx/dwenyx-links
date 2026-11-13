@@ -837,7 +837,7 @@ body[data-r="home"] #bg{background:radial-gradient(ellipse at 50% 40%,#9af6ff 0,
 .pvr.reach .pvl{background:linear-gradient(135deg,#ffd76a,#e8a21a)}
 .pvr.cur .pvl{box-shadow:0 0 0 4px #fff,0 3px 0 #0b0b19}
 .pvt{position:absolute;top:8px;left:50%;transform:translateX(-50%);display:grid;place-items:center}
-.pvt.g{background:linear-gradient(#9cf25a,#3fbf2a);border:3px solid #0b0b19;border-radius:9px;padding:1px 10px;font-size:13px;box-shadow:inset 0 -3px 0 #2a8a1c;white-space:nowrap;color:#fff}
+.pvt.g{background:linear-gradient(#d9fe8c,#99f25c 45%);border:3px solid #0b0b19;border-radius:9px;padding:1px 10px;font-size:13px;box-shadow:inset 0 -3px 0 #59b842;white-space:nowrap;color:#fff}
 .pvt.l{width:40px;height:28px;background:linear-gradient(#ffd76a,#e8a21a);border:3px solid #0b0b19;border-radius:9px}
 .pvt.l img{width:18px;height:18px}
 .pvt.k{width:32px;height:32px}.pvt.k img{width:32px;height:32px}
@@ -1141,7 +1141,7 @@ input,textarea,select,.pvclaim b,.istep>b,.pcol.reach .pnode,.pvr.reach .pvl spa
 .btn:active,.btn.press{transform:translateY(4px) scale(.98)!important;box-shadow:inset 0 -4px 0 var(--d),inset 0 4px 0 rgba(255,255,255,.7),0 1px 0 #0b0b19!important;filter:none}
 .btn>*{position:relative;z-index:1}
 .btn-blue{--t:#8fd2ff;--m:#3fa2ff;--b:#1f6fe0;--d:#1450b0}
-.btn-green{--t:#c9ff8a;--m:#6fdc3a;--b:#2fa61c;--d:#1f7d10}
+.btn-green{--t:#d9fe8c;--m:#a4f563;--b:#8eee54;--d:#59b842}
 .btn-yellow{--t:#fff58a;--m:#ffd21f;--b:#ffaa00;--d:#e07d00}
 .btn-red{--t:#ffa0aa;--m:#ff4d5e;--b:#d61f3a;--d:#a1102a}
 .btn-grey{--t:#d7deeb;--m:#a3aec4;--b:#7f8ba6;--d:#5b6680}
@@ -1171,7 +1171,7 @@ input,textarea,select,.pvclaim b,.istep>b,.pcol.reach .pnode,.pvr.reach .pvl spa
 .rc{font:inherit;color:inherit;padding:0;cursor:default}
 .rc[data-road]{cursor:pointer}
 .ri.claim .rc b{visibility:visible!important}
-.rtag{position:absolute;top:-12px;left:50%;transform:translateX(-50%);padding:2px 8px;border-radius:8px;background:#3fcf3a;border:3px solid #0b0b19;font-size:12px;white-space:nowrap;z-index:2;animation:twk2 1s ease-in-out infinite}
+.rtag{position:absolute;top:-12px;left:50%;transform:translateX(-50%);padding:2px 8px;border-radius:8px;background:linear-gradient(#d9fe8c,#99f25c 45%);box-shadow:inset 0 -3px 0 #59b842;border:3px solid #0b0b19;font-size:12px;white-space:nowrap;z-index:2;animation:twk2 1s ease-in-out infinite}
 /* modes : formats Solo/Duo/Trio */
 .mgrid.picking .mt:not(.pick){filter:brightness(.4);pointer-events:none}
 .mt.pick{position:relative;z-index:2}
@@ -1305,7 +1305,7 @@ button:active,.btn:active,.btn.press,.sbtn:active,.lsq:active,.hb:active,.lcard:
 
 .langl{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-height:min(60vh,520px);overflow-y:auto;margin:6px 0 12px;padding:2px}
 .langl button{font:inherit;font-size:17px;color:#fff;background:linear-gradient(#3d3f55,#2b2d3f);border:3px solid #0b0b19;border-radius:12px;padding:10px 6px;box-shadow:0 3px 0 #0b0b19;cursor:pointer}
-.langl button.on{background:linear-gradient(#6ade4a,#2fae2c)}
+.langl button.on{background:linear-gradient(#d9fe8c,#99f25c 45%)}
 #langBtn{min-width:150px}
 
 /* ===== BARRE DU BAS (Boutique · Héros · JOUER · Missions · Classement) ===== */
@@ -1321,7 +1321,7 @@ button:active,.btn:active,.btn.press,.sbtn:active,.lsq:active,.hb:active,.lcard:
 #bnav .bn .bdg{top:0;right:calc(50% - 34px)}
 .bnmid{position:relative;height:78px}
 #bnPlay{position:absolute;left:50%;bottom:14px;margin-left:-55px;width:110px;height:110px;box-sizing:border-box;border-radius:50%;border:5px solid #0b0b19;cursor:pointer;padding:0;display:grid;place-items:center;
- background:radial-gradient(circle at 34% 28%,#eaffd9 0 9%,transparent 10%),radial-gradient(circle at 50% 45%,#a6f27e,#5fd94a 55%,#2fae2c);box-shadow:inset 0 -9px 0 rgba(20,110,30,.45),inset 0 6px 0 rgba(255,255,255,.55),0 7px 0 #0b0b19;font:inherit;color:#fff;transform:none;transition:transform .08s,box-shadow .08s}
+ background:radial-gradient(circle at 34% 28%,#eaffd9 0 9%,transparent 10%),radial-gradient(circle at 50% 40%,#c4fb80,#99f25c 55%,#7fe04a);box-shadow:inset 0 -9px 0 rgba(60,150,40,.5),inset 0 6px 0 rgba(255,255,255,.55),0 7px 0 #0b0b19;font:inherit;color:#fff;transform:none;transition:transform .08s,box-shadow .08s}
 #bnPlay:active,#bnPlay.prs{transform:translateY(6px)!important;box-shadow:inset 0 -4px 0 rgba(20,110,30,.45),inset 0 6px 0 rgba(255,255,255,.55),0 1px 0 #0b0b19}
 #bnPlay .bpt{font-size:27px;letter-spacing:.5px;line-height:1}
 #bnPlay .eyes{width:74px;height:44px;display:none}
@@ -1393,7 +1393,7 @@ body[data-tab=shop] .scr,body[data-tab=heroes] .scr,body[data-tab=missions] .scr
 .vc .vp{display:flex;align-items:center;gap:3px;font-size:20px;color:#fff}
 .vc .vp .ic{width:24px;height:24px}
 .vc .vold{font-size:14px;color:#ff5a6a;text-decoration:line-through}
-.vc.free .vf{background:linear-gradient(#8ff06a,#3fb83a);border-top-color:rgba(0,60,0,.25)}
+.vc.free .vf{background:linear-gradient(#c4fb80,#99f25c);border-top-color:rgba(0,60,0,.25)}
 .vc.done{filter:saturate(.35) brightness(.9)}
 .vc.o-pack{background:linear-gradient(#ffd27a,#ff8a2a)}.vc.o-royal{background:linear-gradient(#8fe6ff,#2f9cf0)}.vc.o-hero{background:linear-gradient(var(--a,#86e8ff),var(--b,#2f9cf0))}.vc.o-myst{background:linear-gradient(#d79bff,#7a3be8)}
 .vc.b-c1{background:linear-gradient(#ff9aa6,#e83a5a)}.vc.b-c2{background:linear-gradient(#ffe86e,#ffa61f)}.vc.b-c3{background:linear-gradient(#d9a6ff,#8a3bf0)}
@@ -1433,7 +1433,7 @@ button:active:not(:disabled){scale:.93;transition-duration:.08s}
 
 .sbody,.hx,.rwrap,.pscroll,.langl{scroll-behavior:auto!important;overscroll-behavior:contain}
 
-#bnPlay{border-width:calc(4px / var(--z,1))!important;box-shadow:inset 0 -8px 0 rgba(20,110,30,.42),inset 0 5px 0 rgba(255,255,255,.55),0 calc(4px / var(--z,1)) 0 #1b2580!important;border-color:#1b2580!important}
+#bnPlay{border-width:calc(4px / var(--z,1))!important;box-shadow:inset 0 -8px 0 rgba(60,150,40,.5),inset 0 5px 0 rgba(255,255,255,.55),0 calc(4px / var(--z,1)) 0 #1b2580!important;border-color:#1b2580!important}
 #bnPlay:active,#bnPlay.prs{box-shadow:inset 0 -4px 0 rgba(20,110,30,.42),inset 0 5px 0 rgba(255,255,255,.55),0 0 0 #1b2580!important;transform:translateY(calc(4px / var(--z,1)))!important}
 #bnPlay.rdyOn{box-shadow:inset 0 -8px 0 rgba(190,110,0,.45),inset 0 5px 0 rgba(255,255,255,.6),0 calc(4px / var(--z,1)) 0 #1b2580!important}
 #bnPlay .eyes ellipse[stroke]{stroke:#1b2580}
@@ -1712,10 +1712,10 @@ body *:not(input):not(textarea):not(select):not(.stitle):not(.stitle *):not(.rti
 .srng::-webkit-slider-runnable-track{height:10px;border-radius:6px;background:linear-gradient(90deg,#7fd8ff var(--p,80%),#c4daf2 var(--p,80%));border:0}
 .srng::-moz-range-track{height:10px;border-radius:6px;background:#c4daf2;border:0}
 .srng::-moz-range-progress{height:10px;border-radius:6px;background:#7fd8ff}
-.srng::-webkit-slider-thumb{-webkit-appearance:none;width:34px;height:30px;margin-top:-10px;border-radius:9px;border:3px solid #1b2580;background:linear-gradient(90deg,transparent 9px,#2a8a1c 9px 12px,transparent 12px 14.5px,#2a8a1c 14.5px 17.5px,transparent 17.5px 20px,#2a8a1c 20px 23px,transparent 23px) center/100% 50% no-repeat,linear-gradient(#a8f56a,#4fd42a);box-shadow:inset 0 -3px 0 rgba(0,80,0,.3)}
-.srng::-moz-range-thumb{width:28px;height:24px;border-radius:8px;border:3px solid #1b2580;background:linear-gradient(#a8f56a,#4fd42a)}
+.srng::-webkit-slider-thumb{-webkit-appearance:none;width:34px;height:30px;margin-top:-10px;border-radius:9px;border:3px solid #1b2580;background:linear-gradient(90deg,transparent 9px,#2a8a1c 9px 12px,transparent 12px 14.5px,#2a8a1c 14.5px 17.5px,transparent 17.5px 20px,#2a8a1c 20px 23px,transparent 23px) center/100% 50% no-repeat,linear-gradient(#d9fe8c,#99f25c 45%);box-shadow:inset 0 -3px 0 #59b842}
+.srng::-moz-range-thumb{width:28px;height:24px;border-radius:8px;border:3px solid #1b2580;background:linear-gradient(#d9fe8c,#99f25c 45%)}
 .stw{flex:1;min-width:0;display:flex;background:#c4daf2;border-radius:10px;padding:2px}
-.stog{font:inherit;font-size:16px;color:#fff;min-width:68%;height:32px;border:3px solid #1b2580;border-radius:9px;background:linear-gradient(#a8f56a,#4fd42a);box-shadow:inset 0 -3px 0 rgba(0,80,0,.3);cursor:pointer;margin-left:auto;transition:margin .2s}
+.stog{font:inherit;font-size:16px;color:#fff;min-width:68%;height:32px;border:3px solid #1b2580;border-radius:9px;background:linear-gradient(#d9fe8c,#99f25c 45%);box-shadow:inset 0 -3px 0 #59b842;cursor:pointer;margin-left:auto;transition:margin .2s}
 .stog.off{background:linear-gradient(#c9cfdc,#8e97ad);margin-left:0;margin-right:auto;box-shadow:inset 0 -3px 0 rgba(0,0,0,.2)}
 #mmTog{margin-left:0;margin-right:auto}#mmTog.r{margin-left:auto;margin-right:0}
 .stog:active{transform:scale(.94)}
@@ -1764,6 +1764,20 @@ html.wk .stitle .b1,html.wk .stitle .b2,html.wk .rtitle{-webkit-text-stroke:reve
  #profileBtn{align-self:stretch;padding-top:0!important;padding-bottom:0!important}
  #profileBtn .avatar{width:56px!important;height:54px!important;align-self:center;border:0!important;border-right:3px solid #0b0b19!important;border-radius:0!important;box-shadow:none!important}
 }
+
+/* passe : panneau flèche à gauche du bouton play (miroir du mode) */
+#passTop{display:none!important}
+#home .passL{position:absolute;left:-16px;width:calc(50% - 63px + 16px);bottom:calc(108px + env(safe-area-inset-bottom,0px));pointer-events:auto;font:inherit;color:#fff;background:none;border:0;padding:0;cursor:pointer;filter:drop-shadow(0 4px 0 rgba(11,11,25,.25));transition:scale .12s}
+#home .passL:active{scale:.95}
+#home .passL::before{content:"";position:absolute;inset:0;background:#1b2580;clip-path:polygon(0 0,calc(100% - 24px) 0,100% 50%,calc(100% - 24px) 100%,0 100%)}
+#home .passL::after{content:"";position:absolute;inset:4px 6px 8px 0;background:linear-gradient(#ffe97a,#ffc81f 60%,#f5a60a);clip-path:polygon(0 0,calc(100% - 20px) 0,100% 50%,calc(100% - 20px) 100%,0 100%)}
+#home .passL .pltx{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;padding:32px 24px 13px 22px;min-height:78px;box-sizing:border-box;text-align:center}
+#home .passL .pltx b{font-weight:400;font-size:17px;white-space:nowrap}
+#home .passL .pltx em{font-style:normal;font-size:12px;color:#fff3c4;white-space:nowrap}
+#home .passL .plimg{position:absolute;z-index:2;top:-36px;left:calc(50% - 1px);transform:translateX(-50%) rotate(-8deg);width:66px;height:66px;display:grid;place-items:center}
+#home .passL .plimg img,#home .passL .plimg svg{width:62px;height:62px;filter:drop-shadow(0 3px 0 #1b2580) drop-shadow(0 0 1.5px #1b2580)}
+#home .passL .bdg{z-index:3;top:-8px;right:22px}
+@media (orientation:landscape){#home .passL{width:min(330px,calc(50% - 63px + 16px));bottom:calc(98px + env(safe-area-inset-bottom,0px))}}
 </style>
 
 <div id="bg"><div class="halo"></div></div>
@@ -1789,9 +1803,8 @@ html.wk .stitle .b1,html.wk .stitle .b2,html.wk .rtitle{-webkit-text-stroke:reve
   <div class="side left">
     <button class="sbtn s" data-go="party"><span class="ic" data-i="heart"></span>AMIS<i class="bdg" id="frDot" hidden></i></button>
   </div>
-  <div class="side right">
-    <button class="sbtn s ponly" data-go="pass"><span class="ic" data-i="pass"></span>PASSE</button>
-  </div>
+  <div class="side right"></div>
+  <button id="passL" class="passL" aria-label="Passe"><span class="plimg" data-i="pass"></span><span class="pltx"><b class="s">PASSE</b><em class="s" id="plSub"></em></span><i class="bdg" id="passDot3" hidden></i></button>
   <button id="plusL" class="plus3d" aria-label="Inviter un ami" hidden>+</button>
   <button id="plusR" class="plus3d" aria-label="Inviter un ami" hidden>+</button>
   <span id="rdyL" class="podRdy s" hidden></span><span id="rdyR" class="podRdy s" hidden></span>
@@ -3124,14 +3137,14 @@ function updTop(){
  const nx=roadNext(),pr=[...ROAD].reverse().find(r=>r.t<=save.stars),a=pr?pr.t:0,cl=roadClaimable().length;
  $('#tFill').style.width=(nx?Math.max(4,(save.stars-a)/(nx.t-a)*100):100)+'%';
  $('#tNext').innerHTML=(cl?img('p_chest'):nx?rewArt(nx).h:img('p_crown'));
- setDot('roadDot',cl);setDot('passDot',passClaimable());setDot('passDot2',passClaimable());setDot('missDot',save.missions.filter(m=>!m.done&&m.p>=m.n).length);setDot('frDot',(RT.incoming||[]).length);
+ setDot('roadDot',cl);setDot('passDot',passClaimable());setDot('passDot2',passClaimable());setDot('passDot3',passClaimable());setDot('missDot',save.missions.filter(m=>!m.done&&m.p>=m.n).length);setDot('frDot',(RT.incoming||[]).length);
  setDot('heroDot',HEROES.filter(h=>save.owned.includes(h.id)&&(save.levels[h.id]||1)<MAXLV&&save.coins>=upCost(save.levels[h.id]||1)).length);
  setDot('shopDot',save.giftDay!==today()?1:0);
 }
 function updHome(){
  const H=HE(save.hero),m=MODES[save.mode],lv=passLevel(),x=(save.xp||0)%XP_LV,P=PERKS[H.perk];
  $('#heroTag').innerHTML=`<span class="hn s">${esc(H.name)}</span><span class="hl s">NIV. ${save.levels[H.id]||1}</span><span class="hp">${I[H.perk]}${P.role}</span>`;
- $('#pmLv').textContent=lv;$('#ptLv').textContent=lv;$('#ptFill').style.width=(lv>=PASS_MAX?100:x/XP_LV*100)+'%';$('#pmTxt').textContent=lv>=PASS_MAX?'MAX':`${x}/${XP_LV}`;$('#pmXp').style.width=(lv>=PASS_MAX?100:x/XP_LV*100)+'%';
+ $('#pmLv').textContent=lv;$('#ptLv').textContent=lv;$('#plSub').textContent='Niveau '+lv;$('#ptFill').style.width=(lv>=PASS_MAX?100:x/XP_LV*100)+'%';$('#pmTxt').textContent=lv>=PASS_MAX?'MAX':`${x}/${XP_LV}`;$('#pmXp').style.width=(lv>=PASS_MAX?100:x/XP_LV*100)+'%';
  $('#mName').textContent=modeLabel();$('#mSub').textContent=save.mode==='surv'?'50 joueurs · dernier survivant':save.mode==='classic'?`En ligne · ${save.sub==='trio'?9:8} joueurs`:m.sub;$('#mImg').innerHTML=I[m.ic];$('#mImg').style.background=m.bg;$('#mTimer').textContent='Nouveaux défis dans '+untilMidnight();
  const nx=roadNext();$('#pStrip').innerHTML=nx?`Route : prochaine récompense à ${ico('cup')}${nx.t}`:'Route des trophées terminée !';
  syncFriends();
@@ -3488,7 +3501,7 @@ function rtLogout(){try{RT.online&&RT.sb.removeChannel(RT.online)}catch(_){}try{
 // LOBBY : boutons
 document.querySelectorAll('[data-go]').forEach(b=>press(b,()=>{const t=b.dataset.go;if(t==='profile')go('prof');else if(t==='party')openParty();else go(t)}));
 press($('#plusL'),()=>openInvite());press($('#plusR'),()=>openInvite());
-press($('#trophyBtn'),()=>go('road'));press($('#passCard'),()=>go('pass'));press($('#passTop'),()=>go('pass'));press($('#modeBtn'),()=>go('modes'));
+press($('#trophyBtn'),()=>go('road'));press($('#passCard'),()=>go('pass'));press($('#passTop'),()=>go('pass'));press($('#passL'),()=>go('pass'));press($('#modeBtn'),()=>go('modes'));
 press($('#playGo'),()=>{if(ROOM){ac();roomReady();return}const m=save.mode;if(m==='party')openParty();else play(m)});
 $('#bnav').addEventListener('click',e=>{const b=e.target.closest('[data-nav]');if(b){ac();sfx.click();if(tab!==b.dataset.nav)go(b.dataset.nav);return}
  if(e.target.closest('#bnPlay')){const bp=$('#bnPlay');bp.classList.add('prs');setTimeout(()=>bp.classList.remove('prs'),140);ac();if(tab!=='home'){sfx.click();go('home');return}playS('play',.95);sfx._mute=true;$('#playGo').click();sfx._mute=false}});
