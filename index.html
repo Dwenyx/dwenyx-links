@@ -1917,6 +1917,12 @@ html.wk .stitle .b1,html.wk .stitle .b2,html.wk .rtitle{-webkit-text-stroke:reve
 .rpm.home .rpi{filter:grayscale(1) brightness(.7)}
 .rpm b{font-weight:400;font-size:12px;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .rbtn.off{background:linear-gradient(#c9cfdc,#8e97ad)!important;opacity:.75;cursor:default;pointer-events:none}
+
+/* emblèmes de rang (nouveau dessin) centrés sur la barre */
+.rline{box-sizing:border-box}
+.rlg svg{width:44px!important;height:42px!important}
+.rlg{transform:translate(-50%,0)}
+.rlg.v svg{width:40px!important;height:38px!important}
 </style>
 
 <div id="bg"><div class="halo"></div></div>
@@ -3194,9 +3200,17 @@ addEventListener('resize',resize);resize();
 
 /* ---------- INTERFACE ---------- */
 function emblem(L){
- let stars='';for(let k=0;k<L.sub;k++){const x=32+(k-(L.sub-1)/2)*15;stars+=`<path d="${starPath(x,62,7.5)}" fill="#fff36b" stroke="#122a6b" stroke-width="2.2" stroke-linejoin="round"/>`}
- const crown=L.crown?`<path d="M18 9l5 6 9-9 9 9 5-6v10H18z" fill="#ffd21f" stroke="#122a6b" stroke-width="2.5" stroke-linejoin="round"/>`:'';
- return `<svg viewBox="0 0 64 72"><path d="M32 6 55 14v20c0 15-10 25-23 30C19 59 9 49 9 34V14z" fill="${L.c}" stroke="#122a6b" stroke-width="3.5" stroke-linejoin="round"/><path d="M32 11 50 17v17c0 11-7 19-18 23" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="3" stroke-linecap="round"/><rect x="19" y="21" width="26" height="24" rx="8" fill="#fff" stroke="#122a6b" stroke-width="3"/><ellipse cx="27" cy="32" rx="3" ry="4" fill="#122a6b"/><ellipse cx="37" cy="32" rx="3" ry="4" fill="#122a6b"/>${crown}${stars}</svg>`;
+ const mix=(h,t,k)=>{const n=parseInt(h.slice(1),16),r=n>>16,g=n>>8&255,b=n&255,f=v=>Math.round(v+(t-v)*k);return '#'+((1<<24)+(f(r)<<16)+(f(g)<<8)+f(b)).toString(16).slice(1)};
+ const c=L.c,dk=mix(c,0,.38),dk2=mix(c,0,.2),lt=mix(c,255,.45),ol=mix(c,0,.62),t=L.crown?3:Math.max(1,L.sub||1),st=`stroke="${ol}" stroke-width="2.4" stroke-linejoin="round"`;
+ const wing=(d)=>`<path d="${d}" fill="${c}" ${st}/><path d="${d}" fill="${lt}" opacity=".35" clip-path="inset(0 0 55% 0)"/>`;
+ let w='';
+ if(t>=3)w+=`<path d="M25 20 20 6l10 7 6-11 6 11 10-7-5 14z" fill="${c}" ${st}/><path d="M30 17l-3-6 5 3 4-6 4 6 5-3-3 6z" fill="${lt}" opacity=".55"/>`;
+ if(t>=2)w+=wing('M19 26 3 16l3 12-5 2 6 5-4 4 16 5z')+wing('M53 26 69 16l-3 12 5 2-6 5 4 4-16 5z');
+ w+=wing('M18 40 6 37l2 8-4 3 14 9z')+wing('M54 40 66 37l-2 8 4 3-14 9z');
+ const bars=t===1?[36]:t===2?[32,40]:[29,36,43];
+ const num=bars.map(x=>`<rect x="${x-2.2}" y="30" width="4.4" height="16" rx="2.2" fill="${lt}"/>`).join('');
+ const crown=L.crown?`<path d="M24 12l4 5 8-9 8 9 4-5v9H24z" fill="#ffd21f" stroke="#7a4a00" stroke-width="2.2" stroke-linejoin="round"/>`:'';
+ return `<svg viewBox="0 0 72 68">${w}<path d="M36 14 56 25.500v25L36 62 16 50.500v-25z" fill="${c}" ${st}/><path d="M36 17.500 53 27v10.500L19 37.500V27z" fill="${lt}" opacity=".4"/><path d="M36 21 50 29v18.500L36 55.500 22 47.500V29z" fill="${dk}" stroke="${dk2}" stroke-width="2" stroke-linejoin="round"/>${num}${crown}</svg>`;
 }
 const mixCss=c=>'#'+new THREE.Color(c).lerp(new THREE.Color(0x122a6b),.35).getHexString();
 // icônes du pack
