@@ -1885,6 +1885,10 @@ html.wk .stitle .b1,html.wk .stitle .b2,html.wk .rtitle{-webkit-text-stroke:reve
 .mqtabs.perm::before{transform:translateX(100%)}
 .mqtabs button{position:relative;z-index:1}
 .mqtabs button.on{background:none!important;box-shadow:none!important}
+
+/* résultats : boutons cliquables tout de suite (pas d'animation décalée) */
+.rbtns{animation:rFade .18s ease-out both!important}
+@keyframes rFade{from{opacity:0}}
 </style>
 
 <div id="bg"><div class="halo"></div></div>
@@ -2595,13 +2599,21 @@ function zoneApply(force){if(!zone)return;const rr=Math.round(zone.r*4)/4;if(!fo
   PLAY[c]=0;PTOT--;setTile(c,0);ch=true;anim.delete(c);
   if(trail[c]>=0){const e=ents[trail[c]];trail[c]=-1;if(e)e.trailCells=e.trailCells.filter(q=>q!==c)}
   if(own[c]>=0){own[c]=-1;rc=true}
-  if(ear&&fx<14&&Math.abs(i-ear.x)+Math.abs(j-ear.z)<22&&Math.random()<.3){fx++;burst(i+.5,.3,j+.5,0x9aa3c7,1,2)}}
+  if(ear&&fx<14&&Math.abs(i-ear.x)+Math.abs(j-ear.z)<22&&Math.random()<.3){fx++;burst(i+.5,.3,j+.5,0xd65cff,1,2)}}
  if(ch)tiles.instanceMatrix.needsUpdate=true;if(rc)recount();
  if(simOn&&!matchOver)for(const e of ents){if(!e||!e.alive)continue;if(!PLAY[ix(Math.max(0,Math.min(N-1,Math.floor(e.x))),Math.max(0,Math.min(N-1,Math.floor(e.z))))]){kill(e,null);if(e!==player&&Math.hypot(e.x-EAR().x,e.z-EAR().z)<26)feedMsg(`${e.name} a été emporté par la zone`)}}}
-const zoneRing=new THREE.Mesh(new THREE.RingGeometry(.985,1,160),new THREE.MeshBasicMaterial({color:0xff3b4f,transparent:true,opacity:.85,depthWrite:false,side:THREE.DoubleSide}));
+const zoneRing=new THREE.Mesh(new THREE.RingGeometry(.985,1,160),new THREE.MeshBasicMaterial({color:0xff4fe0,transparent:true,opacity:.85,depthWrite:false,side:THREE.DoubleSide}));
 const zoneNext=new THREE.Mesh(new THREE.RingGeometry(.99,1,160),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.75,depthWrite:false,side:THREE.DoubleSide}));
 [zoneRing,zoneNext].forEach(m=>{m.rotation.x=-Math.PI/2;m.visible=false;m.renderOrder=4;S.add(m)});
-function updZoneFx(){if(!zone||state==='menu'){zoneRing.visible=zoneNext.visible=false;return}
+// tempête violette/rose autour de la zone
+const stormTex=(()=>{const c=document.createElement('canvas');c.width=256;c.height=128;const x=c.getContext('2d'),g=x.createLinearGradient(0,0,0,128);g.addColorStop(0,'rgba(190,70,255,0)');g.addColorStop(.35,'rgba(200,80,255,.45)');g.addColorStop(1,'rgba(255,70,200,.85)');x.fillStyle=g;x.fillRect(0,0,256,128);
+ for(let i=0;i<46;i++){const px=Math.random()*256,w=4+Math.random()*16,a=.12+Math.random()*.3;const g2=x.createLinearGradient(0,0,0,128);g2.addColorStop(0,'rgba(255,255,255,0)');g2.addColorStop(.6,`rgba(255,${150+Math.random()*90|0},255,${a})`);g2.addColorStop(1,`rgba(255,120,230,${a})`);x.fillStyle=g2;x.beginPath();x.moveTo(px,128);x.lineTo(px+w,128);x.lineTo(px+w+18,Math.random()*50);x.lineTo(px+18,Math.random()*50);x.fill()}
+ const t=new THREE.CanvasTexture(c);t.wrapS=THREE.RepeatWrapping;t.repeat.set(10,1);return t})();
+const stormWall=new THREE.Mesh(new THREE.CylinderGeometry(1,1,1,96,1,true),new THREE.MeshBasicMaterial({map:stormTex,transparent:true,depthWrite:false,side:THREE.DoubleSide}));
+const stormFog=new THREE.Mesh(new THREE.RingGeometry(1,4,96,1),new THREE.MeshBasicMaterial({color:0xb04dff,transparent:true,opacity:.42,depthWrite:false,side:THREE.DoubleSide}));stormFog.rotation.x=-Math.PI/2;
+[stormWall,stormFog].forEach(m=>{m.visible=false;m.renderOrder=5;S.add(m)});
+function updZoneFx(){if(!zone||state==='menu'){zoneRing.visible=zoneNext.visible=stormWall.visible=stormFog.visible=false;return}
+ {const r=Math.max(.1,zone.r);stormWall.visible=stormFog.visible=true;stormWall.position.set(N/2,H_OWN+4.5,N/2);stormWall.scale.set(r,9,r);stormTex.offset.x=now*.05;stormTex.repeat.x=Math.max(4,Math.round(r/5));stormFog.position.set(N/2,H_OWN+.35,N/2);stormFog.scale.setScalar(r);stormFog.material.opacity=.36+.08*Math.sin(now*2.2);stormFog.material.color.setHSL(.8+.05*Math.sin(now*.9),.95,.6)}
  zoneRing.visible=zone.r<N*.72;zoneRing.position.set(N/2,H_OWN+.5,N/2);zoneRing.scale.setScalar(Math.max(.1,zone.r));zoneRing.material.opacity=.55+.3*Math.sin(now*5);
  zoneNext.visible=zone.st==='wait'||zone.st==='shrink';zoneNext.position.set(N/2,H_OWN+.12,N/2);zoneNext.scale.setScalar(Math.max(.1,zone.to))}
 function zoneTxt(){if(!zone)return'';if(zone.st==='done')return'';const s=Math.max(0,Math.ceil(zone.t1-now));return zone.st==='wait'?`ZONE ${(s/60)|0}:${String(s%60).padStart(2,'0')}`:'ZONE ⚠'}
@@ -2813,7 +2825,7 @@ function finish(reason){
  if(ROAD.some(r=>r.t>oldS&&r.t<=save.stars))unl.push({t:'road'});
  persist();if(RT.prof)apiCall('/api/profile','POST',{action:'sync',hero:save.hero,stars:save.stars});
  $('#hud').hidden=true;$('#joy').hidden=true;
- setTimeout(()=>showEnd({pl,pct,dS,co,reason,ranked,unl,wasDead,xpG,n:ents.filter(Boolean).length}),reason==='dead'?0:700);
+ setTimeout(()=>showEnd({pl,pct,dS,co,reason,ranked,unl,wasDead,xpG,n:ents.filter(Boolean).length}),reason==='dead'?0:250);
 }
 function countUp(el,to,fmtF,coin){const t0=performance.now(),d=900;let last=-1;const f=()=>{const p=Math.min(1,(performance.now()-t0)/d),v=Math.round(to*(1-Math.pow(1-p,3)));el.textContent=fmtF(v);if(coin&&v!==last&&p<1&&v%5===0)sfx.coin();last=v;if(p<1)requestAnimationFrame(f)};setTimeout(f,450)}
 function fitEndOld(){const w=$('#endWrap');if(!w||$('#end').hidden)return;w.style.zoom=1;const e=$('#end'),cs=getComputedStyle(e),z=UIZ||1,avail=innerHeight/z-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom)-16,h=w.offsetHeight;w.style.zoom=h>avail?(avail/h).toFixed(3):1}
@@ -3289,7 +3301,7 @@ const kept=id=>{const e=$(id);return e&&e._kept&&performance.now()-e._kept<400}
 function lockCond(u){return u.stars?`${ico('cup')}${u.stars}`:u.pass?`${ico('pass')}Passe ${u.pass}`:u.gems?`${ico('gem')}${u.gems}`:`${ico('coin')}${fmt(u.coins)}`}
 function renderHeroes(){
  const H=HE(save.hero),lv=save.levels[H.id]||1;
- let h=`<div class="hinfo">${heroIcon(H)}<div><h3 class="s">${H.name} · Niveau ${lv}</h3><p>${PERKS[H.perk].ab} : +${PERKS[H.perk].v(lv)} % ${PERKS[H.perk].u}. Touche un héros pour le voir en 3D.</p></div></div>`;
+ let h='';
  RAR.forEach((r,ri)=>{const list=HEROES.filter(x=>x.rar===ri),got=list.filter(x=>save.owned.includes(x.id)).length;
   h+=`<div class="ribbon" style="background:linear-gradient(90deg,${r.c2},${r.c} 70%,#fff)">${cubeHTML(parseInt(r.c2.slice(1),16))}<span>${r.n}</span><span class="cnt">${got}/${list.length}</span></div><div class="hgrid">`;
   for(const x of list){const own=save.owned.includes(x.id),l=save.levels[x.id]||1,sel=save.hero===x.id,cost=upCost(l),can=own&&l<MAXLV&&save.coins>=cost;
@@ -3485,7 +3497,11 @@ $('#sPass').addEventListener('click',e=>{const b=e.target.closest('button');if(!
 // centre le conteneur sur l'élément courant (fiable même avec zoom CSS)
 function centerOn(cs,es,ax){const c=$(cs),e=$(es);if(!c||!e)return;const cr=c.getBoundingClientRect(),er=e.getBoundingClientRect();if(!cr.width)return;
  if(ax==='y'){c.scrollTop+= (er.top+er.height/2)-(cr.top+cr.height/2)}else{c.scrollLeft+=(er.left+er.width/2)-(cr.left+cr.width/2)}}
-function centerSoon(cs,es,ax,keepId){if(keepId&&kept(keepId))return;requestAnimationFrame(()=>{centerOn(cs,es,ax);setTimeout(()=>centerOn(cs,es,ax),260)})}
+function centerSoon(cs,es,ax,keepId){if(keepId&&kept(keepId))return;const P=ax==='y'?'scrollTop':'scrollLeft';
+ requestAnimationFrame(()=>{const c=$(cs);if(!c)return;c[P]=0;setTimeout(()=>{const c=$(cs),e=$(es);if(!c||!e)return;const cr=c.getBoundingClientRect(),er=e.getBoundingClientRect();if(!cr.width)return;
+  const from=c[P],d=ax==='y'?(er.top+er.height/2)-(cr.top+cr.height/2):(er.left+er.width/2)-(cr.left+cr.width/2),t0=performance.now(),ms=Math.min(1100,450+Math.abs(d)*.25);let stop=false;
+  const cancel=()=>{stop=true};c.addEventListener('wheel',cancel,{once:true,passive:true});c.addEventListener('touchstart',cancel,{once:true,passive:true});c.addEventListener('pointerdown',cancel,{once:true,passive:true});
+  const f=()=>{if(stop||!c.isConnected)return;const k=Math.min(1,(performance.now()-t0)/ms),q=1-Math.pow(1-k,3);c[P]=from+d*q;if(k<1)requestAnimationFrame(f)};f()},140)})}
 function fitH(el,max=2.4){if(!el||innerHeight>innerWidth*1.1)return;el.style.zoom='';const sb=el.closest('.sbody');if(!sb)return;
  const r=el.getBoundingClientRect(),b=sb.getBoundingClientRect(),avail=b.bottom-r.top-14,z=Math.max(1,Math.min(max,avail/Math.max(1,r.height)));if(z>1.03)el.style.zoom=z.toFixed(3)}
 addEventListener('resize',()=>{clearTimeout(fitH._t);fitH._t=setTimeout(()=>{if(tab==='pass')fitH($('#sPass .pgrid'));if(tab==='road')fitH($('#rwrap'))},150)});
