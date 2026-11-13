@@ -2226,8 +2226,8 @@ const rbase=new THREE.Mesh(new THREE.CylinderGeometry(N/2+1.2,N/2+1.2,.9,96),too
 const rbaseO=new THREE.Mesh(rbase.geometry,OUT);rbaseO.scale.set(1.006,1.08,1.006);rbaseO.position.copy(rbase.position);S.add(rbaseO);
 const rrim=new THREE.Mesh(new THREE.CylinderGeometry(N/2+.3,N/2+.3,.12,96),toon(0x5a78ff));rrim.position.set(N/2,.06,N/2);S.add(rrim);
 rbase.visible=rbaseO.visible=rrim.visible=false;
-function setMap(round){ROUND=!!round;PTOT=0;const R0=N/2-.2;
- for(let c=0;c<TOT;c++){const i=c%N,j=(c/N)|0;PLAY[c]=(!round||Math.hypot(i+.5-N/2,j+.5-N/2)<=R0)?1:0;PTOT+=PLAY[c]}
+function setMap(round){ROUND=!!round;PTOT=0;const R0=N/2-.2,RC=N/2+.05;CLIPU.value.set(N/2,N/2,round?RC:0);keyMat.side=round?THREE.DoubleSide:THREE.FrontSide;keyMat.needsUpdate=true;
+ for(let c=0;c<TOT;c++){const i=c%N,j=(c/N)|0;PLAY[c]=(!round||Math.hypot(i+.5-N/2,j+.5-N/2)<=R0)?1:0;PTOT+=PLAY[c];const nx=Math.max(i-N/2,0,N/2-i-1),nz=Math.max(j-N/2,0,N/2-j-1);VIS[c]=round&&!PLAY[c]&&Math.hypot(nx,nz)<RC-.2?1:0}
  base.visible=baseO.visible=rim.visible=!round;rbase.visible=rbaseO.visible=rrim.visible=!!round;
  for(let c=0;c<TOT;c++)setTile(c,curH[c]);tiles.instanceMatrix.needsUpdate=true}
 // tuiles d'arène : touches de clavier
@@ -2241,7 +2241,15 @@ function keycapGeo(){const g=roundedBox(1,.72,1,.16,3),p=g.attributes.position;f
 const keyGeo=keycapGeo();
 const keyIdx=new Float32Array(TMAX);
 const keyMat=new THREE.MeshToonMaterial({color:0xffffff,gradientMap:gm,map:atlas});
-keyMat.onBeforeCompile=sh=>{sh.vertexShader=sh.vertexShader.replace('#include <common>','#include <common>\nattribute float aKey;').replace('#include <uv_vertex>',`#include <uv_vertex>
+const CLIPU={value:new THREE.Vector3(0,0,0)};
+keyMat.onBeforeCompile=sh=>{sh.uniforms.uClip=CLIPU;
+ sh.fragmentShader=sh.fragmentShader.replace('#include <common>','#include <common>\nuniform vec3 uClip;varying vec2 vWxz;').replace('#include <clipping_planes_fragment>','#include <clipping_planes_fragment>\nif(uClip.z>0.0&&distance(vWxz,uClip.xy)>uClip.z)discard;');
+ sh.vertexShader=sh.vertexShader.replace('#include <common>','#include <common>\nattribute float aKey;varying vec2 vWxz;').replace('#include <uv_vertex>',`#include <uv_vertex>
+{ vec4 wp4 = vec4(position,1.0);
+#ifdef USE_INSTANCING
+  wp4 = instanceMatrix * wp4;
+#endif
+  wp4 = modelMatrix * wp4; vWxz = wp4.xz; }
 #ifdef USE_UV
 { bool top = normal.y > 0.8; float k = top ? aKey : 63.0; vec2 cell = vec2(mod(k,8.0), floor(k/8.0)); vec2 uu = top ? uv : vec2(0.15,0.15);
   vUv = vec2((cell.x + uu.x)/8.0, 1.0 - (cell.y + 1.0 - uu.y)/8.0); }
@@ -2252,7 +2260,8 @@ const curH=new Float32Array(TMAX);const C1=new THREE.Color(0xffffff),C2=new THRE
 const M4=new THREE.Matrix4();const ix=(i,j)=>j*N+i;
 const PLAY=new Uint8Array(TMAX).fill(1);let PTOT=TOT,ROUND=false;const ZM=new THREE.Matrix4().makeScale(0,0,0);
 const pressD=new Float32Array(TMAX),pressV=new Float32Array(TMAX),pressSet=new Set();
-function setTile(c,h){if(!PLAY[c]){tiles.setMatrixAt(c,ZM);return}M4.makeScale(.9,1,.9);M4.setPosition(c%N+.5,h-pressD[c]-.36,((c/N)|0)+.5);tiles.setMatrixAt(c,M4)}
+const VIS=new Uint8Array(TMAX);
+function setTile(c,h){if(!PLAY[c]&&!VIS[c]){tiles.setMatrixAt(c,ZM);return}M4.makeScale(.9,1,.9);M4.setPosition(c%N+.5,h-pressD[c]-.36,((c/N)|0)+.5);tiles.setMatrixAt(c,M4)}
 function updPress(dt){const under=new Set();if(state!=='menu')for(const e of ents)if(e.alive)under.add(ix(e.ci,e.cj));
  for(const c of under)pressSet.add(c);let ch=false;
  for(const c of pressSet){const down=under.has(c),tg=down?.17:0;pressV[c]+=(tg-pressD[c])*300*dt;pressV[c]*=Math.exp(-(down?22:11)*dt);pressD[c]+=pressV[c]*dt;
@@ -2436,7 +2445,7 @@ function recount(){counts=ents.map(()=>0);for(let c=0;c<TOT;c++)if(own[c]>=0)cou
 function spotFree(ci,cj,r,e,mate){for(let dj=-r;dj<=r;dj++)for(let di=-r;di<=r;di++){const i=ci+di,j=cj+dj;if(i<1||j<1||i>=N-1||j>=N-1)return false;const c=ix(i,j);if(!PLAY[c]||trail[c]!==-1)return false;if(own[c]!==-1&&!(mate&&mineC(e,c)))return false}
  for(const o of ents)if(o&&o!==e&&o.alive&&(!mate||foe(e,o))&&Math.hypot(o.x-ci,o.z-cj)<r+5)return false;return true}
 function mateSpot(e){const cand=[];for(let c=0;c<TOT;c++){const o=own[c];if(o>=0&&o!==e.id&&ents[o]&&ents[o].team===e.team&&trail[c]===-1)cand.push(c)}if(!cand.length)return null;for(let k=0;k<220;k++){const c=cand[(Math.random()*cand.length)|0],i=c%N,j=(c/N)|0;if(i<3||j<3||i>N-4||j>N-4)continue;if(spotFree(i,j,1,e,true))return[i,j]}const c=cand[(Math.random()*cand.length)|0];return[c%N,(c/N)|0]}
-function findSpot(e,strict){const side=e.team>=0?e.team:-1;if(side>=0&&tSize()>1){const ms=mateSpot(e);if(ms)return ms}if(e.spawnAt){const p=e.spawnAt;e.spawnAt=null;return p}
+function findSpot(e,strict){const side=e.team>=0?e.team:-1;if(e.spawnAt){const p=e.spawnAt;e.spawnAt=null;return p}if(side>=0&&tSize()>1){const ms=mateSpot(e);if(ms)return ms}
  const mate=gameMode!=='team'&&side>=0?ents.find(o=>o&&o!==e&&o.alive&&o.team===side):null;
  const rnd=()=>{let i=5+((Math.random()*(N-10))|0),j=5+((Math.random()*(N-10))|0);
   if(gameMode==='team'&&side>=0)j=side?(5+((Math.random()*(N*.32))|0)):(N-6-((Math.random()*(N*.32))|0));
@@ -2758,7 +2767,8 @@ function startLocal(mode,sub){
  for(let k=1;k<maxP();k++){const e=newEnt(k,pool[(k-1)%pool.length],names[k%names.length]+(k>=names.length?String((k/names.length|0)+1):''),true);botify(e,d);ents.push(e)}
  for(const e of ents)e.team=teamOf(e.id);assignColors();if(mode==='surv')for(const e of ents)if(e.bot){e.aggr*=.3;e.maxTrail=Math.round(e.maxTrail*.75)}
  if(mode==='surv'){const sp=survSpots(Math.ceil(ents.length/tSize()));for(const e of ents){const q=sp[tSize()>1?e.team:e.id];if(q)e.spawnAt=q}}
- for(const e of ents)spawn(e);matchT=180;zoneInit();for(const e of ents)if(e&&e.hero)queueShot(e.hero);
+ if(mode==='team'){const cnt=[0,0];for(const e of ents){const k=cnt[e.team]++,n=5;e.spawnAt=[Math.round(N/2+(k-(n-1)/2)*N*.13),Math.round(e.team?N*.2:N*.8)];e.faceH=e.team?Math.PI/2:-Math.PI/2}}
+ for(const e of ents){spawn(e);if(e.faceH!==undefined){e.h=e.targetH=e.faceH;delete e.faceH}}matchT=180;zoneInit();for(const e of ents)if(e&&e.hero)queueShot(e.hero);
  for(const e of ents)if(e.bot)e.frozen=true;
  matchOver=false;simOn=true;beginHud();
 }
