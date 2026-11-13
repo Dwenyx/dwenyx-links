@@ -1726,6 +1726,24 @@ body.mmL #mm{right:auto!important;left:max(10px,env(safe-area-inset-left,0px))!i
 .pvc.claim>img,.pvc.claim>.cube,.pcard.claim>img,.pcard.claim>.cube,.ri.claim .rc>img,.ri.claim .rc>.cube{animation:rwBounce 1.3s cubic-bezier(.3,.7,.4,1) infinite!important;position:relative;z-index:1}
 .pvc.claim::after,.pcard.claim::after,.ri.claim .rc::after{content:"";position:absolute;left:50%;top:48%;width:96px;height:96px;border-radius:50%;background:radial-gradient(circle,rgba(255,244,150,.85),rgba(255,214,60,.35) 45%,transparent 70%);animation:rwGlow 1.3s ease-in-out infinite;pointer-events:none;z-index:0}
 .pcard.claim,.ri.claim .rc{position:relative}
+
+/* main en 8 sous le compte à rebours */
+#hint{display:none!important}
+#hand8{position:fixed;left:50%;top:calc(50% + 95px);width:160px;height:80px;margin-left:-80px;z-index:7;pointer-events:none;zoom:var(--z,1)}
+#hand8 svg{position:absolute;inset:0;width:160px;height:80px;overflow:visible}
+#hand8 .h8t{fill:none;stroke:#fff;stroke-width:9;stroke-linecap:round;stroke-dasharray:22 78;opacity:.75;animation:h8t 1.4s linear infinite;filter:drop-shadow(0 2px 0 rgba(11,11,25,.35))}
+#hand8 img{position:absolute;left:0;top:0;width:58px;offset-path:path('M80,40 C100,8 150,8 150,40 C150,72 100,72 80,40 C60,8 10,8 10,40 C10,72 60,72 80,40 Z');offset-rotate:0deg;offset-anchor:22% 8%;animation:h8m 1.4s linear infinite;filter:drop-shadow(0 4px 0 rgba(11,11,25,.35))}
+@keyframes h8m{from{offset-distance:0%}to{offset-distance:100%}}
+@keyframes h8t{from{stroke-dashoffset:22}to{stroke-dashoffset:-78}}
+#count span{--o:clamp(4px,.06em,8px)}
+/* iOS / Safari : contour par ombres (évite le contour plus épais sur la dernière lettre) */
+html.wk body *{-webkit-text-stroke:0!important;paint-order:normal!important}
+html.wk body,html.wk body *{--ts:var(--o) 0 0 #0b0b19,calc(var(--o)*-1) 0 0 #0b0b19,0 var(--o) 0 #0b0b19,0 calc(var(--o)*-1) 0 #0b0b19,calc(var(--o)*.71) calc(var(--o)*.71) 0 #0b0b19,calc(var(--o)*-.71) calc(var(--o)*.71) 0 #0b0b19,calc(var(--o)*.71) calc(var(--o)*-.71) 0 #0b0b19,calc(var(--o)*-.71) calc(var(--o)*-.71) 0 #0b0b19,calc(var(--o)*.92) calc(var(--o)*.38) 0 #0b0b19,calc(var(--o)*-.92) calc(var(--o)*.38) 0 #0b0b19,calc(var(--o)*.92) calc(var(--o)*-.38) 0 #0b0b19,calc(var(--o)*-.92) calc(var(--o)*-.38) 0 #0b0b19,calc(var(--o)*.38) calc(var(--o)*.92) 0 #0b0b19,calc(var(--o)*-.38) calc(var(--o)*.92) 0 #0b0b19,calc(var(--o)*.38) calc(var(--o)*-.92) 0 #0b0b19,calc(var(--o)*-.38) calc(var(--o)*-.92) 0 #0b0b19,0 calc(var(--o) + .06em) 0 #0b0b19}
+html.wk .stitle .b1,html.wk .stitle .b2,html.wk .rtitle{-webkit-text-stroke:revert!important}
+/* résultats : rang posé sur la gauche de la barre de trophées */
+.rrk{gap:0!important;padding-left:0!important}
+.rrk .rlg{transform:none!important;width:66px!important;height:66px!important;margin-right:-30px;filter:drop-shadow(0 3px 0 rgba(11,11,25,.4))}
+.rrk .rbar{padding-left:30px!important}
 </style>
 
 <div id="bg"><div class="halo"></div></div>
@@ -1858,6 +1876,7 @@ body.mmL #mm{right:auto!important;left:max(10px,env(safe-area-inset-left,0px))!i
 <div id="elims"></div>
 <div id="death" hidden></div>
 <div id="count" class="s"></div>
+<div id="hand8" hidden><svg viewBox="0 0 160 80" aria-hidden="true"><path class="h8t" pathLength="100" d="M80,40 C100,8 150,8 150,40 C150,72 100,72 80,40 C60,8 10,8 10,40 C10,72 60,72 80,40 Z"/></svg><img src="ui/glove.png?v=17" alt=""></div>
 <div id="banner" class="s"></div>
 <div id="toast"></div>
 
@@ -2017,6 +2036,7 @@ const sfx={
 /* ---------- THREE ---------- */
 const NMAX=100,TMAX=NMAX*NMAX,H_N=.42,H_TR=.42,H_OWN=.42;let N=56,TOT=N*N;
 const cv=$('#cv');
+if(/iPhone|iPad|iPod|Macintosh/.test(navigator.userAgent)&&!/Chrome\/|Chromium|Edg\//.test(navigator.userAgent))document.documentElement.classList.add('wk');
 const LOWDEV=matchMedia('(pointer:coarse)').matches||/android|iphone|ipad|mobile/i.test(navigator.userAgent);
 const R=new THREE.WebGLRenderer({canvas:cv,antialias:!LOWDEV,alpha:true,powerPreference:'high-performance'});
 let QUAL='high';try{QUAL=(JSON.parse(localStorage.getItem('paintclash_v2')||'{}').quality)||'high'}catch(_){}
@@ -2924,6 +2944,7 @@ function frame(){
  earE=(player&&!player.alive&&specOn2)?specTarget():player;
  water.visible=state!=='menu';
  const t=performance.now(),dt=Math.min(.05,(t-last)/1000);if(state!=='menu'||tab==='home')adaptRes(t-last);last=t;now+=dt;
+ {const h8=$('#hand8'),hs=state==='count';if(h8.hidden===hs)h8.hidden=!hs}
  if(state==='count'){countT-=dt;const n=Math.ceil(countT-.6);if(n!==lastCount&&n>=0){lastCount=n;$('#count').innerHTML=`<span>${n>0?n:'GO !'}</span>`;n>0?sfx.tick():sfx.go()}
   if(countT<=.6){state='play';player.frozen=false;if(simOn)for(const e of ents)if(e&&e.bot)e.frozen=false;if(NET.role==='client'){try{NET.conn.send({t:'go'})}catch(_){}}setTimeout(()=>{$('#count').innerHTML=''},600)}}
  if(state==='play'){keyInput();playT+=dt;if(playT>2.6)$('#hint').style.opacity=0}
