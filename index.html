@@ -1869,6 +1869,14 @@ html.wk .stitle .b1,html.wk .stitle .b2,html.wk .rtitle{-webkit-text-stroke:reve
 .flyc img{width:100%;height:100%;filter:drop-shadow(0 3px 0 rgba(11,11,25,.35))}
 @keyframes spinY{to{transform:rotateY(360deg)}}
 .cft{position:absolute;left:0;top:0;will-change:transform}
+
+.mqp{overflow:hidden}
+.mqrows{display:flex;flex-direction:column;gap:8px}
+.mqrows.inR{animation:mqInR .32s cubic-bezier(.2,.9,.3,1) both}
+.mqrows.inL{animation:mqInL .32s cubic-bezier(.2,.9,.3,1) both}
+@keyframes mqInR{from{transform:translateX(60%);opacity:0}}
+@keyframes mqInL{from{transform:translateX(-60%);opacity:0}}
+.mqtabs button{transition:background .2s}
 </style>
 
 <div id="bg"><div class="halo"></div></div>
@@ -3386,7 +3394,7 @@ const mqBonusOk=()=>save.missions.length&&save.missions.every(m=>m.done)&&save.m
 function missClaimable(){let n=save.missions.filter(m=>!m.done&&m.p>=m.n).length;for(const a of ACH){const i=achTier(a);if(i<a.t.length&&a.v()>=a.t[i])n++}if(mqBonusOk())n++;return n}
 let mqTab='day';
 function mqRow(ic,title,p,n,rw,st,attr){const g=!!rw.gems,amt=g?rw.gems:rw.coins;
- return `<button class="mq ${st}" ${attr}><span class="mqi">${img(ic)}</span><span class="mqt"><b class="mqn">${title}</b><span class="mqb"><i style="width:${Math.min(100,p/n*100)}%"></i><em class="s">${fmt(Math.min(p,n))}/${fmt(n)}</em></span></span><span class="mqr">${st==='done'?`<span class="mqok">${I.check}</span>`:img(g?'gems_2':'coins_3')}<b class="s">${st==='ok'?'RÉCUPÉRER':fmt(amt)}</b></span></button>`}
+ return `<button class="mq ${st}" ${attr}><span class="mqi">${img(ic)}</span><span class="mqt"><b class="mqn">${title}</b><span class="mqb"><i style="width:${Math.min(100,p/n*100)}%"></i><em class="s">${fmt(Math.min(p,n))}/${fmt(n)}</em></span></span><span class="mqr">${st==='done'?`<span class="mqok">${I.check}</span>`:img(g?'gems_2':'coins_3')}${st==='done'?'':`<b class="s">${st==='ok'?'RÉCUPÉRER':fmt(amt)}</b>`}</span></button>`}
 function renderMissions(){
  ensureMissions();if(!save.ach)save.ach={};
  const dn=save.missions.filter(m=>m.done).length,tot=save.missions.length,bon=mqBonusOk();
@@ -3396,7 +3404,7 @@ function renderMissions(){
  const h=`<div class="mqtop"><span class="mqcur" id="mqCoin">${img('n_coin')}<b class="s">${fmt(save.coins)}</b></span><span class="mqcur" id="mqGem">${img('n_gem')}<b class="s">${fmt(save.gems)}</b></span></div>
  <button class="mqchest ${bon?'ok':''} ${save.mBonus===today()?'got':''}" data-mbonus><span class="mqcp">${img("p_calendar")}<span><i style="width:${tot?dn/tot*100:0}%"></i><em class="s">${dn}/${tot}</em></span></span>${img('chest_c2')}<span class="mqped"></span></button>
  <div class="mqp"><div class="mqtabs"><button class="s ${mqTab==='day'?'on':''}" data-mqt="day">Quotidien</button><button class="s ${mqTab==='perm'?'on':''}" data-mqt="perm">Permanent</button></div>
- ${mqTab==='day'?`<p class="mqtime s">Nouvelles missions dans ${untilMidnight()}</p>`:''}${rows}</div>`;
+ <div class="mqrows">${mqTab==='day'?`<p class="mqtime s">Nouvelles missions dans ${untilMidnight()}</p>`:''}${rows}</div></div>`;
  show('#sMissions',`<div class="sbody mqs">${h}</div>`);
 }
 /* ---- effets : pièces/gemmes qui volent + confettis ---- */
@@ -3415,7 +3423,7 @@ function confetti(){const L=fxLayer(),C=['#ff2f47','#ffd400','#1ea4ff','#99f25c'
 function mqClaim(btn,rw){const r=(btn.querySelector('.mqr')||btn).getBoundingClientRect(),g=!!rw.gems,o=g?save.gems:save.coins;
  if(g)save.gems+=rw.gems;else save.coins+=rw.coins;persist();sfx.win();confetti();renderMissions();updTop();
  const t=$(g?'#mqGem':'#mqCoin');countTo(t&&t.querySelector('b'),o,g?save.gems:save.coins,600,750);flyReward(r,g?'gems':'coins',g?rw.gems:rw.coins,t)}
-$('#sMissions').addEventListener('click',e=>{const tb=e.target.closest('[data-mqt]');if(tb){ac();sfx.click();mqTab=tb.dataset.mqt;renderMissions();return}
+$('#sMissions').addEventListener('click',e=>{const tb=e.target.closest('[data-mqt]');if(tb){ac();sfx.click();if(mqTab===tb.dataset.mqt)return;mqTab=tb.dataset.mqt;renderMissions();const r=$('#sMissions .mqrows');if(r)r.classList.add(mqTab==='perm'?'inR':'inL');return}
  const bn=e.target.closest('[data-mbonus]');if(bn){ac();if(!mqBonusOk()){sfx.tick();toast(save.mBonus===today()?'Coffre déjà récupéré':'Termine toutes les missions du jour');return}save.mBonus=today();persist();confetti();renderMissions();updTop();grant({box:'c2'});return}
  const c=e.target.closest('[data-claim]');if(c){const m=save.missions[+c.dataset.claim];if(!m||m.done)return;ac();if(m.p<m.n){sfx.tick();return}m.done=true;mqClaim(c,m.rw);return}
  const h=e.target.closest('[data-ach]');if(h){const a=ACH.find(x=>x.k===h.dataset.ach),i=achTier(a);if(i>=a.t.length)return;ac();if(a.v()<a.t[i]){sfx.tick();return}save.ach[a.k]=i+1;mqClaim(h,achRw(a,i))}});

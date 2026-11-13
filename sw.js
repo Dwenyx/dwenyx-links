@@ -1,5 +1,5 @@
 // Paint Clash : appli installable + jeu hors ligne contre les bots
-const V = 'pc-v68';
+const V = 'pc-v69';
 const CORE = ['/', '/manifest.json', '/icon-192.png', '/icon-512.png',
   'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js'];
 self.addEventListener('install', e => {
