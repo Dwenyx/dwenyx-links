@@ -1744,6 +1744,26 @@ html.wk .stitle .b1,html.wk .stitle .b2,html.wk .rtitle{-webkit-text-stroke:reve
 .rrk{gap:0!important;padding-left:0!important}
 .rrk .rlg{transform:none!important;width:66px!important;height:66px!important;margin-right:-30px;filter:drop-shadow(0 3px 0 rgba(11,11,25,.4))}
 .rrk .rbar{padding-left:30px!important}
+
+/* bouton + : croix dessinée (contour net) */
+.plus3d{font-size:0!important;text-shadow:none!important}
+.plus3d::before{content:"";position:absolute;inset:18%;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cpath d='M20 8v24M8 20h24' stroke='%230b0b19' stroke-width='13' stroke-linecap='round'/%3E%3Cpath d='M20 8v24M8 20h24' stroke='%23fff' stroke-width='6.5' stroke-linecap='round'/%3E%3C/svg%3E") center/contain no-repeat}
+/* lignes cliquables */
+.ldr[data-lp],.friend[data-fp]{cursor:pointer}.ldr[data-lp]:active,.friend[data-fp]:active{filter:brightness(.92)}
+@media (orientation:portrait),(max-width:720px){
+ #topbar:not([hidden]){grid-template-columns:minmax(0,1fr) auto auto 56px!important;grid-template-areas:"xp co ge ge" "pr tr tr gear"!important}
+ #trophyBtn{width:100%!important;box-sizing:border-box}
+ #trophyBtn .tl{flex:1;align-items:center}
+ #gemPill{justify-self:stretch}
+ #gearBtn{justify-self:end}
+ #profileBtn{padding:0 10px 0 0!important;gap:9px}
+ #profileBtn .avatar{width:56px!important;height:100%!important;border:0!important;border-right:3px solid #0b0b19!important;border-radius:0!important;box-shadow:none!important;align-self:stretch}
+}
+@media (orientation:landscape){
+ #profileBtn{padding-left:0!important;overflow:hidden}
+ #profileBtn{align-self:stretch;padding-top:0!important;padding-bottom:0!important}
+ #profileBtn .avatar{width:56px!important;height:54px!important;align-self:center;border:0!important;border-right:3px solid #0b0b19!important;border-radius:0!important;box-shadow:none!important}
+}
 </style>
 
 <div id="bg"><div class="halo"></div></div>
@@ -2001,13 +2021,14 @@ const SND={},SNDF={click:'click',play:'play',equip:'equip',victory:'victory'};le
 function sndLoad(){if(sndLoaded||!AC)return;sndLoaded=true;for(const k in SNDF)fetch('ui/snd/'+SNDF[k]+'.mp3').then(r=>r.arrayBuffer()).then(b=>AC.decodeAudioData(b)).then(buf=>{SND[k]=buf}).catch(()=>{})}
 function playS(k,v=1){if(!AC||!SND[k]||!MG)return false;try{const s=AC.createBufferSource(),g=AC.createGain();s.buffer=SND[k];g.gain.value=v;s.connect(g);g.connect(MG);s.start()}catch(_){return false}return true}
 const MUS={};let musCur=null,musWant=null;
-function musEl(k){if(!MUS[k]){const a=new Audio('ui/snd/'+k+'.mp3');a.loop=true;a.preload='auto';a.volume=0;MUS[k]=a}return MUS[k]}
-const musV=()=>save.musv===undefined?.55:save.musv;function musLevel(){return save.music===false||save.muted?0:musV()*.35}
-function musVol(){for(const k in MUS){const a=MUS[k];if(k===musCur&&!a._fading)a.volume=musLevel()}}
-function musFade(a,to,ms,done){a._fading=true;const from=a.volume,t0=performance.now();const f=()=>{const k=Math.min(1,(performance.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(to-from)*k));if(k<1)requestAnimationFrame(f);else{a._fading=false;done&&done()}};f()}
+function musEl(k){if(!MUS[k]){const a=new Audio('ui/snd/'+k+'.mp3');a.loop=true;a.preload='auto';a._v=0;try{if(AC){a._g=AC.createGain();a._g.gain.value=0;AC.createMediaElementSource(a).connect(a._g);a._g.connect(AC.destination)}}catch(_){a._g=null}if(!a._g)a.volume=0;MUS[k]=a}return MUS[k]}
+function mSet(a,v){v=Math.max(0,Math.min(1,v));a._v=v;if(a._g)a._g.gain.value=v;else a.volume=v}
+const musV=()=>save.musv===undefined?.55:save.musv;function musLevel(){return save.music===false||save.muted?0:musV()*.3}
+function musVol(){for(const k in MUS){const a=MUS[k];if(k===musCur&&!a._fading)mSet(a,musLevel())}}
+function musFade(a,to,ms,done){a._fading=true;const from=a._v||0,t0=performance.now();const f=()=>{const k=Math.min(1,(performance.now()-t0)/ms);mSet(a,from+(to-from)*k);if(k<1)requestAnimationFrame(f);else{a._fading=false;done&&done()}};f()}
 function musicTo(k){musWant=k;if(!AC)return;if(k===musCur)return;const old=musCur?MUS[musCur]:null;musCur=k;
  if(old)musFade(old,0,500,()=>{if(musCur!==null&&MUS[musCur]===old)return;old.pause()});
- if(k&&musLevel()>0){const a=musEl(k);if(k==='results')a.currentTime=0;a.volume=0;const pr=a.play();if(pr&&pr.catch)pr.catch(()=>{});musFade(a,musLevel(),700)}}
+ if(k&&musLevel()>0){const a=musEl(k);if(k==='results')a.currentTime=0;mSet(a,0);const pr=a.play();if(pr&&pr.catch)pr.catch(()=>{});musFade(a,musLevel(),700)}}
 document.addEventListener('visibilitychange',()=>{const a=musCur&&MUS[musCur];if(!a)return;if(document.hidden)a.pause();else if(musLevel()>0){const pr=a.play();pr&&pr.catch&&pr.catch(()=>{})}});
 function ac(){if(!AC){try{AC=new(window.AudioContext||window.webkitAudioContext)();MG=AC.createGain();MG.connect(AC.destination);setVol()}catch(e){return null}loadKey();sndLoad();setTimeout(()=>{const w=musWant;musCur=null;musicTo(w)},50)}if(AC.state==='suspended')AC.resume();return AC}
 // son de touche de clavier (fourni), joué avec une hauteur variable
@@ -3352,7 +3373,7 @@ async function renderLead(){
   if(!d){h='<p class="note s">Chargement…</p>'}
   else if(d.err){h=`<p class="notice s">${d.err}</p>`}
   else{const me=RT.prof?RT.prof.id:null;
-   h+='<div class="ldl">'+d.top.map((p,i)=>`<div class="ldr ${p.id===me?'me':''} ${i<3?'t'+(i+1):''}"><span class="lrk s">${i+1}</span>${heroIcon(HE(p.hero||'cubo'),46)}<span class="lnm s"><b>${handle(p)}</b></span><span class="lst s">${ico('cup')}${fmt(p.stars||0)}</span></div>`).join('')+'</div>';
+   h+='<div class="ldl">'+d.top.map((p,i)=>`<div class="ldr ${p.id===me?'me':''} ${i<3?'t'+(i+1):''}" data-lp="${i}"><span class="lrk s">${i+1}</span>${heroIcon(HE(p.hero||'cubo'),46)}<span class="lnm s"><b>${handle(p)}</b></span><span class="lst s">${ico('cup')}${fmt(p.stars||0)}</span></div>`).join('')+'</div>';
    if(d.me&&!d.top.some(p=>p.id===d.me.id))h+=`<div class="ldr me sticky"><span class="lrk s">${d.me.rank}</span>${heroIcon(HE(d.me.hero||'cubo'),46)}<span class="lnm s"><b>${handle(d.me)}</b></span><span class="lst s">${ico('cup')}${fmt(d.me.stars||0)}</span></div>`}
   show('#sLead',`<div class="sbody"><p class="sub2 s">Les meilleurs joueurs du monde par trophées</p>${h}</div>`)};
  draw();
@@ -3387,7 +3408,7 @@ function frRow(p,kind){const on=isOn(p.id);
  if(kind==='f')btns=`<button class="btn ${on?'btn-green':'btn-grey'}" data-finv="${p.id}" ${on?'':'disabled'}>INVITER</button><button class="ib ib-x" data-fdel="${p.id}" aria-label="Retirer ${esc(p.name)}"></button>`;
  if(kind==='in')btns=`<button class="btn btn-green" data-facc="${p.id}">ACCEPTER</button><button class="ib ib-x" data-fdel="${p.id}" aria-label="Refuser"></button>`;
  if(kind==='out')btns=`<span class="pend s">En attente</span><button class="ib ib-x" data-fdel="${p.id}" aria-label="Annuler"></button>`;
- return `<div class="friend ${on?'on':''}"><span class="dot"></span>${heroIcon(HE(p.hero||'cubo'),34)}<span class="fn s"><b>${handle(p)}</b><small>${kind==='f'?(on?'En ligne':'Hors ligne'):kind==='in'?'Veut être ton ami':'Demande envoyée'} · ${ico('cup')}${p.stars||0}</small></span>${btns}</div>`}
+ return `<div class="friend ${on?'on':''}" data-fp="${p.id}"><span class="dot"></span>${heroIcon(HE(p.hero||'cubo'),34)}<span class="fn s"><b>${handle(p)}</b><small>${kind==='f'?(on?'En ligne':'Hors ligne'):kind==='in'?'Veut être ton ami':'Demande envoyée'} · ${ico('cup')}${p.stars||0}</small></span>${btns}</div>`}
 function renderParty(){
  const logged=AUTH.on&&RT.prof,canRoom=RT.on;let h='';
  if(!logged){h+=`<p class="notice s">${!RT.on?'Les amis et les salons marchent sur paint-clash.vercel.app avec ton compte Google. Ici, tu peux jouer contre des bots.':AUTH.on?'Chargement de ton identifiant… Si ça dure, recharge la page.':'Connecte-toi avec Google pour avoir ton identifiant # et ajouter des amis.'}</p>`}
@@ -3420,6 +3441,8 @@ async function loadFriends(){if(!AUTH.on||!RT.prof)return;const r=await apiCall(
 function ping(id,ev,payload){try{RT.sb.channel('pc-u-'+id).httpSend(ev,payload)}catch(_){}}
 let invLast=0;async function inviteFriend(id){const w=Math.ceil((invLast+5000-Date.now())/1000);if(w>0){sfx.tick();toast(`Attends ${w} s avant de renvoyer une invitation`);return}invLast=Date.now();const ok=await roomCreate();if(!ok)return;
  ping(id,'inv',{from:{id:RT.prof.id,name:RT.prof.name,tag:RT.prof.tag},code:ROOM.code});toast('Invitation envoyée !');if(tab==='party')renderParty()}
+$('#sLead').addEventListener('click',e=>{const r=e.target.closest('[data-lp]');if(!r||!leadData||!leadData.top)return;const p=leadData.top[+r.dataset.lp];if(p){ac();sfx.click();memMenu(p)}});
+$('#party').addEventListener('click',e=>{if(e.target.closest('button,input'))return;const r=e.target.closest('[data-fp]');if(!r)return;const id=r.dataset.fp,p=[...(RT.friends||[]),...(RT.incoming||[]),...(RT.outgoing||[])].find(x=>String(x.id)===id);if(p){ac();sfx.click();memMenu(p)}});
 $('#party').addEventListener('click',async e=>{const b=e.target.closest('button');if(!b||b.disabled||b.hasAttribute('data-back')||b.hasAttribute('data-homeb'))return;ac();sfx.click();
  if(b.hasAttribute('data-mycopy')){const t=`${RT.prof.name}#${RT.prof.tag}`;try{navigator.clipboard.writeText(t).then(()=>toast('Identifiant copié !'),()=>toast(t))}catch(_){toast(t)}return}
  if(b.hasAttribute('data-pcopy')){const t=ROOM&&ROOM.code;try{navigator.clipboard.writeText(t).then(()=>toast('Code copié !'),()=>toast('Code : '+t))}catch(_){toast('Code : '+t)}return}
@@ -3549,7 +3572,7 @@ $('#sProf').addEventListener('click',e=>{const b=e.target.closest('button');if(!
 // menu d'un membre du groupe
 let memSel=null;
 function memMenu(m){memSel=m;const me=m.sid===SID;$('#memName').innerHTML=esc(m.name)+(m.tag?`<em class="tg">#${m.tag}</em>`:'');
- $('#memKick').hidden=me||!ROOM||!ROOM.host;$('#memM').hidden=false}
+ $('#memKick').hidden=me||!m.sid||!ROOM||!ROOM.host;$('#memM').hidden=false}
 function memProfile(m){const L=LG[leagueIdx(m.stars||0)];$('#memM').hidden=true;
  $('#mpBox').innerHTML=`<div class="mpc">${iconHTML(m.icon||('h:'+(m.hero||'cubo')),'big')}<div><b class="s">${esc(m.name)}${m.tag?`<em class="tg">#${m.tag}</em>`:''}</b><small class="s">${esc((TITLES.find(t=>t.id===m.title)||TITLES[0]).n)}</small></div><span class="pemb">${emblem(L)}</span></div>
   <div class="pst s"><div>${ico('cup')}<small>Trophées</small><b>${fmt(m.stars||0)}</b></div><div>${ico('star')}<small>Victoires solo</small><b>${fmt(m.wins||0)}</b></div><div><img class="fsk" src="ui/n_skull.png" alt=""><small>Éliminations</small><b>${fmt(m.kills||0)}</b></div></div>
