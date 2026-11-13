@@ -1892,6 +1892,11 @@ html.wk .stitle .b1,html.wk .stitle .b2,html.wk .rtitle{-webkit-text-stroke:reve
 
 .rln{position:absolute;transform:translateX(-50%);white-space:nowrap;font-size:12px;color:#fff;pointer-events:none;z-index:3}
 .rln.v{font-size:13px}
+
+#sMissions.scr{background:radial-gradient(ellipse 120% 60% at 50% 30%,#f3d6ff 0,#c98aff 26%,#8a3cf5 58%,#5a18d6 100%)!important}
+.mqped{background:radial-gradient(ellipse at 50% 35%,#e6fbff 0 45%,#7fd0ff 46% 70%,#4a12b8 71%);box-shadow:0 4px 0 rgba(50,0,120,.45)}
+.mqchest>img{filter:drop-shadow(0 4px 0 rgba(50,0,120,.4))}
+#sLead.scr{background:radial-gradient(ellipse 120% 60% at 50% 25%,#ff9a8a 0,#ff4a55 30%,#e8152e 62%,#b0001f 100%)!important}
 </style>
 
 <div id="bg"><div class="halo"></div></div>
@@ -2823,7 +2828,7 @@ function finish(reason){
  ensureMissions();
  const mp={play:1,pct:Math.floor(pct),kill:player.kills,top3:pl<=3?1:0,stars:Math.max(0,dS)};
  save.missions.forEach(m=>{if(!m.done)m.p=Math.min(m.n,m.p+(mp[m.k]||0))});
- const unl=[],lvBefore=passLevel();const xpG=60+player.kills*15+Math.floor(pct)+(won?80:0);save.xp=(save.xp||0)+xpG;const accBefore=accLv()[0];save.accXp=(save.accXp===undefined?(save.xp-xpG):save.accXp)+xpG;if(passLevel()>lvBefore)unl.push({t:'pass',l:passLevel()});
+ const unl=[],lvBefore=passLevel();const xpG=60+player.kills*15+Math.floor(pct)+(won?80:0),xpP=25+player.kills*6+Math.floor(pct*.4)+(won?30:0);save.xp=(save.xp||0)+xpP;const accBefore=accLv()[0];save.accXp=(save.accXp===undefined?(save.xp-xpP):save.accXp)+xpG;if(passLevel()>lvBefore)unl.push({t:'pass',l:passLevel()});
  if(ranked&&won)save.gems+=5;
  if(ROAD.some(r=>r.t>oldS&&r.t<=save.stars))unl.push({t:'road'});
  persist();if(RT.prof)apiCall('/api/profile','POST',{action:'sync',hero:save.hero,stars:save.stars});
