@@ -1879,6 +1879,12 @@ html.wk .stitle .b1,html.wk .stitle .b2,html.wk .rtitle{-webkit-text-stroke:reve
 .mqtabs button{transition:background .2s}
 
 #streak{display:none!important}
+
+.mqtabs{position:relative}
+.mqtabs::before{content:"";position:absolute;left:0;top:0;bottom:0;width:50%;border-radius:99px;background:linear-gradient(#fff9a0 0 28%,#ffe92e 30%,#ffd400);box-shadow:inset 0 -3px 0 #f0a800;transition:transform .3s cubic-bezier(.3,1.2,.4,1)}
+.mqtabs.perm::before{transform:translateX(100%)}
+.mqtabs button{position:relative;z-index:1}
+.mqtabs button.on{background:none!important;box-shadow:none!important}
 </style>
 
 <div id="bg"><div class="halo"></div></div>
@@ -2109,7 +2115,7 @@ const HEROES=[
  {id:'galaxie',name:'Galaxie',color:0x4a3bff,hat:'antenna',rar:3,perk:'coins',un:{stars:1020},skin:2,acc:['nails','watch']}
 ];
 const HE=id=>HEROES.find(h=>h.id===id)||HEROES[0];
-const MAXLV=10,upCost=l=>Math.round(150*Math.pow(1.6,l-1)/10)*10;
+const MAXLV=10,upCost=l=>[200,500,1200,3000,7000,16000,35000,75000,150000][l-1]||150000;
 const LG=[];
 [['Bronze','#e0915a'],['Argent','#c9d6ea'],['Or','#ffd21f'],['Diamant','#5fe0ff'],['Maître','#ff5a63']].forEach(([n,c])=>['I','II','III'].forEach((r,k)=>LG.push({n:n+' '+r,c,sub:k+1})));
 [0,30,70,120,180,250,330,420,520,630,750,880,1020,1170,1330].forEach((t,i)=>LG[i].t=t);
@@ -3160,14 +3166,14 @@ if(!MODES[save.mode])save.mode=save.mode==='room'?'party':'classic';if(!SUBS0[sa
 const PASS_MAX=30,XP_LV=200;
 const passLevel=()=>Math.min(PASS_MAX,Math.floor((save.xp||0)/XP_LV)+1);
 function passReward(l){if(l%10===0)return{box:l===30?'gold':'purple'};const k=l%5;
- if(k===1)return{coins:150+l*30};if(k===2)return{box:l<10?'wood':l<20?'iron':'orange'};if(k===3)return{gems:5+Math.floor(l/5)*2};if(k===4)return{coins:250+l*40};return{box:l<15?'iron':'orange'}}
-function passRewardP(l){if(l===30)return{hero:'or'};if(l%10===0)return{box:'gold'};if(l%5===0)return{gems:20+l};return l%2?{coins:400+l*60}:{box:l<12?'orange':'purple'}}
+ if(k===1)return{coins:80+l*12};if(k===2)return{box:l<10?'wood':l<20?'iron':'orange'};if(k===3)return{gems:2+Math.floor(l/5)};if(k===4)return{coins:120+l*16};return{box:l<15?'iron':'orange'}}
+function passRewardP(l){if(l===30)return{hero:'or'};if(l%10===0)return{box:'gold'};if(l%5===0)return{gems:8+Math.floor(l/2)};return l%2?{coins:200+l*25}:{box:l<12?'orange':'purple'}}
 const PASS_PRICE=150;
 const passClaimable=()=>{const L=passLevel();let n=0;for(let l=1;l<=L;l++){if(!save.passClaimed.includes(l))n++;if(save.passPrem&&!save.passClaimedP.includes(l))n++}return n};
 // route des trophées
 const ROAD_T=[10,20,30,45,60,70,85,100,120,140,160,180,200,230,260,300,330,370,420,470,520,580,630,700,780,860,940,1020,1100,1200,1300,1400,1500];
 const ROAD=ROAD_T.map((t,i)=>{const h=HEROES.find(x=>x.un.stars===t);if(h)return{t,hero:h.id};const k=i%4,box=t<100?'wood':t<300?'iron':t<700?'orange':t<1200?'purple':'gold';
- return k===0?{t,coins:100+Math.round(t*1.5/10)*10}:k===1?{t,box}:k===2?{t,gems:5+Math.floor(t/150)*3}:{t,box:t<300?'iron':box}});
+ return k===0?{t,coins:50+Math.round(t*.6/10)*10}:k===1?{t,box}:k===2?{t,gems:2+Math.floor(t/200)*2}:{t,box:t<300?'iron':box}});
 const roadClaimable=()=>ROAD.filter(r=>r.t<=save.stars&&!save.roadClaimed.includes(r.t));
 const roadNext=()=>ROAD.find(r=>r.t>save.stars);
 // coffres
@@ -3177,9 +3183,9 @@ const CH=id=>CHESTS.find(c=>c.id===(CHA[id]||id))||CHESTS[0];
 const rint=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
 function rollChest(id,extra){const r={coins:0,gems:0,hero:null};
  id=CHA[id]||id;
- if(id==='c1'){r.coins=rint(300,900);if(Math.random()<.35)r.gems=rint(2,6)}
- if(id==='c2'){r.coins=rint(2500,5500);r.gems=rint(6,15)}
- if(id==='c3'){r.coins=rint(7000,14000);r.gems=rint(25,55);const pool=HEROES.filter(h=>!save.owned.includes(h.id)&&!h.un.stars&&!h.un.pass);if(pool.length&&Math.random()<.5)r.hero=pool[rint(0,pool.length-1)]}
+ if(id==='c1'){r.coins=rint(150,450);if(Math.random()<.35)r.gems=rint(1,3)}
+ if(id==='c2'){r.coins=rint(1000,2200);r.gems=rint(3,7)}
+ if(id==='c3'){r.coins=rint(3000,6000);r.gems=rint(10,22);const pool=HEROES.filter(h=>!save.owned.includes(h.id)&&!h.un.stars&&!h.un.pass);if(pool.length&&Math.random()<.5)r.hero=pool[rint(0,pool.length-1)]}
  if(extra){r.coins+=extra.coins||0;r.gems+=extra.gems||0}
  save.coins+=r.coins;save.gems+=r.gems;if(r.hero){save.owned.push(r.hero.id);save.levels[r.hero.id]=1}persist();return r}
 let chestR=null;
@@ -3410,7 +3416,7 @@ function renderMissions(){
  else ACH.forEach(a=>{const i=achTier(a),mx=i>=a.t.length,k=mx?a.t.length-1:i;rows+=mqRow(a.ic,a.d(a.t[k]),mx?a.t[k]:a.v(),a.t[k],achRw(a,k),mx?'done':a.v()>=a.t[k]?'ok':'',`data-ach="${a.k}"`)});
  const h=`<div class="mqtop"><span class="mqcur" id="mqCoin">${img('n_coin')}<b class="s">${fmt(save.coins)}</b></span><span class="mqcur" id="mqGem">${img('n_gem')}<b class="s">${fmt(save.gems)}</b></span></div>
  <button class="mqchest ${bon?'ok':''} ${save.mBonus===today()?'got':''}" data-mbonus><span class="mqcp">${img("p_calendar")}<span><i style="width:${tot?dn/tot*100:0}%"></i><em class="s">${dn}/${tot}</em></span></span>${img('chest_c2')}<span class="mqped"></span></button>
- <div class="mqp"><div class="mqtabs"><button class="s ${mqTab==='day'?'on':''}" data-mqt="day">Quotidien</button><button class="s ${mqTab==='perm'?'on':''}" data-mqt="perm">Permanent</button></div>
+ <div class="mqp"><div class="mqtabs ${mqTab==='perm'?'perm':''}"><button class="s ${mqTab==='day'?'on':''}" data-mqt="day">Quotidien</button><button class="s ${mqTab==='perm'?'on':''}" data-mqt="perm">Permanent</button></div>
  <div class="mqrows">${mqTab==='day'?`<p class="mqtime s">Nouvelles missions dans ${untilMidnight()}</p>`:''}${rows}</div></div>`;
  show('#sMissions',`<div class="sbody mqs">${h}</div>`);
 }
@@ -3430,7 +3436,7 @@ function confetti(){const L=fxLayer(),C=['#ff2f47','#ffd400','#1ea4ff','#99f25c'
 function mqClaim(btn,rw){const r=(btn.querySelector('.mqr')||btn).getBoundingClientRect(),g=!!rw.gems,o=g?save.gems:save.coins;
  if(g)save.gems+=rw.gems;else save.coins+=rw.coins;persist();sfx.win();confetti();renderMissions();updTop();
  const t=$(g?'#mqGem':'#mqCoin');countTo(t&&t.querySelector('b'),o,g?save.gems:save.coins,600,750);flyReward(r,g?'gems':'coins',g?rw.gems:rw.coins,t)}
-$('#sMissions').addEventListener('click',e=>{const tb=e.target.closest('[data-mqt]');if(tb){ac();sfx.click();if(mqTab===tb.dataset.mqt)return;mqTab=tb.dataset.mqt;renderMissions();const r=$('#sMissions .mqrows');if(r)r.classList.add(mqTab==='perm'?'inR':'inL');return}
+$('#sMissions').addEventListener('click',e=>{const tb=e.target.closest('[data-mqt]');if(tb){ac();sfx.click();if(mqTab===tb.dataset.mqt)return;mqTab=tb.dataset.mqt;renderMissions();const r=$('#sMissions .mqrows');if(r)r.classList.add(mqTab==='perm'?'inR':'inL');const tt=$('#sMissions .mqtabs');if(tt){tt.classList.toggle('perm');void tt.offsetWidth;tt.classList.toggle('perm')}return}
  const bn=e.target.closest('[data-mbonus]');if(bn){ac();if(!mqBonusOk()){sfx.tick();toast(save.mBonus===today()?'Coffre déjà récupéré':'Termine toutes les missions du jour');return}save.mBonus=today();persist();confetti();renderMissions();updTop();grant({box:'c2'});return}
  const c=e.target.closest('[data-claim]');if(c){const m=save.missions[+c.dataset.claim];if(!m||m.done)return;ac();if(m.p<m.n){sfx.tick();return}m.done=true;mqClaim(c,m.rw);return}
  const h=e.target.closest('[data-ach]');if(h){const a=ACH.find(x=>x.k===h.dataset.ach),i=achTier(a);if(i>=a.t.length)return;ac();if(a.v()<a.t[i]){sfx.tick();return}save.ach[a.k]=i+1;mqClaim(h,achRw(a,i))}});
