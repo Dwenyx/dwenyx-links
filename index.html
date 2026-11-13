@@ -1923,6 +1923,12 @@ html.wk .stitle .b1,html.wk .stitle .b2,html.wk .rtitle{-webkit-text-stroke:reve
 .rlg svg{width:44px!important;height:42px!important}
 .rlg{transform:translate(-50%,0)}
 .rlg.v svg{width:40px!important;height:38px!important}
+
+.rlg.big svg{width:56px!important;height:52px!important}
+.rlg.v.big svg{width:64px!important;height:60px!important}
+.rln.big{font-size:15px;color:#fff36b}
+.rln.v.big{font-size:15px}
+.rt.v{text-align:right}
 </style>
 
 <div id="bg"><div class="halo"></div></div>
@@ -3571,12 +3577,12 @@ function renderRoad(){if(innerHeight>innerWidth*1.1)return renderRoadV();
  ROAD.forEach((r,i)=>{const got=save.roadClaimed.includes(r.t),reach=r.t<=s,a=rewArt(r),isNext=nx&&nx.t===r.t;
   const cls=got?'got':reach?'claim':'lock';
   h+=`<div class="ri ${cls}" style="left:${xs[i]-W/2}px;top:0px"><span class="rnext s">${isNext?'PROCHAIN':''}</span><button class="rc" style="--rb:${a.bg}" ${reach&&!got?`data-road="${r.t}"`:''}>${reach&&!got?'<span class="rtag s">RÉCUPÉRER</span>':''}${a.h}<b class="s">${a.l}</b>${got?`<span class="ok">${I.check}</span>`:''}</button></div>`;
-  h+=`<span class="rt s" style="left:${xs[i]-W/2}px;top:${lineY+26}px">${r.t}</span>`});
+  h+=`<span class="rt s" style="left:${xs[i]-W/2}px;top:${lineY+38}px">${r.t}</span>`});
  LG.forEach((L,i)=>{if(!i)return;let x;if(L.t<=ROAD[0].t)x=P0+(L.t/ROAD[0].t)*(xs[0]-P0);else{x=xs[xs.length-1];for(let k=0;k<ROAD.length-1;k++)if(L.t>=ROAD[k].t&&L.t<ROAD[k+1].t){x=xs[k]+(L.t-ROAD[k].t)/(ROAD[k+1].t-ROAD[k].t)*W;break}}
-  h+=`<span class="rlg" style="left:${x}px;top:${lineY-8}px" title="${L.n}">${emblem(L)}</span><span class="rln s" style="left:${x}px;top:${lineY+48}px">${L.n}</span>`});
- h+=`<span class="rmark s" style="left:${mx}px;top:${lineY+(small?68:76)}px">${ico('cup')}${s}</span>`;
+  const B=L.sub===1||L.crown;h+=`<span class="rlg${B?' big':''}" style="left:${x}px;top:${lineY-(B?15:8)}px" title="${L.n}">${emblem(L)}</span><span class="rln s${B?' big':''}" style="left:${x}px;top:${lineY+62}px">${L.n}</span>`});
+ h+=`<span class="rmark s" style="left:${mx}px;top:${lineY+(small?84:92)}px">${ico('cup')}${s}</span>`;
  const bar=TROPH_TXT.map(t=>`<span class="s">${t}</span>`).join('');
- show('#sRoad',shead('ROUTE DES TROPHÉES')+`<div class="sbody" style="display:flex;flex-direction:column;overflow:hidden"><p class="sub2 s">Ligue ${LG[leagueIdx(s)].n} · gagne des trophées en Classique et en Équipes pour débloquer les récompenses</p><div class="rwrap" id="rwrap"><div class="rtrack" style="width:${total}px;height:${lineY+118}px">${h}</div></div></div>`);fitH($('#rwrap .rtrack'));
+ show('#sRoad',shead('ROUTE DES TROPHÉES')+`<div class="sbody" style="display:flex;flex-direction:column;overflow:hidden"><p class="sub2 s">Ligue ${LG[leagueIdx(s)].n} · gagne des trophées en Classique et en Équipes pour débloquer les récompenses</p><div class="rwrap" id="rwrap"><div class="rtrack" style="width:${total}px;height:${lineY+134}px">${h}</div></div></div>`);fitH($('#rwrap .rtrack'));
  if(roadKeep!==null){const k=roadKeep;roadKeep=null;requestAnimationFrame(()=>{const w=$('#rwrap');if(w)w.scrollLeft=k})}else centerSoon('#rwrap','#rwrap .rmark','x');
 }
 $('#sRoad').addEventListener('click',e=>{const b=e.target.closest('[data-road]');if(!b)return;ac();const t=+b.dataset.road,r=ROAD.find(x=>x.t===t);if(!r||save.roadClaimed.includes(t)||t>save.stars)return;
@@ -3585,15 +3591,15 @@ $('#sRoad').addEventListener('click',e=>{const b=e.target.closest('[data-road]')
  setTimeout(()=>{grant(r);roadKeep=keep;renderRoad();updTop()},420)});
 let roadKeep=null;
 function renderRoadV(){
- const H=178,P0=56,LX=74,s=save.stars,nx=roadNext();
+ const H=178,P0=56,LX=128,s=save.stars,nx=roadNext();
  const ys=ROAD.map((r,i)=>P0+i*H+H/2),at=t=>{if(t<=ROAD[0].t)return P0+(t/ROAD[0].t)*(ys[0]-P0);for(let i=0;i<ROAD.length-1;i++)if(t>=ROAD[i].t&&t<ROAD[i+1].t)return ys[i]+(t-ROAD[i].t)/(ROAD[i+1].t-ROAD[i].t)*H;return ys[ys.length-1]};
  const my=at(s),total=P0*2+ROAD.length*H;
  let h=`<div class="rline v" style="left:${LX-13}px;top:${P0/2}px;height:${total-P0}px"><b style="height:${Math.max(0,my-P0/2)}px"></b></div>`;
  ROAD.forEach((r,i)=>{const got=save.roadClaimed.includes(r.t),reach=r.t<=s,a=rewArt(r),isNext=nx&&nx.t===r.t;
   const cls=got?'got':reach?'claim':'lock';
   h+=`<div class="ri v ${cls}" style="left:${LX+34}px;top:${ys[i]-H/2+6}px"><span class="rnext s">${isNext?'PROCHAIN':''}</span><button class="rc" style="--rb:${a.bg}" ${reach&&!got?`data-road="${r.t}"`:''}>${reach&&!got?'<span class="rtag s">RÉCUPÉRER</span>':''}${a.h}<b class="s">${a.l}</b>${got?`<span class="ok">${I.check}</span>`:''}</button></div>`;
-  h+=`<span class="rt v s${reach?' on':''}" style="left:0;width:${LX-22}px;top:${ys[i]-13}px">${r.t}</span>`});
- LG.forEach((L,i)=>{if(!i)return;h+=`<span class="rlg v" style="left:${LX}px;top:${at(L.t)-19}px" title="${L.n}">${emblem(L)}</span><span class="rln v s" style="left:${LX}px;top:${at(L.t)+24}px">${L.n}</span>`});
+  h+=`<span class="rt v s${reach?' on':''}" style="left:0;width:${LX-40}px;top:${ys[i]-13}px">${r.t}</span>`});
+ LG.forEach((L,i)=>{if(!i)return;const B=L.sub===1||L.crown;h+=`<span class="rlg v${B?' big':''}" style="left:${LX}px;top:${at(L.t)-(B?30:19)}px" title="${L.n}">${emblem(L)}</span><span class="rln v s${B?' big':''}" style="left:${LX}px;top:${at(L.t)+(B?34:24)}px">${L.n}</span>`});
  h+=`<span class="rmark v s" style="left:${LX}px;top:${my-17}px">${ico('cup')}${s}</span>`;
  const bar=TROPH_TXT.map(t=>`<span class="s">${t}</span>`).join('');
  show('#sRoad',shead('ROUTE DES TROPHÉES')+`<div class="sbody" style="display:flex;flex-direction:column;overflow:hidden"><p class="sub2 s">Ligue ${LG[leagueIdx(s)].n} · gagne des trophées en Classique et en Équipes pour débloquer les récompenses</p><div class="rwrap v" id="rwrap"><div class="rtrack" style="height:${total}px">${h}</div></div></div>`);
