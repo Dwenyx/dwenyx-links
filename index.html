@@ -1929,6 +1929,10 @@ html.wk .stitle .b1,html.wk .stitle .b2,html.wk .rtitle{-webkit-text-stroke:reve
 .rln.big{font-size:15px;color:#fff36b}
 .rln.v.big{font-size:15px}
 .rt.v{text-align:right}
+
+/* iPhone (appli installée) : la page doit couvrir tout l'écran, sans bande vide en bas */
+html{min-height:calc(100% + env(safe-area-inset-top,0px))}
+#bnav::after{content:"";position:absolute;left:0;right:0;top:100%;height:140px;background:#d6e6ff;pointer-events:none}
 </style>
 
 <div id="bg"><div class="halo"></div></div>
@@ -3341,7 +3345,7 @@ function refresh2(){updTop();if(tab==='home')updHome();if(tab==='shop')renderSho
 const SCR=['#sProf','#sLead','#sShop','#sHeroes','#sMissions','#sPass','#sRoad','#sModes','#party'];
 function closeAll(){[...SCR,'#settings','#profile','#invite','#detail','#chestM','#match'].forEach(s=>$(s).hidden=true);detailOpen=false}
 const NAVT=['home','shop','heroes','missions','lead'];
-function updNav(){const nv=$('#bnav');if(!nv)return;const on=state==='menu'&&NAVT.includes(tab)&&!(tab==='heroes'&&detailOpen);nv.hidden=!on;nv.classList.toggle('away',tab!=='home');nv.querySelectorAll('[data-nav]').forEach(b=>{const on=b.dataset.nav===tab;if(on&&!b.classList.contains('on')&&!nv.hidden){b.classList.remove('pop');void b.offsetWidth;b.classList.add('pop');clearTimeout(b._pt);b._pt=setTimeout(()=>b.classList.remove('pop'),520)}b.classList.toggle('on',on)});
+function updNav(){const nv=$('#bnav');if(!nv)return;const on=state==='menu'&&NAVT.includes(tab)&&!(tab==='heroes'&&detailOpen);nv.hidden=!on;document.documentElement.style.background=on?'#d6e6ff':'';nv.classList.toggle('away',tab!=='home');nv.querySelectorAll('[data-nav]').forEach(b=>{const on=b.dataset.nav===tab;if(on&&!b.classList.contains('on')&&!nv.hidden){b.classList.remove('pop');void b.offsetWidth;b.classList.add('pop');clearTimeout(b._pt);b._pt=setTimeout(()=>b.classList.remove('pop'),520)}b.classList.toggle('on',on)});
  const a=nv.querySelector('.bn.on'),ind=nv.querySelector('.bnind');if(ind){if(a&&!nv.hidden){const w=Math.min(a.offsetWidth+6,84);ind.style.left=(a.offsetLeft+a.offsetWidth/2-w/2)+'px';ind.style.width=w+'px';ind.style.opacity=1}else ind.style.opacity=0}}
 function go(t){
  tab=t;closeAll();document.body.dataset.tab=t;document.body.dataset.r='home';setTimeout(updNav,0);
