@@ -1943,7 +1943,8 @@ html{background:#d6e6ff}
 #home .modec::before{bottom:-5px!important;background:#141c6e!important}
 #home .passL::before{bottom:-5px!important;background:#141c6e!important}
 /* missions : le cadre reste juste au-dessus du bouton play et grandit vers le haut */
-#sMissions .sbody.mqs{justify-content:flex-start;padding-bottom:calc(env(safe-area-inset-bottom,0px) + 128px)!important}
+#sMissions .sbody.mqs{justify-content:flex-start;padding-bottom:54px!important}
+.mqtabs{min-height:46px}
 #sMissions .sbody.mqs .mqchest{margin-top:auto}
 /* HUD en partie : minimaliste et fixe */
 #hud #pctBox,#hud #killBox,#hud #timer:not(.hot),#hud #lb{background:none!important;border:0!important;box-shadow:none!important}
@@ -1954,6 +1955,9 @@ html{background:#d6e6ff}
 #hud #lb li{white-space:nowrap}
 #hud #lb li span{max-width:none}
 #hud #lb li b,#hud #lb li em{min-width:40px;text-align:right}
+
+#sMissions .sbody.mqs>*{flex-shrink:0}
+.mqp>*,.mqrows>*{flex-shrink:0}
 </style>
 
 <div id="bg"><div class="halo"></div></div>
