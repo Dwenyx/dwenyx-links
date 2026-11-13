@@ -1877,6 +1877,8 @@ html.wk .stitle .b1,html.wk .stitle .b2,html.wk .rtitle{-webkit-text-stroke:reve
 @keyframes mqInR{from{transform:translateX(60%);opacity:0}}
 @keyframes mqInL{from{transform:translateX(-60%);opacity:0}}
 .mqtabs button{transition:background .2s}
+
+#streak{display:none!important}
 </style>
 
 <div id="bg"><div class="halo"></div></div>
@@ -2448,13 +2450,8 @@ function burnTick(e,dt){if(!e.cut||!e.alive)return;e.cut.acc+=FUSE*dt;
   if(trail[q]===e.id){trail[q]=-1;refresh(q,0);if(player&&Math.abs(q%N-EAR().x)+Math.abs(((q/N)|0)-EAR().z)<26)burst(q%N+.5,.8,((q/N)|0)+.5,n2c(),3,4)}}}
 function savedFx(e){saveAnim(e);if(e===player){banner('SAUVÉ !');sfx.up();setTimeout(()=>{if($('#banner').textContent.includes('SAUV'))$('#banner').innerHTML=''},1100)}else feedMsg(`${e.name} s'en est sorti !`)}
 const SKN=['','','DOUBLE KILL !','TRIPLE KILL !','QUADRA KILL !','PENTA KILL !'],SKS={3:'EN SÉRIE !',5:'DÉCHAÎNÉ !',7:'INARRÊTABLE !',10:'LÉGENDAIRE !'};
-function onStreak(v,k){if(!v||!v.alive)return;const was=v.streak||0;v.streak=0;v.multi=0;if(v===player)updStreak();
- if(was>=3&&k&&k!==v){if(k===player)toast(`Tu as stoppé la série de ${v.name} (${was}) !`);else if(v!==player)feedMsg(`${k.name} a stoppé la série de ${v.name}`)}
- if(!k||k===v||!foe(k,v))return;k.streak=(k.streak||0)+1;k.multi=(now-(k.lastKillT||-99)<4.5)?(k.multi||1)+1:1;k.lastKillT=now;k.bestStreak=Math.max(k.bestStreak||0,k.streak);
- if(k===player){const t=k.multi>=2?SKN[Math.min(5,k.multi)]:SKS[k.streak];if(t){const bn=$('#banner');bn.innerHTML=`<span class="kbanner">${t}</span>`;sfx.up();clearTimeout(onStreak._t);onStreak._t=setTimeout(()=>{if(bn.textContent===t||bn.textContent.includes('KILL')||bn.textContent.includes('!'))bn.innerHTML=''},1300)}
-  if(navigator.vibrate&&save.vib!==false)try{navigator.vibrate(k.multi>=2?[30,40,60]:35)}catch(_){}updStreak(true)}
- else if(SKS[k.streak]&&Math.hypot(k.x-EAR().x,k.z-EAR().z)<40)feedMsg(`${k.name} : série de ${k.streak} !`)}
-function updStreak(bump){const el=$('#streak'),n=player&&player.alive?player.streak||0:0;if(!el)return;el.hidden=n<2||state==='menu';$('#streakN').textContent='x'+n;if(bump&&n>=2){el.classList.remove('bump');void el.offsetWidth;el.classList.add('bump')}}
+function onStreak(v,k){if(!v||!v.alive||!k||k===v||!foe(k,v))return;if(k===player&&navigator.vibrate&&save.vib!==false)try{navigator.vibrate(35)}catch(_){}}
+function updStreak(){const el=$('#streak');if(el)el.hidden=true}
 const lootOK=(v,k)=>!!k&&k!==v&&k.alive&&!k.dying&&gameMode!=='team'&&foe(k,v);
 function kill(v,k){
  if(!v.alive)return;onStreak(v,k);const lootC=v.cut&&v.cut.cells||[];v.alive=false;v.cut=null;v.revAt=v.team>=0&&tSize()>1&&gameMode!=='surv'?now+revDelay():0;markPlace(v);v.deathCount=(tSize()>1&&gameMode!=='team')?(teamScores()[v.team]||0):(counts[v.id]||0);if(NET.role==='host')NET.ev.push({t:'k',v:v.id,k:k?k.id:-1,p:v.deathCount});
@@ -2695,11 +2692,21 @@ const TEAMCOL=[0x2f8dff,0xff4d5e];
 const mineC=(e,c)=>{const o=own[c];return o===e.id||(e.team>=0&&o>=0&&!!ents[o]&&ents[o].team===e.team)};
 const foe=(a,b)=>!!a&&!!b&&a!==b&&(a.team<0||a.team!==b.team);
 function setEntColor(e,c){e.color=c;e.col.set(c);e.trCol.set(mixHex(c,0xffffff,.3));if(tSize()>1&&e.view){const old=e.view.g.children.find(o=>o.isSprite);if(old){e.view.g.remove(old);e.view.g.add(nameSprite(e.name,hex(c)))}}}
-function freeColor(team){if(gameMode==='team'&&team>=0)return TEAMCOL[team];const used=new Set(ents.filter(Boolean).map(e=>e.color)),pool=bigPal(Math.max(60,ents.length+8));return pool.find(c=>!used.has(c))||PAL.find(c=>!used.has(c))||(Math.random()*0xffffff|0)}
+const hueOf=c=>{const o={};new THREE.Color(c).getHSL(o);return o.h},hueD=(a,b)=>{const d=Math.abs(hueOf(a)-hueOf(b));return Math.min(d,1-d)};
+function freeColor(team){if(gameMode==='team'&&team>=0)return TEAMCOL[team];if(tSize()>1&&team>=0){const m=ents.find(e=>e&&e.team===team&&e.color!=null);if(m)return m.color}
+ {const u=new Set(ents.filter(Boolean).map(e=>e.color)),c=new THREE.Color(),me=player&&player.color;let best=null,bd=-1;for(let k=0;k<72;k++){c.setHSL(k/36%1,k<36?.95:.85,k<36?.56:.36);const x=c.getHex();if(u.has(x))continue;let d=1;for(const y of u)d=Math.min(d,hueD(x,y)+(Math.abs(new THREE.Color(y).getHSL({}).l-(k<36?.56:.36))>.12?.04:0));if(me!=null&&hueD(x,me)<.05)d=-1;if(d>bd){bd=d;best=x}}if(best!==null&&bd>=0)return best}
+ const used=new Set(ents.filter(Boolean).map(e=>e.color)),pool=bigPal(Math.max(60,ents.length+8));return pool.find(c=>!used.has(c))||PAL.find(c=>!used.has(c))||(Math.random()*0xffffff|0)}
 function bigPal(n){const out=PAL.slice(),c=new THREE.Color();for(let k=0;out.length<n;k++){c.setHSL((k*.618034+.05)%1,.62+.2*((k>>1)%2),.48+.1*(k%3)/2);out.push(c.getHex())}return out}
-function assignColors(){const sh=a=>a.slice().sort(()=>Math.random()-.5),PAL=bigPal(ents.length);
- if(gameMode==='team'){for(const e of ents)setEntColor(e,TEAMCOL[e.team])}
- else{const p=sh(PAL);for(const e of ents)setEntColor(e,p.shift())}}
+function assignColors(){const sh=a=>a.slice().sort(()=>Math.random()-.5);
+ if(gameMode==='team'){for(const e of ents)setEntColor(e,TEAMCOL[e.team]);return}
+ // une couleur par équipe (duo/trio : les mates partagent la couleur) ; jamais de couleur proche de la mienne
+ const ts=tSize(),key=(e,i)=>ts>1?'t'+e.team:'i'+i,keys=[];ents.forEach((e,i)=>{if(e&&!keys.includes(key(e,i)))keys.push(key(e,i))});
+ const mi=ents.indexOf(player),mk=mi>=0?key(player,mi):keys[0];let pool;
+ if(keys.length<=8)pool=sh(PAL.slice(0,8));
+ else{const tot=keys.length+5,H=Math.ceil(tot/2),c=new THREE.Color(),g=[];for(let k=0;k<H*2;k++){const t=k>=H?1:0,h=((k%H)+(t?.5:0))/H;c.setHSL(h%1,t?.85:.95,t?.36:.56);g.push({x:c.getHex(),h:h%1})}
+  const me=g[Math.random()*g.length|0],far=g.filter(o=>{if(o===me)return false;const d=Math.abs(o.h-me.h);return Math.min(d,1-d)>1.2/H});pool=[me.x,...sh(far.map(o=>o.x))]}
+ const map={};map[mk]=pool.shift();for(const k of keys)if(!(k in map))map[k]=pool.shift();
+ ents.forEach((e,i)=>{if(e)setEntColor(e,map[key(e,i)])})}
 const revDelay=()=>gameMode==='team'?10:gameSub==='trio'?25:15;
 const SUBS={solo:{n:'SOLO',ts:1},duo:{n:'DUO',ts:2},trio:{n:'TRIO',ts:3}};
 const tSize=(m=gameMode,sb=gameSub)=>m==='team'?5:(m==='classic'||m==='surv')?(SUBS[sb]||SUBS.solo).ts:1;
