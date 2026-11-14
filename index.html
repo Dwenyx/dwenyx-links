@@ -2011,6 +2011,17 @@ body[data-tab=shop] .scr .sbody,body[data-tab=heroes] .scr .sbody,body[data-tab=
 
 .p1 .pd-wrap{margin-top:20px}
 .pd-wrap{display:block}
+
+#aliveTag{position:absolute;text-align:center;font-size:17px;white-space:nowrap;pointer-events:none;z-index:2}
+/* classement : finitions */
+.pod{margin-bottom:-18px;position:relative;z-index:0}
+.lpan{position:relative;z-index:1}
+.lr{grid-template-columns:44px 52px minmax(0,1fr) 52px 86px!important}
+.lr .lem{display:grid;place-items:center}
+.lr .lst{justify-content:flex-end}
+.lr .lnm,.pdn{padding:5px 6px!important;margin:-5px -6px!important;overflow:hidden}
+.pdm,.pdm *,.lr .lrk{-webkit-text-stroke:0!important;paint-order:normal!important;text-shadow:2.5px 0 0 #0b0b19,-2.5px 0 0 #0b0b19,0 2.5px 0 #0b0b19,0 -2.5px 0 #0b0b19,1.8px 1.8px 0 #0b0b19,-1.8px 1.8px 0 #0b0b19,1.8px -1.8px 0 #0b0b19,-1.8px -1.8px 0 #0b0b19,0 4px 0 #0b0b19!important}
+.pdm{line-height:1;padding-top:2px;box-sizing:border-box}
 </style>
 
 <div id="bg"><div class="halo"></div></div>
@@ -2748,6 +2759,7 @@ function updZoneFx(){if(!zone||state==='menu'){zoneRing.visible=zoneNext.visible
  {const r=Math.max(.1,zone.r);stormWall.visible=stormFog.visible=true;stormWall.position.set(N/2,H_OWN+4.5,N/2);stormWall.scale.set(r,9,r);stormTex.offset.x=now*.05;stormTex.repeat.x=Math.max(4,Math.round(r/5));stormFog.position.set(N/2,H_OWN+.35,N/2);stormFog.scale.setScalar(r);stormFog.material.opacity=.36+.08*Math.sin(now*2.2);stormFog.material.color.setHSL(.8+.05*Math.sin(now*.9),.95,.6)}
  zoneRing.visible=zone.r<N*.72;zoneRing.position.set(N/2,H_OWN+.5,N/2);zoneRing.scale.setScalar(Math.max(.1,zone.r));zoneRing.material.opacity=.55+.3*Math.sin(now*5);
  zoneNext.visible=zone.st==='wait'||zone.st==='shrink';zoneNext.position.set(N/2,H_OWN+.12,N/2);zoneNext.scale.setScalar(Math.max(.1,zone.to))}
+function aliveTag(t){let a=$('#aliveTag');if(!a){a=document.createElement('div');a.id='aliveTag';a.className='s';$('#hud').appendChild(a)}if(a._t!==t){a._t=t;a.textContent=t}const m=$('#mm'),now2=performance.now();if(m&&(!a._p||now2-a._p>500)){a._p=now2;const r=m.getBoundingClientRect(),z=UIZ||1;a.style.left=(r.left/z)+'px';a.style.width=(r.width/z)+'px';a.style.top=((r.top/z)-30)+'px'}a.hidden=!m||m.offsetParent===null}
 function zoneTxt(){if(!zone)return'';if(zone.st==='done')return'';const s=Math.max(0,Math.ceil(zone.t1-now));return zone.st==='wait'?`ZONE ${(s/60)|0}:${String(s%60).padStart(2,'0')}`:'ZONE ⚠'}
 const outZone=(x,z,m=2)=>!!zone&&Math.hypot(x-N/2,z-N/2)>Math.min(zone.r,zone.st==='wait'&&zone.t1-now<12?zone.to:zone.r)-m;
 // points d'apparition bien répartis
@@ -3007,8 +3019,8 @@ function drawMini(){const W=mm.width;mmx.imageSmoothingEnabled=false;mmx.clearRe
 }
 function updHud(){
  const my=gameMode==='team'?(teamScores()[player.team]||0):(tSize()>1?(teamScores()[player.team]||0):(counts[player.id]||0));$('#pct').textContent=(my/PTOT*100).toFixed(1)+'%';
- if(gameMode==='team'){const sc=teamScores(),m=Math.ceil(matchT),t=`${(m/60)|0}:${String(m%60).padStart(2,'0')}`;$('#timer').innerHTML=`<span style="color:${TEAMC[0]}">${(sc[0]/PTOT*100).toFixed(0)}%</span> ${t} <span style="color:${TEAMC[1]}">${(sc[1]/PTOT*100).toFixed(0)}%</span>`;$('#timer').classList.toggle('hot',matchT<=15)}
- else{$('#timer').textContent=ents.filter(e=>e&&e.alive).length+' EN VIE'+(zone&&zoneTxt()?' · '+zoneTxt():'');$('#timer').classList.remove('hot')}
+ if(gameMode!=='surv'){const a=$('#aliveTag');if(a)a.hidden=true;$('#timer').hidden=false}if(gameMode==='team'){const sc=teamScores(),m=Math.ceil(matchT),t=`${(m/60)|0}:${String(m%60).padStart(2,'0')}`;$('#timer').innerHTML=`<span style="color:${TEAMC[0]}">${(sc[0]/PTOT*100).toFixed(0)}%</span> ${t} <span style="color:${TEAMC[1]}">${(sc[1]/PTOT*100).toFixed(0)}%</span>`;$('#timer').classList.toggle('hot',matchT<=15)}
+ else{const zt=zone?zoneTxt():'',tm=$('#timer');if(tm._z!==zt){tm._z=zt;tm.textContent=zt;tm.hidden=!zt}tm.classList.remove('hot');aliveTag(ents.filter(e=>e&&e.alive).length+' EN VIE')}
  const TS=tSize()>1?teamScores():null,val=e=>TS&&e.team>=0?(TS[e.team]||0):(counts[e.id]||0);const ord=ents.filter(e=>e&&(e.alive||e===player)).sort((a,b)=>val(b)-val(a));let rows=ord.slice(0,5);if(!rows.includes(player))rows.push(player);
  $('#kills').textContent=player.kills;drawMiniTex();
  const lbh=rows.map(e=>`<li class="${e===player?'me':''}"><i style="background:${hex(e.color)}"></i><span${e.team>=0?` style="color:${TEAMC[e.team]}"`:''}>${ord.indexOf(e)+1}. ${esc(e.name)}</span><b>${(val(e)/PTOT*100).toFixed(1)}%</b></li>`).join('');{const L=$('#lb');if(L._h!==lbh){L._h=lbh;L.innerHTML=lbh}}
@@ -3019,7 +3031,7 @@ function feedKill(k,v){const f=$('#feed'),d=document.createElement('div');d.clas
 function elimToast(v){const w=$('#elims'),d=document.createElement('div');d.className='elim';d.innerHTML=`<span class="et">ÉLIMINÉ</span><span class="en">${esc(v.name)}</span>`;w.appendChild(d);while(w.children.length>3)w.firstChild.remove();setTimeout(()=>{d.classList.add('out');setTimeout(()=>d.remove(),350)},2400)}
 function deathScreen(k){let pl;if(gameMode==='surv'){if(!player.place)markPlace(player);pl=player.place||(ents.filter(e=>e&&e.alive).length+1)}else{const TS=tSize()>1?teamScores():null,val=e=>TS&&e.team>=0?(TS[e.team]||0):(counts[e.id]||0),me=player.deathCount||0,seen=new Set();pl=1;for(const e of ents){if(!e||e===player||!e.alive)continue;if(TS&&e.team>=0){if(e.team===player.team||seen.has(e.team))continue;seen.add(e.team)}if(val(e)>me)pl++}}$('#death').innerHTML=`<div class="dk">${SKULL}</div><div class="dt">TU AS ÉTÉ ÉLIMINÉ</div>${k?`<div class="db">par ${nm(k)}</div>`:'<div class="db">par ta propre traînée</div>'}<div class="dp">#${pl}</div>`;$('#death').hidden=false;setTimeout(()=>{$('#death').hidden=true},2200)}
 function feed(t){const f=$('#feed'),d=document.createElement('div');d.textContent=t;f.prepend(d);while(f.children.length>3)f.lastChild.remove();setTimeout(()=>{d.style.opacity=0;setTimeout(()=>d.remove(),400)},3200)}
-function banner(t){const B=$('#banner');if(!t){B.innerHTML='';return}const c=/COUP|DÉFAITE|ZONE/.test(t)?'r':/SAUV|RETOUR|100/.test(t)?'g':'y';B.innerHTML=`<span class="bn ${c}"><b class="s">${t}</b></span>`}
+function banner(t,ms){const B=$('#banner');clearTimeout(B._t);if(!t){B.innerHTML='';return}B._t=setTimeout(()=>{B.innerHTML=''},ms||(/VICTOIRE|DÉFAITE/.test(t)?3200:1700));const c=/COUP|DÉFAITE|ZONE/.test(t)?'r':/SAUV|RETOUR|100/.test(t)?'g':'y';B.innerHTML=`<span class="bn ${c}"><b class="s">${t}</b></span>`}
 const pv=new THREE.Vector3();
 function floatText(t,e){pv.set(e.x,2.2,e.z).project(cam);const d=document.createElement('div');d.className='float s';d.textContent=t;d.style.left=((pv.x+1)/2*innerWidth)+'px';d.style.top=((1-pv.y)/2*innerHeight)+'px';document.body.appendChild(d);setTimeout(()=>d.remove(),1200)}
 function toast(t){const d=document.createElement('div');d.textContent=t;$('#toast').appendChild(d);setTimeout(()=>d.remove(),1900)}
@@ -3700,7 +3712,7 @@ async function renderLead(){
    let list,L0;
    if(d.me&&d.around&&d.me.rank>T.length){list=d.around.map(p=>row(p,p.rank,null)).join('');L0=LG[leagueIdx(d.me.stars||0)]}
    else{list=T.slice(3).map((p,i)=>row(p,i+4,i+3)).join('');L0=LG[leagueIdx((d.me||T[0]||{}).stars||0)]}
-   h=`<div class="pod">${pod}</div><div class="lpan"><h3 class="s">LIGUE ${L0.n.toUpperCase()}</h3><div class="lls">${list||'<p class="note s">Pas encore d’autres joueurs</p>'}</div></div>`}
+   h=`<div class="pod">${pod}</div><div class="lpan"><h3 class="s">CLASSEMENT</h3><div class="lls">${list||'<p class="note s">Pas encore d’autres joueurs</p>'}</div></div>`}
   show('#sLead',`<div class="sbody lds">${h}</div>`);requestAnimationFrame(()=>{const m=$('#sLead .lr.me');if(m)m.scrollIntoView({block:'center'})})};
  draw();
  if(!RT.on){leadData={err:'Le classement mondial marche sur paint-clash.vercel.app.'};draw();return}
