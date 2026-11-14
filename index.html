@@ -1958,6 +1958,59 @@ html{background:#d6e6ff}
 
 #sMissions .sbody.mqs>*{flex-shrink:0}
 .mqp>*,.mqrows>*{flex-shrink:0}
+
+/* textes d'action : compacts, lueur derrière, secousse à l'arrivée */
+#banner{top:31%!important;font-size:28px!important;line-height:1.1}
+#banner span{animation:none}
+#banner .bn{position:relative;display:inline-block;isolation:isolate;padding:6px 22px;animation:bnIn .45s cubic-bezier(.2,1.6,.4,1) both,bnShake .42s .1s ease-out both}
+#banner .bn b{font-weight:400;color:#fff;white-space:nowrap}
+#banner .bn::before{content:"";position:absolute;inset:-18px -34px;z-index:-1;border-radius:50%;background:radial-gradient(ellipse at center,rgba(255,226,90,.9),rgba(255,170,0,.4) 42%,transparent 70%);animation:bnGlow 1.2s ease-in-out infinite}
+#banner .bn.r::before{background:radial-gradient(ellipse at center,rgba(255,90,90,.9),rgba(240,20,50,.42) 42%,transparent 70%)}
+#banner .bn.g::before{background:radial-gradient(ellipse at center,rgba(170,255,110,.9),rgba(60,210,40,.42) 42%,transparent 70%)}
+@keyframes bnIn{from{scale:.3;opacity:0}to{scale:1;opacity:1}}
+@keyframes bnShake{0%,100%{translate:0}15%{translate:-7px 0}30%{translate:7px 0}45%{translate:-5px 0}60%{translate:4px 0}80%{translate:-2px 0}}
+@keyframes bnGlow{0%,100%{opacity:.75;transform:scale(.92)}50%{opacity:1;transform:scale(1.08)}}
+
+/* ===== CLASSEMENT : podium + liste de ligue ===== */
+#sLead .sbody.lds{display:flex;flex-direction:column;align-items:center;gap:0;padding-bottom:calc(env(safe-area-inset-bottom,0px) + 120px)!important}
+.pod{display:grid;grid-template-columns:1fr 1.08fr 1fr;align-items:end;gap:6px;width:min(100%,560px);padding:0 6px;box-sizing:border-box;margin-top:6px}
+.pdc{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;min-width:0}
+.pdv{display:flex;align-items:center;gap:3px;font-size:20px;white-space:nowrap}.pdv .ic{width:22px;height:22px}
+.p1 .pdv{font-size:23px}
+.pda{position:relative;width:70px;height:70px;border-radius:50%;border:4px solid #fff;background:linear-gradient(#3d8bff,#1554f0);box-shadow:0 0 0 3px #1b2580;display:grid;place-items:center;overflow:visible}
+.p1 .pda{width:78px;height:78px}
+.pda .cube,.pda img{width:62px!important;height:62px!important;border-radius:50%;object-fit:cover}
+.pdk{position:absolute;top:-24px;left:50%;transform:translateX(-50%);width:34px;height:28px}.pdk img{width:100%;height:100%;object-fit:contain}
+.pdn{font-weight:400;font-size:15px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:-6px;position:relative;z-index:1}
+.pdb{width:100%;display:grid;place-items:center;border:3px solid #0b0b19;border-bottom:0;border-radius:16px 16px 0 0;box-shadow:inset 0 5px 0 rgba(255,255,255,.45)}
+.p1 .pdb{height:120px;background:linear-gradient(#ffd84a,#f0a400)}
+.p2 .pdb{height:92px;background:linear-gradient(#eef3fb,#aab8cf)}
+.p3 .pdb{height:76px;background:linear-gradient(#ffa25a,#e0661d)}
+.pdm{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;font-size:28px;border:4px solid #1b2580;background:radial-gradient(circle at 40% 35%,#fff7b0,#ffcf2e 60%,#e09a00)}
+.p2 .pdm{background:radial-gradient(circle at 40% 35%,#ffffff,#c9d6ea 60%,#8a9ab8)}
+.p3 .pdm{background:radial-gradient(circle at 40% 35%,#ffd2a8,#e88a4a 60%,#b0551d)}
+.lpan{width:min(100%,560px);box-sizing:border-box;background:linear-gradient(#2f6bff,#1a46e0);border:4px solid #1b2580;border-radius:22px 22px 18px 18px;padding:0 8px 10px;box-shadow:0 6px 0 #1b2580;margin-top:-2px}
+.lpan h3{margin:0 -8px 8px;padding:10px 0;text-align:center;font-weight:400;font-size:24px;background:#1c37c9;border-radius:18px 18px 0 0;border-bottom:3px solid #1b2580}
+.lls{display:flex;flex-direction:column;gap:8px}
+.lr{display:grid;grid-template-columns:44px 52px minmax(0,1fr) 50px auto;align-items:center;gap:6px;padding:4px 0 4px 6px;border-radius:16px;border:3px solid #1b2580;background:linear-gradient(90deg,#a8dcff 0 70%,#6fb8ff 70%);overflow:hidden;cursor:pointer;box-shadow:0 3px 0 #1b2580}
+.lr .lrk{font-size:22px;text-align:center}
+.lav{width:48px;height:48px;border-radius:50%;border:3px solid #1b2580;background:#fff;display:grid;place-items:center;overflow:hidden}
+.lav .cube,.lav img{width:44px!important;height:44px!important}
+.lr .lnm{font-weight:400;font-size:17px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lem svg{width:46px;height:44px;display:block}
+.lr .lst{display:flex;align-items:center;gap:3px;font-size:17px;padding-right:10px;white-space:nowrap}.lr .lst .ic{width:20px;height:20px}
+.lr.me{background:linear-gradient(90deg,#fff36b 0 70%,#ffb21f 70%);border-color:#b0451d}
+
+/* menus : le fond descend sous la barre du bas (plus de bande bleue) */
+body[data-tab=shop] .scr,body[data-tab=heroes] .scr,body[data-tab=missions] .scr,body[data-tab=lead] .scr{bottom:0!important}
+body[data-tab=shop] .scr .sbody,body[data-tab=heroes] .scr .sbody,body[data-tab=lead] .scr .sbody{padding-bottom:calc(99px + env(safe-area-inset-bottom,0px) + 24px)!important}
+#sMissions .sbody.mqs{padding-bottom:calc(99px + env(safe-area-inset-bottom,0px) + 54px)!important}
+.pda{overflow:hidden}
+.pdk{z-index:2}
+.pd-wrap{position:relative}
+
+.p1 .pd-wrap{margin-top:20px}
+.pd-wrap{display:block}
 </style>
 
 <div id="bg"><div class="halo"></div></div>
@@ -2255,7 +2308,7 @@ if(/iPhone|iPad|iPod|Macintosh/.test(navigator.userAgent)&&!/Chrome\/|Chromium|E
 const LOWDEV=matchMedia('(pointer:coarse)').matches||/android|iphone|ipad|mobile/i.test(navigator.userAgent);
 const R=new THREE.WebGLRenderer({canvas:cv,antialias:!LOWDEV,alpha:true,powerPreference:'high-performance'});
 let QUAL='high';try{QUAL=(JSON.parse(localStorage.getItem('paintclash_v2')||'{}').quality)||'high'}catch(_){}
-const DPR=window.devicePixelRatio||1,QMAX={low:.75,med:1.25,high:2};
+const DPR=window.devicePixelRatio||1,QMAX={low:1,med:1.6,high:2.6};
 let PR_MAX=QUAL==='auto'?Math.min(DPR,LOWDEV?1.5:2):Math.min(DPR,QMAX[QUAL]),PR=QUAL==='auto'&&LOWDEV?Math.min(PR_MAX,1):PR_MAX;
 function setQuality(q){QUAL=q;PR_MAX=q==='auto'?Math.min(DPR,LOWDEV?1.5:2):Math.min(DPR,QMAX[q]);PR=q==='auto'&&LOWDEV?Math.min(PR_MAX,1.25):PR_MAX;resize()}
 R.setPixelRatio(PR);R.setClearColor(0x000000,0);
@@ -2964,9 +3017,9 @@ const SKULL='<img class="fsk" src="ui/n_skull.png?v=17" alt="">';
 const nm=e=>`<b style="color:${hex(e.color)}">${esc(e.name)}</b>`;
 function feedKill(k,v){const f=$('#feed'),d=document.createElement('div');d.className='fk';d.innerHTML=k?`${nm(k)}${SKULL}${nm(v)}`:`${SKULL}${nm(v)} <span>s'est pris sa traînée</span>`;if(k===player||v===player)d.classList.add('me');f.prepend(d);while(f.children.length>4)f.lastChild.remove();setTimeout(()=>{d.style.opacity=0;setTimeout(()=>d.remove(),400)},4200)}
 function elimToast(v){const w=$('#elims'),d=document.createElement('div');d.className='elim';d.innerHTML=`<span class="et">ÉLIMINÉ</span><span class="en">${esc(v.name)}</span>`;w.appendChild(d);while(w.children.length>3)w.firstChild.remove();setTimeout(()=>{d.classList.add('out');setTimeout(()=>d.remove(),350)},2400)}
-function deathScreen(k){const pl=1+ents.filter(e=>e&&e!==player&&(e.alive?(counts[e.id]||0):(e.deathCount||0))>(player.deathCount||0)).length;$('#death').innerHTML=`<div class="dk">${SKULL}</div><div class="dt">TU AS ÉTÉ ÉLIMINÉ</div>${k?`<div class="db">par ${nm(k)}</div>`:'<div class="db">par ta propre traînée</div>'}<div class="dp">#${pl}</div>`;$('#death').hidden=false;setTimeout(()=>{$('#death').hidden=true},2200)}
+function deathScreen(k){let pl;if(gameMode==='surv'){if(!player.place)markPlace(player);pl=player.place||(ents.filter(e=>e&&e.alive).length+1)}else{const TS=tSize()>1?teamScores():null,val=e=>TS&&e.team>=0?(TS[e.team]||0):(counts[e.id]||0),me=player.deathCount||0,seen=new Set();pl=1;for(const e of ents){if(!e||e===player||!e.alive)continue;if(TS&&e.team>=0){if(e.team===player.team||seen.has(e.team))continue;seen.add(e.team)}if(val(e)>me)pl++}}$('#death').innerHTML=`<div class="dk">${SKULL}</div><div class="dt">TU AS ÉTÉ ÉLIMINÉ</div>${k?`<div class="db">par ${nm(k)}</div>`:'<div class="db">par ta propre traînée</div>'}<div class="dp">#${pl}</div>`;$('#death').hidden=false;setTimeout(()=>{$('#death').hidden=true},2200)}
 function feed(t){const f=$('#feed'),d=document.createElement('div');d.textContent=t;f.prepend(d);while(f.children.length>3)f.lastChild.remove();setTimeout(()=>{d.style.opacity=0;setTimeout(()=>d.remove(),400)},3200)}
-function banner(t){$('#banner').innerHTML=`<span>${stitle(t)}</span>`}
+function banner(t){const B=$('#banner');if(!t){B.innerHTML='';return}const c=/COUP|DÉFAITE|ZONE/.test(t)?'r':/SAUV|RETOUR|100/.test(t)?'g':'y';B.innerHTML=`<span class="bn ${c}"><b class="s">${t}</b></span>`}
 const pv=new THREE.Vector3();
 function floatText(t,e){pv.set(e.x,2.2,e.z).project(cam);const d=document.createElement('div');d.className='float s';d.textContent=t;d.style.left=((pv.x+1)/2*innerWidth)+'px';d.style.top=((1-pv.y)/2*innerHeight)+'px';document.body.appendChild(d);setTimeout(()=>d.remove(),1200)}
 function toast(t){const d=document.createElement('div');d.textContent=t;$('#toast').appendChild(d);setTimeout(()=>d.remove(),1900)}
@@ -3178,7 +3231,7 @@ let last=performance.now();const RM=matchMedia('(prefers-reduced-motion: reduce)
 let fpsAcc=0,fpsN=0,fpsT=0;
 let OLOFF=false;
 function adaptRes(ms){if(QUAL!=='auto'&&QUAL!=='high')return;fpsAcc+=ms;fpsN++;fpsT+=ms;if(fpsT<1000)return;const avg=fpsAcc/fpsN;fpsAcc=fpsN=fpsT=0;
- const PMIN=QUAL==='high'?Math.min(PR_MAX,1):.7;let np=PR;if(avg>(QUAL==='high'?30:21)&&PR>PMIN)np=Math.max(PMIN,PR-.15);else if(QUAL==='auto'&&avg>21&&!OLOFF&&state!=='menu')OLOFF=true;else if(avg<12&&OLOFF)OLOFF=false;else if(avg<14&&PR<PR_MAX)np=Math.min(PR_MAX,PR+.1);
+ const PMIN=QUAL==='high'?Math.min(PR_MAX,1.7):QUAL==='med'?Math.min(PR_MAX,1.2):.8;let np=PR;if(avg>(QUAL==='high'?30:21)&&PR>PMIN)np=Math.max(PMIN,PR-.15);else if(QUAL==='auto'&&avg>21&&!OLOFF&&state!=='menu')OLOFF=true;else if(avg<12&&OLOFF)OLOFF=false;else if(avg<14&&PR<PR_MAX)np=Math.min(PR_MAX,PR+.1);
  if(Math.abs(np-PR)>.01){PR=np;resize()}}
 function frame(){
  {const tt=performance.now(),cap=state==='menu'&&tab!=='home'&&!detailOpen?95:12.5;if(tt-last<cap){requestAnimationFrame(frame);return}}
@@ -3641,14 +3694,18 @@ async function renderLead(){
  const draw=()=>{let h='';const d=leadData;
   if(!d){h='<div class="ldspin"><span class="bt-spin"><i></i></span></div>'}
   else if(d.err){h=`<p class="notice s">${d.err}</p>`}
-  else{const me=RT.prof?RT.prof.id:null;
-   h+='<div class="ldl">'+d.top.map((p,i)=>`<div class="ldr ${p.id===me?'me':''} ${i<3?'t'+(i+1):''}" data-lp="${i}"><span class="lrk s">${i+1}</span>${heroIcon(HE(p.hero||'cubo'),46)}<span class="lnm s"><b>${handle(p)}</b></span><span class="lst s">${ico('cup')}${fmt(p.stars||0)}</span></div>`).join('')+'</div>';
-   if(d.me&&!d.top.some(p=>p.id===d.me.id))h+=`<div class="ldr me sticky"><span class="lrk s">${d.me.rank}</span>${heroIcon(HE(d.me.hero||'cubo'),46)}<span class="lnm s"><b>${handle(d.me)}</b></span><span class="lst s">${ico('cup')}${fmt(d.me.stars||0)}</span></div>`}
-  show('#sLead',`<div class="sbody"><p class="sub2 s">Les meilleurs joueurs du monde par trophées</p>${h}</div>`)};
+  else{const me=RT.prof?RT.prof.id:null,T=d.top,ix=new Map(T.map((p,i)=>[p,i]));
+   const pod=[1,0,2].map(k=>{const p=T[k];if(!p)return '<span class="pdc"></span>';return `<div class="pdc p${k+1}" data-lp="${k}"><span class="pdv s">${fmt(p.stars||0)}${ico('cup')}</span><span class="pd-wrap">${k===0?'<i class="pdk">'+img('p_crown')+'</i>':''}<span class="pda">${heroIcon(HE(p.hero||'cubo'),60)}</span></span><b class="pdn s">${esc(p.name||"")}</b><span class="pdb"><span class="pdm s">${k+1}</span></span></div>`}).join('');
+   const row=(p,rk,i)=>`<div class="lr ${p.id===me?'me':''}" ${i!=null?`data-lp="${i}"`:''}><span class="lrk s">${rk}</span><span class="lav">${heroIcon(HE(p.hero||'cubo'),46)}</span><b class="lnm s">${esc(p.name||"")}</b><span class="lem">${emblem(LG[leagueIdx(p.stars||0)])}</span><span class="lst s">${fmt(p.stars||0)}${ico('cup')}</span></div>`;
+   let list,L0;
+   if(d.me&&d.around&&d.me.rank>T.length){list=d.around.map(p=>row(p,p.rank,null)).join('');L0=LG[leagueIdx(d.me.stars||0)]}
+   else{list=T.slice(3).map((p,i)=>row(p,i+4,i+3)).join('');L0=LG[leagueIdx((d.me||T[0]||{}).stars||0)]}
+   h=`<div class="pod">${pod}</div><div class="lpan"><h3 class="s">LIGUE ${L0.n.toUpperCase()}</h3><div class="lls">${list||'<p class="note s">Pas encore d’autres joueurs</p>'}</div></div>`}
+  show('#sLead',`<div class="sbody lds">${h}</div>`);requestAnimationFrame(()=>{const m=$('#sLead .lr.me');if(m)m.scrollIntoView({block:'center'})})};
  draw();
  if(!RT.on){leadData={err:'Le classement mondial marche sur paint-clash.vercel.app.'};draw();return}
  try{const hd=AUTH&&AUTH.tok?{Authorization:'Bearer '+AUTH.tok}:{};const r=await fetch('/api/leaderboard',{headers:hd});const j=await r.json();
-  leadData=r.ok?{top:j.top||[],me:j.me||null}:{err:'Classement indisponible pour le moment.'}}catch(_){leadData={err:'Classement indisponible pour le moment.'}}
+  leadData=r.ok?{top:j.top||[],me:j.me||null,around:j.around||null}:{err:'Classement indisponible pour le moment.'}}catch(_){leadData={err:'Classement indisponible pour le moment.'}}
  if(tab==='lead')draw()}
 
 // MODES
