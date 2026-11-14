@@ -2080,6 +2080,10 @@ body[data-tab=shop] .scr .sbody,body[data-tab=heroes] .scr .sbody,body[data-tab=
 .cflash.soft{background:#fff}.cflash.soft.on{animation:cflashS .6s ease-out}
 @keyframes cflashS{0%{opacity:.55}100%{opacity:0}}
 html.wk .stitle .f{filter:drop-shadow(2.5px 0 0 #fff) drop-shadow(-2.5px 0 0 #fff) drop-shadow(0 2.5px 0 #fff) drop-shadow(0 -2.5px 0 #fff) drop-shadow(3px 0 0 #0b0b19) drop-shadow(-3px 0 0 #0b0b19) drop-shadow(0 3px 0 #0b0b19) drop-shadow(0 -3px 0 #0b0b19) drop-shadow(0 5px 0 #0b0b19)}
+
+/* pc-v92 : le coffre est rendu en plein écran (plus de bord coupé) */
+#cCv{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;z-index:1;pointer-events:none}
+#cCv.shk{animation:cshk .22s linear}
 </style>
 
 <div id="bg"><div class="halo"></div></div>
@@ -2192,7 +2196,7 @@ html.wk .stitle .f{filter:drop-shadow(2.5px 0 0 #fff) drop-shadow(-2.5px 0 0 #ff
   <button id="instOk" class="btn btn-green">OK</button>
 </div></div>
 <div id="installBar" class="instbar" hidden><img src="icon-192.png?v=2" alt=""><span class="s"><b>Keyboard Rivals</b><small>Installe l'appli : plein écran, plus fluide</small></span><button id="instGo" class="btn btn-yellow">INSTALLER</button><button id="instX" class="ib ib-x" aria-label="Plus tard"></button></div>
-<div id="chestM" class="modal cm" hidden><div class="cmrb"></div><div class="cmpat"></div><div class="cmrays"></div><span class="spk a"></span><span class="spk b"></span><span class="spk c"></span><span class="spk d"></span><div id="cBeam" class="cbeam"></div><div id="cFlash" class="cflash"></div><div class="cbox"><div id="cTitle"></div><div class="cstage"><div id="cBurst" class="cburst"></div><img id="cImg" class="cimg" alt="Coffre"><canvas id="cCv" hidden></canvas></div><div id="cHint" class="chint s">Touche le coffre pour l'ouvrir !</div><div id="cOrbs" class="corbs" hidden></div><div id="cRew" class="crew"></div><button id="cOk" class="btn btn-green cbtn" hidden>SUPER !</button></div></div>
+<div id="chestM" class="modal cm" hidden><div class="cmrb"></div><div class="cmpat"></div><div class="cmrays"></div><span class="spk a"></span><span class="spk b"></span><span class="spk c"></span><span class="spk d"></span><div id="cBeam" class="cbeam"></div><canvas id="cCv" hidden></canvas><div id="cFlash" class="cflash"></div><div class="cbox"><div id="cTitle"></div><div class="cstage"><div id="cBurst" class="cburst"></div><img id="cImg" class="cimg" alt="Coffre"></div><div id="cHint" class="chint s">Touche le coffre pour l'ouvrir !</div><div id="cOrbs" class="corbs" hidden></div><div id="cRew" class="crew"></div><button id="cOk" class="btn btn-green cbtn" hidden>SUPER !</button></div></div>
 
 <div id="hud" class="screen" hidden>
   <div class="hudtop">
@@ -3489,7 +3493,10 @@ function cxBuild(k){const P=CPAL[k];if(CX.g){CX.s.remove(CX.g);CX.g.traverse(o=>
   for(const z of[.42,1.18]){const sp=add(lid,new THREE.ConeGeometry(.12,.3,12),M.spike,s*1.18,.15,z);sp.rotation.z=-s*Math.PI/2}}
  const shd=new THREE.Mesh(new THREE.CircleGeometry(1.35,32),new THREE.MeshBasicMaterial({color:0x000000,transparent:true,opacity:.16,depthWrite:false}));shd.rotation.x=-Math.PI/2;shd.position.y=.005;shd.scale.set(1,.7,1);g.add(shd);
  CX.s.add(g);CX.g=g;CX.body=body;CX.lid=lid;CX.glowM=glow;CX.shd=shd;CX.mats=M}
-function cxSize(){const cv=$('#cCv');const w=cv.clientWidth||300,h=cv.clientHeight||300;CX.r.setSize(w,h,false);CX.c.aspect=w/h;CX.c.updateProjectionMatrix()}
+function cxSize(){const cv=$('#cCv'),m=$('#chestM').getBoundingClientRect(),st=$('.cm .cstage').getBoundingClientRect();const W=Math.round(m.width)||innerWidth,H=Math.round(m.height)||innerHeight;
+ CX.r.setSize(W,H,false);const sh=Math.min(W*1.12,500),cy=(st.top+st.height/2)-m.top;
+ CX.c.aspect=W/H;CX.c.fov=2*Math.atan(Math.tan(15*Math.PI/180)*H/sh)*180/Math.PI;CX.c.setViewOffset(W,H,0,Math.round(H/2-cy),W,H);CX.c.updateProjectionMatrix()}
+addEventListener('resize',()=>{if(CX.on)setTimeout(cxSize,60)});
 function cxOrbs(){const o=$('#cOrbs');let h='';for(let i=0;i<CTAPS;i++){const u=i<CX.taps;h+=`<i class="${u?'used':i===CX.taps?'cur':''}"></i>`}o.innerHTML=h}
 function cxTitle(){const t=$('#cTitle');t.innerHTML=stitle(CPAL[CX.k].n);t.classList.remove('cxpop');void t.offsetWidth;t.classList.add('cxpop');$('#chestM').dataset.k=CX.k}
 function openChest(c,extra){if(!cxInit()){openChestOld(c,extra);return}
@@ -3540,7 +3547,7 @@ function cxTap(){if(!CX.on)return;ac();
  if(up)cxUpgrade()}
 function cxChargeFx(){const st=$('.cm .cstage');let n=0;const iv=setInterval(()=>{if(!CX.on||CX.st==='open'||n++>14){clearInterval(iv);return}if(CX.st!=='charge')return;sfx.pop(n);const s=document.createElement('i');s.className='chit in';const a=Math.random()*Math.PI*2,dd=150+Math.random()*60;s.style.cssText=`--x:${Math.cos(a)*dd}px;--y:${Math.sin(a)*dd*.7}px;--s:${.5+Math.random()*.5}`;st.appendChild(s);setTimeout(()=>s.remove(),500)},70)}
 function cxHitFx(){const st=$('.cm .cstage');if(!st)return;for(let i=0;i<5;i++){const s=document.createElement('i');s.className='chit';const a=Math.random()*Math.PI*2,dd=90+Math.random()*70;s.style.cssText=`--x:${Math.cos(a)*dd}px;--y:${Math.sin(a)*dd*.7-20}px;--s:${.6+Math.random()*.7}`;st.appendChild(s);setTimeout(()=>s.remove(),500)}
- st.classList.remove('shk');void st.offsetWidth;st.classList.add('shk')}
+ [st,$('#cCv')].forEach(x=>{x.classList.remove('shk');void x.offsetWidth;x.classList.add('shk')})}
 // ouverture : charge (tremble + brille) puis explosion du couvercle, saut, onde de choc, faisceau de lumière
 function cxBurstOpen(){CX.st='open';CX.openT=performance.now();CX.landed2=0;CX.glow=0;CX.hit=1.4;CX.sq=.38;CX.sv=3;CX.shake=.25;const k=CX.k,c=CH(k);chestC=c;
  chestR=rollChest(k,CX.extra);delete save.pendCh;persist();const r=chestR;
