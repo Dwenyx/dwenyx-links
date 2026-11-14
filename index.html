@@ -3461,9 +3461,10 @@ function cxBeamTex(){const c=document.createElement('canvas');c.width=64;c.heigh
 let CXGT=null,CXBT=null;
 function cxTopTex(sym,col){const c=document.createElement('canvas');c.width=c.height=256;const x=c.getContext('2d');x.fillStyle='#'+new THREE.Color(col).getHexString();x.fillRect(0,0,256,256);
  const g=x.createRadialGradient(128,128,20,128,128,150);g.addColorStop(0,'rgba(0,0,0,.12)');g.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=g;x.fillRect(0,0,256,256);
- x.font='150px "Lilita One", "Trebuchet MS", sans-serif';x.textAlign='center';x.textBaseline='middle';x.lineJoin='round';x.lineWidth=18;x.strokeStyle='#101a5c';x.strokeText(sym,128,138);x.fillStyle='#ffffff';x.fillText(sym,128,138);
+ x.textAlign='center';x.textBaseline='middle';x.lineJoin='round';x.font='190px "Lilita One", "Trebuchet MS", sans-serif';x.lineWidth=20;x.strokeStyle='#101a5c';x.strokeText(sym,128,140);x.fillStyle='#ffffff';x.fillText(sym,128,140);
  const t=new THREE.CanvasTexture(c);t.anisotropy=4;return t}
-function keycapGeo(w,h,d,r,tp){const g=roundedBox(w,h,d,r,7),p=g.attributes.position;for(let i=0;i<p.count;i++){const y=p.getY(i),k=1-tp*((y+h/2)/h);p.setX(i,p.getX(i)*k);p.setZ(i,p.getZ(i)*k);
+const CXLT={};function cxLetter(ch){if(CXLT[ch])return CXLT[ch];const c=document.createElement('canvas');c.width=c.height=128;const x=c.getContext('2d');x.fillStyle='#eef2fb';x.fillRect(0,0,128,128);x.fillStyle='#2a3566';x.font='64px "Lilita One", "Trebuchet MS", sans-serif';x.textAlign='center';x.textBaseline='middle';x.fillText(ch,64,68);const t=new THREE.CanvasTexture(c);return CXLT[ch]=t}
+function cxKeyGeo(w,h,d,r,tp){const g=roundedBox(w,h,d,r,7),p=g.attributes.position;for(let i=0;i<p.count;i++){const y=p.getY(i),k=1-tp*((y+h/2)/h);p.setX(i,p.getX(i)*k);p.setZ(i,p.getZ(i)*k);
  if(y>h/2-.02){const nx=p.getX(i)/(w/2),nz=p.getZ(i)/(d/2);p.setY(i,y-.07*Math.max(0,1-nx*nx-nz*nz))}}p.needsUpdate=true;return g}
 function cxBuild(k){const P=CPAL[k];if(CX.g){CX.s.remove(CX.g);CX.g.traverse(o=>{if(o.geometry)o.geometry.dispose()})}
  if(!CXGT){CXGT=cxGlowTex();CXBT=cxBeamTex()}
@@ -3475,6 +3476,11 @@ function cxBuild(k){const P=CPAL[k];if(CX.g){CX.s.remove(CX.g);CX.g.traverse(o=>
  add(body,roundedBox(2.1,.66,1.84,.26,6),M.plate,0,.33,0);
  add(body,roundedBox(2.16,.1,1.9,.05,3),M.glow,0,.62,0,false);
  add(body,roundedBox(1.7,.08,1.44,.04,3),mt(mixHex(P.plate,0x000000,.35)),0,.67,0,false);
+ // morceau de clavier : plaque + petites touches autour
+ add(body,roundedBox(4.1,.42,3.0,.24,5),M.plate,0,.17,-.3);
+ const mg=cxKeyGeo(.72,.36,.72,.13,.16),mc=mt(0xe2e7f4);CX.minis=[];
+ [[-1.55,-1.32,'Q'],[-.52,-1.32,'W'],[.52,-1.32,'E'],[1.55,-1.32,'R'],[-1.55,-.32,'A'],[-1.55,.62,'Z'],[1.55,-.32,'S'],[1.55,.62,'D']].forEach(([x,z,ch])=>{const kg=new THREE.Group();kg.position.set(x,.38,z);body.add(kg);
+  add(kg,mg,[mc,mc,new THREE.MeshToonMaterial({map:cxLetter(ch),gradientMap:gm}),mc,mc,mc],0,.18,0);kg.userData={kp:0,kv:0};CX.minis.push(kg)});
  // interrupteur (croix) + trésor
  const stem=new THREE.Group();stem.position.set(0,.8,0);body.add(stem);add(stem,new THREE.BoxGeometry(.56,.2,.16),M.stem,0,0,0);add(stem,new THREE.BoxGeometry(.16,.2,.56),M.stem,0,0,0);CX.stem=stem;
  const coin=new THREE.CylinderGeometry(.15,.15,.06,20),gq=new THREE.OctahedronGeometry(.14,0);
@@ -3484,7 +3490,7 @@ function cxBuild(k){const P=CPAL[k];if(CX.g){CX.s.remove(CX.g);CX.g.traverse(o=>
  const beam=new THREE.Mesh(new THREE.CylinderGeometry(1.1,.7,3.4,32,1,true),new THREE.MeshBasicMaterial({map:CXBT,transparent:true,opacity:0,blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide}));beam.position.y=.75+1.7;body.add(beam);CX.beam=beam;
  // la touche géante (couvercle)
  const lid=new THREE.Group();lid.position.set(0,.66,0);body.add(lid);
- const cap=add(lid,keycapGeo(1.96,1.15,1.7,.3,.2),[M.cap,M.cap,M.top,M.cap,M.cap,M.cap],0,.6,0);
+ const cap=add(lid,cxKeyGeo(1.96,1.15,1.7,.3,.2),[M.cap,M.cap,M.top,M.cap,M.cap,M.cap],0,.6,0);
  const und=add(lid,roundedBox(1.62,.06,1.36,.03,3),mt(mixHex(P.cap,0x000000,.38)),0,.04,0,false);M.und=und.material;
  const hl=new THREE.Mesh(new THREE.SphereGeometry(.15,16,12),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.8}));hl.position.set(.5,.95,.72);hl.scale.set(1,.65,.25);hl.rotation.x=-.2;lid.add(hl);
  // yeux sur la face avant de la touche
@@ -3494,7 +3500,7 @@ function cxBuild(k){const P=CPAL[k];if(CX.g){CX.s.remove(CX.g);CX.g.traverse(o=>
   const o=new THREE.Mesh(eg2,EB);o.scale.set(.15,.18,1);const l=new THREE.Mesh(eg2,EL);l.scale.set(.128,.158,1);l.position.z=.002;
   const w=new THREE.Mesh(eg2,EW);w.scale.set(.122,.142,1);w.position.set(.004,.014,.004);
   const pu=new THREE.Mesh(eg2,EP);pu.scale.set(.068,.074,1);pu.position.set(-s*.012,.004,.006);ey.add(o,l,w,pu);CX.pups.push(pu)}
- const shd=new THREE.Mesh(new THREE.CircleGeometry(1.4,32),new THREE.MeshBasicMaterial({color:0x000000,transparent:true,opacity:.16,depthWrite:false}));shd.rotation.x=-Math.PI/2;shd.position.y=.005;shd.scale.set(1,.72,1);g.add(shd);
+ const shd=new THREE.Mesh(new THREE.CircleGeometry(2.3,32),new THREE.MeshBasicMaterial({color:0x000000,transparent:true,opacity:.16,depthWrite:false}));shd.rotation.x=-Math.PI/2;shd.position.y=.005;shd.scale.set(1,.72,1);g.add(shd);
  CX.s.add(g);CX.g=g;CX.body=body;CX.lid=lid;CX.glowM=glow;CX.shd=shd;CX.kp=0;CX.kv=0;
  CX.mats=Object.assign(M,{lid:M.cap,base:M.plate,band:M.stem,stud:M.top,spike:M.cap,em:[M.cap,M.top],inL:M.cap,inB:M.plate})}
 function cxSize(){const cv=$('#cCv'),m=$('#chestM').getBoundingClientRect(),st=$('.cm .cstage').getBoundingClientRect();const W=Math.round(m.width)||innerWidth,H=Math.round(m.height)||innerHeight;
@@ -3531,7 +3537,8 @@ function cxTick(t,dt){const e=(t-CX.t0)/1000,b=CX.body,s=t/1000;if(!b)return;
   if(q>=1){CX.upFrom=null;CX.spinY=0;CX.glow=0;CX.sq=-.35;CX.sv=0;$('#cBeam').className='cbeam';CX.st=CX.after||'tap';CX.after=null;if(CX.st==='charge'){CX.chT=t}}}
  b.position.set(px,y,0);b.scale.set(1-CX.sq*.62,1+CX.sq,1-CX.sq*.62);b.rotation.z=rz+CX.rz;b.rotation.y=Math.sin(s*.8)*.12+CX.spinY;CX.shd.scale.set(1-y*.1,.7*(1-y*.1),1);
  // caméra : recule à l'ouverture pour garder le coffre entier
- const ck=CX.camK;CX.c.position.set((CX.st==='open'?Math.sin(t*.11)*CX.shake:0),2.9+ck*.9,5.9+ck*1.7);CX.shake=Math.max(0,CX.shake-dt*.6);CX.c.lookAt(0,1.0+ck*.45,0);
+ const ck=CX.camK;CX.c.position.set((CX.st==='open'?Math.sin(t*.11)*CX.shake:0),4.3+ck*.9,6.3+ck*1.5);CX.shake=Math.max(0,CX.shake-dt*.6);CX.c.lookAt(0,.75+ck*.5,-.25);
+ if(CX.minis)for(const m of CX.minis){const u=m.userData;u.kv+=(-300*u.kp-12*u.kv)*dt;u.kp+=u.kv*dt;m.position.y=.38+u.kp}
  CX.hit=Math.max(0,CX.hit-dt*5);const gl=Math.max(CX.glow,CX.hit*.7);for(const m of [CX.mats.cap,CX.mats.top,CX.mats.plate,CX.mats.stem])m.emissiveIntensity=gl*.85;
  if(CX.eyes){CX.lk-=dt;if(CX.lk<0){CX.lk=.6+Math.random()*1.4;CX.lx=(Math.random()*2-1)*.022;CX.ly=(Math.random()*2-1)*.018}
   for(const p of CX.pups){p.position.x+=(CX.lx+(p.parent.position.x<0?.008:-.008)-p.position.x)*Math.min(1,dt*12);p.position.y+=(CX.ly-p.position.y)*Math.min(1,dt*12)}
@@ -3545,7 +3552,7 @@ function cxUpgrade(after){CX.st='upg';CX.after=after||null;CX.upT=performance.no
  setTimeout(()=>{M.top.map=cxTopTex(P.sym,P.top);M.top.needsUpdate=true},470)}function cxTap(){if(!CX.on)return;ac();
  if(CX.st==='done'){chestFinish();return}
  if(CX.st!=='tap')return;
- CX.sq=-.16;CX.sv=-1;CX.kp=-.2;CX.kv=-2;CX.rkv=(Math.random()<.5?-1:1)*2;CX.hit=1;if(!keyClick(.8,.9+Math.random()*.2))sfx.tick();cxHitFx();if(navigator.vibrate&&save.vib!==false)try{navigator.vibrate(18)}catch(_){}
+ CX.sq=-.16;CX.sv=-1;CX.kp=-.2;CX.kv=-2;CX.rkv=(Math.random()<.5?-1:1)*2;CX.hit=1;if(!keyClick(.8,.9+Math.random()*.2))sfx.tick();if(CX.minis)CX.minis.forEach(m=>{if(Math.random()<.45)m.userData.kv=-1.6-Math.random()});cxHitFx();if(navigator.vibrate&&save.vib!==false)try{navigator.vibrate(18)}catch(_){}
  const i=CX.taps;CX.taps++;const up=CNEXT[CX.k]&&Math.random()<CUPP[CX.k];CX.ups[i]=up;cxOrbs();const o=$('#cOrbs').children[i];if(o)o.classList.add('pop');
  if(CX.taps>=CTAPS){$('#cHint').hidden=true;$('#cOrbs').hidden=true;if(up)cxUpgrade('charge');else{CX.st='charge';CX.chT=performance.now()}cxChargeFx();return}
  if(CX.taps===CTAPS-1)$('#cHint').textContent='Appuie pour ouvrir !';
