@@ -2059,6 +2059,16 @@ body[data-tab=shop] .scr .sbody,body[data-tab=heroes] .scr .sbody,body[data-tab=
 #chestM #cTitle{font-size:46px}
 #cTitle.cxpop{animation:cxPop .45s cubic-bezier(.2,1.7,.4,1)}
 @keyframes cxPop{0%{transform:scale(.4) rotate(-6deg);opacity:0}100%{transform:none;opacity:1}}
+
+/* pc-v90 : coffres — impacts, fond arc-en-ciel */
+.chit{position:absolute;left:50%;top:48%;width:34px;height:34px;margin:-17px 0 0 -17px;background:#fff;clip-path:polygon(50% 0,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0 50%,39% 39%);filter:drop-shadow(0 0 6px #fff);pointer-events:none;z-index:4;animation:chit .45s cubic-bezier(.2,.9,.3,1) forwards}
+@keyframes chit{0%{transform:translate(0,0) scale(calc(var(--s)*1.4));opacity:1}100%{transform:translate(var(--x),var(--y)) scale(0) rotate(90deg);opacity:0}}
+.cm .cstage.shk{animation:cshk .22s linear}
+@keyframes cshk{20%{transform:translate(-7px,3px)}40%{transform:translate(6px,-4px)}60%{transform:translate(-4px,2px)}80%{transform:translate(3px,-1px)}}
+.cmrb{position:absolute;left:50%;top:46%;width:240vmax;height:240vmax;margin:-120vmax 0 0 -120vmax;background:conic-gradient(#ff4fd0,#ff8a1f,#ffe14a,#5ff07a,#2fd7ff,#5a6bff,#b05cff,#ff4fd0);opacity:0;pointer-events:none;transition:opacity .5s;animation:cmrot 7s linear infinite}
+.modal.cm[data-k="c3"] .cmrb{opacity:1}
+.modal.cm[data-k="c3"]{--cmbg:#b05cff}
+.modal.cm[data-k="c3"] .cmrb::after{content:"";position:absolute;inset:0;background:radial-gradient(circle,rgba(255,255,255,.85) 0,rgba(255,255,255,.35) 9%,transparent 22%)}
 </style>
 
 <div id="bg"><div class="halo"></div></div>
@@ -2171,7 +2181,7 @@ body[data-tab=shop] .scr .sbody,body[data-tab=heroes] .scr .sbody,body[data-tab=
   <button id="instOk" class="btn btn-green">OK</button>
 </div></div>
 <div id="installBar" class="instbar" hidden><img src="icon-192.png?v=2" alt=""><span class="s"><b>Keyboard Rivals</b><small>Installe l'appli : plein écran, plus fluide</small></span><button id="instGo" class="btn btn-yellow">INSTALLER</button><button id="instX" class="ib ib-x" aria-label="Plus tard"></button></div>
-<div id="chestM" class="modal cm" hidden><div class="cmpat"></div><div class="cmrays"></div><span class="spk a"></span><span class="spk b"></span><span class="spk c"></span><span class="spk d"></span><div id="cBeam" class="cbeam"></div><div id="cFlash" class="cflash"></div><div class="cbox"><div id="cTitle"></div><div class="cstage"><div id="cBurst" class="cburst"></div><img id="cImg" class="cimg" alt="Coffre"><canvas id="cCv" hidden></canvas></div><div id="cHint" class="chint s">Touche le coffre pour l'ouvrir !</div><div id="cOrbs" class="corbs" hidden></div><div id="cRew" class="crew"></div><button id="cOk" class="btn btn-green cbtn" hidden>SUPER !</button></div></div>
+<div id="chestM" class="modal cm" hidden><div class="cmrb"></div><div class="cmpat"></div><div class="cmrays"></div><span class="spk a"></span><span class="spk b"></span><span class="spk c"></span><span class="spk d"></span><div id="cBeam" class="cbeam"></div><div id="cFlash" class="cflash"></div><div class="cbox"><div id="cTitle"></div><div class="cstage"><div id="cBurst" class="cburst"></div><img id="cImg" class="cimg" alt="Coffre"><canvas id="cCv" hidden></canvas></div><div id="cHint" class="chint s">Touche le coffre pour l'ouvrir !</div><div id="cOrbs" class="corbs" hidden></div><div id="cRew" class="crew"></div><button id="cOk" class="btn btn-green cbtn" hidden>SUPER !</button></div></div>
 
 <div id="hud" class="screen" hidden>
   <div class="hudtop">
@@ -3419,7 +3429,7 @@ const CX={on:false,r:null,s:null,c:null,g:null,k:'c1',st:'',taps:0,t0:0,punch:0,
 function cxEmblem(sym,core){const c=document.createElement('canvas');c.width=c.height=256;const x=c.getContext('2d');
  x.fillStyle='#ffffff';x.beginPath();x.arc(128,128,128,0,7);x.fill();x.fillStyle='#'+new THREE.Color(core).getHexString();x.beginPath();x.arc(128,128,92,0,7);x.fill();
  x.fillStyle='rgba(255,255,255,.25)';x.beginPath();x.ellipse(100,92,46,26,-.5,0,7);x.fill();x.fillStyle='#ffffff';x.strokeStyle='#ffffff';
- if(sym==='key'){x.beginPath();x.arc(128,108,30,0,7);x.fill();x.beginPath();x.moveTo(110,120);x.lineTo(146,120);x.lineTo(156,176);x.lineTo(100,176);x.closePath();x.fill()}
+ if(sym==='none'){x.beginPath();x.arc(128,108,30,0,7);x.fill();x.beginPath();x.moveTo(110,120);x.lineTo(146,120);x.lineTo(156,176);x.lineTo(100,176);x.closePath();x.fill()}
  if(sym==='star'){x.beginPath();for(let i=0;i<10;i++){const a=-Math.PI/2+i*Math.PI/5,r=i%2?30:68;x.lineTo(128+Math.cos(a)*r,132+Math.sin(a)*r)}x.closePath();x.fill()}
  if(sym==='crown'){x.beginPath();x.moveTo(72,168);x.lineTo(76,92);x.lineTo(104,124);x.lineTo(128,80);x.lineTo(152,124);x.lineTo(180,92);x.lineTo(184,168);x.closePath();x.fill()}
  const t=new THREE.CanvasTexture(c);t.anisotropy=4;t.center.set(.5,.5);t.rotation=CXROT;return t}
@@ -3430,7 +3440,7 @@ let CXSTAR=null,CXROT=Math.PI/2;
 function cxInit(){if(CX.r)return true;try{const cv=$('#cCv');CX.r=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true});CX.r.setPixelRatio(Math.min(2,devicePixelRatio||1));
  CX.s=new THREE.Scene();CX.s.add(new THREE.HemisphereLight(0xffffff,0x8a7bd8,.62));const d=new THREE.DirectionalLight(0xffffff,.8);d.position.set(-2.5,5,4);CX.s.add(d);
  CX.c=new THREE.PerspectiveCamera(30,1,.1,60);CX.c.position.set(0,2.9,5.9);CX.c.lookAt(0,1.0,0);CXSTAR=cxStars();return true}catch(_){CX.r=null;return false}}
-function cxHullMat(){const m=new THREE.MeshBasicMaterial({color:0x1d2a8a,side:THREE.BackSide});m.onBeforeCompile=s=>{s.vertexShader=s.vertexShader.replace('#include <begin_vertex>','vec3 transformed=position+normal*0.045;')};return m}
+function cxHullMat(){const m=new THREE.MeshBasicMaterial({color:0x101a5c,side:THREE.BackSide});m.onBeforeCompile=s=>{s.vertexShader=s.vertexShader.replace('#include <begin_vertex>','vec3 transformed=position+normal*0.06;')};return m}
 function cxBuild(k){const P=CPAL[k];if(CX.g){CX.s.remove(CX.g);CX.g.traverse(o=>{if(o.geometry)o.geometry.dispose()})}
  const g=new THREE.Group(),HM=cxHullMat(),mt=c=>new THREE.MeshToonMaterial({color:c,gradientMap:gm,emissive:0xffffff,emissiveIntensity:0});
  const M={lid:mt(P.lid),base:mt(P.base),band:mt(P.band),stud:mt(P.stud),spike:mt(P.band),hull:HM};M.lid.map=CXSTAR;M.base.map=CXSTAR;
@@ -3446,10 +3456,16 @@ function cxBuild(k){const P=CPAL[k];if(CX.g){CX.s.remove(CX.g);CX.g.traverse(o=>
  const hl=new THREE.Mesh(new THREE.SphereGeometry(.16,16,12),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.85}));hl.position.set(.58,1.0,1.6);hl.scale.set(1,.7,.25);lid.add(hl);
  // emblème rond
  const em=new THREE.Group();em.position.set(0,.13,1.7);lid.add(em);
- const eg=new THREE.CylinderGeometry(.42,.42,.16,40);const emM=[mt(P.ring),new THREE.MeshToonMaterial({map:cxEmblem(P.sym,P.core),gradientMap:gm}),mt(P.ring)];
+ const eg=new THREE.CylinderGeometry(.5,.5,.16,48);const emM=[mt(P.ring),new THREE.MeshToonMaterial({map:cxEmblem('eyes',P.core),gradientMap:gm,emissive:0xffffff,emissiveIntensity:0}),mt(P.ring)];
  const e=add(em,eg,emM,0,0,0);e.rotation.x=Math.PI/2;M.em=emM;
+ const eyw=new THREE.Group();eyw.position.set(0,.02,.085);eyw.scale.set(1.28,1.28,1);em.add(eyw);const eyes=new THREE.Group();eyw.add(eyes);CX.eyes=eyes;CX.pups=[];
+ const EB=new THREE.MeshBasicMaterial({color:0x0b0b19}),EW=new THREE.MeshBasicMaterial({color:0xffffff}),EL=new THREE.MeshBasicMaterial({color:0xbfe0ff}),EP=new THREE.MeshBasicMaterial({color:0x1d4b8f}),eg2=new THREE.CircleGeometry(1,40);
+ for(const s of[-1,1]){const ey=new THREE.Group();ey.position.set(s*.165,0,0);eyes.add(ey);
+  const o=new THREE.Mesh(eg2,EB);o.scale.set(.15,.18,1);const l=new THREE.Mesh(eg2,EL);l.scale.set(.128,.158,1);l.position.z=.002;
+  const w=new THREE.Mesh(eg2,EW);w.scale.set(.122,.142,1);w.position.set(.004,.014,.004);
+  const pu=new THREE.Mesh(eg2,EP);pu.scale.set(.068,.074,1);pu.position.set(-s*.012,.004,.006);ey.add(o,l,w,pu);CX.pups.push(pu)}
  // clous + pointes
- for(const s of[-1,1]){add(lid,new THREE.OctahedronGeometry(.11,0),M.stud,s*.68,.15,1.69,false).rotation.y=.6;
+ for(const s of[-1,1]){add(lid,new THREE.OctahedronGeometry(.11,0),M.stud,s*.72,.15,1.69).rotation.y=.6;
   for(const z of[.42,1.18]){const sp=add(lid,new THREE.ConeGeometry(.12,.3,8),M.spike,s*1.18,.15,z);sp.rotation.z=-s*Math.PI/2}}
  const shd=new THREE.Mesh(new THREE.CircleGeometry(1.35,32),new THREE.MeshBasicMaterial({color:0x000000,transparent:true,opacity:.16,depthWrite:false}));shd.rotation.x=-Math.PI/2;shd.position.y=.005;shd.scale.set(1,.7,1);g.add(shd);
  CX.s.add(g);CX.g=g;CX.body=body;CX.lid=lid;CX.glowM=glow;CX.shd=shd;CX.mats=M}
@@ -3458,36 +3474,46 @@ function cxOrbs(){const o=$('#cOrbs');let h='';for(let i=0;i<CTAPS;i++){const u=
 function cxTitle(){const t=$('#cTitle');t.innerHTML=stitle(CPAL[CX.k].n);t.classList.remove('cxpop');void t.offsetWidth;t.classList.add('cxpop');$('#chestM').dataset.k=CX.k}
 function openChest(c,extra){if(!cxInit()){openChestOld(c,extra);return}
  const k=CHA[c.id]||c.id;save.pendCh={id:k,extra:extra||null};persist();
- CX.k=k;CX.extra=extra||null;CX.taps=0;CX.ups=[];CX.st='intro';CX.t0=performance.now();CX.punch=0;CX.glow=0;CX.open=0;chestR=null;chestC=c;
+ CX.k=k;CX.extra=extra||null;CX.taps=0;CX.ups=[];CX.st='intro';CX.landed=0;CX.sq=0;CX.sv=0;CX.rz=0;CX.rkv=0;CX.hit=0;CX.lk=0;CX.lx=0;CX.ly=0;CX.bl=2;CX.t0=performance.now();CX.punch=0;CX.glow=0;CX.open=0;chestR=null;chestC=c;
  chestStage(k,CPAL[k].n);$('#cImg').hidden=true;$('#cCv').hidden=false;$('#cOrbs').hidden=false;$('#cBeam').className='cbeam';
  cxBuild(k);cxSize();cxOrbs();cxTitle();const hn=$('#cHint');hn.hidden=false;hn.textContent='Appuie pour améliorer !';sfx.tick();
  CX.on=true;cancelAnimationFrame(CX.raf);let last=performance.now();const loop=t=>{if(!CX.on)return;if($('#chestM').hidden){CX.on=false;return}const dt=Math.min(.05,(t-last)/1000);last=t;cxTick(t,dt);CX.r.render(CX.s,CX.c);CX.raf=requestAnimationFrame(loop)};CX.raf=requestAnimationFrame(loop)}
 function cxTick(t,dt){const e=(t-CX.t0)/1000,b=CX.body,s=t/1000;if(!b)return;
- let y=0,sx=1,sy=1,rz=0;
- if(CX.st==='intro'){const k=Math.min(1,e/.7);y=(1-k)*(1-k)*4.5;if(k>=1){const q=Math.min(1,(e-.7)/.35);sy=1-.22*Math.sin(q*Math.PI)*(1-q);sx=1+.15*Math.sin(q*Math.PI)*(1-q)}if(e>1.05)CX.st='tap'}
- else if(CX.st==='tap'||CX.st==='upg'){y=Math.sin(s*2.6)*.07+.05;rz=Math.sin(s*1.7)*.03}
- if(CX.punch>0){const p=CX.punch;sy*=1-.18*Math.sin(p*Math.PI*3)*p;sx*=1+.14*Math.sin(p*Math.PI*3)*p;rz+=Math.sin(p*40)*.06*p;CX.punch=Math.max(0,p-dt*2.6)}
+ let y=0,rz=0;
+ if(CX.st==='intro'){const T=.36,k=Math.min(1,e/T);y=(1-k*k)*6;if(k>=1&&!CX.landed){CX.landed=1;CX.sq=-.42;CX.sv=0;CX.hit=.6;sfx.boom();if(navigator.vibrate&&save.vib!==false)try{navigator.vibrate(25)}catch(_){}}if(e>T+.55)CX.st='tap'}
+ else if(CX.st==='tap'||CX.st==='upg'){y=Math.max(0,Math.sin(s*2.6))*.05;rz=Math.sin(s*1.7)*.025}
+ // ressort gélatineux
+ const K=170,D=7.5;let st=Math.min(dt,.033);while(st>0){const h=Math.min(st,.008);CX.sv+=(-K*CX.sq-D*CX.sv)*h;CX.sq+=CX.sv*h;st-=h}
+ CX.rkv=(CX.rkv||0)+(-160*(CX.rz||0)-7*(CX.rkv||0))*dt;CX.rz=(CX.rz||0)+CX.rkv*dt;
+ const sy=1+CX.sq,sx=1-CX.sq*.62;
  if(CX.st==='open'||CX.st==='done'){const q=Math.min(1,(t-CX.openT)/1000/.5);const sp=q<1?1-Math.pow(1-q,3)*Math.cos(q*9):1;CX.lid.rotation.x=-1.55*Math.min(1.08,sp);y=q<.35?Math.sin(q/.35*Math.PI)*.35:0;CX.glowM.material.opacity=Math.min(.95,q*2)}
- b.position.y=y;b.scale.set(sx,sy,sx);b.rotation.z=rz;b.rotation.y=Math.sin(s*.8)*.12;CX.shd.scale.set(1-y*.12,.7*(1-y*.12),1);
- const gl=CX.glow;for(const m of [CX.mats.lid,CX.mats.base,CX.mats.band,CX.mats.stud,CX.mats.spike,CX.mats.em[0],CX.mats.em[1]])m.emissiveIntensity=gl*.85;
+ b.position.y=y;b.scale.set(sx,sy,sx);b.rotation.z=rz+CX.rz;b.rotation.y=Math.sin(s*.8)*.12;CX.shd.scale.set(1-y*.1,.7*(1-y*.1),1);
+ CX.hit=Math.max(0,CX.hit-dt*5);const gl=Math.max(CX.glow,CX.hit*.7);for(const m of [CX.mats.lid,CX.mats.base,CX.mats.band,CX.mats.stud,CX.mats.spike,CX.mats.em[0],CX.mats.em[1]])m.emissiveIntensity=gl*.85;
+ // yeux : regard qui bouge + clignement
+ if(CX.eyes){CX.lk-=dt;if(CX.lk<0){CX.lk=.6+Math.random()*1.4;CX.lx=(Math.random()*2-1)*.022;CX.ly=(Math.random()*2-1)*.018}
+  for(const p of CX.pups){p.position.x+=(CX.lx+(p.parent.position.x<0?.008:-.008)-p.position.x)*Math.min(1,dt*12);p.position.y+=(CX.ly-p.position.y)*Math.min(1,dt*12)}
+  CX.bl-=dt;const bl=CX.bl<0?Math.max(.08,Math.abs(Math.sin((CX.bl+.12)/.12*Math.PI))):1;if(CX.bl<-.12)CX.bl=1.8+Math.random()*2.5;
+  const shut=CX.hit>.35?.15:bl;CX.eyes.scale.y+=(shut-CX.eyes.scale.y)*Math.min(1,dt*30)}
 }
 function cxGlowTo(v,ms){const a=CX.glow,t0=performance.now();return new Promise(res=>{const f=t=>{const k=Math.min(1,(t-t0)/ms);CX.glow=a+(v-a)*k;k<1?requestAnimationFrame(f):res()};requestAnimationFrame(f)})}
 async function cxUpgrade(){CX.st='upg';$('#cBeam').className='cbeam on';sfx.up();if(navigator.vibrate&&save.vib!==false)try{navigator.vibrate(30)}catch(_){}
- await cxGlowTo(1,450);const nk=CNEXT[CX.k];CX.k=nk;const P=CPAL[nk];const M=CX.mats;M.lid.color.setHex(P.lid);M.base.color.setHex(P.base);M.band.color.setHex(P.band);M.spike.color.setHex(P.band);M.stud.color.setHex(P.stud);M.em[1].map=cxEmblem(P.sym,P.core);M.em[1].needsUpdate=true;CX.cav.material.color.setHex(mixHex(P.base,0x3a1a4a,.45));CX.lin.material.color.setHex(mixHex(P.lid,0x3a1a4a,.38));
- cxTitle();$('#cFlash').className='cflash';void $('#cFlash').offsetWidth;$('#cFlash').className='cflash on';CX.punch=1;
+ await cxGlowTo(1,450);const nk=CNEXT[CX.k];CX.k=nk;const P=CPAL[nk];const M=CX.mats;M.lid.color.setHex(P.lid);M.base.color.setHex(P.base);M.band.color.setHex(P.band);M.spike.color.setHex(P.band);M.stud.color.setHex(P.stud);M.em[1].map=cxEmblem('eyes',P.core);M.em[1].needsUpdate=true;CX.cav.material.color.setHex(mixHex(P.base,0x3a1a4a,.45));CX.lin.material.color.setHex(mixHex(P.lid,0x3a1a4a,.38));
+ cxTitle();$('#cFlash').className='cflash';void $('#cFlash').offsetWidth;$('#cFlash').className='cflash on';CX.sq=.25;CX.sv=3;
  await cxGlowTo(0,500);$('#cBeam').className='cbeam';if(CX.st==='upg')CX.st='tap'}
 function cxTap(){if(!CX.on)return;ac();
  if(CX.st==='done'){chestFinish();return}
  if(CX.st!=='tap')return;
- CX.punch=1;sfx.tick();const i=CX.taps;CX.taps++;const up=CNEXT[CX.k]&&Math.random()<CUPP[CX.k];CX.ups[i]=up;cxOrbs();
+ CX.sq=-.3;CX.sv=-2;CX.rkv=(Math.random()<.5?-1:1)*2.6;CX.hit=1;sfx.tick();cxHitFx();if(navigator.vibrate&&save.vib!==false)try{navigator.vibrate(18)}catch(_){}const i=CX.taps;CX.taps++;const up=CNEXT[CX.k]&&Math.random()<CUPP[CX.k];CX.ups[i]=up;cxOrbs();
  const o=$('#cOrbs').children[i];if(o){o.classList.add('pop')}
  if(CX.taps>=CTAPS){$('#cHint').hidden=true;const go=()=>cxOpen();if(up)cxUpgrade().then(()=>setTimeout(go,250));else setTimeout(go,280);return}
  if(CX.taps===CTAPS-1)$('#cHint').textContent='Appuie pour ouvrir !';
  if(up)cxUpgrade()}
+function cxHitFx(){const st=$('.cm .cstage');if(!st)return;for(let i=0;i<5;i++){const s=document.createElement('i');s.className='chit';const a=Math.random()*Math.PI*2,dd=90+Math.random()*70;s.style.cssText=`--x:${Math.cos(a)*dd}px;--y:${Math.sin(a)*dd*.7-20}px;--s:${.6+Math.random()*.7}`;st.appendChild(s);setTimeout(()=>s.remove(),500)}
+ st.classList.remove('shk');void st.offsetWidth;st.classList.add('shk')}
 function cxOpen(){CX.st='open';CX.openT=performance.now();const k=CX.k,c=CH(k);chestC=c;
  chestR=rollChest(k,CX.extra);delete save.pendCh;persist();const r=chestR;
  sfx.win();sfx.kill();$('#cFlash').className='cflash';void $('#cFlash').offsetWidth;$('#cFlash').className='cflash on';$('#cBeam').className='cbeam on open';$('#cOrbs').hidden=true;
- setTimeout(()=>chestBurst(r),120);
+ setTimeout(()=>chestBurst(r),120);CX.sq=.3;CX.sv=2;
  const items=[];if(r.coins)items.push(`<div class="crw"><img src="ui/n_coin.png?v=17" alt=""><b class="s" data-n="${r.coins}">+0</b></div>`);if(r.gems)items.push(`<div class="crw g"><img src="ui/n_gem.png?v=17" alt=""><b class="s" data-n="${r.gems}">+0</b></div>`);if(r.hero)items.push(`<div class="crw h">${heroIcon(r.hero)}<b class="s">${esc(r.hero.name)}</b><small class="s">NOUVEAU HÉROS !</small></div>`);
  setTimeout(()=>{$('#cRew').innerHTML=items.join('');$('#cRew').querySelectorAll('.crw').forEach((e,i)=>{e.style.animationDelay=(i*.18)+'s';const b=e.querySelector('b[data-n]');if(b)setTimeout(()=>{countUpC(b,+b.dataset.n,'+');sfx.coin()},i*180+200)});
   setTimeout(()=>{CX.st='done';$('#cOk').hidden=false;const hn=$('#cHint');hn.hidden=false;hn.textContent='Appuie pour continuer';refresh2()},500+items.length*180)},650)}
