@@ -2986,9 +2986,10 @@ const PD=new THREE.Vector3(-220,0,-260);
 {const st=new THREE.Group();st.position.copy(PD);S.add(st);
  const fl=new THREE.Mesh(new THREE.PlaneGeometry(300,200),new THREE.MeshBasicMaterial({color:0x2b9df3}));fl.rotation.x=-Math.PI/2;fl.position.set(0,.01,56);st.add(fl);
  const gr=new THREE.GridHelper(64,16,0x9fe2ff,0x9fe2ff);gr.position.y=.03;gr.material.transparent=true;gr.material.opacity=.55;st.add(gr);
- const rim=new THREE.Mesh(new THREE.CylinderGeometry(2.45,2.55,.2,48),toon(0x7fd8ff));rim.position.y=.1;st.add(rim);
- const top=new THREE.Mesh(new THREE.CylinderGeometry(2.25,2.3,.26,48),toon(0xffffff));top.position.y=.15;st.add(top);
- const glow=new THREE.Mesh(new THREE.CircleGeometry(2,40),new THREE.MeshBasicMaterial({color:0xbff3ff,transparent:true,opacity:.6}));glow.rotation.x=-Math.PI/2;glow.position.y=.29;st.add(glow)}
+ const pod=new THREE.Group();pod.scale.set(.7,1,.7);st.add(pod);
+ const rim=new THREE.Mesh(new THREE.CylinderGeometry(2.45,2.55,.2,48),toon(0x7fd8ff));rim.position.y=.1;pod.add(rim);
+ const top=new THREE.Mesh(new THREE.CylinderGeometry(2.25,2.3,.26,48),toon(0xffffff));top.position.y=.15;pod.add(top);
+ const glow=new THREE.Mesh(new THREE.CircleGeometry(2,40),new THREE.MeshBasicMaterial({color:0xbff3ff,transparent:true,opacity:.6}));glow.rotation.x=-Math.PI/2;glow.position.y=.29;pod.add(glow)}
 let detailChar=null,detailId=null,detailOpen=false,snapCam=false;
 function setDetailChar(id){if(detailChar)S.remove(detailChar.g);detailChar=makeChar(HE(id));detailChar.g.scale.setScalar(2.2);detailChar.g.position.set(PD.x,.29,PD.z);detailChar.auto=true;detailChar.baseS=detailChar.g.scale.x;S.add(detailChar.g);detailChar.jump=now}
 let preview=null,previewId=null;
