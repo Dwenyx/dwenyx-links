@@ -2124,7 +2124,8 @@ html.wk .stitle .f{filter:drop-shadow(2.5px 0 0 #fff) drop-shadow(-2.5px 0 0 #ff
 .gbtn:active{transform:translateY(3px);box-shadow:0 1px 0 #0b0b19}
 .accn{margin:0;font-size:13px;opacity:.95}
 .accb{display:grid;grid-template-columns:1fr 1fr;gap:8px}.accb .btn{font-size:14px;padding:10px 6px}
-#accRow{display:block!important}
+#accRow{display:block!important;padding:0!important;background:none!important}
+.accp{box-sizing:border-box;max-width:100%}.accp .gbtn{box-sizing:border-box;max-width:100%}.accb{display:flex;gap:8px}.accb .btn{flex:1;min-width:0!important}
 /* ===== résultats : couleurs pétantes ===== */
 #res.solo .rbg,#res.solo.k-dead .rbg,#res.solo.k-end .rbg,#res.solo.k-quit .rbg{background:radial-gradient(circle,rgba(255,255,255,.12) 0 30px,transparent 31px) 0 0/130px 130px,radial-gradient(ellipse at 50% 50%,#7fe6ff,#2fa2ff 45%,#1a5cf2 80%,#1440d8)!important}
 #res.solo.k-win .rbg{background:radial-gradient(circle,rgba(255,255,255,.14) 0 30px,transparent 31px) 0 0/130px 130px,radial-gradient(ellipse at 50% 50%,#fff07a,#ffb81f 45%,#ff7a12 80%,#f0520a)!important}
@@ -2677,6 +2678,7 @@ function makeChar(h,label,me){
  else add(JG.box,jellyMat(softMat(h.color),J));
  const hull=add(body,jellyMat(new THREE.MeshBasicMaterial({color:0x0b0b19,side:THREE.BackSide}),J,.04));hull.visible=false;
  const mk=add(body,jellyMat(new THREE.MeshBasicMaterial({color:0xffffff}),J));mk.layers.set(3);
+ if(DN){const m2=add(BG.spr,jellyMat(new THREE.MeshBasicMaterial({color:0xffffff}),J));m2.layers.set(3);add(BG.spr,jellyMat(new THREE.MeshBasicMaterial({color:0x0b0b19,side:THREE.BackSide}),J,.009))}
  const EM=(c,pre)=>jellyMat(new THREE.MeshBasicMaterial({color:c}),J,0,pre);
  if(DN)palm.scale.setScalar(1.28);
  const EG=DN?donutEyes():JG,EP=eyePre(EG.ey),PP=eyePre(EG.ey,1,DN);
@@ -2730,7 +2732,7 @@ function animChar(v,dt,moving,t){
 }
 
 // portraits 3D des héros (rendu une fois par héros, avec sa peau, sa tenue et ses accessoires)
-const SHOTS={},SHOT_KEY='pc_shots_v9';let HR=null,HS=null,HC=null;try{Object.assign(SHOTS,JSON.parse(localStorage.getItem(SHOT_KEY)||'{}'))}catch(_){}
+const SHOTS={},SHOT_KEY='pc_shots_v10';let HR=null,HS=null,HC=null;try{Object.assign(SHOTS,JSON.parse(localStorage.getItem(SHOT_KEY)||'{}'))}catch(_){}
 const SHOTQ=[];let shotBusy=false;const idle=f=>(window.requestIdleCallback?requestIdleCallback(f,{timeout:150}):setTimeout(f,30));
 function queueShot(h){if(SHOTS[h.id]||SHOTQ.includes(h))return;SHOTQ.push(h);if(!shotBusy){shotBusy=true;idle(shotStep)}}
 function shotStep(){const h=SHOTQ.shift();if(h){const u=heroShot(h);if(u){const bu=shotUrl(h.id);document.querySelectorAll(`img[data-shot="${h.id}"]`).forEach(im=>{im.src=bu;im.classList.remove('ld')})}}
