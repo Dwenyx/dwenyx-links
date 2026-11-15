@@ -2579,40 +2579,44 @@ function makeChar(h,label,me){
  const palm=new THREE.Group();palm.position.y=.5;inner.add(palm);
  const add=(geo,mat)=>{const m=new THREE.Mesh(geo,mat);m.frustumCulled=false;palm.add(m);return m};
  add(JG.box,jellyMat(new THREE.MeshToonMaterial({color:h.color,gradientMap:gm,emissive:new THREE.Color(h.color).multiplyScalar(.1)}),J));
- add(JG.box,jellyMat(new THREE.MeshBasicMaterial({color:0x0b0b19,side:THREE.BackSide}),J,.045));
- const hlM=jellyMat(new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.9}),J);
- const hl=add(JG.hl,hlM);hl.geometry=JG.hl.clone().scale(1.3,.7,.2).translate(.28,.32,.5);const hl2=add(JG.hl2,hlM);hl2.geometry=JG.hl2.clone().scale(1,1,.2).translate(.38,.18,.5);
+ const hull=add(JG.box,jellyMat(new THREE.MeshBasicMaterial({color:0x0b0b19,side:THREE.BackSide}),J,.04));hull.visible=false;
+ const mk=add(JG.box,jellyMat(new THREE.MeshBasicMaterial({color:0xffffff}),J));mk.layers.set(3);
  const EM=(c,pre)=>jellyMat(new THREE.MeshBasicMaterial({color:c}),J,0,pre);
  add(JG.eo,EM(0x0b0b19,JEYE_PRE));add(JG.eb,EM(0xbfe0ff,JEYE_PRE));add(JG.ew,EM(0xffffff,JEYE_PRE));add(JG.ep,EM(0x1d4b8f,JPUP_PRE));add(JG.es,EM(0xffffff,JPUP_PRE));
- const hat=new THREE.Group();palm.add(hat);addHat(hat,h,0);
+ const hat=new THREE.Group();palm.add(hat);addHat(hat,h,0);hat.traverse(o=>{if(o.isMesh)o.layers.enable(1)});
  const shd=new THREE.Mesh(G.shadow,SHADOW);shd.rotation.x=-Math.PI/2;shd.position.y=.03;shd.scale.setScalar(.8);g.add(shd);
  if(label)g.add(nameSprite(label,me?'#ffd21f':'#ffffff'));
- const v={g,inner,palm,J,hat,eyes:{scale:{y:1}},legs:[],ph:Math.random()*9,blink:2+Math.random()*3,jump:-9,sh:new THREE.Vector2(),shv:new THREE.Vector2(),sq:0,sqv:0,wob:0,lx:null,lz:null,lr:null,vx:0,vz:0,lk:0,lkx:0,hopPh:1};
+ const v={g,inner,palm,J,hat,hull,eyes:{scale:{y:1}},legs:[],ph:Math.random()*9,blink:2+Math.random()*3,jump:-9,sh:new THREE.Vector2(),shv:new THREE.Vector2(),sq:0,sqv:0,wob:0,lx:null,lz:null,lr:null,vx:0,vz:0,lk:0,lkx:0,hopPh:1};
  return v}
 const _jv=new THREE.Vector3();
 function animChar(v,dt,moving,t){
  if(!v.J){return}
+ v.hull.visible=QUAL==='low'||OLOFF;
  const jt=t-v.jump;let jy=0;
  if(jt<.6){const p=jt/.6;jy=Math.sin(p*Math.PI)*1.2;v.inner.rotation.y=p*Math.PI*2}else v.inner.rotation.y=0;
  v.inner.position.y=jy;
- // vitesse (monde) -> repère du perso, plus la rotation (secouer en tournant)
- const d=Math.max(dt,1e-3);v.g.getWorldPosition(_jv);const ry=v.g.rotation.y;
- let wx=0,wz=0,wr=0;if(v.lx!==null&&dt>0){wx=(_jv.x-v.lx)/d;wz=(_jv.z-v.lz)/d;let dr=ry-v.lr;dr=Math.atan2(Math.sin(dr),Math.cos(dr));wr=dr/d}
- v.lx=_jv.x;v.lz=_jv.z;v.lr=ry;
- const c=Math.cos(-ry),s=Math.sin(-ry),lvx=wx*c-wz*s,lvz=wx*s+wz*c,sc=v.g.scale.x||1;
- const tvx=(lvx/sc)-wr*.35,tvz=lvz/sc,ax=(tvx-v.vx)/d;v.vx=tvx;v.vz=tvz;
- const K=140,D=6.5,tgx=Math.max(-.5,Math.min(.5,-tvx*.06)),tgz=Math.max(-.5,Math.min(.5,-tvz*.06));
- let st=Math.min(dt,.05);while(st>0){const hs=Math.min(st,.01);v.shv.x+=(-K*(v.sh.x-tgx)-D*v.shv.x)*hs;v.shv.y+=(-K*(v.sh.y-tgz)-D*v.shv.y)*hs;v.sh.x+=v.shv.x*hs;v.sh.y+=v.shv.y*hs;v.sqv+=(-190*v.sq-8*v.sqv)*hs;v.sq+=v.sqv*hs;st-=hs}
- v.sh.x=Math.max(-.55,Math.min(.55,v.sh.x));v.sh.y=Math.max(-.55,Math.min(.55,v.sh.y));v.wob=Math.min(1.4,v.wob*Math.exp(-dt*2.5)+Math.min(400,Math.abs(ax))*.0008);
+ // physique : le haut de la gelée est une masse sur ressort entraînée par l'ACCÉLÉRATION de la base
+ const d=Math.max(dt,1e-3);v.g.getWorldPosition(_jv);const ry=v.g.rotation.y,sc=v.g.scale.x||1;
+ if(v.lx===null||dt<=0||dt>.2){v.lx=_jv.x;v.lz=_jv.z;v.lr=ry;v.fvx=0;v.fvz=0;v.fw=0}
+ else{let wx=(_jv.x-v.lx)/d,wz=(_jv.z-v.lz)/d;if(Math.hypot(wx,wz)>40){wx=0;wz=0}let dr=ry-v.lr;dr=Math.atan2(Math.sin(dr),Math.cos(dr));const w=dr/d;v.lx=_jv.x;v.lz=_jv.z;v.lr=ry;
+  const kf=1-Math.exp(-d/.07);const nvx=v.fvx+(wx-v.fvx)*kf,nvz=v.fvz+(wz-v.fvz)*kf,nw=v.fw+(w-v.fw)*kf;
+  const awx=(nvx-v.fvx)/d,awz=(nvz-v.fvz)/d,aw=(nw-v.fw)/d;v.fvx=nvx;v.fvz=nvz;v.fw=nw;
+  const c=Math.cos(-ry),s=Math.sin(-ry);let ax=(awx*c-awz*s)/sc,az=(awx*s+awz*c)/sc;
+  ax+=-aw*.25;// secouer en tournant (fiche héros, lobby)
+  ax=Math.max(-60,Math.min(60,ax));az=Math.max(-60,Math.min(60,az));v.ax=ax;v.az=az}
+ const ax=v.ax||0,az=v.az||0,K=95,D=7.5,M=.012;
+ let st=Math.min(dt,.05);while(st>0){const hs=Math.min(st,.008);v.shv.x+=(-K*v.sh.x-D*v.shv.x-ax*M*K)*hs;v.shv.y+=(-K*v.sh.y-D*v.shv.y-az*M*K)*hs;v.sh.x+=v.shv.x*hs;v.sh.y+=v.shv.y*hs;v.sqv+=(-180*v.sq-9*v.sqv)*hs;v.sq+=v.sqv*hs;st-=hs}
+ v.sh.x=Math.max(-.35,Math.min(.35,v.sh.x));v.sh.y=Math.max(-.35,Math.min(.35,v.sh.y));
+ v.wob=Math.min(.8,v.wob*Math.exp(-dt*3)+Math.hypot(v.shv.x,v.shv.y)*dt*.6);const tvx=0;
  // course : petits bonds avec écrasement à chaque atterrissage
  let y=0;if(moving){const ph=(t*3.4+v.ph)%1;y=Math.sin(ph*Math.PI)*.24;if(ph<v.hopPh){v.sq=-.26;v.sqv=0}v.hopPh=ph;if(ph>.05&&ph<.95)v.sq+=(.1-v.sq)*Math.min(1,dt*6)}else{v.hopPh=1;y=Math.sin(t*3+v.ph)*.012}
  v.palm.position.y=.5+y;
  const J=v.J;J.uSh.value.copy(v.sh);J.uSq.value=v.sq;J.uWob.value=v.wob;J.uT.value=t;
  // chapeau : suit le haut de la gelée
- const hh=1,sy=1+v.sq,sxx=1/Math.sqrt(Math.max(.3,sy));v.hat.position.set(v.sh.x*hh,sy-.5,v.sh.y*hh);v.hat.rotation.z=-v.sh.x*.9;v.hat.rotation.x=v.sh.y*.9;v.hat.scale.set(sxx,1,sxx);
+ const hh=1,sy=1+v.sq,sxx=1/Math.sqrt(Math.max(.3,sy));v.hat.position.set(v.sh.x*hh,sy-.5,v.sh.y*hh);v.hat.rotation.z=-v.sh.x*1.6;v.hat.rotation.x=v.sh.y*1.6;v.hat.scale.set(sxx,1,sxx);
  // yeux : clignement + regard
  v.blink-=dt;const bl=v.blink<0?.12:1;if(v.blink<-.12)v.blink=2+Math.random()*3;J.uBl.value+=(bl-J.uBl.value)*Math.min(1,dt*30);
- v.lk-=dt;if(v.lk<0){v.lk=.7+Math.random()*1.5;v.lkx=(Math.random()*2-1)*.03}J.uLk.value+=(Math.max(-.045,Math.min(.045,v.lkx-tvx*.004))-J.uLk.value)*Math.min(1,dt*10);
+ v.lk-=dt;if(v.lk<0){v.lk=.7+Math.random()*1.5;v.lkx=(Math.random()*2-1)*.03}J.uLk.value+=(Math.max(-.045,Math.min(.045,v.lkx-v.sh.x*.05))-J.uLk.value)*Math.min(1,dt*10);
 }
 
 // portraits 3D des héros (rendu une fois par héros, avec sa peau, sa tenue et ses accessoires)
@@ -3096,7 +3100,7 @@ function matchWon(e){if(matchOver)return;matchOver=true;simOn=false;
  if(NET.role==='host'){NET.ev.push({t:'end',w:e.id});NET.sendT=0;hostTick(0);setTimeout(()=>NET.leave(),1500)}
  if(state!=='end'&&state!=='menu')finish(e===player?'win':'lost')}
 function finish(reason){
- if(state==='end'||state==='menu')return;exitSpec();const wasDead=!player.alive;state='end';
+ if(state==='end'||state==='menu')return;exitSpec();clearTimeout(lostT);lostT=0;$('#death').hidden=true;$('#death').classList.remove('lost');const wasDead=!player.alive;state='end';
  if(matchOver&&NET.role!=='host')simOn=false;
  const won=reason==='win',TM=tSize()>1&&gameMode!=='team',my=(won&&gameMode!=='team'&&gameMode!=='surv'&&tSize()===1)?PTOT:TM?(ents.some(o=>o&&o.alive&&o.team===player.team)?(teamScores()[player.team]||0):(player.deathCount||0)):(player.alive?(counts[player.id]||0):(player.deathCount||0)),pct=Math.min(100,my/PTOT*100),ranked=gameMode!=='party';
  const sc=e=>e.alive?(counts[e.id]||0):(e.deathCount||0);
@@ -3433,12 +3437,12 @@ OL.mat=new THREE.ShaderMaterial({uniforms:{tMask:{value:OL.rt.texture},px:{value
 {const q=new THREE.Mesh(new THREE.PlaneGeometry(2,2),OL.mat);q.frustumCulled=false;OL.scene.add(q)}
 function renderAll(){
  R.render(S,cam);
- R.autoClear=false;if(QUAL!=='low'&&!OLOFF){R.setRenderTarget(OL.rt);R.setClearColor(0x000000,0);R.clear();cam.layers.set(1);S.overrideMaterial=OL.mask;R.render(S,cam);S.overrideMaterial=null;cam.layers.set(0);
+ R.autoClear=false;if(QUAL!=='low'&&!OLOFF){R.setRenderTarget(OL.rt);R.setClearColor(0x000000,0);R.clear();cam.layers.set(1);S.overrideMaterial=OL.mask;R.render(S,cam);S.overrideMaterial=null;cam.layers.set(3);R.render(S,cam);cam.layers.set(0);
  R.setRenderTarget(null);R.render(OL.scene,OL.cam)}cam.layers.set(2);R.render(S,cam);cam.layers.set(0);R.autoClear=true;
 }
 function applyZoom(){const w=innerWidth,h=innerHeight;let z=w>h?Math.min(w/900,h/430):Math.min(w/390,h/780);z=Math.max(.72,Math.min(1.7,z));UIZ=z;document.documentElement.style.setProperty('--z',z)}
 let UIZ=1;applyZoom();addEventListener('resize',applyZoom);
-function resize(){R.setPixelRatio(PR);R.setSize(innerWidth,innerHeight,false);cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();const w=R.domElement.width,h=R.domElement.height;OL.rt.setSize(w,h);OL.mat.uniforms.px.value.set(1/w,1/h);OL.mat.uniforms.thick.value=Math.max(1.2,2.2*R.getPixelRatio())}
+function resize(){R.setPixelRatio(PR);R.setSize(innerWidth,innerHeight,false);cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();const w=R.domElement.width,h=R.domElement.height;OL.rt.setSize(w,h);OL.mat.uniforms.px.value.set(1/w,1/h);OL.mat.uniforms.thick.value=Math.max(1.8,3.1*R.getPixelRatio())}
 addEventListener('resize',resize);resize();
 
 /* ---------- INTERFACE ---------- */
@@ -4254,7 +4258,7 @@ async function partyRestore(){const P=PARTY;if(!P||ROOM||!RT.on)return;
   const r=await joinRoomCh(P.code,true);if(r.role==='lobby'){ROOM={code:P.code,ch:r.ch,host:false,hostSid:r.hs,members:[],ready:false};roomTrack();roomSync();if(wantReady){wantReady=false;roomReady(true)}if(tab==='home')updHome();return}
   if(r.role==='client'){try{RT.sb.removeChannel(r.ch)}catch(_){}}}
  if(PARTY&&!ROOM){PARTY=null;toast("Le groupe n'est plus disponible")}}
-function goHome(){exitSpec();$('#res').hidden=true;musicTo('lobby');setTimeout(updStreak,0);$('#count').innerHTML='';$('#banner').innerHTML='';boostClear();leader=null;zone=null;setTimeout(partyRestore,50);setTimeout(updInstall,600);specOn=false;NET.leave();simOn=false;matchOver=false;state='menu';$('#end').hidden=true;$('#hud').hidden=true;for(const e of ents)if(e)e.view.g.visible=false;snapCam=true;go('home')}
+function goHome(){exitSpec();clearTimeout(lostT);lostT=0;$('#death').hidden=true;$('#death').classList.remove('lost');$('#res').hidden=true;musicTo('lobby');setTimeout(updStreak,0);$('#count').innerHTML='';$('#banner').innerHTML='';boostClear();leader=null;zone=null;setTimeout(partyRestore,50);setTimeout(updInstall,600);specOn=false;NET.leave();simOn=false;matchOver=false;state='menu';$('#end').hidden=true;$('#hud').hidden=true;for(const e of ents)if(e)e.view.g.visible=false;snapCam=true;go('home')}
 // défilement fluide à la molette (vertical et horizontal), avec inertie douce
 const SMW=new Map();
 function smoothScroll(el,ax,d){let st=SMW.get(el);const max=ax==='x'?el.scrollWidth-el.clientWidth:el.scrollHeight-el.clientHeight;
