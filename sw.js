@@ -1,5 +1,5 @@
 // Paint Clash : appli installable + jeu hors ligne contre les bots
-const V = 'pc-v99';
+const V = 'pc-v100';
 const CORE = ['/', '/manifest.json', '/icon-192.png', '/icon-512.png',
   'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js'];
 self.addEventListener('install', e => {
@@ -11,7 +11,8 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   const r = e.request, u = new URL(r.url);
   if (r.method !== 'GET') return;
-  if (u.origin === location.origin && u.pathname.startsWith('/api/')) return;      // comptes, amis : toujours en ligne
+  if (u.origin === location.origin && u.pathname.startsWith('/api/')) return;
+  if (u.origin === location.origin && /\.(apk|json)$/.test(u.pathname) && !/manifest/.test(u.pathname)) return; // appli Android : jamais en cache      // comptes, amis : toujours en ligne
   if (/supabase|googleapis\.com\/(?!css)|accounts\.google|gstatic\.com\/_\/|oauth2/.test(u.href) && !/fonts\./.test(u.host)) return;
   // page : réseau d'abord (toujours la dernière version), cache si hors ligne
   if (r.mode === 'navigate') {
