@@ -2515,7 +2515,7 @@ function capsule(r1,r2,len,seg=18){const pts=[],n=8;
  pts[0].x=0.0001;pts[pts.length-1].x=0.0001;return new THREE.LatheGeometry(pts,seg)}
 const HG={up:capsule(.112,.104,.3),lo:capsule(.104,.098,.26),curl:capsule(.1,.094,.2),thumb:capsule(.11,.1,.22),nail:new THREE.SphereGeometry(.07,14,10),
  cuff:new THREE.CylinderGeometry(.29,.31,.26,32,1),cuffRim:new THREE.TorusGeometry(.3,.055,12,36)};
-function makeChar(h,label,me){
+function makeCharHand(h,label,me){
  const g=new THREE.Group(),inner=new THREE.Group();g.add(inner);
  const col=h.color,sk=h.skin||0,M=toon(SKINS[sk]),tipM=toon(SKIN_TIP[sk]),W=toon(0xffffff),SL=toon(col),acc=h.acc||[],NM=acc.includes('nails')?toon(NAILC[h.id]||0xff5fb8):toon(0xfff3ea);
  const add=(par,geo,mat,x,y,z)=>{const m=new THREE.Mesh(geo,mat);m.position.set(x,y,z);par.add(m);return m};
@@ -2555,8 +2555,68 @@ function makeChar(h,label,me){
  if(label)g.add(nameSprite(label,me?'#ffd21f':'#ffffff'));
  return{g,inner,palm,eyes,legs,ph:Math.random()*9,blink:2+Math.random()*3,jump:-9}
 }
+// Personnage : un cube de gelée avec de grands yeux (déformation gélatineuse dans le shader)
+const JELLY_VS=`
+uniform vec2 uSh;uniform float uSq;uniform float uWob;uniform float uT;uniform float uBl;uniform float uLk;
+vec3 jelly(vec3 p){float h=clamp(p.y+0.5,0.0,1.4);float hh=h*h;
+ p.x+=uSh.x*hh;p.z+=uSh.y*hh;
+ float sy=1.0+uSq,sx=1.0/sqrt(max(0.3,sy));p.y=(p.y+0.5)*sy-0.5;p.x*=mix(1.0,sx,h);p.z*=mix(1.0,sx,h);
+ p.x+=uWob*sin(p.y*7.0+uT*18.0)*0.03*h;p.z+=uWob*cos(p.y*6.0+uT*15.0)*0.03*h;return p;}
+`;
+// pre: code GLSL qui transforme q avant la gelée (clignement des yeux, regard)
+function jellyMat(base,J,push,pre){base.onBeforeCompile=s=>{Object.assign(s.uniforms,J);s.vertexShader=JELLY_VS+'\n'+s.vertexShader.replace('#include <begin_vertex>',`vec3 q=position${push?'+normal*'+push.toFixed(3):''};${pre||''}vec3 transformed=jelly(q);`)};base.customProgramCacheKey=()=>'jelly'+(push||0)+(pre?pre.length:0);return base}
+const JG=(()=>{const box=roundedBox(1,1,1,.3,7);
+ // yeux « cuits » dans le repère du cube pour suivre exactement la déformation
+ const C=new THREE.CircleGeometry(1,32),m4=new THREE.Matrix4(),part=(sx,sy,x,y,z)=>{const g=C.clone();m4.makeScale(sx,sy,1);g.applyMatrix4(m4);m4.makeTranslation(x,y,z);g.applyMatrix4(m4);return g};
+ const merge=arr=>{let n=0;arr.forEach(g=>n+=g.attributes.position.count);const P=new Float32Array(n*3),N=new Float32Array(n*3),I=[];let o=0;arr.forEach(g=>{const p=g.attributes.position.array;P.set(p,o*3);for(let i=0;i<g.attributes.position.count;i++){N[(o+i)*3+2]=1}g.index.array.forEach(v=>I.push(v+o));o+=g.attributes.position.count});const r=new THREE.BufferGeometry();r.setAttribute('position',new THREE.BufferAttribute(P,3));r.setAttribute('normal',new THREE.BufferAttribute(N,3));r.setIndex(I);return r};
+ const EY=.06,EZ=.515,S=1.35,DX=.205;const L=[],Bl=[],W=[],Pu=[],Sh=[];
+ for(const k of[-1,1]){const x=k*DX;L.push(part(.13*S,.16*S,x,EY,EZ));Bl.push(part(.112*S,.142*S,x,EY,EZ+.002));W.push(part(.106*S,.128*S,x+.004*S,EY+.014*S,EZ+.004));Pu.push(part(.062*S,.07*S,x-k*.012,EY,EZ+.006));Sh.push(part(.019*S,.019*S,x-k*.012+.022*S,EY+.026*S,EZ+.008))}
+ return{box,eo:merge(L),eb:merge(Bl),ew:merge(W),ep:merge(Pu),es:merge(Sh),hl:new THREE.SphereGeometry(.09,12,8),hl2:new THREE.SphereGeometry(.04,8,6)}})();
+const JEYE_PRE=`q.y=0.06+(q.y-0.06)*uBl;`,JPUP_PRE=`q.y=0.06+(q.y-0.06)*uBl;q.x+=uLk;`;
+function makeChar(h,label,me){
+ const g=new THREE.Group(),inner=new THREE.Group();g.add(inner);inner.scale.setScalar(.86);
+ const J={uSh:{value:new THREE.Vector2()},uSq:{value:0},uWob:{value:0},uT:{value:0},uBl:{value:1},uLk:{value:0}};
+ const palm=new THREE.Group();palm.position.y=.5;inner.add(palm);
+ const add=(geo,mat)=>{const m=new THREE.Mesh(geo,mat);m.frustumCulled=false;palm.add(m);return m};
+ add(JG.box,jellyMat(new THREE.MeshToonMaterial({color:h.color,gradientMap:gm,emissive:new THREE.Color(h.color).multiplyScalar(.1)}),J));
+ add(JG.box,jellyMat(new THREE.MeshBasicMaterial({color:0x0b0b19,side:THREE.BackSide}),J,.045));
+ const hlM=jellyMat(new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.9}),J);
+ const hl=add(JG.hl,hlM);hl.geometry=JG.hl.clone().scale(1.3,.7,.2).translate(.28,.32,.5);const hl2=add(JG.hl2,hlM);hl2.geometry=JG.hl2.clone().scale(1,1,.2).translate(.38,.18,.5);
+ const EM=(c,pre)=>jellyMat(new THREE.MeshBasicMaterial({color:c}),J,0,pre);
+ add(JG.eo,EM(0x0b0b19,JEYE_PRE));add(JG.eb,EM(0xbfe0ff,JEYE_PRE));add(JG.ew,EM(0xffffff,JEYE_PRE));add(JG.ep,EM(0x1d4b8f,JPUP_PRE));add(JG.es,EM(0xffffff,JPUP_PRE));
+ const hat=new THREE.Group();palm.add(hat);addHat(hat,h,0);
+ const shd=new THREE.Mesh(G.shadow,SHADOW);shd.rotation.x=-Math.PI/2;shd.position.y=.03;shd.scale.setScalar(.8);g.add(shd);
+ if(label)g.add(nameSprite(label,me?'#ffd21f':'#ffffff'));
+ const v={g,inner,palm,J,hat,eyes:{scale:{y:1}},legs:[],ph:Math.random()*9,blink:2+Math.random()*3,jump:-9,sh:new THREE.Vector2(),shv:new THREE.Vector2(),sq:0,sqv:0,wob:0,lx:null,lz:null,lr:null,vx:0,vz:0,lk:0,lkx:0,hopPh:1};
+ return v}
+const _jv=new THREE.Vector3();
+function animChar(v,dt,moving,t){
+ if(!v.J){return}
+ const jt=t-v.jump;let jy=0;
+ if(jt<.6){const p=jt/.6;jy=Math.sin(p*Math.PI)*1.2;v.inner.rotation.y=p*Math.PI*2}else v.inner.rotation.y=0;
+ v.inner.position.y=jy;
+ // vitesse (monde) -> repère du perso, plus la rotation (secouer en tournant)
+ const d=Math.max(dt,1e-3);v.g.getWorldPosition(_jv);const ry=v.g.rotation.y;
+ let wx=0,wz=0,wr=0;if(v.lx!==null&&dt>0){wx=(_jv.x-v.lx)/d;wz=(_jv.z-v.lz)/d;let dr=ry-v.lr;dr=Math.atan2(Math.sin(dr),Math.cos(dr));wr=dr/d}
+ v.lx=_jv.x;v.lz=_jv.z;v.lr=ry;
+ const c=Math.cos(-ry),s=Math.sin(-ry),lvx=wx*c-wz*s,lvz=wx*s+wz*c,sc=v.g.scale.x||1;
+ const tvx=(lvx/sc)-wr*.35,tvz=lvz/sc,ax=(tvx-v.vx)/d;v.vx=tvx;v.vz=tvz;
+ const K=140,D=6.5,tgx=Math.max(-.5,Math.min(.5,-tvx*.06)),tgz=Math.max(-.5,Math.min(.5,-tvz*.06));
+ let st=Math.min(dt,.05);while(st>0){const hs=Math.min(st,.01);v.shv.x+=(-K*(v.sh.x-tgx)-D*v.shv.x)*hs;v.shv.y+=(-K*(v.sh.y-tgz)-D*v.shv.y)*hs;v.sh.x+=v.shv.x*hs;v.sh.y+=v.shv.y*hs;v.sqv+=(-190*v.sq-8*v.sqv)*hs;v.sq+=v.sqv*hs;st-=hs}
+ v.sh.x=Math.max(-.55,Math.min(.55,v.sh.x));v.sh.y=Math.max(-.55,Math.min(.55,v.sh.y));v.wob=Math.min(1.4,v.wob*Math.exp(-dt*2.5)+Math.min(400,Math.abs(ax))*.0008);
+ // course : petits bonds avec écrasement à chaque atterrissage
+ let y=0;if(moving){const ph=(t*3.4+v.ph)%1;y=Math.sin(ph*Math.PI)*.24;if(ph<v.hopPh){v.sq=-.26;v.sqv=0}v.hopPh=ph;if(ph>.05&&ph<.95)v.sq+=(.1-v.sq)*Math.min(1,dt*6)}else{v.hopPh=1;y=Math.sin(t*3+v.ph)*.012}
+ v.palm.position.y=.5+y;
+ const J=v.J;J.uSh.value.copy(v.sh);J.uSq.value=v.sq;J.uWob.value=v.wob;J.uT.value=t;
+ // chapeau : suit le haut de la gelée
+ const hh=1,sy=1+v.sq,sxx=1/Math.sqrt(Math.max(.3,sy));v.hat.position.set(v.sh.x*hh,sy-.5,v.sh.y*hh);v.hat.rotation.z=-v.sh.x*.9;v.hat.rotation.x=v.sh.y*.9;v.hat.scale.set(sxx,1,sxx);
+ // yeux : clignement + regard
+ v.blink-=dt;const bl=v.blink<0?.12:1;if(v.blink<-.12)v.blink=2+Math.random()*3;J.uBl.value+=(bl-J.uBl.value)*Math.min(1,dt*30);
+ v.lk-=dt;if(v.lk<0){v.lk=.7+Math.random()*1.5;v.lkx=(Math.random()*2-1)*.03}J.uLk.value+=(Math.max(-.045,Math.min(.045,v.lkx-tvx*.004))-J.uLk.value)*Math.min(1,dt*10);
+}
+
 // portraits 3D des héros (rendu une fois par héros, avec sa peau, sa tenue et ses accessoires)
-const SHOTS={},SHOT_KEY='pc_shots_v2';let HR=null,HS=null,HC=null;try{Object.assign(SHOTS,JSON.parse(localStorage.getItem(SHOT_KEY)||'{}'))}catch(_){}
+const SHOTS={},SHOT_KEY='pc_shots_v3';let HR=null,HS=null,HC=null;try{Object.assign(SHOTS,JSON.parse(localStorage.getItem(SHOT_KEY)||'{}'))}catch(_){}
 const SHOTQ=[];let shotBusy=false;const idle=f=>(window.requestIdleCallback?requestIdleCallback(f,{timeout:150}):setTimeout(f,30));
 function queueShot(h){if(SHOTS[h.id]||SHOTQ.includes(h))return;SHOTQ.push(h);if(!shotBusy){shotBusy=true;idle(shotStep)}}
 function shotStep(){const h=SHOTQ.shift();if(h){const u=heroShot(h);if(u)document.querySelectorAll(`img[data-shot="${h.id}"]`).forEach(im=>{im.src=u;im.classList.remove('ld')})}
@@ -2572,7 +2632,7 @@ function heroShot(h){if(SHOTS[h.id])return SHOTS[h.id];
   const dist=r/Math.tan(THREE.MathUtils.degToRad(13));HC.position.set(c.x,c.y+r*.55,c.z+dist);HC.lookAt(c.x,c.y,c.z);
   HR.render(HS,HC);SHOTS[h.id]=HR.domElement.toDataURL('image/png');HS.remove(v.g)}catch(_){return null}
  return SHOTS[h.id]}
-function animChar(v,dt,moving,t){
+function animCharHand(v,dt,moving,t){
  const jt=t-v.jump;let jy=0;
  if(jt<.6){const p=jt/.6;jy=Math.sin(p*Math.PI)*1.2;v.inner.rotation.y=p*Math.PI*2}else v.inner.rotation.y=0;
  v.inner.position.y=jy;
