@@ -2251,6 +2251,26 @@ html.wk .stitle .f{filter:drop-shadow(2.5px 0 0 #fff) drop-shadow(-2.5px 0 0 #ff
 @keyframes holo2{0%{background-position:0% 50%}100%{background-position:100% 50%}}
 @keyframes holo3{0%{background-position:120% 0}100%{background-position:-60% 0}}
 .hcard.lock.r3::before{display:none}
+/* paramètres : défile si l'écran est trop petit (PC en paysage) */
+#settings .mbox{max-height:calc(100dvh - 48px);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+/* résultats en équipe : les coéquipiers qui rejouent s'affichent au-dessus de REJOUER */
+#res .rbtns:has(.rparty){display:grid!important;grid-template-columns:1fr 1fr;column-gap:12px;row-gap:6px;align-items:end}
+#res .rbtns .rparty{grid-column:1;grid-row:1;flex:none;margin:0;justify-content:center}
+#res .rbtns:has(.rparty) .rbtn.yel{grid-column:1;grid-row:2}#res .rbtns:has(.rparty) .rbtn.blu{grid-column:2;grid-row:2}
+/* coffre : la scène se réduit pour que toutes les récompenses tiennent à l'écran */
+.cm .cstage{min-height:min(112vw,42vh)!important;height:auto}
+.cm .cbox{max-height:100dvh;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;padding-bottom:max(12px,env(safe-area-inset-bottom,0px))}
+.cm .cbox::-webkit-scrollbar{display:none}
+/* récompenses du coffre : tout tient à l'écran (mobile et PC) */
+.cm.cdone .cstage{min-height:min(62vw,28vh)!important;height:min(62vw,28vh)!important;transition:min-height .5s ease,height .5s ease}
+.cm.cdone .cbox{gap:8px}
+.cm .crew{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;max-width:min(96vw,640px)}
+.cm.cdone .crw{min-width:0!important;width:clamp(78px,22vw,112px);padding:6px 6px 6px!important;border-radius:14px}
+.cm.cdone .crw img{width:clamp(34px,9vw,48px)!important;height:clamp(34px,9vw,48px)!important}
+.cm.cdone .crw .cube.h3d{width:clamp(48px,13vw,66px)!important;height:clamp(48px,13vw,66px)!important}
+.cm.cdone .crw b{font-size:clamp(15px,4.2vw,20px)!important}
+.cm.cdone .crw .cbar{width:90%!important;margin:2px auto 0!important;height:15px}
+.cm.cdone .crw.h small{font-size:10px}
 </style>
 
 <div id="bg"><div class="halo"></div></div>
@@ -2659,7 +2679,7 @@ function addHat(p,h,y=1.03){const M=(g,m,x,yy,z)=>{const o=new THREE.Mesh(g,m);o
  case 'crown':{M(G.crown,toon(0xffc21a,true),0,y+.04,0);for(let k=0;k<5;k++){const a=k/5*Math.PI*2;M(G.spike,toon(0xffc21a),Math.cos(a)*.26,y+.19,Math.sin(a)*.26)}M(G.ball,toon(0x4fb6ff),0,y+.06,.27).scale.setScalar(.7);break}
  case 'halo':{const k=M(G.halo,GLOW,0,y+.32,0);k.rotation.x=Math.PI/2;break}
  }}
-function nameSprite(txt,col){const c=document.createElement('canvas');c.width=256;c.height=64;const x=c.getContext('2d');x.font='38px "Lilita One", "Trebuchet MS", sans-serif';x.textAlign='center';x.textBaseline='middle';x.lineWidth=10;x.lineJoin='round';x.miterLimit=2;x.strokeStyle='#0b0b19';x.strokeText(txt,128,34);x.fillStyle=col;x.fillText(txt,128,34);const s=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),depthTest:false,transparent:true}));s.scale.set(2.6,.65,1);s.position.y=2.05;s.renderOrder=10;s.layers.set(2);return s}
+function nameSprite(txt,col){const c=document.createElement('canvas'),F='38px "Lilita One", "Trebuchet MS", sans-serif';let x=c.getContext('2d');x.font=F;const W=Math.max(256,Math.ceil(x.measureText(txt).width+28));c.width=W;c.height=64;x=c.getContext('2d');x.font=F;x.textAlign='center';x.textBaseline='middle';x.lineWidth=10;x.lineJoin='round';x.miterLimit=2;x.strokeStyle='#0b0b19';x.strokeText(txt,W/2,34);x.fillStyle=col;x.fillText(txt,W/2,34);const s=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),depthTest:false,transparent:true}));s.scale.set(2.6*W/256,.65,1);s.userData.w=W;s.position.y=2.05;s.renderOrder=10;s.layers.set(2);return s}
 const SKINS=[0xf2c9a0,0xc68a5a,0x7a4a2c],SKIN_TIP=[0xf7d8b8,0xd49f74,0x8e5a3a];
 const NAILC={bulle:0xff5fb8,ombre:0x2a1f4a,lave:0xff3b4f,galaxie:0x8a5cff};
 // Personnage : une main qui court sur deux doigts (peau + tenue du héros)
@@ -3853,17 +3873,17 @@ function cxBuild(k){const P=CPAL[k];if(CX.g){CX.s.remove(CX.g);CX.g.traverse(o=>
  CX.s.add(g);CX.g=g;CX.body=body;CX.lid=lid;CX.glowM=glow;CX.shd=shd;CX.kp=0;CX.kv=0;
  CX.mats=Object.assign(M,{lid:M.cap,base:M.plate,band:M.stem,stud:M.top,spike:M.cap,em:[M.cap,M.top],inL:M.cap,inB:M.plate})}
 function cxSize(){const cv=$('#cCv'),m=$('#chestM').getBoundingClientRect(),st=$('.cm .cstage').getBoundingClientRect();const W=Math.round(m.width)||innerWidth,H=Math.round(m.height)||innerHeight;
- CX.r.setSize(W,H,false);const sh=Math.min(W*1.12,500),cy=(st.top+st.height/2)-m.top;
+ if(CX.sw!==W||CX.shh!==H){CX.r.setSize(W,H,false);CX.sw=W;CX.shh=H}const sh=Math.max(140,Math.min(W*1.12,500,st.height||500)),cy=(st.top+st.height/2)-m.top;
  CX.c.aspect=W/H;CX.c.fov=2*Math.atan(Math.tan(15*Math.PI/180)*H/sh)*180/Math.PI;CX.c.setViewOffset(W,H,0,Math.round(H/2-cy),W,H);CX.c.updateProjectionMatrix()}
 addEventListener('resize',()=>{if(CX.on)setTimeout(cxSize,60)});
 function cxOrbs(){const o=$('#cOrbs');let h='';for(let i=0;i<CTAPS;i++){const u=i<CX.taps;h+=`<i class="${u?'used':i===CX.taps?'cur':''}"></i>`}o.innerHTML=h}
 function cxTitle(){const t=$('#cTitle');t.innerHTML=stitle(CPAL[CX.k].n);t.classList.remove('cxpop');void t.offsetWidth;t.classList.add('cxpop');$('#chestM').dataset.k=CX.k}
-function openChest(c,extra){if(!cxInit()){openChestOld(c,extra);return}
+function openChest(c,extra){$('#chestM').classList.remove('cdone');if(!cxInit()){openChestOld(c,extra);return}
  const k=CHA[c.id]||c.id;save.pendCh={id:k,extra:extra||null};persist();
  Object.assign(CX,{k,extra:extra||null,taps:0,ups:[],st:'intro',landed:0,sq:0,sv:0,rz:0,rkv:0,hit:0,lk:0,lx:0,ly:0,bl:2,t0:performance.now(),glow:0,spinY:0,lift:0,camK:0,shake:0,lidA:0});chestR=null;chestC=c;
  chestStage(k,CPAL[k].n);$('#cHint').classList.remove('claim');$('#cImg').hidden=true;$('#cCv').hidden=false;$('#cOrbs').hidden=false;$('#cBeam').className='cbeam';
  cxBuild(k);cxSize();cxOrbs();cxTitle();const hn=$('#cHint');hn.hidden=false;hn.textContent='Appuie pour améliorer !';sfx.tick();
- CX.on=true;cancelAnimationFrame(CX.raf);let last=performance.now();const loop=t=>{if(!CX.on){cxRiserStop();return}if($('#chestM').hidden){CX.on=false;cxRiserStop();return}const dt=Math.min(.05,(t-last)/1000);last=t;cxTick(t,dt);cxRender();CX.raf=requestAnimationFrame(loop)};CX.raf=requestAnimationFrame(loop)}
+ CX.on=true;cancelAnimationFrame(CX.raf);let last=performance.now();const loop=t=>{if(!CX.on){cxRiserStop();return}if($('#chestM').hidden){CX.on=false;cxRiserStop();return}const dt=Math.min(.05,(t-last)/1000);last=t;cxTick(t,dt);if($('#chestM').classList.contains('cdone'))cxSize();cxRender();CX.raf=requestAnimationFrame(loop)};CX.raf=requestAnimationFrame(loop)}
 function cxTick(t,dt){const e=(t-CX.t0)/1000,b=CX.body,s=t/1000;if(!b)return;
  let y=0,rz=0,px=0;
  if(CX.st==='intro'){const T=.36,k=Math.min(1,e/T);y=(1-k*k)*6;if(k>=1&&!CX.landed){CX.landed=1;CX.sq=-.42;CX.sv=0;CX.hit=.6;if(!playS('thud',SV))sfx.boom();if(navigator.vibrate&&save.vib!==false)try{navigator.vibrate(25)}catch(_){}}if(e>T+.55)CX.st='tap'}
@@ -3923,7 +3943,7 @@ function cxBurstOpen(){CX.st='open';CX.openT=performance.now();CX.landed2=0;CX.g
  (r.cards||[]).forEach(cd=>{const h=HE(cd.id),l=save.levels[cd.id]||1,need=cardCost(l),hv=cardsOf(cd.id);items.push(`<div class="crw cardw">${heroIcon(h)}<b class="s">x${cd.n}</b><span class="cbar s"><i style="width:${Math.min(100,hv/need*100)}%"></i><em>${l>=MAXLV?'MAX':hv+'/'+need}</em></span></div>`)});
  if(r.hero)items.push(`<div class="crw h">${heroIcon(r.hero)}<b class="s">${esc(r.hero.name)}</b><small class="s">NOUVEAU HÉROS !</small></div>`);
  setTimeout(()=>{const R=$('#cRew');R.innerHTML=items.join('');const st=$('.cm .cstage').getBoundingClientRect(),src={left:st.left+st.width/2-30,top:st.top+st.height*.55-30,width:60,height:60};
-  R.querySelectorAll('.crw').forEach((e,i)=>{e.style.animationDelay=(i*.15)+'s';const b=e.querySelector('b[data-n]');
+  $('#chestM').classList.add('cdone');R.querySelectorAll('.crw').forEach((e,i)=>{e.style.animationDelay=(i*.15)+'s';const b=e.querySelector('b[data-n]');
    if(e.dataset.k){setTimeout(()=>{flyReward(src,e.dataset.k,+e.dataset.v,e)},i*150+120);if(b)setTimeout(()=>{countUpC(b,+b.dataset.n,'+');sfx.coin()},i*150+900)}});
   setTimeout(()=>{CX.st='done';$('#cOk').hidden=true;const hn=$('#cHint');hn.hidden=false;hn.textContent='RÉCLAMER';hn.classList.add('claim');refresh2()},1300+items.length*150)},700)}
 function curTarget(kind){const ids=kind==='gems'?['#gemPill','#mqGem']:['#coinPill','#mqCoin'];for(const s of ids){const e=$(s);if(e){const b=e.getBoundingClientRect();if(b.width>0&&b.top>=0&&b.top<innerHeight&&e.offsetParent)return e}}
@@ -3948,14 +3968,14 @@ function setStage(id){if(stageId===id&&detailChar)return;stageId=id;setDetailCha
 const sidePods=[0,1].map(()=>{const g=new THREE.Group();const rim=new THREE.Mesh(new THREE.CylinderGeometry(2.45,2.55,.2,48),toon(0x7fd8ff));rim.position.y=.1;const top=new THREE.Mesh(new THREE.CylinderGeometry(2.25,2.3,.26,48),toon(0xffffff));top.position.y=.15;const gl=new THREE.Mesh(new THREE.CircleGeometry(2,40),new THREE.MeshBasicMaterial({color:0xbff3ff,transparent:true,opacity:.6}));gl.rotation.x=-Math.PI/2;gl.position.y=.29;g.add(rim,top,gl);S.add(g);return g});
 let friendChars=[null,null],groupInv=[],roomCode=null;
 function syncFriends(){[0,1].forEach(i=>{const f=groupInv[i],w=f?(f.sid||f.name)+'|'+f.hero:null;if(friendChars[i]&&friendChars[i].who!==w){S.remove(friendChars[i].g);friendChars[i]=null}
- if(f&&!friendChars[i]){const fc=makeChar(HE(f.hero),f.name,false);fc.who=w;fc.auto=true;S.add(fc.g);friendChars[i]=fc}})}
+ if(f&&!friendChars[i]){const fc=makeChar(HE(f.hero),f.name,false);fc.who=w;fc.auto=true;fc.g.children.forEach(o=>{if(o.isSprite){o.scale.multiplyScalar(.62);o.position.y=1.85}});S.add(fc.g);friendChars[i]=fc}})}
 // quand je change de héros dans un salon, mes amis le voient aussitôt
 function roomTrack(){if(!ROOM)return;ROOM.tracked=save.hero;try{ROOM.ch.track(Object.assign({host:ROOM.host},ROOM.host?{phase:'lobby',code:ROOM.code}:{},myInfo(),{ready:!!ROOM.ready}))}catch(_){}}
 function roomRetrack(){if(!ROOM||ROOM.tracked===save.hero)return;roomTrack()}
 function roomFits(n){const m=save.mode;return m==='party'||n<=tSize(m,save.sub)}
 function roomFitMsg(){return save.mode==='team'?'5 joueurs maximum par équipe':`Le mode ${(SUBS[save.sub]||SUBS.solo).n} ne se joue pas à ${ROOM.members.length} : choisis ${ROOM.members.length<=2?'Duo ou Trio':'Trio'}`}
 function roomReady(v){if(!ROOM)return;if(ROOM.host&&!ROOM.ready&&!roomFits((ROOM.members||[]).length)){sfx.tick();toast(roomFitMsg());go('modes');return}ROOM.ready=v===undefined?!ROOM.ready:!!v;sfx[ROOM.ready?'up':'click']();roomTrack();roomSync();updHome()}
-function sideLayout(){const p=cam.aspect<1;return{x:p?2.55:4.7,z:p?-2.6:-1.2,s:p?.6:.78}}
+function sideLayout(){const p=cam.aspect<1;return{x:p?1.95:4.7,z:p?-3.1:-1.2,s:p?.56:.78}}
 function lobbyTick(dt){const L=sideLayout(),show=!detailOpen&&tab==='home';
  {const rm=$('#rdyMe');if(show&&ROOM&&groupInv.length){rm.hidden=false;rm.textContent=ROOM.ready?'PRÊT':'PAS PRÊT';rm.classList.toggle('on',!!ROOM.ready);pv.set(PD.x,-.12,PD.z+.9).project(cam);rm.style.left=((pv.x+1)/2*innerWidth/UIZ)+'px';rm.style.top=((1-pv.y)/2*innerHeight/UIZ)+'px'}else rm.hidden=true}
  sidePods.forEach((g,i)=>{const sg=i?1:-1;g.visible=show;g.position.set(PD.x+sg*L.x,0,PD.z+L.z);g.scale.set(L.s,1,L.s);
