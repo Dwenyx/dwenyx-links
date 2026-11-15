@@ -2236,6 +2236,11 @@ html.wk .stitle .f{filter:drop-shadow(2.5px 0 0 #fff) drop-shadow(-2.5px 0 0 #ff
 .hero:nth-child(3n+2) .hcard{--sd:1.4s}.hero:nth-child(3n) .hcard{--sd:2.8s}.hgrid:nth-of-type(2n) .hcard{--sd:.7s}
 .hcard.lock.r0,.hcard.lock.r1,.hcard.lock.r2,.hcard.lock.r3{background:linear-gradient(#2d3fc9,#1f2ea8)!important;border-color:#3b4fd8!important;animation:none;box-shadow:0 0 0 2.5px #18237a,0 6px 0 #141d6a!important}
 .hcard.lock .hcimg .cube.h3d{opacity:.22!important}
+/* pointe du bas de carte : vrai triangle, même couleur que le haut du cadre, bord continu */
+.hfoot::before{transform:translateX(-50%)!important;border:0!important;border-radius:0!important;width:20px!important;height:10px!important;top:-10px!important;clip-path:polygon(50% 0,100% 100%,0 100%);background:#2742c9!important}
+.hup::before,.hbuy::before{width:26px!important;height:13px!important;top:-13.5px!important;background:#0b0b19!important}
+.hup::after,.hbuy::after{content:"";position:absolute;left:50%;top:-8.5px;width:18px;height:12px;transform:translateX(-50%);clip-path:polygon(50% 0,100% 75%,100% 100%,0 100%,0 75%);background:#dcff93;z-index:2;pointer-events:none}
+.hbuy::after{background:#ffa1f5}
 </style>
 
 <div id="bg"><div class="halo"></div></div>
