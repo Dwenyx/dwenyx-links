@@ -2157,6 +2157,12 @@ html.wk .stitle .f{filter:drop-shadow(2.5px 0 0 #fff) drop-shadow(-2.5px 0 0 #ff
 .lend{margin:10px 0 2px;text-align:center;font-size:14px;opacity:.9}
 .lr.flash{animation:lrFlash 1.2s ease}
 @keyframes lrFlash{0%,60%{filter:brightness(1.35) saturate(1.3);transform:scale(1.03)}}
+.lav .picn.lb,.pda .picn.lb{width:100%!important;height:100%!important;border:0!important;border-radius:50%!important}
+.lav .picn.lb .cube,.lav .picn.lb img{width:100%!important;height:100%!important;margin:0!important}
+.pda .picn.lb .cube,.pda .picn.lb img{width:100%!important;height:100%!important;margin:0!important;border-radius:0!important}
+.lav .picn.lb .ic,.pda .picn.lb .ic{width:70%;height:70%}
+.mpst{grid-template-columns:repeat(3,1fr)!important;display:grid!important;gap:6px!important}
+.mpst>div{min-width:0}.mpst small{font-size:11px!important;line-height:1.05}.mpst>div>img{grid-row:span 2;width:28px;height:28px;object-fit:contain;margin:0}.mpst b{font-size:19px!important}
 </style>
 
 <div id="bg"><div class="halo"></div></div>
@@ -2622,57 +2628,67 @@ vec3 jelly(vec3 p){float h=clamp(p.y+0.5,0.0,1.4);float hh=h*h;
  p.x+=uWob*sin(p.y*7.0+uT*18.0)*0.03*h;p.z+=uWob*cos(p.y*6.0+uT*15.0)*0.03*h;return p;}
 `;
 // pre: code GLSL qui transforme q avant la gelée (clignement des yeux, regard)
-function jellyMat(base,J,push,pre){base.onBeforeCompile=s=>{Object.assign(s.uniforms,J);s.vertexShader=JELLY_VS+'\n'+s.vertexShader.replace('#include <begin_vertex>',`vec3 q=position${push?'+normal*'+push.toFixed(3):''};${pre||''}vec3 transformed=jelly(q);`)};base.customProgramCacheKey=()=>'jelly'+(push||0)+(pre?pre.length:0);return base}
+function jellyMat(base,J,push,pre){base.onBeforeCompile=s=>{Object.assign(s.uniforms,J);s.vertexShader=JELLY_VS+'\n'+s.vertexShader.replace('#include <begin_vertex>',`vec3 q=position${push?'+normal*'+push.toFixed(3):''};${pre||''}vec3 transformed=jelly(q);`)};base.customProgramCacheKey=()=>'jelly'+(push||0)+(pre||'');return base}
 const JG=(()=>{const box=roundedBox(1,1,1,.3,7);
- // yeux « cuits » dans le repère du cube pour suivre exactement la déformation
- const C=new THREE.CircleGeometry(1,32),m4=new THREE.Matrix4(),part=(sx,sy,x,y,z)=>{const g=C.clone();m4.makeScale(sx,sy,1);g.applyMatrix4(m4);m4.makeTranslation(x,y,z);g.applyMatrix4(m4);return g};
- const merge=arr=>{let n=0;arr.forEach(g=>n+=g.attributes.position.count);const P=new Float32Array(n*3),N=new Float32Array(n*3),I=[];let o=0;arr.forEach(g=>{const p=g.attributes.position.array;P.set(p,o*3);for(let i=0;i<g.attributes.position.count;i++){N[(o+i)*3+2]=1}g.index.array.forEach(v=>I.push(v+o));o+=g.attributes.position.count});const r=new THREE.BufferGeometry();r.setAttribute('position',new THREE.BufferAttribute(P,3));r.setAttribute('normal',new THREE.BufferAttribute(N,3));r.setIndex(I);return r};
- // ky : étirement vertical compensé (héros aplatis comme le Donut, pour garder des yeux ronds)
- const eyes=(S,ky,DX)=>{const EY=.06,EZ=.515;const L=[],Bl=[],W=[],Pu=[],Sh=[];
-  for(const k of[-1,1]){const x=k*DX;L.push(part(.13*S,.16*S*ky,x,EY,EZ));Bl.push(part(.112*S,.142*S*ky,x,EY,EZ+.002));W.push(part(.106*S,.128*S*ky,x+.004*S,EY+.014*S*ky,EZ+.004));Pu.push(part(.062*S,.07*S*ky,x-k*.012,EY,EZ+.006));Sh.push(part(.019*S,.019*S*ky,x-k*.012+.022*S,EY+.026*S*ky,EZ+.008))}
-  return{eo:merge(L),eb:merge(Bl),ew:merge(W),ep:merge(Pu),es:merge(Sh)}};
- const e=eyes(1.35,1,.205);
- return Object.assign({box,flat:eyes(.92,1/.5,.19),hl:new THREE.SphereGeometry(.09,12,8),hl2:new THREE.SphereGeometry(.04,8,6)},e)})();
-// héros Donut : glaçage rose qui coule, pâte dorée, trou sur le dessus, vermicelles
-function donutMat(J){const m=new THREE.MeshToonMaterial({color:0xffffff,gradientMap:gm,emissive:0x1a0a10});
- m.onBeforeCompile=s=>{Object.assign(s.uniforms,J);
-  s.vertexShader='varying vec3 vQ;\n'+JELLY_VS+'\n'+s.vertexShader.replace('#include <begin_vertex>','vec3 q=position;vQ=q;vec3 transformed=jelly(q);');
-  s.fragmentShader='varying vec3 vQ;\n'+s.fragmentShader.replace('vec4 diffuseColor = vec4( diffuse, opacity );',`
-   float an=atan(vQ.z,vQ.x);
-   float dr=-0.25-0.13*pow(max(0.0,sin(an*5.0+1.3)),4.0)-0.06*pow(max(0.0,sin(an*9.0+0.4)),6.0);
-   vec3 dough=mix(vec3(0.78,0.47,0.2),vec3(1.0,0.76,0.44),smoothstep(-0.5,-0.22,vQ.y));
-   vec3 ice=mix(vec3(1.0,0.46,0.76),vec3(1.0,0.62,0.86),smoothstep(0.1,0.5,vQ.y));
-   float sq=max(abs(vQ.x),abs(vQ.z)),top=step(0.43,vQ.y);
-   float hole=top*(1.0-smoothstep(0.15,0.16,sq)),rim=top*(1.0-smoothstep(0.205,0.215,sq))*(1.0-hole);
-   vec3 c=mix(dough,ice,smoothstep(dr-0.008,dr+0.008,vQ.y));
-   c=mix(c,vec3(1.0,0.74,0.9),rim);
-   c=mix(c,mix(vec3(0.55,0.12,0.36),vec3(0.75,0.25,0.5),smoothstep(0.0,0.15,sq)),hole);
-   vec4 diffuseColor=vec4(c,opacity);`)};
- m.customProgramCacheKey=()=>'donut';return m}
+ // yeux « cuits » dans le repère du héros et COLLÉS à la peau : chaque sommet est projeté sur la surface
+ const RN=6,SG=40,disc=(()=>{const P=[0,0],I=[];for(let r=1;r<=RN;r++)for(let k=0;k<SG;k++){const a=k/SG*Math.PI*2;P.push(Math.cos(a)*r/RN,Math.sin(a)*r/RN)}
+  const id=(r,k)=>r?1+(r-1)*SG+((k+SG)%SG):0;for(let k=0;k<SG;k++)I.push(0,id(1,k),id(1,k+1));for(let r=1;r<RN;r++)for(let k=0;k<SG;k++){const a=id(r,k),b=id(r,k+1),c=id(r+1,k),d=id(r+1,k+1);I.push(a,c,d,a,d,b)}return{P,I}})();
+ const cubeSurf=(x,y)=>{const ux=Math.max(0,Math.abs(x)-.2),uy=Math.max(0,Math.abs(y)-.2),d=Math.sqrt(Math.max(0,.09-ux*ux-uy*uy)),n=new THREE.Vector3(Math.sign(x)*ux,Math.sign(y)*uy,d).normalize();return[.2+d,n]};
+ const part=(surf,sx,sy,x,y,lift)=>{const n=disc.P.length/2,P=new Float32Array(n*3),N=new Float32Array(n*3);for(let i=0;i<n;i++){const px=x+disc.P[i*2]*sx,py=y+disc.P[i*2+1]*sy,[z,nr]=surf(px,py);P[i*3]=px+nr.x*lift;P[i*3+1]=py+nr.y*lift;P[i*3+2]=z+nr.z*lift;N[i*3]=nr.x;N[i*3+1]=nr.y;N[i*3+2]=nr.z}return{P,N,I:disc.I}};
+ const merge=arr=>{let n=0;arr.forEach(g=>n+=g.P.length/3);const P=new Float32Array(n*3),N=new Float32Array(n*3),I=[];let o=0;arr.forEach(g=>{P.set(g.P,o*3);N.set(g.N,o*3);g.I.forEach(v=>I.push(v+o));o+=g.P.length/3});const r=new THREE.BufferGeometry();r.setAttribute('position',new THREE.BufferAttribute(P,3));r.setAttribute('normal',new THREE.BufferAttribute(N,3));r.setIndex(I);return r};
+ const eyes=(surf,S,DX,EY)=>{const L=[],Bl=[],W=[],Pu=[],Sh=[];
+  for(const k of[-1,1]){const x=k*DX;L.push(part(surf,.13*S,.16*S,x,EY,.006));Bl.push(part(surf,.112*S,.142*S,x,EY,.009));W.push(part(surf,.106*S,.128*S,x+.004*S,EY+.014*S,.012));Pu.push(part(surf,.062*S,.07*S,x-k*.012*S,EY,.015));Sh.push(part(surf,.019*S,.019*S,x-k*.012*S+.022*S,EY+.026*S,.018))}
+  return{eo:merge(L),eb:merge(Bl),ew:merge(W),ep:merge(Pu),es:merge(Sh),ey:EY}};
+ const e=eyes(cubeSurf,1.35,.205,.06);
+ return Object.assign({box,eyes,hl:new THREE.SphereGeometry(.09,12,8),hl2:new THREE.SphereGeometry(.04,8,6)},e)})();
+// héros Donut : un vrai donut carré (trou arrondi), glaçage rose épais qui déborde et coule, pâte dorée
+const DON={yb:-.5,dt:-.26,ib:-.32,it:0,O:.47,BV:.07,EY:-.155};
+function smoothNormals(g){const p=g.attributes.position,n=g.attributes.normal,map=new Map(),key=i=>`${Math.round(p.getX(i)*1e4)},${Math.round(p.getY(i)*1e4)},${Math.round(p.getZ(i)*1e4)}`,F=new Float32Array(n.array);
+ for(let i=0;i<p.count;i++){const k=key(i);let a=map.get(k);if(!a){a=[];map.set(k,a)}a.push(i)}
+ // moyenne seulement des faces voisines proches (évite les taches sombres sur les grands flancs plats)
+ for(let i=0;i<p.count;i++){let x=0,y=0,z=0;for(const j of map.get(key(i))){const d=F[i*3]*F[j*3]+F[i*3+1]*F[j*3+1]+F[i*3+2]*F[j*3+2];if(d>.75){x+=F[j*3];y+=F[j*3+1];z+=F[j*3+2]}}const l=Math.hypot(x,y,z)||1;n.setXYZ(i,x/l,y/l,z/l)}return g}
+function catGeo(arr){let n=0;arr.forEach(g=>n+=g.attributes.position.count);const P=new Float32Array(n*3),N=new Float32Array(n*3);let o=0;arr.forEach(g=>{P.set(g.attributes.position.array,o*3);N.set(g.attributes.normal.array,o*3);o+=g.attributes.position.count});const r=new THREE.BufferGeometry();r.setAttribute('position',new THREE.BufferAttribute(P,3));r.setAttribute('normal',new THREE.BufferAttribute(N,3));return r}
+let DG=null;
+function donutGeo(){if(DG)return DG;
+ const rr=(path,h,r)=>{path.moveTo(-h+r,-h);path.lineTo(h-r,-h);path.absarc(h-r,-h+r,r,-Math.PI/2,0);path.lineTo(h,h-r);path.absarc(h-r,h-r,r,0,Math.PI/2);path.lineTo(-h+r,h);path.absarc(-h+r,h-r,r,Math.PI/2,Math.PI);path.lineTo(-h,-h+r);path.absarc(-h+r,-h+r,r,Math.PI,Math.PI*1.5);return path};
+ const ring=(outer,ro,hole,rh,y0,y1,bv)=>{const sh=rr(new THREE.Shape(),outer-bv,ro);sh.holes.push(rr(new THREE.Path(),hole+bv,rh));
+  const g=new THREE.ExtrudeGeometry(sh,{depth:Math.max(.01,y1-y0-2*bv),bevelEnabled:true,bevelThickness:bv,bevelSize:bv,bevelSegments:5,curveSegments:10});g.rotateX(-Math.PI/2);g.translate(0,y0+bv,0);
+  const r=g.index?g.toNonIndexed():g;smoothNormals(r);return r};
+ const dough=ring(.445,.14,.16,.07,DON.yb,DON.dt,.065);
+ const ice=[ring(DON.O,.15,.16,.07,DON.ib,DON.it,DON.BV)];
+ // coulures arrondies collées sur les flancs (pas devant les yeux)
+ let rs=5;const rnd=()=>(rs=(rs*9301+49297)%233280)/233280;
+ const sides=[[1,0],[-1,0],[0,1],[0,-1]];
+ sides.forEach(([sx,sz])=>{const front=sz===1;const slots=front?[-.31,.31]:[-.3,-.1,.1,.3];
+  slots.forEach(t=>{if(rnd()<.2&&!front)return;const L=.05+rnd()*.05,w=.08+rnd()*.05,g=roundedBox(w,L+.05,.05,.025,3).toNonIndexed();
+   const off=DON.O-.018,y=DON.ib+.04-(L+.05)/2;const m=new THREE.Matrix4();
+   if(sz){m.makeTranslation(t,y,sz*off)}else{m.makeRotationY(Math.PI/2);m.setPosition(sx*off,y,t)}g.applyMatrix4(m);ice.push(g)})});
+ const icing=catGeo(ice);
+ DG={dough,icing,all:catGeo([dough,icing])};return DG}
 let DSPR=null;
 function donutSpr(){if(DSPR)return DSPR;const cols=[0xffffff,0x4fd0ff,0xffe14a,0x7cf05a,0xff4d5e,0xb07bff,0xff9a2a],P=[],Nn=[],C=[],I=[],pts=[];
- let rs=11;const rnd=()=>(rs=(rs*9301+49297)%233280)/233280;const g=new THREE.BoxGeometry(.12,.032,.036),m=new THREE.Matrix4(),q1=new THREE.Quaternion(),q2=new THREE.Quaternion(),up=new THREE.Vector3(0,1,0),nr=new THREE.Vector3(),pos=new THREE.Vector3(),one=new THREE.Vector3(1,1,1),col=new THREE.Color(),nm=new THREE.Matrix3();
- for(let k=0;k<400&&pts.length<24;k++){const x=(rnd()*2-1)*.42,z=(rnd()*2-1)*.42;if(Math.max(Math.abs(x),Math.abs(z))<.26)continue;if(pts.some(p=>Math.hypot(p[0]-x,p[1]-z)<.12))continue;
-  const ux=Math.max(0,Math.abs(x)-.2),uz=Math.max(0,Math.abs(z)-.2),dd=.09-ux*ux-uz*uz;if(dd<.03)continue;pts.push([x,z]);
-  const yy=.2+Math.sqrt(dd);nr.set(Math.sign(x)*ux,Math.sqrt(dd),Math.sign(z)*uz).normalize();q1.setFromUnitVectors(up,nr);q2.setFromAxisAngle(up,rnd()*Math.PI);q1.multiply(q2);
-  pos.set(x,yy-.004,z).addScaledVector(nr,.012);m.compose(pos,q1,one);nm.getNormalMatrix(m);col.set(cols[pts.length%cols.length]);
+ let rs=11;const rnd=()=>(rs=(rs*9301+49297)%233280)/233280;const g=roundedBox(.11,.034,.036,.016,2),m=new THREE.Matrix4(),q1=new THREE.Quaternion(),up=new THREE.Vector3(0,1,0),pos=new THREE.Vector3(),one=new THREE.Vector3(1,1,1),col=new THREE.Color(),nm=new THREE.Matrix3();
+ for(let k=0;k<600&&pts.length<16;k++){const x=(rnd()*2-1)*.37,z=(rnd()*2-1)*.37,mx=Math.max(Math.abs(x),Math.abs(z));if(mx<.29||mx>.37)continue;if(pts.some(p=>Math.hypot(p[0]-x,p[1]-z)<.11))continue;pts.push([x,z]);
+  q1.setFromAxisAngle(up,rnd()*Math.PI);pos.set(x,DON.it+.012,z);m.compose(pos,q1,one);nm.getNormalMatrix(m);col.set(cols[pts.length%cols.length]);
   const gp=g.attributes.position,gn=g.attributes.normal,o=P.length/3,v=new THREE.Vector3();
   for(let i=0;i<gp.count;i++){v.fromBufferAttribute(gp,i).applyMatrix4(m);P.push(v.x,v.y,v.z);v.fromBufferAttribute(gn,i).applyMatrix3(nm).normalize();Nn.push(v.x,v.y,v.z);C.push(col.r,col.g,col.b)}
   g.index.array.forEach(ii=>I.push(ii+o))}
  const r=new THREE.BufferGeometry();r.setAttribute('position',new THREE.Float32BufferAttribute(P,3));r.setAttribute('normal',new THREE.Float32BufferAttribute(Nn,3));r.setAttribute('color',new THREE.Float32BufferAttribute(C,3));r.setIndex(I);return DSPR=r}
-const JEYE_PRE=`q.y=0.06+(q.y-0.06)*uBl;`,JPUP_PRE=`q.y=0.06+(q.y-0.06)*uBl;q.x+=uLk;`;
+const eyePre=(ey,pup)=>{const c=ey.toFixed(3);return `q.y=${c}+(q.y-(${c}))*uBl;`+(pup?'q.x+=uLk;':'')};
+let DEYES=null;const donutEyes=()=>DEYES||(DEYES=JG.eyes((x,y)=>{const b=DON.BV,c1=DON.it-b,c0=DON.ib+b;let dy=y>c1?y-c1:y<c0?y-c0:0;dy=Math.max(-b*.98,Math.min(b*.98,dy));const dz=Math.sqrt(b*b-dy*dy);return[DON.O-b+dz,new THREE.Vector3(0,dy,dz).normalize()]},.74,.155,DON.EY));
 function makeChar(h,label,me){
  const g=new THREE.Group(),inner=new THREE.Group();g.add(inner);inner.scale.setScalar(.86);
  const J={uSh:{value:new THREE.Vector2()},uSq:{value:0},uWob:{value:0},uT:{value:0},uBl:{value:1},uLk:{value:0}};
  const palm=new THREE.Group();palm.position.y=.5;inner.add(palm);
  const add=(geo,mat)=>{const m=new THREE.Mesh(geo,mat);m.frustumCulled=false;palm.add(m);return m};
- add(JG.box,h.look==='donut'?donutMat(J):jellyMat(new THREE.MeshToonMaterial({color:h.color,gradientMap:gm,emissive:new THREE.Color(h.color).multiplyScalar(.1)}),J));
- if(h.look==='donut')add(donutSpr(),jellyMat(new THREE.MeshBasicMaterial({vertexColors:true}),J));
- const hull=add(JG.box,jellyMat(new THREE.MeshBasicMaterial({color:0x0b0b19,side:THREE.BackSide}),J,.04));hull.visible=false;
- const mk=add(JG.box,jellyMat(new THREE.MeshBasicMaterial({color:0xffffff}),J));mk.layers.set(3);
+ const DN=h.look==='donut',BG=DN?donutGeo():null,body=DN?BG.all:JG.box;
+ if(DN){add(BG.dough,jellyMat(new THREE.MeshToonMaterial({color:0xf2be78,gradientMap:gm,emissive:0x2a1406}),J));add(BG.icing,jellyMat(new THREE.MeshToonMaterial({color:0xff8ccd,gradientMap:gm,emissive:0x2a0a1c}),J));add(donutSpr(),jellyMat(new THREE.MeshBasicMaterial({vertexColors:true}),J))}
+ else add(JG.box,jellyMat(new THREE.MeshToonMaterial({color:h.color,gradientMap:gm,emissive:new THREE.Color(h.color).multiplyScalar(.1)}),J));
+ const hull=add(body,jellyMat(new THREE.MeshBasicMaterial({color:0x0b0b19,side:THREE.BackSide}),J,.04));hull.visible=false;
+ const mk=add(body,jellyMat(new THREE.MeshBasicMaterial({color:0xffffff}),J));mk.layers.set(3);
  const EM=(c,pre)=>jellyMat(new THREE.MeshBasicMaterial({color:c}),J,0,pre);
- const EG=h.look==='donut'?JG.flat:JG;if(h.look==='donut')palm.scale.y=.5;
- add(EG.eo,EM(0x0b0b19,JEYE_PRE));add(EG.eb,EM(0xbfe0ff,JEYE_PRE));add(EG.ew,EM(0xffffff,JEYE_PRE));add(EG.ep,EM(0x1d4b8f,JPUP_PRE));add(EG.es,EM(0xffffff,JPUP_PRE));
+ const EG=DN?donutEyes():JG,EP=eyePre(EG.ey),PP=eyePre(EG.ey,1);
+ add(EG.eo,EM(0x0b0b19,EP));add(EG.eb,EM(0xbfe0ff,EP));add(EG.ew,EM(0xffffff,EP));add(EG.ep,EM(0x1d4b8f,PP));add(EG.es,EM(0xffffff,PP));
  const hat=new THREE.Group();palm.add(hat);addHat(hat,h,0);hat.traverse(o=>{if(o.isMesh)o.layers.enable(1)});
  const shd=new THREE.Mesh(G.shadow,SHADOW);shd.rotation.x=-Math.PI/2;shd.position.y=.03;shd.scale.setScalar(.8);g.add(shd);
  if(label)g.add(nameSprite(label,me?'#ffd21f':'#ffffff'));
@@ -2722,7 +2738,7 @@ function animChar(v,dt,moving,t){
 }
 
 // portraits 3D des héros (rendu une fois par héros, avec sa peau, sa tenue et ses accessoires)
-const SHOTS={},SHOT_KEY='pc_shots_v5';let HR=null,HS=null,HC=null;try{Object.assign(SHOTS,JSON.parse(localStorage.getItem(SHOT_KEY)||'{}'))}catch(_){}
+const SHOTS={},SHOT_KEY='pc_shots_v6';let HR=null,HS=null,HC=null;try{Object.assign(SHOTS,JSON.parse(localStorage.getItem(SHOT_KEY)||'{}'))}catch(_){}
 const SHOTQ=[];let shotBusy=false;const idle=f=>(window.requestIdleCallback?requestIdleCallback(f,{timeout:150}):setTimeout(f,30));
 function queueShot(h){if(SHOTS[h.id]||SHOTQ.includes(h))return;SHOTQ.push(h);if(!shotBusy){shotBusy=true;idle(shotStep)}}
 function shotStep(){const h=SHOTQ.shift();if(h){const u=heroShot(h);if(u){const bu=shotUrl(h.id);document.querySelectorAll(`img[data-shot="${h.id}"]`).forEach(im=>{im.src=bu;im.classList.remove('ld')})}}
@@ -3217,7 +3233,7 @@ function finish(reason){
  const unl=[],lvBefore=passLevel();const xpG=60+player.kills*15+Math.floor(pct)+(won?80:0),xpP=25+player.kills*6+Math.floor(pct*.4)+(won?30:0);save.xp=(save.xp||0)+xpP;const accBefore=accLv()[0];save.accXp=(save.accXp===undefined?(save.xp-xpP):save.accXp)+xpG;if(passLevel()>lvBefore)unl.push({t:'pass',l:passLevel()});
  if(ranked&&won)save.gems+=5;
  if(ROAD.some(r=>r.t>oldS&&r.t<=save.stars))unl.push({t:'road'});
- persist();if(RT.prof)apiCall('/api/profile','POST',{action:'sync',hero:save.hero,stars:save.stars});
+ persist();if(RT.prof)apiCall('/api/profile','POST',profSync());
  $('#hud').hidden=true;$('#joy').hidden=true;
  setTimeout(()=>showEnd({pl,pct,dS,co,reason,ranked,unl,wasDead,xpG,n:ents.filter(Boolean).length}),reason==='dead'?0:250);
 }
@@ -3806,6 +3822,7 @@ const endRot=e=>{if(!rot||e.pointerId!==rot.id)return;if(rot.moved<6&&detailChar
 cv.addEventListener('pointerup',endRot);cv.addEventListener('pointercancel',endRot);
 
 function setDot(id,n){const e=$('#'+id);if(!e)return;e.hidden=!n;e.textContent=n>9?'9+':n}
+function profSync(){return{action:'sync',hero:save.hero,stars:save.stars,x:{i:save.icon||('h:'+save.hero),t:save.title||'t0',w:save.wins||0,tw:save.teamWins||0,k:save.kills||0,g:save.games||0,hi:Math.max(save.hiStars||0,save.stars||0),l:accLv()[0]}}}
 function accLv(x){if(x===undefined)x=save.accXp===undefined?(save.xp||0):save.accXp;let l=1,need=100;while(x>=need&&l<500){x-=need;l++;need=100+40*(l-1)}return[l,x,need]}
 function updTop(){
  roomRetrack();$('#mCo').textContent=fmt(save.coins);$('#mGe').textContent=fmt(save.gems);
@@ -4113,7 +4130,11 @@ function renderRoadV(){
 }
 
 // CLASSEMENT
-let leadData=null,leadN=3,leadRow=null;const LMAX=1000;
+let leadData=null,leadN=3,leadRow=null;
+function placeMe(n){const bar=$('#sLead .lmeb'),pl=$('#bnPlay');if(!bar||!pl)return;const r=bar.getBoundingClientRect(),k=r.height/(bar.offsetHeight||1)||1,pt=pl.getBoundingClientRect().top;if(!pt||!r.height)return;
+ // corrige l'écart mesuré pour coller la barre juste au-dessus du bouton jouer
+ const cur=parseFloat(bar.style.bottom)||parseFloat(getComputedStyle(bar).bottom)||0,diff=(r.bottom-(pt-6))/k;if(Math.abs(diff)<1)return;bar.style.bottom=Math.max(0,cur+diff)+'px';if((n|0)<3)requestAnimationFrame(()=>placeMe((n|0)+1))}
+addEventListener('resize',()=>{if(tab==='lead')setTimeout(placeMe,120)});const LMAX=1000;
 // liste chargée par morceaux pendant le défilement (jusqu'au top 1000)
 function leadMore(upto){const bx=$('#lls'),d=leadData;if(!bx||!d||!d.top||!leadRow)return;const T=d.top,end=Math.min(T.length,Math.max(leadN+60,upto||0));if(leadN>=end)return;let h='';for(let i=leadN;i<end;i++)h+=leadRow(T[i],i+1,i);bx.insertAdjacentHTML('beforeend',h);leadN=end}
 async function renderLead(){
@@ -4121,12 +4142,12 @@ async function renderLead(){
   if(!d){h='<div class="ldspin"><span class="bt-spin"><i></i></span></div>'}
   else if(d.err){h=`<p class="notice s">${d.err}</p>`}
   else{const me=RT.prof?RT.prof.id:null,T=d.top,ix=new Map(T.map((p,i)=>[p,i]));
-   const pod=[1,0,2].map(k=>{const p=T[k];if(!p)return '<span class="pdc"></span>';return `<div class="pdc p${k+1}" data-lp="${k}"><span class="pdv s">${fmt(p.stars||0)}${ico('cup')}</span><span class="pd-wrap">${k===0?'<i class="pdk">'+img('p_crown')+'</i>':''}<span class="pda">${heroIcon(HE(p.hero||'cubo'),60)}</span></span><b class="pdn s">${esc(p.name||"")}</b><span class="pdb"><span class="pdm s">${k+1}</span></span></div>`}).join('');
-   const row=(p,rk,i)=>`<div class="lr ${p.id===me?'me':''}" ${i!=null?`data-lp="${i}"`:''}><span class="lrk s">${rk}</span><span class="lav">${heroIcon(HE(p.hero||'cubo'),46)}</span><b class="lnm s">${esc(p.name||"")}</b><span class="lem">${emblem(LG[leagueIdx(p.stars||0)])}</span><span class="lst s">${fmt(p.stars||0)}${ico('cup')}</span></div>`;
-   const mr=d.me&&d.me.rank,meRow=d.me?`<div class="lmeb"><small class="s">TON RANG</small><div class="lr me lmine" data-lme="1"><span class="lrk s ${String(mr||'').length>3?'lrl':''}">${mr?fmt(mr):'–'}</span><span class="lav">${heroIcon(HE(d.me.hero||save.hero||'cubo'),46)}</span><b class="lnm s">${esc(d.me.name||save.name||'')}</b><span class="lem">${emblem(LG[leagueIdx(d.me.stars||0)])}</span><span class="lst s">${fmt(d.me.stars||0)}${ico('cup')}</span></div></div>`:'';
+   const pod=[1,0,2].map(k=>{const p=T[k];if(!p)return '<span class="pdc"></span>';return `<div class="pdc p${k+1}" data-lp="${k}"><span class="pdv s">${fmt(p.stars||0)}${ico('cup')}</span><span class="pd-wrap">${k===0?'<i class="pdk">'+img('p_crown')+'</i>':''}<span class="pda">${iconHTML(p.icon||('h:'+(p.hero||'cubo')),'lb')}</span></span><b class="pdn s">${esc(p.name||"")}</b><span class="pdb"><span class="pdm s">${k+1}</span></span></div>`}).join('');
+   const row=(p,rk,i)=>`<div class="lr ${p.id===me?'me':''}" ${i!=null?`data-lp="${i}"`:''}><span class="lrk s">${rk}</span><span class="lav">${iconHTML(p.icon||('h:'+(p.hero||'cubo')),'lb')}</span><b class="lnm s">${esc(p.name||"")}</b><span class="lem">${emblem(LG[leagueIdx(p.stars||0)])}</span><span class="lst s">${fmt(p.stars||0)}${ico('cup')}</span></div>`;
+   const mr=d.me&&d.me.rank,meRow=d.me?`<div class="lmeb"><small class="s">TON RANG</small><div class="lr me lmine" data-lme="1"><span class="lrk s ${String(mr||'').length>3?'lrl':''}">${mr?fmt(mr):'–'}</span><span class="lav">${iconHTML(save.icon||d.me.icon||('h:'+(d.me.hero||save.hero||'cubo')),'lb')}</span><b class="lnm s">${esc(d.me.name||save.name||'')}</b><span class="lem">${emblem(LG[leagueIdx(d.me.stars||0)])}</span><span class="lst s">${fmt(d.me.stars||0)}${ico('cup')}</span></div></div>`:'';
    h=`<div class="pod">${pod}</div><div class="lpan"><h3 class="s">CLASSEMENT</h3><div class="lls" id="lls">${T.length>3?'':'<p class="note s">Pas encore d’autres joueurs</p>'}</div>${T.length>=LMAX?`<p class="lend s">Seuls les ${fmt(LMAX)} premiers sont affichés</p>`:''}</div>${meRow}`;
    leadRow=row}
-  show('#sLead',`<div class="sbody lds">${h}</div>`);leadN=3;const bx=$('#lls');if(bx&&d&&d.top&&d.top.length>3){bx.innerHTML='';leadMore();leadMore()}};
+  show('#sLead',`<div class="sbody lds">${h}</div>`);leadN=3;requestAnimationFrame(placeMe);const bx=$('#lls');if(bx&&d&&d.top&&d.top.length>3){bx.innerHTML='';leadMore();leadMore()}};
  draw();
  if(!RT.on){leadData={err:'Le classement mondial marche sur paint-clash.vercel.app.'};draw();return}
  try{const hd=AUTH&&AUTH.tok?{Authorization:'Bearer '+AUTH.tok}:{};const r=await fetch('/api/leaderboard',{headers:hd});const j=await r.json();
@@ -4225,7 +4246,7 @@ async function rtStart(cfg){
 async function rtLogin(){if(!RT.on||!AUTH.on)return;
  const r=await apiCall('/api/profile?name='+encodeURIComponent(save.name||''),'GET');if(r.status!==200)return;
  RT.prof=r.j;save.name=RT.prof.name;try{localStorage.setItem('paintclash_v2',JSON.stringify(save))}catch(_){}
- apiCall('/api/profile','POST',{action:'sync',hero:save.hero,stars:save.stars});
+ apiCall('/api/profile','POST',profSync());
  const pid=RT.prof.id;
  if(RT.online)try{RT.sb.removeChannel(RT.online)}catch(_){}
  if(RT.inbox)try{RT.sb.removeChannel(RT.inbox)}catch(_){}
@@ -4325,9 +4346,11 @@ $('#sProf').addEventListener('click',e=>{const b=e.target.closest('button');if(!
 let memSel=null;
 function memMenu(m){memSel=m;const me=m.sid===SID;$('#memName').innerHTML=esc(m.name)+(m.tag?`<em class="tg">#${m.tag}</em>`:'');
  $('#memKick').hidden=me||!m.sid||!ROOM||!ROOM.host;$('#memM').hidden=false}
-function memProfile(m){const L=LG[leagueIdx(m.stars||0)];$('#memM').hidden=true;
- $('#mpBox').innerHTML=`<div class="mpc">${iconHTML(m.icon||('h:'+(m.hero||'cubo')),'big')}<div><b class="s">${esc(m.name)}${m.tag?`<em class="tg">#${m.tag}</em>`:''}</b><small class="s">${esc((TITLES.find(t=>t.id===m.title)||TITLES[0]).n)}</small></div><span class="pemb">${emblem(L)}</span></div>
-  <div class="pst s"><div>${ico('cup')}<small>Trophées</small><b>${fmt(m.stars||0)}</b></div><div>${ico('star')}<small>Victoires solo</small><b>${fmt(m.wins||0)}</b></div><div><img class="fsk" src="ui/n_skull.png" alt=""><small>Éliminations</small><b>${fmt(m.kills||0)}</b></div></div>
+function memProfile(m){const L=LG[leagueIdx(m.stars||0)],me=RT.prof&&m.id===RT.prof.id,v=k=>me?(k==='wins'?save.wins:k==='kills'?save.kills:k==='games'?save.games:k==='tw'?save.teamWins:k==='hi'?Math.max(save.hiStars||0,save.stars):k==='lvl'?accLv()[0]:0)||0:(m[k]||0);$('#memM').hidden=true;
+ const ic=me?save.icon:m.icon,ti=me?save.title:m.title;
+ $('#mpBox').innerHTML=`<div class="mpc">${iconHTML(ic||('h:'+(m.hero||'cubo')),'big')}<div><b class="s">${esc(m.name)}${m.tag?`<em class="tg">#${m.tag}</em>`:''}</b><small class="s">${esc((TITLES.find(t=>t.id===ti)||TITLES[0]).n)}</small></div><span class="pemb">${emblem(L)}</span></div>
+  <div class="pst s mpst"><div>${ico('cup')}<small>Trophées</small><b>${fmt(m.stars||0)}</b></div><div>${ico('cup')}<small>Record</small><b>${fmt(Math.max(v('hi'),m.stars||0))}</b></div><div>${ico('star')}<small>Niveau</small><b>${fmt(v('lvl')||1)}</b></div>
+  <div>${img('p_crown')}<small>Victoires solo</small><b>${fmt(v('wins'))}</b></div><div>${img('p_crown')}<small>Victoires équipe</small><b>${fmt(v('tw'))}</b></div><div><img class="fsk" src="ui/n_skull.png" alt=""><small>Éliminations</small><b>${fmt(v('kills'))}</b></div><div>${img('p_swords')}<small>Parties</small><b>${fmt(v('games'))}</b></div></div>
   <div class="mphero">${heroIcon(HE(m.hero||'cubo'))}</div>`;$('#mpM').hidden=false}
 function openInvite(){if(!AUTH.on||!RT.prof){openParty();return}const fr=RT.friends.filter(p=>isOn(p.id));
  $('#invList').innerHTML=fr.length?fr.map(p=>`<div class="friend on"><span class="dot"></span>${heroIcon(HE(p.hero||'cubo'),34)}<span class="fn s"><b>${handle(p)}</b><small>En ligne</small></span><button class="btn btn-green" data-qinv="${p.id}">INVITER</button></div>`).join(''):'<p class="note s">Aucun ami en ligne pour le moment.</p>';$('#invite').hidden=false;loadFriends()}

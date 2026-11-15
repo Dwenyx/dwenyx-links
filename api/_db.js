@@ -27,4 +27,22 @@ export async function meProfile(sub) {
   const r = await db('profiles?sub_hash=eq.' + subHash(sub) + '&select=id,name,tag,name_changed_at,hero,stars');
   return r.ok && r.data && r.data[0] ? r.data[0] : null;
 }
-export const pub = p => ({ id: p.id, name: p.name, tag: p.tag, hero: p.hero, stars: p.stars });
+// hero = "<id>~<json>" : l'id du héros + les infos publiques du profil (photo, titre, stats)
+export function splitHero(v) {
+  const s = String(v || 'cubo'), i = s.indexOf('~');
+  let x = {}; if (i >= 0) { try { x = JSON.parse(s.slice(i + 1)) || {}; } catch (_) { x = {}; } }
+  return { hero: (i >= 0 ? s.slice(0, i) : s) || 'cubo', x };
+}
+const n = v => Math.max(0, Math.min(1e9, Math.floor(+v || 0)));
+export const pub = p => {
+  const { hero, x } = splitHero(p.hero);
+  return { id: p.id, name: p.name, tag: p.tag, hero, stars: p.stars, icon: typeof x.i === 'string' ? x.i : undefined, title: typeof x.t === 'string' ? x.t : undefined,
+    wins: n(x.w), teamWins: n(x.tw), tw: n(x.tw), kills: n(x.k), games: n(x.g), hi: n(x.hi), lvl: n(x.l) || 1 };
+};
+export function packHero(hero, x) {
+  const h = String(hero || 'cubo').replace(/[^a-z0-9_]/gi, '').slice(0, 20) || 'cubo';
+  if (!x || typeof x !== 'object') return h;
+  const ok = v => typeof v === 'string' && /^[a-z0-9_:]{1,30}$/i.test(v) ? v : undefined;
+  const o = { i: ok(x.i), t: ok(x.t), w: n(x.w), tw: n(x.tw), k: n(x.k), g: n(x.g), hi: n(x.hi), l: n(x.l) };
+  return h + '~' + JSON.stringify(o);
+}

@@ -1,7 +1,7 @@
 import { verifyGoogle } from './_auth.js';
-import { db, dbReady, subHash, cleanName, randTag, readBody, meProfile, NAME_RE } from './_db.js';
+import { db, dbReady, subHash, cleanName, randTag, readBody, meProfile, NAME_RE, splitHero, packHero } from './_db.js';
 const DAY = 86400000, LOCK = 30 * DAY;
-const out = p => ({ id: p.id, name: p.name, tag: p.tag, hero: p.hero, stars: p.stars, nextRename: new Date(p.name_changed_at).getTime() + LOCK });
+const out = p => ({ id: p.id, name: p.name, tag: p.tag, hero: splitHero(p.hero).hero, stars: p.stars, nextRename: new Date(p.name_changed_at).getTime() + LOCK });
 
 async function createProfile(sub, wanted) {
   const name = cleanName(wanted);
@@ -32,7 +32,7 @@ export default async function handler(req, res) {
   if (!p) return res.status(404).json({ error: 'no-profile' });
 
   if (b.action === 'sync') {
-    const hero = String(b.hero || 'cubo').slice(0, 20), stars = Math.max(0, Math.min(1e6, b.stars | 0));
+    const hero = packHero(b.hero, b.x), stars = Math.max(0, Math.min(1e6, b.stars | 0));
     await db('profiles?id=eq.' + p.id, { method: 'PATCH', body: { hero, stars } });
     return res.status(200).json({ ok: true });
   }
