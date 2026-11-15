@@ -1,11 +1,11 @@
 import { verifyGoogle } from './_auth.js';
 import { db, dbReady, meProfile, pub } from './_db.js';
 
-// Classement mondial par trophées (top 100) + le rang du joueur connecté.
+// Classement mondial par trophées (top 1000) + le rang du joueur connecté.
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
   if (!dbReady()) return res.status(503).json({ error: 'db-not-configured' });
-  const r = await db('profiles?select=id,name,tag,hero,stars&order=stars.desc,created_at.asc&limit=100');
+  const r = await db('profiles?select=id,name,tag,hero,stars&order=stars.desc,created_at.asc&limit=1000');
   if (!r.ok) return res.status(500).json({ error: 'db' });
   const top = (r.data || []).map(pub);
   let me = null, around = null;
