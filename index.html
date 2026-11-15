@@ -2628,7 +2628,11 @@ vec3 jelly(vec3 p){float h=clamp(p.y+0.5,0.0,1.4);float hh=h*h;
  p.x+=uWob*sin(p.y*7.0+uT*18.0)*0.03*h;p.z+=uWob*cos(p.y*6.0+uT*15.0)*0.03*h;return p;}
 `;
 // pre: code GLSL qui transforme q avant la gelée (clignement des yeux, regard)
-function jellyMat(base,J,push,pre){base.onBeforeCompile=s=>{Object.assign(s.uniforms,J);s.vertexShader=JELLY_VS+'\n'+s.vertexShader.replace('#include <begin_vertex>',`vec3 q=position${push?'+normal*'+push.toFixed(3):''};${pre||''}vec3 transformed=jelly(q);`)};base.customProgramCacheKey=()=>'jelly'+(push||0)+(pre||'');return base}
+function jellyMat(base,J,push,pre){base.onBeforeCompile=s=>{Object.assign(s.uniforms,J);if(base.userData.frag)base.userData.frag(s);s.vertexShader=JELLY_VS+'\n'+s.vertexShader.replace('#include <begin_vertex>',`vec3 q=position${push?'+normal*'+push.toFixed(3):''};${pre||''}vec3 transformed=jelly(q);`)};base.customProgramCacheKey=()=>'jelly'+(push||0)+(pre||'')+(base.userData.frag?'soft':'');return base}
+// matière douce et brillante (pâte à modeler / bonbon) : dégradé lisse, reflet, bord lumineux
+function softMat(col,o={}){const c=new THREE.Color(col),m=new THREE.MeshPhongMaterial({color:c,emissive:c.clone().multiplyScalar(o.em==null?.32:o.em),specular:new THREE.Color(o.sp==null?0x3a3a3a:o.sp),shininess:o.sh||38});
+ m.userData.frag=s=>{s.fragmentShader=s.fragmentShader.replace('#include <output_fragment>',`{vec3 vv=normalize(vViewPosition);float rim=pow(1.0-clamp(abs(dot(normalize(normal),vv)),0.0,1.0),2.6);outgoingLight=mix(outgoingLight,min(vec3(1.0),diffuseColor.rgb*1.25+0.22),rim*${(o.rim==null?.55:o.rim).toFixed(2)});}
+#include <output_fragment>`)};return m}
 const JG=(()=>{const box=roundedBox(1,1,1,.3,7);
  // yeux « cuits » dans le repère du héros et COLLÉS à la peau : chaque sommet est projeté sur la surface
  const RN=6,SG=40,disc=(()=>{const P=[0,0],I=[];for(let r=1;r<=RN;r++)for(let k=0;k<SG;k++){const a=k/SG*Math.PI*2;P.push(Math.cos(a)*r/RN,Math.sin(a)*r/RN)}
@@ -2642,7 +2646,7 @@ const JG=(()=>{const box=roundedBox(1,1,1,.3,7);
  const e=eyes(cubeSurf,1.35,.205,.06);
  return Object.assign({box,eyes,hl:new THREE.SphereGeometry(.09,12,8),hl2:new THREE.SphereGeometry(.04,8,6)},e)})();
 // héros Donut : un vrai donut carré (trou arrondi), glaçage rose épais qui déborde et coule, pâte dorée
-const DON={yb:-.5,dt:-.26,ib:-.32,it:0,O:.47,BV:.07,EY:-.155};
+const DON={yb:-.5,dt:-.24,ib:-.31,it:0,O:.47,BV:.075,EY:-.155};
 function smoothNormals(g){const p=g.attributes.position,n=g.attributes.normal,map=new Map(),key=i=>`${Math.round(p.getX(i)*1e4)},${Math.round(p.getY(i)*1e4)},${Math.round(p.getZ(i)*1e4)}`,F=new Float32Array(n.array);
  for(let i=0;i<p.count;i++){const k=key(i);let a=map.get(k);if(!a){a=[];map.set(k,a)}a.push(i)}
  // moyenne seulement des faces voisines proches (évite les taches sombres sur les grands flancs plats)
@@ -2654,40 +2658,45 @@ function donutGeo(){if(DG)return DG;
  const ring=(outer,ro,hole,rh,y0,y1,bv)=>{const sh=rr(new THREE.Shape(),outer-bv,ro);sh.holes.push(rr(new THREE.Path(),hole+bv,rh));
   const g=new THREE.ExtrudeGeometry(sh,{depth:Math.max(.01,y1-y0-2*bv),bevelEnabled:true,bevelThickness:bv,bevelSize:bv,bevelSegments:5,curveSegments:10});g.rotateX(-Math.PI/2);g.translate(0,y0+bv,0);
   const r=g.index?g.toNonIndexed():g;smoothNormals(r);return r};
- const dough=ring(.445,.14,.16,.07,DON.yb,DON.dt,.065);
- const ice=[ring(DON.O,.15,.16,.07,DON.ib,DON.it,DON.BV)];
+ const dough=ring(.445,.16,.1,.05,DON.yb,DON.dt,.075);
+ const ice=[ring(DON.O,.17,.1,.05,DON.ib,DON.it,DON.BV)];
  // coulures arrondies collées sur les flancs (pas devant les yeux)
  let rs=5;const rnd=()=>(rs=(rs*9301+49297)%233280)/233280;
  const sides=[[1,0],[-1,0],[0,1],[0,-1]];
- sides.forEach(([sx,sz])=>{const front=sz===1;const slots=front?[-.31,.31]:[-.3,-.1,.1,.3];
-  slots.forEach(t=>{if(rnd()<.2&&!front)return;const L=.05+rnd()*.05,w=.08+rnd()*.05,g=roundedBox(w,L+.05,.05,.025,3).toNonIndexed();
-   const off=DON.O-.018,y=DON.ib+.04-(L+.05)/2;const m=new THREE.Matrix4();
-   if(sz){m.makeTranslation(t,y,sz*off)}else{m.makeRotationY(Math.PI/2);m.setPosition(sx*off,y,t)}g.applyMatrix4(m);ice.push(g)})});
+ // coulures : bandes arrondies au bout, plaquées sur le flanc, de longueurs variées (comme du vrai glaçage)
+ const cap=(w,L,d)=>{const r=w/2,sh=new THREE.Shape();sh.moveTo(-r,0);sh.lineTo(-r,-L+r);sh.absarc(0,-L+r,r,Math.PI,Math.PI*2,false);sh.lineTo(r,0);sh.lineTo(-r,0);
+  const g=new THREE.ExtrudeGeometry(sh,{depth:d,bevelEnabled:true,bevelThickness:.012,bevelSize:.012,bevelSegments:3,curveSegments:10});return smoothNormals(g.index?g.toNonIndexed():g)};
+ [[0,1],[1,0],[0,-1],[-1,0]].forEach(([sx,sz],si)=>{const n=4;for(let q=0;q<n;q++){const t=-.26+q*(.52/(n-1))+(rnd()-.5)*.04;if(rnd()<.15)continue;
+   const w=.06+rnd()*.035,L=.07+rnd()*.12,g=cap(w,L,.02),m=new THREE.Matrix4(),top=DON.ib+.05;
+   const ry=sz?(sz>0?0:Math.PI):(sx>0?Math.PI/2:-Math.PI/2);m.makeRotationY(ry);const out=DON.O-.022;m.setPosition(sx?sx*out:t,top,sz?sz*out:t);
+   // l'extrusion part de la face vers l'extérieur
+   g.applyMatrix4(m);ice.push(g)}});
  const icing=catGeo(ice);
  DG={dough,icing,all:catGeo([dough,icing])};return DG}
 let DSPR=null;
 function donutSpr(){if(DSPR)return DSPR;const cols=[0xffffff,0x4fd0ff,0xffe14a,0x7cf05a,0xff4d5e,0xb07bff,0xff9a2a],P=[],Nn=[],C=[],I=[],pts=[];
- let rs=11;const rnd=()=>(rs=(rs*9301+49297)%233280)/233280;const g=roundedBox(.11,.034,.036,.016,2),m=new THREE.Matrix4(),q1=new THREE.Quaternion(),up=new THREE.Vector3(0,1,0),pos=new THREE.Vector3(),one=new THREE.Vector3(1,1,1),col=new THREE.Color(),nm=new THREE.Matrix3();
- for(let k=0;k<600&&pts.length<16;k++){const x=(rnd()*2-1)*.37,z=(rnd()*2-1)*.37,mx=Math.max(Math.abs(x),Math.abs(z));if(mx<.29||mx>.37)continue;if(pts.some(p=>Math.hypot(p[0]-x,p[1]-z)<.11))continue;pts.push([x,z]);
+ let rs=11;const rnd=()=>(rs=(rs*9301+49297)%233280)/233280;const g=roundedBox(.1,.04,.042,.019,3),m=new THREE.Matrix4(),q1=new THREE.Quaternion(),up=new THREE.Vector3(0,1,0),pos=new THREE.Vector3(),one=new THREE.Vector3(1,1,1),col=new THREE.Color(),nm=new THREE.Matrix3();
+ for(let k=0;k<600&&pts.length<20;k++){const x=(rnd()*2-1)*.37,z=(rnd()*2-1)*.37,mx=Math.max(Math.abs(x),Math.abs(z));if(mx<.22||mx>.37)continue;if(pts.some(p=>Math.hypot(p[0]-x,p[1]-z)<.11))continue;pts.push([x,z]);
   q1.setFromAxisAngle(up,rnd()*Math.PI);pos.set(x,DON.it+.012,z);m.compose(pos,q1,one);nm.getNormalMatrix(m);col.set(cols[pts.length%cols.length]);
   const gp=g.attributes.position,gn=g.attributes.normal,o=P.length/3,v=new THREE.Vector3();
   for(let i=0;i<gp.count;i++){v.fromBufferAttribute(gp,i).applyMatrix4(m);P.push(v.x,v.y,v.z);v.fromBufferAttribute(gn,i).applyMatrix3(nm).normalize();Nn.push(v.x,v.y,v.z);C.push(col.r,col.g,col.b)}
   g.index.array.forEach(ii=>I.push(ii+o))}
  const r=new THREE.BufferGeometry();r.setAttribute('position',new THREE.Float32BufferAttribute(P,3));r.setAttribute('normal',new THREE.Float32BufferAttribute(Nn,3));r.setAttribute('color',new THREE.Float32BufferAttribute(C,3));r.setIndex(I);return DSPR=r}
-const eyePre=(ey,pup)=>{const c=ey.toFixed(3);return `q.y=${c}+(q.y-(${c}))*uBl;`+(pup?'q.x+=uLk;':'')};
-let DEYES=null;const donutEyes=()=>DEYES||(DEYES=JG.eyes((x,y)=>{const b=DON.BV,c1=DON.it-b,c0=DON.ib+b;let dy=y>c1?y-c1:y<c0?y-c0:0;dy=Math.max(-b*.98,Math.min(b*.98,dy));const dz=Math.sqrt(b*b-dy*dy);return[DON.O-b+dz,new THREE.Vector3(0,dy,dz).normalize()]},.74,.155,DON.EY));
+const eyePre=(ey,pup,flat)=>{const c=ey.toFixed(3);return `q.y=${c}+(q.y-(${c}))*uBl;`+(pup?(flat?'q.x+=uLk;':'{float _o=q.x;q.x+=uLk;vec2 _a=max(vec2(0.0),abs(vec2(_o,q.y))-0.2),_b=max(vec2(0.0),abs(q.xy)-0.2);q.z+=sqrt(max(0.0,0.09-dot(_b,_b)))-sqrt(max(0.0,0.09-dot(_a,_a)));}'):'')};
+let DEYES=null;const donutEyes=()=>DEYES||(DEYES=JG.eyes((x,y)=>{const b=DON.BV,c1=DON.it-b,c0=DON.ib+b;let dy=y>c1?y-c1:y<c0?y-c0:0;dy=Math.max(-b*.98,Math.min(b*.98,dy));const dz=Math.sqrt(b*b-dy*dy);return[DON.O-b+dz,new THREE.Vector3(0,dy,dz).normalize()]},.72,.118,DON.EY));
 function makeChar(h,label,me){
  const g=new THREE.Group(),inner=new THREE.Group();g.add(inner);inner.scale.setScalar(.86);
  const J={uSh:{value:new THREE.Vector2()},uSq:{value:0},uWob:{value:0},uT:{value:0},uBl:{value:1},uLk:{value:0}};
  const palm=new THREE.Group();palm.position.y=.5;inner.add(palm);
  const add=(geo,mat)=>{const m=new THREE.Mesh(geo,mat);m.frustumCulled=false;palm.add(m);return m};
  const DN=h.look==='donut',BG=DN?donutGeo():null,body=DN?BG.all:JG.box;
- if(DN){add(BG.dough,jellyMat(new THREE.MeshToonMaterial({color:0xf2be78,gradientMap:gm,emissive:0x2a1406}),J));add(BG.icing,jellyMat(new THREE.MeshToonMaterial({color:0xff8ccd,gradientMap:gm,emissive:0x2a0a1c}),J));add(donutSpr(),jellyMat(new THREE.MeshBasicMaterial({vertexColors:true}),J))}
- else add(JG.box,jellyMat(new THREE.MeshToonMaterial({color:h.color,gradientMap:gm,emissive:new THREE.Color(h.color).multiplyScalar(.1)}),J));
+ if(DN){add(BG.dough,jellyMat(softMat(0xf7cf98,{em:.36}),J));add(BG.icing,jellyMat(softMat(0xff96d2,{em:.3,sh:60,sp:0x555555}),J));const sm=softMat(0xffffff,{em:.05,rim:.25,sh:50});sm.vertexColors=true;add(donutSpr(),jellyMat(sm,J))}
+ else add(JG.box,jellyMat(softMat(h.color),J));
  const hull=add(body,jellyMat(new THREE.MeshBasicMaterial({color:0x0b0b19,side:THREE.BackSide}),J,.04));hull.visible=false;
  const mk=add(body,jellyMat(new THREE.MeshBasicMaterial({color:0xffffff}),J));mk.layers.set(3);
  const EM=(c,pre)=>jellyMat(new THREE.MeshBasicMaterial({color:c}),J,0,pre);
- const EG=DN?donutEyes():JG,EP=eyePre(EG.ey),PP=eyePre(EG.ey,1);
+ if(DN)palm.scale.setScalar(1.14);
+ const EG=DN?donutEyes():JG,EP=eyePre(EG.ey),PP=eyePre(EG.ey,1,DN);
  add(EG.eo,EM(0x0b0b19,EP));add(EG.eb,EM(0xbfe0ff,EP));add(EG.ew,EM(0xffffff,EP));add(EG.ep,EM(0x1d4b8f,PP));add(EG.es,EM(0xffffff,PP));
  const hat=new THREE.Group();palm.add(hat);addHat(hat,h,0);hat.traverse(o=>{if(o.isMesh)o.layers.enable(1)});
  const shd=new THREE.Mesh(G.shadow,SHADOW);shd.rotation.x=-Math.PI/2;shd.position.y=.03;shd.scale.setScalar(.8);g.add(shd);
@@ -2701,7 +2710,7 @@ function animChar(v,dt,moving,t){
  // lobby : petites animations automatiques (saut, secousse, écrasement, regard)
  if(v.auto&&!moving&&dt>0){if(v.idleT===undefined)v.idleT=1.2+Math.random()*1.5;v.idleT-=dt;
   if(v.idleT<=0&&t-v.jump>.9){const r=Math.random();v.idleT=1.8+Math.random()*2.6;
-   if(r<.36)v.jump=t;else if(r<.64){v.wig=t;v.wigS=Math.random()<.5?-1:1}else if(r<.84){v.sqv-=5.5;v.shv.y+=.5}else{v.lk=1.4;v.lkx=(Math.random()<.5?-1:1)*.045;v.shv.x+=(v.lkx>0?1:-1)*.9}}}
+   if(r<.36)v.jump=t;else if(r<.64){v.wig=t;v.wigS=Math.random()<.5?-1:1}else if(r<.84){v.sqv-=5.5;v.shv.y+=.5}else{v.lk=1.4;v.lkx=(Math.random()<.5?-1:1)*.03;v.shv.x+=(v.lkx>0?1:-1)*.9}}}
  // saut : rebond gélatineux (écrasé -> étiré -> écrasé à l'atterrissage), sans vrille
  const jt=t-v.jump,JD=.66;let jy=0;v.inner.rotation.y=0;
  if(jt>=0&&jt<JD){const p=jt/JD;
@@ -2734,11 +2743,11 @@ function animChar(v,dt,moving,t){
  const hh=1,sy=1+v.sq,sxx=1/Math.sqrt(Math.max(.3,sy));v.hat.position.set(v.sh.x*hh,sy-.5,v.sh.y*hh);v.hat.rotation.z=-v.sh.x*1.6;v.hat.rotation.x=v.sh.y*1.6;v.hat.scale.set(sxx,1,sxx);
  // yeux : clignement + regard
  v.blink-=dt;const bl=v.blink<0?.12:1;if(v.blink<-.12)v.blink=2+Math.random()*3;J.uBl.value+=(bl-J.uBl.value)*Math.min(1,dt*30);
- v.lk-=dt;if(v.lk<0){v.lk=.7+Math.random()*1.5;v.lkx=(Math.random()*2-1)*.03}J.uLk.value+=(Math.max(-.045,Math.min(.045,v.lkx-v.sh.x*.05))-J.uLk.value)*Math.min(1,dt*10);
+ v.lk-=dt;if(v.lk<0){v.lk=.7+Math.random()*1.5;v.lkx=(Math.random()*2-1)*.026}J.uLk.value+=(Math.max(-.03,Math.min(.03,v.lkx-v.sh.x*.05))-J.uLk.value)*Math.min(1,dt*10);
 }
 
 // portraits 3D des héros (rendu une fois par héros, avec sa peau, sa tenue et ses accessoires)
-const SHOTS={},SHOT_KEY='pc_shots_v6';let HR=null,HS=null,HC=null;try{Object.assign(SHOTS,JSON.parse(localStorage.getItem(SHOT_KEY)||'{}'))}catch(_){}
+const SHOTS={},SHOT_KEY='pc_shots_v7';let HR=null,HS=null,HC=null;try{Object.assign(SHOTS,JSON.parse(localStorage.getItem(SHOT_KEY)||'{}'))}catch(_){}
 const SHOTQ=[];let shotBusy=false;const idle=f=>(window.requestIdleCallback?requestIdleCallback(f,{timeout:150}):setTimeout(f,30));
 function queueShot(h){if(SHOTS[h.id]||SHOTQ.includes(h))return;SHOTQ.push(h);if(!shotBusy){shotBusy=true;idle(shotStep)}}
 function shotStep(){const h=SHOTQ.shift();if(h){const u=heroShot(h);if(u){const bu=shotUrl(h.id);document.querySelectorAll(`img[data-shot="${h.id}"]`).forEach(im=>{im.src=bu;im.classList.remove('ld')})}}
