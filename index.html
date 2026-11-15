@@ -2196,6 +2196,46 @@ html.wk .stitle .f{filter:drop-shadow(2.5px 0 0 #fff) drop-shadow(-2.5px 0 0 #ff
 #bnav .bnind{border:0!important;border-radius:0!important;background:#487ce9!important;box-shadow:none!important;top:0!important;
  transition:transform .46s cubic-bezier(.22,1,.36,1),opacity .25s ease!important;will-change:transform;backface-visibility:hidden}
 #bnav .bn .ic{transition:transform .42s cubic-bezier(.22,1.35,.36,1)!important}
+/* ===== cartes héros v2 : couleur par rareté, bas de carte unifié, reflet signature ===== */
+.hero{gap:0!important}
+.hcard.r0{background:linear-gradient(170deg,#4fe2ff,#1f8cff 70%,#1a6ff0)!important}
+.hcard.r1{background:linear-gradient(170deg,#b8ff7a,#4fd12e 65%,#2fae1f)!important;border-color:#f0ffe6!important}
+.hcard.r2{background:linear-gradient(165deg,#ff8af0,#d24dff 55%,#9a2cf2)!important;border-color:#ffe6fb!important}
+.hcard.r3{border-color:#fff!important;background:
+ linear-gradient(125deg,rgba(255,255,255,.55) 0 8%,transparent 8% 20%,rgba(255,255,255,.35) 20% 24%,transparent 24% 52%,rgba(255,255,255,.3) 52% 57%,transparent 57%),
+ linear-gradient(160deg,#ff9be6,#ffd36b 22%,#9cf6a1 42%,#7fe3ff 62%,#a99bff 80%,#ff9be6)!important;background-size:100% 100%,240% 240%!important;animation:holo 6s ease-in-out infinite}
+@keyframes holo{0%,100%{background-position:0 0,0% 0%}50%{background-position:0 0,100% 100%}}
+.hcard.r3 .lv{color:#ffe84a!important}
+.hcard.r3{box-shadow:0 0 0 2.5px #2b4bb8,0 6px 0 #1d2f8f,0 0 18px rgba(255,220,120,.55)!important}
+/* touche unique : un éclat lumineux qui balaie la carte de temps en temps + petites étoiles */
+.hcard:not(.lock) .hcimg::before{content:"";position:absolute;inset:-20% -60%;z-index:3;background:linear-gradient(105deg,transparent 42%,rgba(255,255,255,.55) 50%,transparent 58%);transform:translateX(-70%);animation:hsweep 5.5s ease-in-out infinite;animation-delay:var(--sd,0s);pointer-events:none}
+@keyframes hsweep{0%,72%{transform:translateX(-70%)}88%,100%{transform:translateX(70%)}}
+.hcard:not(.lock)::after{content:"";position:absolute;inset:0;border-radius:17px;pointer-events:none;z-index:1;background:radial-gradient(circle,rgba(255,255,255,.5) 0 1.2px,transparent 2px) 0 0/22px 22px;-webkit-mask:linear-gradient(transparent 55%,#000);mask:linear-gradient(transparent 55%,#000);opacity:.6}
+/* bas de carte : même cadre et même taille pour tous les états, pointe qui ne touche pas la carte */
+.hfoot{position:relative;margin-top:16px;height:58px;box-sizing:border-box;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;width:100%;font:inherit;color:#fff;border:0;padding:0 6px;
+ background:#2742c9;box-shadow:inset 0 -4px 0 rgba(0,0,30,.25)}
+.hfoot::before{content:"";position:absolute;left:50%;top:-8px;width:16px;height:16px;transform:translateX(-50%) rotate(45deg);border-radius:3px 0 0 0;background:inherit;z-index:0}
+.hfoot>*{position:relative;z-index:1}
+.hmax,.hlockc{font-size:clamp(13px,3.6vw,17px);text-align:center;line-height:1.05}
+.hlockc .ic,.hlockc img{width:22px;height:22px;vertical-align:-4px}
+.hup,.hbuy{cursor:pointer;background:linear-gradient(#dcff93,#8be84f 45%,#5fcf33)!important;border:3px solid #0b0b19;box-shadow:inset 0 -5px 0 rgba(30,120,0,.35),0 4px 0 #0b0b19}
+.hup::before,.hbuy::before{background:#dcff93;border-left:3px solid #0b0b19;border-top:3px solid #0b0b19;top:-10px}
+.hbuy{background:linear-gradient(#ffa1f5,#e256ff 45%,#a83bff)!important;box-shadow:inset 0 -5px 0 rgba(90,0,140,.35),0 4px 0 #0b0b19}
+.hbuy::before{background:#ffa1f5}
+.hup span,.hbuy span{font-size:clamp(11px,3vw,14px);line-height:1}
+.hup b,.hbuy b{font-size:clamp(17px,5vw,24px);line-height:1;display:flex;align-items:center;gap:3px;font-weight:400}
+.hup b .ic,.hup b img{width:1.05em;height:1.05em}
+.hup.poor{filter:saturate(.35) brightness(.9)}
+.hup:active,.hbuy:active{transform:translateY(2px) scale(.97)}
+.hcards{padding:0 8px}
+.hcb{position:relative;display:block;width:100%;height:30px;border-radius:9px;background:#13237e;border:2.5px solid #0b0b19;overflow:hidden}
+.hcb i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(#ffe86a,#ffc21a);border-radius:0}
+.hcb em{position:relative;display:block;text-align:center;font-style:normal;font-size:clamp(14px,4vw,19px);line-height:26px;padding-left:22px;color:#fff;z-index:1}
+.hcb .hci{position:absolute;left:4px;top:3px;width:15px;height:20px;border-radius:3px;background:linear-gradient(#8fd8ff,#2f8cff);border:2px solid #fff;box-shadow:0 0 0 1.5px #0b0b19;z-index:2}
+.hero .cbar,.hero>.hbtn,.hero>.maxed{display:none!important}
+.hero:nth-child(3n+2) .hcard{--sd:1.4s}.hero:nth-child(3n) .hcard{--sd:2.8s}.hgrid:nth-of-type(2n) .hcard{--sd:.7s}
+.hcard.lock.r0,.hcard.lock.r1,.hcard.lock.r2,.hcard.lock.r3{background:linear-gradient(#2d3fc9,#1f2ea8)!important;border-color:#3b4fd8!important;animation:none;box-shadow:0 0 0 2.5px #18237a,0 6px 0 #141d6a!important}
+.hcard.lock .hcimg .cube.h3d{opacity:.22!important}
 </style>
 
 <div id="bg"><div class="halo"></div></div>
@@ -3986,11 +4026,12 @@ function renderHeroes(){
  RAR.forEach((r,ri)=>{const list=HEROES.filter(x=>x.rar===ri),got=list.filter(x=>save.owned.includes(x.id)).length;
   h+=`<div class="ribbon" style="background:linear-gradient(90deg,${r.c2},${r.c} 70%,#fff)">${cubeHTML(parseInt(r.c2.slice(1),16))}<span>${r.n}</span><span class="cnt">${got}/${list.length}</span></div><div class="hgrid">`;
   for(const x of list){const own=save.owned.includes(x.id),l=save.levels[x.id]||1,sel=save.hero===x.id,cost=upCost(l),can=own&&canUpH(x.id),cn=cardsOf(x.id),cneed=cardCost(l);
-   if(own){h+=`<div class="hero"><button class="hcard s ${sel?'sel':''}" style="--ca:${RAR[x.rar].ca};--cb:${RAR[x.rar].cb}" data-pick="${x.id}" aria-label="Voir ${x.name}"><span class="perk">${I[x.perk]}</span>${can?`<span class="up">${I.up}</span>`:''}<span class="hcimg">${heroIcon(x)}</span><span class="lv">Niveau <b>${l}</b></span>${sel?`<span class="chk">${I.check}</span>`:''}</button>`+
-    (l>=MAXLV?`<div class="maxed s">NIVEAU MAX</div>`:`<span class="cbar s ${cn>=cneed?'cfull':''}"><i style="width:${Math.min(100,cn/cneed*100)}%"></i><em>${cn}/${cneed}</em></span><button class="btn btn-green hbtn" data-up="${x.id}" ${can?'':'disabled'}><span>Améliorer</span><b>${fmt(cost)}${ico('coin')}</b></button>`)+`</div>`}
+   if(own){h+=`<div class="hero"><button class="hcard s r${x.rar} ${sel?'sel':''}" style="--ca:${RAR[x.rar].ca};--cb:${RAR[x.rar].cb}" data-pick="${x.id}" aria-label="Voir ${x.name}"><span class="perk">${I[x.perk]}</span>${can?`<span class="up">${I.up}</span>`:''}<span class="hcimg">${heroIcon(x)}</span><span class="lv">Niveau <b>${l}</b></span>${sel?`<span class="chk">${I.check}</span>`:''}</button>`+
+    (l>=MAXLV?`<div class="hfoot hmax s">NIVEAU MAX</div>`:cn>=cneed?`<button class="hfoot hup ${save.coins>=cost?'':'poor'}" data-up="${x.id}"><span class="s">Améliorer</span><b class="s">${fmt(cost)}${ico('coin')}</b></button>`
+     :`<div class="hfoot hcards"><span class="hcb"><span class="hci"></span><i style="width:${Math.min(100,cn/cneed*100)}%"></i><em class="s">${cn}/${cneed}</em></span></div>`)+`</div>`}
    else{const u=x.un;
-    h+=`<div class="hero"><button class="hcard lock s" style="--ca:${RAR[x.rar].ca};--cb:${RAR[x.rar].cb}" data-lock="${x.id}" aria-label="${x.name} verrouillé"><span class="perk">${I[x.perk]}</span><span class="hcimg">${heroIcon(x)}</span><span class="lk">${I.lock}</span><span class="lv">Verrouillé</span></button>`+
-    (u.stars||u.pass?`<div class="maxed s">${lockCond(u)}</div>`:`<button class="btn btn-premium hbtn" data-buy="${x.id}"><span>Débloquer</span><b>${lockCond(u)}</b></button>`)+`</div>`}}
+    h+=`<div class="hero"><button class="hcard lock s r${x.rar}" style="--ca:${RAR[x.rar].ca};--cb:${RAR[x.rar].cb}" data-lock="${x.id}" aria-label="${x.name} verrouillé"><span class="perk">${I[x.perk]}</span><span class="hcimg">${heroIcon(x)}</span><span class="lk">${I.lock}</span><span class="lv">Verrouillé</span></button>`+
+    (u.stars||u.pass?`<div class="hfoot hlockc s">${lockCond(u)}</div>`:`<button class="hfoot hbuy" data-buy="${x.id}"><span class="s">Débloquer</span><b class="s">${lockCond(u)}</b></button>`)+`</div>`}}
   h+='</div>'});
  show('#sHeroes',`<div class="sbody">${h}</div>`);
 }
