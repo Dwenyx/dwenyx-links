@@ -4334,12 +4334,20 @@ window.krPurchase=(id,tok)=>{GPB.busy=0;try{save.playTok=save.playTok||[];if(sav
  const r=RESS.find(q=>playId(q)===id);if(!r)return;save.gems+=r.give.gems||0;save.coins+=r.give.coins||0;persist();try{sfx.up()}catch(_){}if(tab==='shop')renderShop();updTop();try{rwFly(document.querySelector('#sShop')?.getBoundingClientRect()||{left:innerWidth/2,top:innerHeight/2,width:0,height:0},r.give)}catch(_){}banner('+'+r.give.gems+' GEMMES !',2200)};
 window.krPurchaseFail=k=>{GPB.busy=0;if(k==='pending')banner('PAIEMENT EN ATTENTE',2200);else if(k==='unavailable')banner('ACHAT INDISPONIBLE',2000)};
 setTimeout(playInit,1500);
+let WEBPAY=false;
+async function webBuy(r){if(!AUTH.tok){showLogin('Connecte-toi pour acheter des gemmes.');return}if(GPB.busy)return;GPB.busy=1;banner('OUVERTURE DU PAIEMENT…');
+ const x=await apiCall('/api/pay?a=checkout','POST',{pack:r.give.gems});GPB.busy=0;
+ if(x.status===200&&x.j&&x.j.url){location.href=x.j.url;return}banner(x.status===503?'PAIEMENT BIENTÔT DISPO':'PAIEMENT IMPOSSIBLE')}
+async function webClaim(){if(!AUTH.tok||GPB.app)return;const x=await apiCall('/api/pay?a=claim','GET');const n=x.status===200&&x.j?+x.j.gems||0:0;
+ if(n>0){save.gems=(save.gems||0)+n;persist();try{updTop()}catch(_){}if(tab==='shop')renderShop();banner('+'+n+' GEMMES !');}
+ else if(/[?&]paid=1/.test(location.search)&&!webClaim.n){webClaim.n=1;setTimeout(webClaim,3000)}
+ if(/[?&]paid=/.test(location.search)&&(n>0||webClaim.n>1))history.replaceState(null,'',location.pathname);if(webClaim.n)webClaim.n++}
 function pay(p){const cur=p.gems?'gems':'coins';if(save[cur]<p[cur]){sfx.tick();toast(cur==='gems'?'Pas assez de gemmes':'Pas assez de pièces');return false}save[cur]-=p[cur];return true}
 const priceTxt=p=>p.gems?`${ico('gem')}${fmt(p.gems)}`:`${ico('coin')}${fmt(p.coins)}`;
 $('#sShop').addEventListener('click',e=>{const b=e.target.closest('button');if(!b||b.disabled||b.hasAttribute('data-back')||b.hasAttribute('data-homeb'))return;ac();sfx.click();
  if(!b.dataset.stab&&!e.confirmed&&!(b.dataset.offer==='free')){const o=b.dataset.offer?dailyOffers().find(x=>x.id===b.dataset.offer):null,x=b.dataset.box?BOXES.find(q=>q.id===b.dataset.box):null,r=b.dataset.res?RESS.find(q=>q.id===b.dataset.res):null;
   const pr=o?o.price:x?x.price:r?r.price:null,nm=o?o.t:x?CH(x.id).n:r?(r.give.gems?`${r.t} gemmes`:`${r.t} pièces`):'';
-  if(pr&&pr.eur){if(r&&GPB.ok){askBuy(`<b>${nm}</b> pour <span class="bp">${GPB.price[playId(r)]||pr.eur}</span>`,()=>playBuy(r));return}if(GPB.app)playInit();askBuy(`<b>${nm}</b> pour <span class="bp">${pr.eur}</span><br><small>${GPB.app?'Paiement indisponible pour le moment, réessaie plus tard.':'Achat disponible dans l\'appli Android (Google Play).'}</small>`,()=>{});return}
+  if(pr&&pr.eur){if(r&&GPB.ok){askBuy(`<b>${nm}</b> pour <span class="bp">${GPB.price[playId(r)]||pr.eur}</span>`,()=>playBuy(r));return}if(r&&!GPB.app&&WEBPAY){askBuy(`<b>${nm}</b> pour <span class="bp">${pr.eur}</span><br><small>Paiement sécurisé par carte (Stripe)${AUTH.tok?'':' — connexion requise'}</small>`,()=>webBuy(r));return}if(GPB.app)playInit();askBuy(`<b>${nm}</b> pour <span class="bp">${pr.eur}</span><br><small>${GPB.app?'Paiement indisponible pour le moment, réessaie plus tard.':'Paiement par carte bientôt disponible.'}</small>`,()=>{});return}
   if(pr){askBuy(`Es-tu sûr de vouloir acheter <b>${nm}</b> pour <span class="bp">${priceTxt(pr)}</span> ?`,()=>{const ev=new MouseEvent('click',{bubbles:true});Object.defineProperty(ev,'confirmed',{value:true});b.dispatchEvent(ev)});return}}
  if(b.dataset.stab){shopJump(b.dataset.stab);return}
  if(b.dataset.offer){const o=dailyOffers().find(x=>x.id===b.dataset.offer);if(!o)return;
@@ -4836,12 +4844,12 @@ async function onCred(resp){let t=resp&&resp.credential,b=t&&(t.startsWith('s1.'
  if(r.j&&r.j.save){save=Object.assign(JSON.parse(JSON.stringify(DEF)),r.j.save);try{localStorage.setItem('paintclash_v2',JSON.stringify(save))}catch(_){}}
  else{if(freshAcc){const keep={};['lang','vol','mus','music','sfxv','sfx','quality','vib','mmSide','fps'].forEach(k=>{if(save[k]!==undefined)keep[k]=save[k]});save=Object.assign(JSON.parse(JSON.stringify(DEF)),keep);save.name='';try{localStorage.setItem('paintclash_v2',JSON.stringify(save))}catch(_){}}if(!save.name||save.name==='Dwenyx'||save.name==='Joueur')save.name=(AUTH.name||'Joueur').slice(0,12);AUTH.pending=true;cloudPush()}
  ensureMissions();
- $('#login').hidden=true;setSync('Sauvegardé');rtLogin();stageId=null;go('home');if(APPLOGIN&&AUTH.tok)appBack(AUTH.tok)}
+ $('#login').hidden=true;setSync('Sauvegardé');rtLogin();stageId=null;go('home');if(APPLOGIN&&AUTH.tok)appBack(AUTH.tok);setTimeout(webClaim,800)}
 function showLogin(msg){$('#login').hidden=false;$('#loginMsg').textContent=msg||'';
  const box=$('#gBtn');box.innerHTML='';if(APPV){box.innerHTML='<button class="btn btn-blue" id="appG" style="padding:12px 22px;font-size:18px">Continuer avec Google</button>';$('#appG').onclick=()=>{if(NATIVE_G()){nativeSignIn();return}location.href='https://paint-clash.vercel.app/?applogin=1'};return}try{google.accounts.id.renderButton(box,{theme:'filled_blue',size:'large',shape:'pill',text:'continue_with',locale:'fr',width:Math.min(300,innerWidth-80)})}catch(_){}}
 async function authInit(){
  let cfg=null;try{const r=await fetch('/api/config',{cache:'no-store'});if(r.ok)cfg=await r.json()}catch(_){}
- if(cfg)await rtStart(cfg);
+ if(cfg)await rtStart(cfg);WEBPAY=!!(cfg&&cfg.webPay);
  if(!cfg||!cfg.googleClientId){AUTH.ready=true;return}
  AUTH.cid=cfg.googleClientId;
  let ss=null;try{ss=localStorage.getItem('pc_sess')}catch(_){}
