@@ -12,8 +12,8 @@
 <meta name="application-name" content="Keyboard Rivals">
 <meta name="format-detection" content="telephone=no">
 <link rel="manifest" href="/manifest.json?v=2">
-<link rel="icon" type="image/png" href="/icon-192.png?v=2">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png?v=2">
+<link rel="icon" type="image/png" href="/icon-192.png?v=3">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png?v=3">
 <style>html{background:#d6e6ff}body{margin:0}</style>
 <title>Keyboard Rivals</title>
 <link rel="preload" as="image" href="ui/splash.jpg">
@@ -2415,12 +2415,12 @@ html.wk .stitle .f{filter:drop-shadow(2.5px 0 0 #fff) drop-shadow(-2.5px 0 0 #ff
 
 <div id="rotate"><div class="ph"></div><b class="s">TOURNE TON TÉLÉPHONE</b><small class="s">Keyboard Rivals se joue à la verticale</small></div>
 <div id="installM" class="modal" hidden><div class="mbox inst">
-  <img class="instIc" src="icon-192.png?v=2" alt="">
+  <img class="instIc" src="icon-192.png?v=3" alt="">
   <h2 class="s">INSTALLER KEYBOARD RIVALS</h2>
   <div id="instBody"></div>
   <button id="instOk" class="btn btn-green">OK</button>
 </div></div>
-<div id="installBar" class="instbar" hidden><img src="icon-192.png?v=2" alt=""><span class="s"><b>Keyboard Rivals</b><small>Installe l'appli : plein écran, plus fluide</small></span><button id="instGo" class="btn btn-yellow">INSTALLER</button><button id="instX" class="ib ib-x" aria-label="Plus tard"></button></div>
+<div id="installBar" class="instbar" hidden><img src="icon-192.png?v=3" alt=""><span class="s"><b>Keyboard Rivals</b><small>Installe l'appli : plein écran, plus fluide</small></span><button id="instGo" class="btn btn-yellow">INSTALLER</button><button id="instX" class="ib ib-x" aria-label="Plus tard"></button></div>
 <div id="chestM" class="modal cm" hidden><div class="cmrb"></div><div class="cmrb2"></div><div class="cmpat"></div><div class="cmrays"></div><span class="spk a"></span><span class="spk b"></span><span class="spk c"></span><span class="spk d"></span><div id="cBeam" class="cbeam"></div><canvas id="cCv" hidden></canvas><div id="cFlash" class="cflash"></div><div class="cbox"><div id="cTitle"></div><div class="cstage"><div id="cBurst" class="cburst"></div><img id="cImg" class="cimg" alt="Coffre"></div><div id="cHint" class="chint s">Touche le coffre pour l'ouvrir !</div><div id="cOrbs" class="corbs" hidden></div><div id="cRew" class="crew"></div><button id="cOk" class="btn btn-green cbtn" hidden>SUPER !</button></div></div>
 
 <div id="hud" class="screen" hidden>
@@ -2609,10 +2609,10 @@ const cv=$('#cv');
 if(/iPhone|iPad|iPod|Macintosh/.test(navigator.userAgent)&&!/Chrome\/|Chromium|Edg\//.test(navigator.userAgent))document.documentElement.classList.add('wk');
 const LOWDEV=matchMedia('(pointer:coarse)').matches||/android|iphone|ipad|mobile/i.test(navigator.userAgent);
 const R=new THREE.WebGLRenderer({canvas:cv,antialias:!LOWDEV,alpha:true,powerPreference:'high-performance'});
-let QUAL='high';try{QUAL=(JSON.parse(localStorage.getItem('paintclash_v2')||'{}').quality)||'high'}catch(_){}
+const ANDR=/android/i.test(navigator.userAgent);let QUAL=LOWDEV?'auto':'high';try{const _s=JSON.parse(localStorage.getItem('paintclash_v2')||'{}');if(_s.quality&&(_s.qset||!LOWDEV))QUAL=_s.quality}catch(_){}
 const DPR=window.devicePixelRatio||1,QMAX={low:1,med:1.6,high:2.6};
-let PR_MAX=QUAL==='auto'?Math.min(DPR,LOWDEV?1.5:2):Math.min(DPR,QMAX[QUAL]),PR=QUAL==='auto'&&LOWDEV?Math.min(PR_MAX,1):PR_MAX;
-function setQuality(q){QUAL=q;PR_MAX=q==='auto'?Math.min(DPR,LOWDEV?1.5:2):Math.min(DPR,QMAX[q]);PR=q==='auto'&&LOWDEV?Math.min(PR_MAX,1.25):PR_MAX;resize()}
+let PR_MAX=QUAL==='auto'?Math.min(DPR,LOWDEV?(ANDR?1.3:1.5):2):Math.min(DPR,QMAX[QUAL]),PR=QUAL==='auto'&&LOWDEV?Math.min(PR_MAX,1):PR_MAX;
+function setQuality(q){QUAL=q;PR_MAX=q==='auto'?Math.min(DPR,LOWDEV?(ANDR?1.3:1.5):2):Math.min(DPR,QMAX[q]);PR=q==='auto'&&LOWDEV?Math.min(PR_MAX,1.25):PR_MAX;resize()}
 R.setPixelRatio(PR);R.setClearColor(0x000000,0);
 const S=new THREE.Scene();
 const cam=new THREE.PerspectiveCamera(46,1,.1,500);
@@ -2814,7 +2814,7 @@ function mergeIdx(arr){let n=0,t=0;arr.forEach(g=>{n+=g.attributes.position.coun
  const r=new THREE.BufferGeometry();r.setAttribute('position',new THREE.BufferAttribute(P,3));r.setAttribute('normal',new THREE.BufferAttribute(N,3));r.setIndex(new THREE.BufferAttribute(I,1));return r}
 function donutGeo(){if(DG)return DG;const dough=decGeo(DONUT_DATA.dough),icing=decGeo(DONUT_DATA.icing),spr=decGeo(DONUT_DATA.spr,1);DG={dough,icing,spr,all:mergeIdx([dough,icing])};return DG}
 function donutSpr(){return donutGeo().spr}
-const eyePre=(ey,pup,flat)=>{const c=ey.toFixed(3);return `q.y=${c}+(q.y-(${c}))*uBl;`+(pup?(flat?'q.x+=uLk;':'{float _o=q.x;q.x+=uLk;vec2 _a=max(vec2(0.0),abs(vec2(_o,q.y))-0.2),_b=max(vec2(0.0),abs(q.xy)-0.2);q.z+=sqrt(max(0.0,0.09-dot(_b,_b)))-sqrt(max(0.0,0.09-dot(_a,_a)));}'):'')};
+const eyePre=(ey,pup,flat)=>{const c=ey.toFixed(3);return `q.y=${c}+(q.y-(${c}))*uBl;`+(pup?(flat?'q.x+=uLk;q.z-=uLk*normal.x/max(normal.z,0.35);':'{float _o=q.x;q.x+=uLk;vec2 _a=max(vec2(0.0),abs(vec2(_o,q.y))-0.2),_b=max(vec2(0.0),abs(q.xy)-0.2);q.z+=sqrt(max(0.0,0.09-dot(_b,_b)))-sqrt(max(0.0,0.09-dot(_a,_a)));}'):'')};
 // projection rapide sur la surface (rayon vers -z) : grille 2D de triangles au lieu du raycast brute force
 function zProj(g){const P=g.attributes.position.array,I=g.index?g.index.array:null,nt=I?I.length:P.length/3;g.computeBoundingBox();const bb=g.boundingBox,G=64,x0=bb.min.x-.01,y0=bb.min.y-.01,cx=(bb.max.x-x0+.02)/G,cy=(bb.max.y-y0+.02)/G,cells=new Array(G*G);
  const ci=v=>Math.max(0,Math.min(G-1,Math.floor((v-x0)/cx))),cj=v=>Math.max(0,Math.min(G-1,Math.floor((v-y0)/cy))),vi=k=>(I?I[k]:k)*3;
@@ -2867,21 +2867,21 @@ const FD={
  pingouin:{EY:.17,ES:1.0,DX:.17,b:A=>{A('rb',[.96,.98,.9,.3],0x26324f,[0,0,0]);A('rb',[.76,.86,.06,.28],0xf6f8ff,[0,0,.43]);
    A('cyl',[.001,.08,.15],0xffa531,[0,-.09,.52],[Math.PI/2,0,0],[1.3,1,.7]);
    for(const sx of[-1,1]){A('rb',[.1,.52,.32,.05],0x1b2438,[sx*.5,-.06,0],[0,0,sx*.22]);A('rb',[.26,.08,.24,.04],0xffa531,[sx*.2,-.51,.2]);A('sph',[.05],0xffa3c8,[sx*.27,-.06,.47],[0,0,0],[1,.6,.35])}}},
- bombe:{EY:0,ES:1.1,DX:.2,b:A=>{A('rb',[1,.94,1,.42],0x3a3f5c,[0,-.03,0]);A('cyl',[.13,.15,.12],0x6c7290,[0,.48,0]);A('cyl',[.03,.03,.24],0xc9a46a,[.05,.6,0],[0,0,-.45]);
+ bombe:{EY:.02,ES:1.02,DX:.165,b:A=>{A('rb',[1,.94,1,.34],0x3a3f5c,[0,-.03,0]);A('cyl',[.13,.15,.12],0x6c7290,[0,.48,0]);A('cyl',[.03,.03,.24],0xc9a46a,[.05,.6,0],[0,0,-.45]);
    A('sph',[.08],0xffd23f,[.12,.72,0]);A('sph',[.05],0xff7a2b,[.14,.75,.05]);A('sph',[.09],0x8a90b0,[-.3,.3,.39],[0,0,.6],[1.6,.7,.35]);
-   for(const sx of[-1,1])A('sph',[.06],0xff8fb0,[sx*.33,-.17,.48],[0,0,0],[1,.6,.35])}},
+   for(const sx of[-1,1])A('sph',[.06],0xff8fb0,[sx*.3,-.15,.47],[0,0,0],[1,.6,.35])}},
  chat:{EY:.1,ES:1.08,DX:.19,b:A=>{const C=0x8d93a8;A('rb',[1,.9,.94,.32],C,[0,-.05,0]);
    for(const sx of[-1,1]){A('cyl',[.001,.17,.27],C,[sx*.27,.47,0],[0,0,-sx*.22],[1,1,.55]);A('cyl',[.001,.1,.17],0xffa3c8,[sx*.265,.45,.07],[0,0,-sx*.22],[1,1,.3]);
     for(const dy of[-.025,.025])A('rb',[.22,.014,.014,.006],0x4a4f62,[sx*.4,-.21+dy*1.6,.48],[0,0,sx*dy*5]);A('sph',[.055],0xffa3c8,[sx*.31,-.12,.47],[0,0,0],[1,.6,.35])}
    A('sph',[.12],0xf3f1f6,[0,-.24,.45],[0,0,0],[1.35,.75,.4]);A('sph',[.04],0xff7aa8,[0,-.17,.5],[0,0,0],[1.2,.8,.6]);
-   for(const x of[-.12,0,.12])A('rb',[.06,.03,.46,.015],0x6c7286,[x,.405,-.08]);A('cyl',[.06,.05,.5],C,[.28,-.12,-.55],[.7,0,-.35])}},
- lait:{EY:.13,ES:1.22,DX:.2,b:A=>{A('rb',[.9,.98,.9,.12],0xf7f9ff,[0,-.09,0]);A('cyl',[.52,.52,.9,3],0xf7f9ff,[0,.54,0],[0,0,Math.PI/2],[.55,1,.98]);A('rb',[.9,.07,.05,.03],0xeef2ff,[0,.72,0]);
+   for(const x of[-.12,0,.12])A('rb',[.06,.03,.46,.015],0x6c7286,[x,.405,-.08]);{const T=[[0,-.3,-.4],[0,-.27,-.58],[0,-.12,-.7],[0,.08,-.75],[0,.27,-.73],[0,.4,-.64]];A('tube',[T,.07,.3],C,[0,0,0]);A('sph',[.062],0x6c7286,[0,.4,-.64]);A('sph',[.07],C,[0,-.3,-.4])}}},
+ lait:{EY:.13,ES:1.22,DX:.2,b:A=>{A('rb',[.9,.98,.9,.12],0xf7f9ff,[0,-.09,0]);A('cyl',[.52,.52,.9,3],0xf7f9ff,[0,.52,0],[-Math.PI/2,0,-Math.PI/2],[1,1,.46]);A('rb',[.92,.08,.06,.03],0xeef2ff,[0,.765,0]);
    A('rb',[.92,.3,.92,.08],0x4fa8ff,[0,-.36,0]);A('sph',[.09],0xffffff,[-.16,-.34,.46],[0,0,0],[1.3,.8,.3]);A('sph',[.07],0xffffff,[.02,-.31,.46],[0,0,0],[1.2,.9,.3]);A('sph',[.06],0xffffff,[.17,-.36,.46],[0,0,0],[1.2,.8,.3]);
    A('cyl',[.045,.045,.46],0xff5f8f,[.2,.74,.1],[0,0,-.12]);A('cyl',[.045,.045,.17],0xff5f8f,[.27,1.0,.1],[0,0,-1.1]);A('cyl',[.05,.05,.06],0xffffff,[.22,.86,.1],[0,0,-.12]);
    for(const sx of[-1,1])A('sph',[.055],0xffa3c8,[sx*.3,-.06,.46],[0,0,0],[1,.6,.35])}},
- tirelire:{EY:.12,ES:1.05,DX:.2,b:A=>{const C=0xff8fb8;A('rb',[1,.86,.94,.34],C,[0,-.06,0]);A('rb',[.3,.04,.09,.02],0x8a3a5c,[0,.37,-.05]);
-   A('cyl',[.15,.16,.1],0xff7aa8,[0,-.13,.5],[Math.PI/2,0,0],[1.15,1,.85]);for(const sx of[-1,1]){A('sph',[.032],0xb8406c,[sx*.06,-.13,.56],[0,0,0],[1,1.3,.5]);
-    A('cyl',[.001,.13,.2],C,[sx*.3,.42,0],[0,0,-sx*.35],[1,1,.5]);A('cyl',[.09,.09,.12],0xff7aa8,[sx*.27,-.53,sx>0?.22:.22]);A('cyl',[.09,.09,.12],0xff7aa8,[sx*.27,-.53,-.22]);A('sph',[.05],0xff5f8f,[sx*.34,-.1,.47],[0,0,0],[1,.6,.35])}
+ tirelire:{EY:.07,ES:.98,DX:.19,b:A=>{const C=0xff8fb8;A('rb',[1,.86,.94,.26],C,[0,-.06,0]);A('rb',[.3,.04,.09,.02],0x8a3a5c,[0,.37,-.05]);
+   A('cyl',[.14,.15,.1],0xff7aa8,[0,-.24,.5],[Math.PI/2,0,0],[1.15,1,.8]);for(const sx of[-1,1]){A('sph',[.03],0xb8406c,[sx*.055,-.24,.56],[0,0,0],[1,1.3,.5]);
+    A('cyl',[.001,.13,.2],C,[sx*.3,.42,0],[0,0,-sx*.35],[1,1,.5]);for(const z of[.2,-.2])A('rb',[.2,.28,.2,.08],0xff7aa8,[sx*.25,-.48,z]);A('sph',[.05],0xff5f8f,[sx*.33,-.13,.47],[0,0,0],[1,.6,.35])}
    A('tor',[.07,.022],C,[.08,.05,-.52])}},
  photo:{EY:.09,ES:.95,DX:.2,b:A=>{A('rb',[1.12,.8,.72,.2],0x35c3b0,[0,-.12,0]);A('rb',[1.14,.22,.74,.08],0x2a2f45,[0,-.36,0]);A('rb',[.4,.2,.42,.08],0x35c3b0,[-.18,.34,0]);A('rb',[.22,.11,.06,.03],0xfff6c8,[-.18,.36,.2]);
    A('cyl',[.07,.08,.08],0xff5f5f,[.34,.32,.02]);A('cyl',[.21,.23,.16],0x2a2f45,[0,-.3,.42],[Math.PI/2,0,0]);A('cyl',[.155,.155,.05],0x5ab8ff,[0,-.3,.5],[Math.PI/2,0,0]);A('sph',[.045],0xffffff,[-.06,-.25,.53],[0,0,0],[1,1,.4]);
@@ -2894,7 +2894,7 @@ const FD={
 };
 const FDC={};
 function foodModel(id){if(FDC[id])return FDC[id];const d=FD[id],byc=new Map(),all=[],m=new THREE.Matrix4(),q=new THREE.Quaternion(),e=new THREE.Euler();
- const A=(t,a,c,p,r=[0,0,0],s=[1,1,1])=>{let g;if(t==='rb')g=roundedBox(a[0],a[1],a[2],a[3],7);else if(t==='rbt')g=taperGeo(roundedBox(a[0],a[1],a[2],a[3],6),a[4]);else if(t==='sph')g=new THREE.SphereGeometry(a[0],12,9);else if(t==='cyl')g=new THREE.CylinderGeometry(a[0],a[1],a[2],a[3]||12);else if(t==='tor')g=new THREE.TorusGeometry(a[0],a[1],8,18);
+ const A=(t,a,c,p,r=[0,0,0],s=[1,1,1])=>{let g;if(t==='rb')g=roundedBox(a[0],a[1],a[2],a[3],7);else if(t==='rbt')g=taperGeo(roundedBox(a[0],a[1],a[2],a[3],6),a[4]);else if(t==='sph')g=new THREE.SphereGeometry(a[0],12,9);else if(t==='cyl')g=new THREE.CylinderGeometry(a[0],a[1],a[2],a[3]||12);else if(t==='tube'){const cv=new THREE.CatmullRomCurve3(a[0].map(v=>new THREE.Vector3(...v)));g=new THREE.TubeGeometry(cv,48,a[1],14,false);if(a[2]){const P=g.attributes.position,F=48,S=15;for(let i=0;i<=F;i++){const c=cv.getPointAt(i/F),k=1-a[2]*i/F;for(let j=0;j<S;j++){const q=i*S+j;P.setXYZ(q,c.x+(P.getX(q)-c.x)*k,c.y+(P.getY(q)-c.y)*k,c.z+(P.getZ(q)-c.z)*k)}}P.needsUpdate=true;g.computeVertexNormals()}}else if(t==='tor')g=new THREE.TorusGeometry(a[0],a[1],8,18);
   if(!g.index)g.setIndex([...Array(g.attributes.position.count).keys()]);g=g.toNonIndexed?g:g;e.set(r[0],r[1],r[2]);q.setFromEuler(e);m.compose(new THREE.Vector3(...p),q,new THREE.Vector3(...s));g.applyMatrix4(m);
   const ng=new THREE.BufferGeometry();ng.setAttribute('position',g.attributes.position);ng.setAttribute('normal',g.attributes.normal);ng.setIndex(g.index);
   if(!byc.has(c))byc.set(c,[]);byc.get(c).push(ng);all.push(ng)};
@@ -2971,7 +2971,7 @@ function animChar(v,dt,moving,t){
 }
 
 // portraits 3D des héros (rendu une fois par héros, avec sa peau, sa tenue et ses accessoires)
-const SHOTS={},SHOT_KEY='pc_shots_v16';let HR=null,HS=null,HC=null;try{for(let i=1;i<16;i++)localStorage.removeItem('pc_shots_v'+i)}catch(_){}try{Object.assign(SHOTS,JSON.parse(localStorage.getItem(SHOT_KEY)||'{}'))}catch(_){}
+const SHOTS={},SHOT_KEY='pc_shots_v17';let HR=null,HS=null,HC=null;try{for(let i=1;i<17;i++)localStorage.removeItem('pc_shots_v'+i)}catch(_){}try{Object.assign(SHOTS,JSON.parse(localStorage.getItem(SHOT_KEY)||'{}'))}catch(_){}
 const SHOTQ=[];let shotBusy=false;const idle=f=>(window.requestIdleCallback?requestIdleCallback(f,{timeout:150}):setTimeout(f,30));
 function queueShot(h){if(SHOTS[h.id]||SHOTQ.includes(h))return;SHOTQ.push(h);if(!shotBusy){shotBusy=true;idle(shotStep)}}
 function shotStep(){const h=SHOTQ.shift();if(h){const u=heroShot(h);if(u){const bu=shotUrl(h.id);document.querySelectorAll(`img[data-shot="${h.id}"]`).forEach(im=>{im.src=bu;im.classList.remove('ld')})}}
@@ -3760,7 +3760,7 @@ let last=performance.now();const RM=matchMedia('(prefers-reduced-motion: reduce)
 let fpsAcc=0,fpsN=0,fpsT=0,cvOff=false;
 let OLOFF=false;
 function adaptRes(ms){if(QUAL!=='auto'&&QUAL!=='high')return;if(performance.now()<adSkip)return;fpsAcc+=ms;fpsN++;fpsT+=ms;if(fpsT<1000)return;const avg=fpsAcc/fpsN;fpsAcc=fpsN=fpsT=0;
- const PMIN=QUAL==='high'?Math.min(PR_MAX,1.7):QUAL==='med'?Math.min(PR_MAX,1.2):.8;let np=PR;if(avg>(QUAL==='high'?30:21)&&PR>PMIN)np=Math.max(PMIN,PR-.15);else if(QUAL==='auto'&&avg>21&&!OLOFF&&state!=='menu')OLOFF=true;else if(avg<12&&OLOFF)OLOFF=false;else if(avg<14&&PR<PR_MAX)np=Math.min(PR_MAX,PR+.1);
+ const PMIN=QUAL==='high'?Math.min(PR_MAX,LOWDEV?1.1:1.7):QUAL==='med'?Math.min(PR_MAX,1.2):.8;let np=PR;if(avg>(QUAL==='high'?30:21)&&PR>PMIN)np=Math.max(PMIN,PR-.15);else if(QUAL==='auto'&&avg>21&&!OLOFF&&state!=='menu')OLOFF=true;else if(avg<12&&OLOFF)OLOFF=false;else if(avg<14&&PR<PR_MAX)np=Math.min(PR_MAX,PR+.1);
  if(Math.abs(np-PR)>.01){PR=np;resize()}}
 function frame(){
  {const tt=performance.now(),cap=state==='menu'&&tab!=='home'&&!detailOpen?95:12.5;if(tt-last<cap){requestAnimationFrame(frame);return}}
@@ -3908,7 +3908,7 @@ function cxStars(){const c=document.createElement('canvas');c.width=c.height=256
  const st=(cx,cy,r)=>{x.beginPath();for(let i=0;i<8;i++){const a=i*Math.PI/4,q=i%2?r*.38:r;x.lineTo(cx+Math.cos(a)*q,cy+Math.sin(a)*q)}x.closePath();x.fill()};
  [[40,50,16],[150,30,12],[210,120,18],[90,150,14],[30,210,12],[180,220,15],[120,90,10]].forEach(a=>st(...a));return new THREE.CanvasTexture(c)}
 let CXSTAR=null,CXROT=Math.PI/2;
-function cxInit(){if(CX.r)return true;try{const cv=$('#cCv');CX.r=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true});CX.r.setPixelRatio(Math.min(2,devicePixelRatio||1));
+function cxInit(){if(CX.r)return true;try{const cv=$('#cCv');CX.r=new THREE.WebGLRenderer({canvas:cv,antialias:!ANDR,alpha:true,powerPreference:'high-performance'});CX.r.setPixelRatio(Math.min(LOWDEV?(ANDR?1.25:1.6):2,devicePixelRatio||1));cv.addEventListener('webglcontextlost',e=>{e.preventDefault();CX.lost=1},false);cv.addEventListener('webglcontextrestored',()=>{CX.lost=0},false);
  CX.s=new THREE.Scene();CX.s.add(new THREE.HemisphereLight(0xffffff,0x8a7bd8,.62));const d=new THREE.DirectionalLight(0xffffff,.8);d.position.set(-2.5,5,4);CX.s.add(d);
  CX.c=new THREE.PerspectiveCamera(30,1,.1,60);CX.c.position.set(0,2.9,5.9);CX.c.lookAt(0,1.0,0);CXSTAR=cxStars();return true}catch(_){CX.r=null;return false}}
 function cxRender(){olRender(CX.r,CX.s,CX.c,CX)}
@@ -3964,7 +3964,7 @@ function cxSize(){const cv=$('#cCv'),m=$('#chestM').getBoundingClientRect(),st=$
 addEventListener('resize',()=>{if(CX.on)setTimeout(cxSize,60)});
 function cxOrbs(){const o=$('#cOrbs');let h='';for(let i=0;i<CTAPS;i++){const u=i<CX.taps;h+=`<i class="${u?'used':i===CX.taps?'cur':''}"></i>`}o.innerHTML=h}
 function cxTitle(){const t=$('#cTitle');t.innerHTML=stitle(CPAL[CX.k].n);t.classList.remove('cxpop');void t.offsetWidth;t.classList.add('cxpop');$('#chestM').dataset.k=CX.k}
-function openChest(c,extra){$('#chestM').classList.remove('cdone');if(!cxInit()){openChestOld(c,extra);return}
+function openChest(c,extra){$('#chestM').classList.remove('cdone');if(!cxInit()||CX.lost||(CX.r.getContext&&CX.r.getContext().isContextLost())){openChestOld(c,extra);return}
  const k=CHA[c.id]||c.id;save.pendCh={id:k,extra:extra||null};persist();
  Object.assign(CX,{k,extra:extra||null,taps:0,ups:[],st:'intro',landed:0,sq:0,sv:0,rz:0,rkv:0,hit:0,lk:0,lx:0,ly:0,bl:2,t0:performance.now(),glow:0,spinY:0,lift:0,camK:0,shake:0,lidA:0});chestR=null;chestC=c;
  chestStage(k,CPAL[k].n);$('#cHint').classList.remove('claim');$('#cImg').hidden=true;$('#cCv').hidden=false;$('#cOrbs').hidden=false;$('#cBeam').className='cbeam';
@@ -4002,7 +4002,7 @@ function cxTick(t,dt){const e=(t-CX.t0)/1000,b=CX.body,s=t/1000;if(!b)return;
 }
 /* ---- coffre 3D des missions : sur un podium, il te suit du regard ---- */
 const MC={r:null,s:null,c:null,o:null,raf:0,px:0,py:0,pt:-9,lx:0,ly:0,lk:0,bl:2,sq:0,sv:0,hop:0,ry:0,rx:0};
-function mcInit(){if(MC.r)return true;if(MC.fail)return false;try{const cv=document.createElement('canvas');cv.className='mqcv';MC.r=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true});MC.r.setPixelRatio(Math.min(2,devicePixelRatio||1));
+function mcInit(){if(MC.r)return true;if(MC.fail)return false;try{const cv=document.createElement('canvas');cv.className='mqcv';MC.r=new THREE.WebGLRenderer({canvas:cv,antialias:!ANDR,alpha:true});MC.r.setPixelRatio(Math.min(LOWDEV?1.5:2,devicePixelRatio||1));
  MC.s=new THREE.Scene();MC.s.add(new THREE.HemisphereLight(0xffffff,0x8a7bd8,.62));const d=new THREE.DirectionalLight(0xffffff,.8);d.position.set(-2.5,5,4);MC.s.add(d);
  MC.c=new THREE.PerspectiveCamera(26,1,.1,60);
  // podium : socle violet + anneau bleu + dessus blanc
@@ -4012,6 +4012,8 @@ function mcInit(){if(MC.r)return true;if(MC.fail)return false;try{const cv=docum
  const keep={};const F=['s','g','body','lid','glowM','shd','kp','kv','mats','minis','beam','stem','eyes','pups'];F.forEach(f=>keep[f]=CX[f]);CX.s=MC.s;CX.g=null;cxBuild('c2');const o={};F.forEach(f=>{o[f]=CX[f];CX[f]=keep[f]});MC.o=o;o.g.position.y=.08;o.g.scale.setScalar(1.15);o.shd.material.opacity=.22;
  addEventListener('pointermove',e=>{MC.px=e.clientX;MC.py=e.clientY;MC.pt=performance.now()},{passive:true});addEventListener('pointerdown',e=>{MC.px=e.clientX;MC.py=e.clientY;MC.pt=performance.now()},{passive:true});
  return true}catch(_){MC.r=null;MC.fail=1;return false}}
+function cxWarm(){if(CX.warm||CX.on)return;CX.warm=1;try{if(!cxInit())return;cxBuild('c1');cxSize();CX.r.compile(CX.s,CX.c);cxRender()}catch(_){}}
+setTimeout(()=>{(window.requestIdleCallback||(f=>setTimeout(f,1)))(cxWarm,{timeout:4000})},6000);
 function mcMount(){const h=$('#mq3d');if(!h||!mcInit())return;const cv=MC.r.domElement;if(cv.parentNode!==h)h.appendChild(cv);h.classList.add('on');
  const w=h.clientWidth||200,hh=h.clientHeight||170;if(MC.w!==w||MC.h!==hh){MC.w=w;MC.h=hh;MC.r.setSize(w,hh,false);MC.c.aspect=w/hh;MC.c.updateProjectionMatrix()}
  if(!MC.raf){let last=performance.now();const loop=t=>{const ok=cv.isConnected&&tab==='missions'&&!document.hidden&&!$('#sMissions').hidden;if(!ok){MC.raf=0;return}const dt=Math.min(.05,(t-last)/1000);last=t;mcTick(t,dt);olRender(MC.r,MC.s,MC.c,MC);MC.raf=requestAnimationFrame(loop)};MC.raf=requestAnimationFrame(loop)}}
@@ -4168,7 +4170,7 @@ const APPV=(()=>{try{const m=navigator.userAgent.match(/KeyboardRivalsApp\/(\d+)
 const IS_ANDROID=/Android/i.test(navigator.userAgent);
 async function apkCheck(){let info=null;try{const r=await fetch('apk.json?t='+Date.now(),{cache:'no-store'});if(r.ok)info=await r.json()}catch(_){}if(!info||!info.available)return;
  const url=info.url||'keyboard-rivals.apk';
- if(APPV){if(APPV<(info.min||info.versionCode)){const d=document.createElement('div');d.id='appUpd';d.innerHTML=`<div class="box"><img src="icon-512.png" alt=""><h2 class="s">MISE À JOUR OBLIGATOIRE</h2><p class="s">Une nouvelle version de Keyboard Rivals est disponible (v${esc(info.versionName||'')}). Installe-la pour continuer à jouer.</p><a class="btn btn-green" href="${url}" style="text-decoration:none;padding:12px 26px;font-size:20px">METTRE À JOUR</a><p style="font-size:12px;opacity:.85">Après le téléchargement, ouvre le fichier pour installer la mise à jour.</p></div>`;document.body.appendChild(d);try{trTree(d)}catch(_){}}return}
+ if(APPV){if(APPV<(info.min||info.versionCode)){const d=document.createElement('div');d.id='appUpd';d.innerHTML=`<div class="box"><img src="icon-512.png?v=3" alt=""><h2 class="s">MISE À JOUR OBLIGATOIRE</h2><p class="s">Une nouvelle version de Keyboard Rivals est disponible (v${esc(info.versionName||'')}). Installe-la pour continuer à jouer.</p><a class="btn btn-green" href="${url}" style="text-decoration:none;padding:12px 26px;font-size:20px">METTRE À JOUR</a><p style="font-size:12px;opacity:.85">Après le téléchargement, ouvre le fichier pour installer la mise à jour.</p></div>`;document.body.appendChild(d);try{trTree(d)}catch(_){}}return}
  if(IS_ANDROID&&!localStorage.getItem('apkBarX')){const b=document.createElement('div');b.id='apkBar';b.innerHTML=`<b class="s">Joue avec l'appli Android !</b><a class="btn btn-green" href="${url}" style="text-decoration:none">TÉLÉCHARGER</a><button class="btn btn-grey" aria-label="Fermer" style="padding:6px 10px">✕</button>`;document.body.appendChild(b);try{trTree(b)}catch(_){}b.querySelector('button').onclick=()=>{try{localStorage.setItem('apkBarX','1')}catch(_){}b.remove()}}}
 setTimeout(apkCheck,1500);
 // bouton retour Android (envoyé par l'appli)
@@ -4698,7 +4700,7 @@ function accRow(){updInvTog();const em=AUTH.email?esc(AUTH.email):'';
  press($('#accG'),()=>{if(!AUTH.on)accSignIn()});const s=$('#accSw');if(s)press(s,accSignIn);const b=$('#setLogout');if(b)press(b,()=>{$('#settings').hidden=true;logout()})}
 const QTXT={low:'Plus fluide : moins de détails, pas de contour sur les persos',med:'Bon équilibre pour la plupart des téléphones',high:'Le plus beau, pour les PC et téléphones puissants',auto:"S'adapte tout seul pour rester fluide"};
 function updQ(){$('#qSel').querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.q===QUAL));$('#qNote').textContent=QTXT[QUAL]}
-$('#qSel').addEventListener('click',e=>{const b=e.target.closest('[data-q]');if(!b)return;ac();if(!playS('tab',SV))sfx.click();save.quality=b.dataset.q;persist();setQuality(b.dataset.q);updQ()});
+$('#qSel').addEventListener('click',e=>{const b=e.target.closest('[data-q]');if(!b)return;ac();if(!playS('tab',SV))sfx.click();save.quality=b.dataset.q;save.qset=1;persist();setQuality(b.dataset.q);updQ()});
 updQ();
 press($('#memX'),()=>{$('#memM').hidden=true});press($('#mpX'),()=>{$('#mpM').hidden=true});
 press($('#memProf'),()=>{if(memSel)memProfile(memSel)});
@@ -4770,7 +4772,7 @@ function refreshTok(){try{if(window.google&&google.accounts)google.accounts.id.p
 function loadGsi(){return new Promise(res=>{if(window.google&&google.accounts&&google.accounts.id){res(true);return}const s=document.createElement('script');s.src='https://accounts.google.com/gsi/client';s.async=true;s.onload=()=>res(true);s.onerror=()=>res(false);document.head.appendChild(s)})}
 const sessBody=t=>{if(!t||!t.startsWith('s1.'))return null;return jwtBody('x.'+t.split('.')[1])};
 const APPLOGIN=(()=>{try{return new URLSearchParams(location.search).has('applogin')}catch(_){return false}})();
-function appBack(tok){const u='keyboardrivals://auth?cred='+encodeURIComponent(tok);let o=$('#appBack');if(!o){o=document.createElement('div');o.id='appUpd';o.innerHTML=`<div class="box"><img src="icon-512.png" alt=""><h2 class="s">CONNECTÉ !</h2><p class="s">Retourne dans l'appli Keyboard Rivals pour continuer.</p><a id="appBack" class="btn btn-green" href="${u}" style="text-decoration:none;padding:12px 26px;font-size:20px">RETOURNER AU JEU</a></div>`;document.body.appendChild(o);try{trTree(o)}catch(_){}}setTimeout(()=>{location.href=u},300)}
+function appBack(tok){const u='keyboardrivals://auth?cred='+encodeURIComponent(tok);let o=$('#appBack');if(!o){o=document.createElement('div');o.id='appUpd';o.innerHTML=`<div class="box"><img src="icon-512.png?v=3" alt=""><h2 class="s">CONNECTÉ !</h2><p class="s">Retourne dans l'appli Keyboard Rivals pour continuer.</p><a id="appBack" class="btn btn-green" href="${u}" style="text-decoration:none;padding:12px 26px;font-size:20px">RETOURNER AU JEU</a></div>`;document.body.appendChild(o);try{trTree(o)}catch(_){}}setTimeout(()=>{location.href=u},300)}
 window.appLogin=c=>{try{onCred({credential:c})}catch(_){}};
 try{const h=new URLSearchParams(location.hash.slice(1)).get('cred');if(h){history.replaceState(null,'',location.pathname+location.search);setTimeout(()=>{const go=()=>{if(typeof onCred==='function')onCred({credential:h})};go()},400)}}catch(_){}
 async function onCred(resp){let t=resp&&resp.credential,b=t&&(t.startsWith('s1.')?sessBody(t):jwtBody(t));if(!b)return;
