@@ -1348,6 +1348,8 @@ body[data-tab=shop] .scr,body[data-tab=heroes] .scr,body[data-tab=missions] .scr
 #bnPlay .pkey{font-weight:400;font-size:25px;letter-spacing:1px;color:#fff;-webkit-text-stroke:0!important;text-shadow:-2px 0 0 #1b2580,2px 0 0 #1b2580,0 -2px 0 #1b2580,0 2px 0 #1b2580,-2px -2px 0 #1b2580,2px -2px 0 #1b2580,-2px 2px 0 #1b2580,2px 2px 0 #1b2580,0 4px 0 #1b2580,-2px 4px 0 #1b2580,2px 4px 0 #1b2580!important;line-height:1}
 #bnav #bnPlay:active,#bnav #bnPlay.prs{transform:translateY(4px)!important;box-shadow:inset 0 -5px 0 #c47a00,0 0 0 #1b2580!important}
 #bnav:not(.away) #bnPlay{scale:1.04!important}
+/* couleurs pétantes sur l'interface */
+#topbar,#home,#bnav,.scr,.modal:not(#chestM),#res,#end,#death,#match,#boot,#banner,#streak,#login,#detail .dtop,#installBar{filter:saturate(1.42) contrast(1.1)}
 /* onglet actif : section bleue + animation */
 #bnav .bnin{position:relative}
 #bnav .bnind{position:absolute;top:0;box-sizing:border-box;bottom:calc(-1*env(safe-area-inset-bottom,0px));width:0;left:0;border-radius:14px 14px 0 0;background:linear-gradient(#5b8ff0,#3a6fe0);border:4px solid #0b0b19;border-bottom:0;box-shadow:inset 0 4px 0 rgba(255,255,255,.35);opacity:0;transition:left .28s cubic-bezier(.3,1.4,.5,1),width .28s,opacity .2s;z-index:0;pointer-events:none}
@@ -2618,6 +2620,8 @@ const NMAX=100,TMAX=NMAX*NMAX,H_N=.42,H_TR=.42,H_OWN=.42;let N=56,TOT=N*N;
 const cv=$('#cv');
 if(/iPhone|iPad|iPod|Macintosh/.test(navigator.userAgent)&&!/Chrome\/|Chromium|Edg\//.test(navigator.userAgent))document.documentElement.classList.add('wk');
 const LOWDEV=matchMedia('(pointer:coarse)').matches||/android|iphone|ipad|mobile/i.test(navigator.userAgent);
+// couleurs pétantes : saturation + contraste appliqués à la fin de tous les shaders 3D
+THREE.ShaderChunk.dithering_fragment+='\n{vec3 _c=gl_FragColor.rgb;float _l=dot(_c,vec3(.299,.587,.114));_c=mix(vec3(_l),_c,1.45);_c=(_c-.5)*1.14+.5;gl_FragColor.rgb=clamp(_c,0.,1.);}';
 const R=new THREE.WebGLRenderer({canvas:cv,antialias:!LOWDEV,alpha:true,powerPreference:'high-performance'});
 const ANDR=/android/i.test(navigator.userAgent);let QUAL=LOWDEV?'auto':'high';try{const _s=JSON.parse(localStorage.getItem('paintclash_v2')||'{}');if(_s.quality&&(_s.qset||!LOWDEV))QUAL=_s.quality}catch(_){}
 const DPR=window.devicePixelRatio||1,QMAX={low:1,med:1.6,high:2.6};
