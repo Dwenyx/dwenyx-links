@@ -6,10 +6,15 @@ android {
     applicationId 'com.dwenyx.keyboardrivals'
     minSdk 24
     targetSdk 36
-    versionCode 8
-    versionName '1.4'
+    versionCode 9
+    versionName '1.4.1'
   }
   buildTypes { release { minifyEnabled false } }
   compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }
 }
-dependencies { implementation 'com.android.billingclient:billing:8.0.0' }
+dependencies {
+  implementation 'com.android.billingclient:billing:8.0.0'
+  implementation 'androidx.credentials:credentials:1.5.0'
+  implementation 'androidx.credentials:credentials-play-services-auth:1.5.0'
+  implementation 'com.google.android.libraries.identity.googleid:googleid:1.1.1'
+}

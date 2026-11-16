@@ -25,6 +25,17 @@ import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.QueryProductDetailsParams;
 import com.android.billingclient.api.QueryPurchasesParams;
 
+import androidx.credentials.Credential;
+import androidx.credentials.CredentialManager;
+import androidx.credentials.CredentialManagerCallback;
+import androidx.credentials.CustomCredential;
+import androidx.credentials.GetCredentialRequest;
+import androidx.credentials.GetCredentialResponse;
+import androidx.credentials.exceptions.GetCredentialException;
+import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption;
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential;
+import android.os.CancellationSignal;
+import java.util.concurrent.Executors;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -62,13 +73,13 @@ public class MainActivity extends Activity {
         s.setUseWideViewPort(true);
         s.setMediaPlaybackRequiresUserGesture(false);
         s.setSupportZoom(false);
-        s.setUserAgentString(s.getUserAgentString() + " KeyboardRivalsApp/5");
+        s.setUserAgentString(s.getUserAgentString() + " KeyboardRivalsApp/6");
         web.setWebViewClient(new Client());
         web.setWebChromeClient(new WebChromeClient());
         web.addJavascriptInterface(new Bridge(), "KRBilling");
         setContentView(web);
         immersive();
-        String url = "https://paint-clash.vercel.app/?appv=5";
+        String url = "https://paint-clash.vercel.app/?appv=6";
         String cred = credOf(getIntent());
         if (cred != null) url += "#cred=" + cred;
         web.loadUrl(url);
@@ -148,7 +159,37 @@ public class MainActivity extends Activity {
         runOnUiThread(() -> { if (web != null) web.evaluateJavascript(code, null); });
     }
 
+    // ---------- Connexion Google native (sans page web) ----------
+    private static final String WEB_CLIENT_ID = "194389416013-4aoiep8d1jmo55b76bruv7cnvvd4r5hd.apps.googleusercontent.com";
+    private void googleSignIn() {
+        try {
+            CredentialManager cm = CredentialManager.create(this);
+            GetSignInWithGoogleOption opt = new GetSignInWithGoogleOption.Builder(WEB_CLIENT_ID).build();
+            GetCredentialRequest req = new GetCredentialRequest.Builder().addCredentialOption(opt).build();
+            cm.getCredentialAsync(this, req, new CancellationSignal(), Executors.newSingleThreadExecutor(),
+                new CredentialManagerCallback<GetCredentialResponse, GetCredentialException>() {
+                    @Override
+                    public void onResult(GetCredentialResponse r) {
+                        Credential c = r.getCredential();
+                        if (c instanceof CustomCredential && GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL.equals(c.getType())) {
+                            try {
+                                String tok = GoogleIdTokenCredential.createFrom(c.getData()).getIdToken();
+                                js("window.appLogin&&appLogin(" + JSONObject.quote(tok) + ")");
+                            } catch (Exception e) { js("window.krLoginFail&&krLoginFail('parse')"); }
+                        } else js("window.krLoginFail&&krLoginFail('type')");
+                    }
+                    @Override
+                    public void onError(GetCredentialException e) {
+                        js("window.krLoginFail&&krLoginFail(" + JSONObject.quote(String.valueOf(e.getType())) + ")");
+                    }
+                });
+        } catch (Exception e) { js("window.krLoginFail&&krLoginFail('init')"); }
+    }
+
     class Bridge {
+        @JavascriptInterface
+        public void signIn() { runOnUiThread(() -> googleSignIn()); }
+
         @JavascriptInterface
         public boolean ready() { return billingReady; }
 
