@@ -4326,7 +4326,7 @@ function renderShop(){
 function shopSpy(){}
 function shopJump(){}
 // ---- Achats Google Play (appli Android) ----
-const GPB={app:!!window.KRBilling,ok:false,price:{},busy:0};const PLAY_IDS={20:'gems_20_pack'};const playId=r=>PLAY_IDS[r.give.gems]||('gems_'+r.give.gems);
+const GPB={app:!!window.KRBilling,ok:false,price:{},busy:0};const playId=r=>'gems_'+r.give.gems+'_pack';
 function playInit(){if(!GPB.app)return;try{KRBilling.query(JSON.stringify(RESS.filter(r=>r.price&&r.price.eur).map(playId)))}catch(_){}}
 window.krPrices=m=>{GPB.n=Object.keys(m||{}).length;GPB.price=m||{};GPB.ok=Object.keys(GPB.price).length>0;RESS.forEach(r=>{const pp=GPB.price[playId(r)];if(pp&&r.price&&r.price.eur)r.price.eur=pp});if(tab==='shop')renderShop()};
 function playBuy(r){if(GPB.busy)return;GPB.busy=1;setTimeout(()=>GPB.busy=0,4000);try{KRBilling.buy(playId(r))}catch(_){GPB.busy=0}}
