@@ -1,0 +1,26 @@
+name: build-aab
+on:
+  push:
+    branches: [android-app]
+    paths-ignore: ['out/**']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: '17' }
+      - uses: gradle/actions/setup-gradle@v4
+        with: { gradle-version: '8.11.1' }
+      - name: Build
+        run: gradle bundleRelease --no-daemon --stacktrace 2>&1 | tee build.log; test ${PIPESTATUS[0]} -eq 0 || (mkdir -p out && tail -150 build.log > out/error.log && false)
+      - name: Publish result
+        if: always()
+        run: |
+          mkdir -p out
+          [ -f app/build/outputs/bundle/release/app-release.aab ] && cp app/build/outputs/bundle/release/app-release.aab out/app-release-unsigned.aab && rm -f out/error.log || true
+          git config user.name ci; git config user.email ci@users.noreply.github.com
+          git add -f out; git commit -m "CI output [skip ci]" || true; git push

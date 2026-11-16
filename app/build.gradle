@@ -1,0 +1,15 @@
+plugins { id 'com.android.application' }
+android {
+  namespace 'com.dwenyx.keyboardrivals'
+  compileSdk 36
+  defaultConfig {
+    applicationId 'com.dwenyx.keyboardrivals'
+    minSdk 24
+    targetSdk 36
+    versionCode 8
+    versionName '1.4'
+  }
+  buildTypes { release { minifyEnabled false } }
+  compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }
+}
+dependencies { implementation 'com.android.billingclient:billing:8.0.0' }
