@@ -3000,13 +3000,13 @@ function animChar(v,dt,moving,t){
 }
 
 // portraits 3D des héros (rendu une fois par héros, avec sa peau, sa tenue et ses accessoires)
-const SHOTS={},SHOT_KEY='pc_shots_v24';let HR=null,HS=null,HC=null;try{for(let i=1;i<24;i++)localStorage.removeItem('pc_shots_v'+i)}catch(_){}try{Object.assign(SHOTS,JSON.parse(localStorage.getItem(SHOT_KEY)||'{}'))}catch(_){}
+const SHOTS={},SHOT_KEY='pc_shots_v25';let HR=null,HS=null,HC=null;try{for(let i=1;i<25;i++)localStorage.removeItem('pc_shots_v'+i)}catch(_){}try{Object.assign(SHOTS,JSON.parse(localStorage.getItem(SHOT_KEY)||'{}'))}catch(_){}
 const SHOTQ=[];let shotBusy=false;const idle=f=>(window.requestIdleCallback?requestIdleCallback(f,{timeout:150}):setTimeout(f,30));
 function queueShot(h){if(SHOTS[h.id]||SHOTQ.includes(h))return;SHOTQ.push(h);if(!shotBusy){shotBusy=true;idle(shotStep)}}
 function shotStep(){const h=SHOTQ.shift();if(h){const u=heroShot(h);if(u){const bu=shotUrl(h.id);document.querySelectorAll(`img[data-shot="${h.id}"]`).forEach(im=>{im.src=bu;im.classList.remove('ld')})}}
  if(SHOTQ.length)idle(shotStep);else{shotBusy=false;try{localStorage.setItem(SHOT_KEY,JSON.stringify(SHOTS))}catch(_){}}}
 // contour « highlight » noir net autour de la silhouette (comme en jeu), sans lignes internes
-function shotOutline(src0){const W=src0.width,H=src0.height,T=Math.round(W*.011),mk=()=>{const c=document.createElement('canvas');c.width=W;c.height=H;return c};
+function shotOutline(src0){const W=src0.width,H=src0.height,T=Math.max(2,Math.round(W*.006)),mk=()=>{const c=document.createElement('canvas');c.width=W;c.height=H;return c};
  // recadrage : le héros est centré et remplit toujours le carré de la même façon
  const src=mk();{const a=mk(),ax=a.getContext('2d');ax.drawImage(src0,0,0);let x0=W,y0=H,x1=-1,y1=-1;try{const d=ax.getImageData(0,0,W,H).data;for(let y=0;y<H;y+=2)for(let x=0;x<W;x+=2)if(d[(y*W+x)*4+3]>20){if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y}}catch(_){}
   const cx=src.getContext('2d');if(x1<0){cx.drawImage(src0,0,0)}else{const bw=x1-x0+2,bh=y1-y0+2,side=Math.max(bw,bh),sc=(W-T*2-W*.08)/side,dw=bw*sc,dh=bh*sc;cx.imageSmoothingQuality='high';cx.drawImage(a,x0,y0,bw,bh,(W-dw)/2,(H-dh)/2+(dh<H*.7?H*.04:0),dw,dh)}}
@@ -3846,7 +3846,7 @@ function renderAll(){
 }
 function applyZoom(){const w=innerWidth,h=innerHeight;let z=w>h?Math.min(w/900,h/430):Math.min(w/390,h/780);z=Math.max(.72,Math.min(1.7,z));UIZ=z;document.documentElement.style.setProperty('--z',z)}
 let UIZ=1;applyZoom();addEventListener('resize',applyZoom);
-function resize(){R.setPixelRatio(PR);R.setSize(innerWidth,innerHeight,false);cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();const w=R.domElement.width,h=R.domElement.height;OL.rt.setSize(w,h);OL.mat.uniforms.px.value.set(1/w,1/h);OL.mat.uniforms.thick.value=Math.max(1.6,2.5*R.getPixelRatio())}
+function resize(){R.setPixelRatio(PR);R.setSize(innerWidth,innerHeight,false);cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();const w=R.domElement.width,h=R.domElement.height;OL.rt.setSize(w,h);OL.mat.uniforms.px.value.set(1/w,1/h);OL.mat.uniforms.thick.value=Math.max(1,1.25*R.getPixelRatio())}
 addEventListener('resize',resize);resize();
 
 /* ---------- INTERFACE ---------- */
@@ -3946,7 +3946,7 @@ function cxInit(){if(CX.r)return true;try{const cv=$('#cCv');CX.r=new THREE.WebG
  CX.c=new THREE.PerspectiveCamera(30,1,.1,60);CX.c.position.set(0,2.9,5.9);CX.c.lookAt(0,1.0,0);CXSTAR=cxStars();return true}catch(_){CX.r=null;return false}}
 function cxRender(){olRender(CX.r,CX.s,CX.c,CX)}
 function olRender(r,S,C,H){if(!H.ol){const ol={rt:new THREE.WebGLRenderTarget(4,4),mat:OL.mat.clone(),scene:new THREE.Scene(),w:0,h:0};ol.mat.uniforms.tMask.value=ol.rt.texture;const q=new THREE.Mesh(new THREE.PlaneGeometry(2,2),ol.mat);q.frustumCulled=false;ol.scene.add(q);H.ol=ol}
- const ol=H.ol,w=r.domElement.width,h=r.domElement.height;if(ol.w!==w||ol.h!==h){ol.w=w;ol.h=h;ol.rt.setSize(w,h);ol.mat.uniforms.px.value.set(1/w,1/h);ol.mat.uniforms.thick.value=Math.max(2.2,3.2*r.getPixelRatio())}
+ const ol=H.ol,w=r.domElement.width,h=r.domElement.height;if(ol.w!==w||ol.h!==h){ol.w=w;ol.h=h;ol.rt.setSize(w,h);ol.mat.uniforms.px.value.set(1/w,1/h);ol.mat.uniforms.thick.value=Math.max(1.2,1.5*r.getPixelRatio())}
  r.render(S,C);r.autoClear=false;r.setRenderTarget(ol.rt);r.setClearColor(0x000000,0);r.clear();olMask(r,S,C);C.layers.set(0);r.setRenderTarget(null);r.render(ol.scene,OL.cam);r.autoClear=true}
 function cxHullMat(){const m=new THREE.MeshBasicMaterial({color:0x101a5c,side:THREE.BackSide});m.onBeforeCompile=s=>{s.vertexShader=s.vertexShader.replace('#include <begin_vertex>','vec3 transformed=position+normal*0.06;')};return m}
 function cxGlowTex(){const c=document.createElement('canvas');c.width=c.height=128;const x=c.getContext('2d'),g=x.createRadialGradient(64,64,0,64,64,64);g.addColorStop(0,'rgba(255,255,235,1)');g.addColorStop(.45,'rgba(255,236,140,.75)');g.addColorStop(1,'rgba(255,200,60,0)');x.fillStyle=g;x.fillRect(0,0,128,128);return new THREE.CanvasTexture(c)}
