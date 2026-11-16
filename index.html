@@ -2898,7 +2898,7 @@ const FD={
     for(const dy of[-.025,.025])A('rb',[.22,.014,.014,.006],0x4a4f62,[sx*.4,-.21+dy*1.6,.48],[0,0,sx*dy*5]);A('sph',[.055],0xffa3c8,[sx*.31,-.12,.47],[0,0,0],[1,.6,.35])}
    A('sph',[.12],0xf3f1f6,[0,-.24,.45],[0,0,0],[1.35,.75,.4]);A('sph',[.04],0xff7aa8,[0,-.17,.5],[0,0,0],[1.2,.8,.6]);
    for(const x of[-.12,0,.12])A('rb',[.06,.03,.46,.015],0x6c7286,[x,.405,-.08]);{const T=[[0,-.3,-.4],[0,-.27,-.58],[0,-.12,-.7],[0,.08,-.75],[0,.27,-.73],[0,.4,-.64]];A('tube',[T,.07,.3],C,[0,0,0]);A('sph',[.062],0x6c7286,[0,.4,-.64]);A('sph',[.07],C,[0,-.3,-.4])}}},
- lait:{EY:.12,ES:1.1,DX:.185,b:A=>{A('rb',[.9,.98,.9,.12],0xf7f9ff,[0,-.09,0]);A('gable',[.41,.39,.8,.08],0xf7f9ff,[0,.335,0]);A('rb',[.84,.07,.06,.03],0xeef2ff,[0,.73,0]);
+ lait:{EY:.12,ES:1.1,DX:.185,b:A=>{A('rb',[.9,.98,.9,.12],0xf7f9ff,[0,-.09,0]);A('gable',[.395,.39,.72,.08],0xf7f9ff,[0,.335,0]);A('rb',[.84,.07,.06,.03],0xeef2ff,[0,.73,0]);
    A('rb',[.92,.3,.92,.08],0x4fa8ff,[0,-.36,0]);A('sph',[.09],0xffffff,[-.16,-.34,.46],[0,0,0],[1.3,.8,.3]);A('sph',[.07],0xffffff,[.02,-.31,.46],[0,0,0],[1.2,.9,.3]);A('sph',[.06],0xffffff,[.17,-.36,.46],[0,0,0],[1.2,.8,.3]);
    A('tube',[[[.2,.5,.08],[.2,.8,.08],[.21,.93,.08],[.25,1.0,.08],[.34,1.05,.08]],.045,0],0xff5f8f,[0,0,0]);A('sph',[.045],0xff5f8f,[.34,1.05,.08]);A('cyl',[.052,.052,.06],0xffffff,[.2,.82,.08]);
    for(const sx of[-1,1])A('sph',[.055],0xffa3c8,[sx*.3,-.06,.46],[0,0,0],[1,.6,.35])}},
@@ -2994,7 +2994,7 @@ function animChar(v,dt,moving,t){
 }
 
 // portraits 3D des héros (rendu une fois par héros, avec sa peau, sa tenue et ses accessoires)
-const SHOTS={},SHOT_KEY='pc_shots_v21';let HR=null,HS=null,HC=null;try{for(let i=1;i<21;i++)localStorage.removeItem('pc_shots_v'+i)}catch(_){}try{Object.assign(SHOTS,JSON.parse(localStorage.getItem(SHOT_KEY)||'{}'))}catch(_){}
+const SHOTS={},SHOT_KEY='pc_shots_v22';let HR=null,HS=null,HC=null;try{for(let i=1;i<22;i++)localStorage.removeItem('pc_shots_v'+i)}catch(_){}try{Object.assign(SHOTS,JSON.parse(localStorage.getItem(SHOT_KEY)||'{}'))}catch(_){}
 const SHOTQ=[];let shotBusy=false;const idle=f=>(window.requestIdleCallback?requestIdleCallback(f,{timeout:150}):setTimeout(f,30));
 function queueShot(h){if(SHOTS[h.id]||SHOTQ.includes(h))return;SHOTQ.push(h);if(!shotBusy){shotBusy=true;idle(shotStep)}}
 function shotStep(){const h=SHOTQ.shift();if(h){const u=heroShot(h);if(u){const bu=shotUrl(h.id);document.querySelectorAll(`img[data-shot="${h.id}"]`).forEach(im=>{im.src=bu;im.classList.remove('ld')})}}
