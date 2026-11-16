@@ -4328,7 +4328,7 @@ function shopJump(){}
 // ---- Achats Google Play (appli Android) ----
 const GPB={app:!!window.KRBilling,ok:false,price:{},busy:0};const playId=r=>'gems_'+r.give.gems;
 function playInit(){if(!GPB.app)return;try{KRBilling.query(JSON.stringify(RESS.filter(r=>r.price&&r.price.eur).map(playId)))}catch(_){}}
-window.krPrices=m=>{GPB.price=m||{};GPB.ok=Object.keys(GPB.price).length>0;RESS.forEach(r=>{const pp=GPB.price[playId(r)];if(pp&&r.price&&r.price.eur)r.price.eur=pp});if(tab==='shop')renderShop()};
+window.krPrices=m=>{GPB.n=Object.keys(m||{}).length;GPB.price=m||{};GPB.ok=Object.keys(GPB.price).length>0;RESS.forEach(r=>{const pp=GPB.price[playId(r)];if(pp&&r.price&&r.price.eur)r.price.eur=pp});if(tab==='shop')renderShop()};
 function playBuy(r){if(GPB.busy)return;GPB.busy=1;setTimeout(()=>GPB.busy=0,4000);try{KRBilling.buy(playId(r))}catch(_){GPB.busy=0}}
 window.krPurchase=(id,tok)=>{GPB.busy=0;try{save.playTok=save.playTok||[];if(save.playTok.includes(tok))return;save.playTok.push(tok);if(save.playTok.length>60)save.playTok.shift()}catch(_){}
  const r=RESS.find(q=>playId(q)===id);if(!r)return;save.gems+=r.give.gems||0;save.coins+=r.give.coins||0;persist();try{sfx.up()}catch(_){}if(tab==='shop')renderShop();updTop();try{rwFly(document.querySelector('#sShop')?.getBoundingClientRect()||{left:innerWidth/2,top:innerHeight/2,width:0,height:0},r.give)}catch(_){}banner('+'+r.give.gems+' GEMMES !',2200)};
@@ -4339,7 +4339,7 @@ const priceTxt=p=>p.gems?`${ico('gem')}${fmt(p.gems)}`:`${ico('coin')}${fmt(p.co
 $('#sShop').addEventListener('click',e=>{const b=e.target.closest('button');if(!b||b.disabled||b.hasAttribute('data-back')||b.hasAttribute('data-homeb'))return;ac();sfx.click();
  if(!b.dataset.stab&&!e.confirmed&&!(b.dataset.offer==='free')){const o=b.dataset.offer?dailyOffers().find(x=>x.id===b.dataset.offer):null,x=b.dataset.box?BOXES.find(q=>q.id===b.dataset.box):null,r=b.dataset.res?RESS.find(q=>q.id===b.dataset.res):null;
   const pr=o?o.price:x?x.price:r?r.price:null,nm=o?o.t:x?CH(x.id).n:r?(r.give.gems?`${r.t} gemmes`:`${r.t} pièces`):'';
-  if(pr&&pr.eur){if(r&&GPB.ok){askBuy(`<b>${nm}</b> pour <span class="bp">${GPB.price[playId(r)]||pr.eur}</span>`,()=>playBuy(r));return}askBuy(`<b>${nm}</b> pour <span class="bp">${pr.eur}</span><br><small>${GPB.app?'Paiement indisponible pour le moment, réessaie plus tard.':'Achat disponible dans l\'appli Android (Google Play).'}</small>`,()=>{});return}
+  if(pr&&pr.eur){if(r&&GPB.ok){askBuy(`<b>${nm}</b> pour <span class="bp">${GPB.price[playId(r)]||pr.eur}</span>`,()=>playBuy(r));return}if(GPB.app)playInit();askBuy(`<b>${nm}</b> pour <span class="bp">${pr.eur}</span><br><small>${GPB.app?'Paiement indisponible pour le moment, réessaie plus tard.':'Achat disponible dans l\'appli Android (Google Play).'}</small>`,()=>{});return}
   if(pr){askBuy(`Es-tu sûr de vouloir acheter <b>${nm}</b> pour <span class="bp">${priceTxt(pr)}</span> ?`,()=>{const ev=new MouseEvent('click',{bubbles:true});Object.defineProperty(ev,'confirmed',{value:true});b.dispatchEvent(ev)});return}}
  if(b.dataset.stab){shopJump(b.dataset.stab);return}
  if(b.dataset.offer){const o=dailyOffers().find(x=>x.id===b.dataset.offer);if(!o)return;
