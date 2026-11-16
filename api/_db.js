@@ -37,7 +37,7 @@ const n = v => Math.max(0, Math.min(1e9, Math.floor(+v || 0)));
 export const pub = p => {
   const { hero, x } = splitHero(p.hero);
   return { id: p.id, name: p.name, tag: p.tag, hero, stars: p.stars, icon: typeof x.i === 'string' ? x.i : undefined, title: typeof x.t === 'string' ? x.t : undefined,
-    wins: n(x.w), teamWins: n(x.tw), tw: n(x.tw), kills: n(x.k), games: n(x.g), hi: n(x.hi), lvl: n(x.l) || 1 };
+    st: Object.keys(x).length ? 1 : 0, wins: n(x.w), teamWins: n(x.tw), tw: n(x.tw), kills: n(x.k), games: n(x.g), hi: n(x.hi), lvl: n(x.l) || 1 };
 };
 export function packHero(hero, x) {
   const h = String(hero || 'cubo').replace(/[^a-z0-9_]/gi, '').slice(0, 20) || 'cubo';
