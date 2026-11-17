@@ -4,10 +4,10 @@ android {
   compileSdk 36
   defaultConfig {
     applicationId 'com.dwenyx.keyboardrivals'
-    minSdk 24
+    minSdk 21
     targetSdk 36
-    versionCode 9
-    versionName '1.4.1'
+    versionCode 10
+    versionName '1.4.2'
   }
   buildTypes { release { minifyEnabled false } }
   compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }

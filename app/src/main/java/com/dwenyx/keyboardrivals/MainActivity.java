@@ -55,6 +55,23 @@ public class MainActivity extends Activity {
         getWindow().getDecorView().setSystemUiVisibility(0x1706);
     }
 
+    // Demande le taux de rafraîchissement le plus élevé de l'écran (90/120/144 Hz) quand il existe.
+    private void highRefresh() {
+        try {
+            if (android.os.Build.VERSION.SDK_INT < 23) return;
+            android.view.Display d = getWindowManager().getDefaultDisplay();
+            android.view.Display.Mode cur = d.getMode(), best = cur;
+            for (android.view.Display.Mode m : d.getSupportedModes()) {
+                if (m.getPhysicalWidth() == cur.getPhysicalWidth() && m.getPhysicalHeight() == cur.getPhysicalHeight()
+                        && m.getRefreshRate() > best.getRefreshRate()) best = m;
+            }
+            WindowManager.LayoutParams lp = getWindow().getAttributes();
+            lp.preferredDisplayModeId = best.getModeId();
+            lp.preferredRefreshRate = best.getRefreshRate();
+            getWindow().setAttributes(lp);
+        } catch (Throwable ignored) {}
+    }
+
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
@@ -78,6 +95,7 @@ public class MainActivity extends Activity {
         web.setWebChromeClient(new WebChromeClient());
         web.addJavascriptInterface(new Bridge(), "KRBilling");
         setContentView(web);
+        highRefresh();
         immersive();
         String url = "https://paint-clash.vercel.app/?appv=6";
         String cred = credOf(getIntent());
