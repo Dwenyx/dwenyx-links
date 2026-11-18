@@ -18,7 +18,7 @@ export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
   if (req.query && req.query.health) {
     const out = { store: storeReady() ? 'ok' : 'missing' };
-    try { await sbRead('_health.json'); } catch (e) { out.store = 'error: ' + String(e.message).slice(0, 80); }
+    try { await sbWrite('_health.json', { t: Date.now() }); const r = await sbRead('_health.json'); out.store = r.found ? 'ok' : 'write-not-found'; } catch (e) { out.store = 'error: ' + String(e.message).slice(0, 160); }
     const b = await blobRead('saves/_health.json'); out.legacy = b.down ? 'down' : 'ok';
     return res.status(200).json(out);
   }
