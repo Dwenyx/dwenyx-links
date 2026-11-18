@@ -1,18 +1,15 @@
 // Achats de gemmes sur le site web (Stripe Checkout) — l'appli Android utilise Google Play.
-import { put, get } from '@vercel/blob';
+import { sbRead, sbWrite } from './_store.js';
 import { createHash, createHmac, timingSafeEqual } from 'node:crypto';
 import { verifyGoogle } from './_auth.js';
 
 const PACKS = { 20: 99, 60: 249, 150: 499, 400: 999, 1000: 1999 }; // gemmes -> centimes d'euro
 const SITE = 'https://paint-clash.vercel.app';
-const credPath = sub => 'credits/' + createHash('sha256').update('paint-clash-pay:' + sub).digest('hex') + '.json';
+const credPath = sub => 'credits-' + createHash('sha256').update('paint-clash-pay:' + sub).digest('hex') + '.json';
 
 async function rawBody(req) { let raw = ''; for await (const c of req) { raw += c; if (raw.length > 100000) break; } return raw; }
-async function readCred(sub) {
-  try { const r = await get(credPath(sub), { access: 'private', useCache: false }); if (!r || r.statusCode !== 200) return { list: [] }; return JSON.parse(await new Response(r.stream).text()); }
-  catch (e) { return { list: [] }; }
-}
-async function writeCred(sub, doc) { await put(credPath(sub), JSON.stringify(doc), { access: 'private', addRandomSuffix: false, allowOverwrite: true, contentType: 'application/json' }); }
+async function readCred(sub) { const r = await sbRead(credPath(sub)); return r.found ? r.data : { list: [] }; }
+async function writeCred(sub, doc) { await sbWrite(credPath(sub), doc); }
 
 function stripeSigOk(raw, header, secret) {
   if (!header || !secret) return false;
