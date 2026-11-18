@@ -13,6 +13,10 @@ async function readBody(req) {
 
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
+  if (req.query && req.query.health) {
+    try { await get('saves/_health.json', { access: 'private', useCache: false }); return res.status(200).json({ blob: 'ok' }); }
+    catch (e) { const m = String(e && e.message || e); return res.status(200).json({ blob: /not.?found/i.test(m) ? 'ok' : 'error', name: e && e.name, msg: m.slice(0, 200) }); }
+  }
   const who = await verifyGoogle(req);
   if (who.error) return res.status(who.status).json({ error: who.error });
   const path = pathFor(who.sub);
@@ -26,7 +30,7 @@ export default async function handler(req, res) {
       return res.status(200).json({ save: data.save || null, updatedAt: data.updatedAt || 0, email: who.email, name: who.name });
     } catch (e) {
       if (e && (e.name === 'BlobNotFoundError' || /not.?found/i.test(String(e.message)))) return res.status(200).json({ save: null, email: who.email, name: who.name });
-      return res.status(500).json({ error: 'read-failed' });
+      console.error('save read', e && e.name, e && e.message); return res.status(500).json({ error: 'read-failed' });
     }
   }
 
@@ -40,7 +44,7 @@ export default async function handler(req, res) {
       await put(path, doc, { access: 'private', addRandomSuffix: false, allowOverwrite: true, contentType: 'application/json' });
       return res.status(200).json({ ok: true });
     } catch (e) {
-      return res.status(500).json({ error: 'write-failed' });
+      console.error('save write', e && e.name, e && e.message); return res.status(500).json({ error: 'write-failed' });
     }
   }
 
