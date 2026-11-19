@@ -2360,6 +2360,79 @@ html.wk .stitle .f{filter:drop-shadow(2.5px 0 0 #ffffff) drop-shadow(-2.5px 0 0 
 #specUI .spbar{padding:4px 12px!important;flex-direction:row!important;gap:8px!important;white-space:nowrap}
 #specUI .sptag{font-size:15px!important}#specWho{font-size:14px!important}
 #specUI .btn{min-height:38px!important;font-size:14px!important;padding:0 12px!important}
+
+/* perf : animations infinies coûteuses retirées (repeints plein écran, calques multiples) */
+.btn::after,.hcard:not(.lock) .hcimg::before,.hcard.r3::before{animation:none!important;display:none!important}
+.hcard.r3{animation:none!important;background-size:100% 100%!important}
+.scr::before{animation:none!important;will-change:auto!important}
+#res.solo .rbg::before{animation:none!important}
+.modal.cm[data-k="c3"] .cmrb{animation:cmrot 9s linear infinite!important}
+/* retour visuel immédiat au toucher */
+button,[data-back],.hbtn,.nb,.stile{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.tdn{transform:translateY(2px) scale(.96)!important;filter:brightness(.93);transition:transform .05s,filter .05s!important}
+.pvc.tdn,.pvc:active{transform:none!important;filter:brightness(.95)}
+/* un seul bouton retour, propre et bien visible */
+.shead .hb.home{display:none!important}
+.shead .hb.back{margin:8px 0 0 max(10px,env(safe-area-inset-left,0px))!important;width:54px!important;height:50px!important;padding-left:0!important;border-radius:16px!important;border:4px solid #000015!important}
+.shead .hb.back svg{width:26px;height:30px}
+
+#plusL,#plusR{opacity:0!important}
+
+/* ===== PASSE (style Pass Royale) ===== */
+#sPass .pv2s{padding:0!important;overflow-y:auto;overscroll-behavior:contain;background:linear-gradient(#173a9e,#0d2a7c)}
+.pv2{position:relative;display:flex;flex-direction:column;min-height:100%}
+.pv2top{position:sticky;top:0;z-index:5;display:flex;align-items:stretch;gap:10px;padding:10px 12px 12px;background:linear-gradient(#ffd23a,#f5a700);border-bottom:4px solid #0b0b19;box-shadow:0 6px 12px rgba(0,0,0,.25)}
+.pv2info{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:8px}
+.pv2pill{display:flex;align-items:center;gap:8px;height:38px;padding:0 12px 0 6px;border-radius:12px;background:rgba(80,40,0,.45);box-shadow:inset 0 2px 0 rgba(0,0,0,.2);color:#fff;font-size:17px;min-width:0}
+.pv2pill svg{width:28px;height:28px;flex:none}
+.pv2pill.lv{position:relative;padding-left:0}
+.pv2dia{flex:none;width:40px;height:40px;margin-left:-6px;display:grid;place-items:center;transform:rotate(45deg);border-radius:9px;background:linear-gradient(135deg,#ffe95a,#ff9f00);border:3px solid #0b0b19;font-size:16px}
+.pv2dia{line-height:1}.pv2pill .pv2dia{color:#0b0b19}
+.pv2dia{writing-mode:horizontal-tb}
+.pv2pill .pv2dia::after{content:""}
+.pv2bar{flex:1;min-width:0;height:14px;border-radius:7px;background:rgba(0,0,0,.35);overflow:hidden}
+.pv2bar i{display:block;height:100%;background:linear-gradient(#7ef7ff,#1fb6ff);border-radius:7px}
+.pv2pill b{font-weight:400;white-space:nowrap}
+.pv2rib{flex:none;width:132px;margin:-10px 0 -26px;padding:10px 8px 22px;display:flex;flex-direction:column;align-items:center;gap:4px;background:linear-gradient(#9a5cff,#6a22d8);border:4px solid #0b0b19;border-top:0;clip-path:polygon(0 0,100% 0,100% 84%,50% 100%,0 84%);color:#fff;text-align:center}
+.pv2rib svg{width:44px;height:36px}
+.pv2rib b{font-weight:400;font-size:15px;line-height:1.05}
+.pv2buy{font:inherit;font-size:17px;color:#fff;display:flex;align-items:center;gap:4px;padding:6px 12px;border-radius:12px;border:3px solid #0b0b19;background:linear-gradient(#8dff4a,#2fcf10);box-shadow:inset 0 -4px 0 #1d9a07,0 3px 0 #0b0b19;cursor:pointer}
+.pv2buy .ic{width:20px;height:20px}
+.pv2ok{font-size:14px;color:#8dff4a}
+.pv2h{display:grid;grid-template-columns:1fr 1fr;padding:10px 0 6px;font-size:16px;color:#fff;text-align:center}
+.pv2rows{display:flex;flex-direction:column}
+.pv2r{position:relative;display:grid;grid-template-columns:1fr 1fr;height:132px}
+.pv2r.big{height:150px}
+.pv2c{font:inherit;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border:0;border-bottom:2px solid rgba(0,0,0,.25);color:#fff;cursor:pointer;padding:12px 6px 10px}
+.pv2c.free{background:linear-gradient(135deg,#2f7ff0,#1c55c9)}
+.pv2c.prem{background:radial-gradient(circle,rgba(255,255,255,.12) 2px,transparent 3px) 0 0/22px 22px,linear-gradient(135deg,#a35cff,#7128dd);border-left:3px solid #0b0b19}
+.pv2r:not(.reach) .pv2c.free{background:linear-gradient(135deg,#1f4fa8,#163b86)}
+.pv2r:not(.reach) .pv2c.prem{background:radial-gradient(circle,rgba(255,255,255,.08) 2px,transparent 3px) 0 0/22px 22px,linear-gradient(135deg,#5b2aa8,#41187f)}
+.pv2c.got{filter:saturate(.55) brightness(.8)}
+.pv2c.claim{box-shadow:inset 0 0 0 4px #ffe23a,inset 0 0 26px rgba(255,226,58,.55)}
+.pv2art{width:70px;height:70px;display:grid;place-items:center}
+.pv2r.big .pv2art{width:92px;height:92px}
+.pv2art img,.pv2art .cube,.pv2art svg{width:100%;height:100%;object-fit:contain}
+.pv2c b{font-weight:400;font-size:17px}
+.pv2t{position:absolute;top:8px;left:50%;transform:translateX(-50%);display:grid;place-items:center}
+.pv2t.l{width:46px;height:28px;border-radius:9px;background:linear-gradient(#ffe34a,#f5a400);border:3px solid #0b0b19}
+.pv2t.l svg{width:18px;height:18px}
+.pv2t.k{width:30px;height:30px;border-radius:50%;background:#2fcf10;border:3px solid #0b0b19;top:auto;bottom:8px;left:auto;right:10px;transform:none}
+.pv2t.k svg{width:18px;height:18px;color:#fff}
+.pv2t.g{padding:3px 10px;border-radius:9px;background:linear-gradient(#8dff4a,#2fcf10);border:3px solid #0b0b19;font-size:12px;white-space:nowrap}
+.pv2l{position:absolute;left:50%;top:50%;width:46px;height:46px;margin:-23px 0 0 -23px;transform:rotate(45deg);border-radius:10px;border:4px solid #0b0b19;background:linear-gradient(135deg,#27407e,#18295a);display:grid;place-items:center;z-index:2;pointer-events:none}
+.pv2l span{transform:rotate(-45deg);font-size:18px;color:#7f93c9}
+.pv2r.reach .pv2l{background:linear-gradient(135deg,#ffe95a,#ff9f00)}.pv2r.reach .pv2l span{color:#fff}
+.pv2r.big .pv2l{width:56px;height:56px;margin:-28px 0 0 -28px}.pv2r.big .pv2l span{font-size:22px}
+.pv2cut{height:8px;background:linear-gradient(#ffe95a,#f5a400);border-top:2px solid #0b0b19;border-bottom:2px solid #0b0b19}
+.pv2next{position:sticky;bottom:0;z-index:5;margin-top:auto;border-top:4px solid #0b0b19;box-shadow:0 -8px 16px rgba(0,0,0,.35)}
+.pv2next .pv2r{height:118px}
+.pv2c:active,.pv2c.tdn{transform:none!important;filter:brightness(.92)}
+.pv2dia i{font-style:normal;transform:rotate(-45deg);color:#fff;font-size:16px}
+.pv2c{padding-top:44px!important;justify-content:flex-start!important}.pv2r.big .pv2c{padding-top:34px!important}
+.pv2t.l,.pv2t.g{top:7px}
+.pv2art{width:62px;height:62px}.pv2r.big .pv2art{width:80px;height:80px}
+.pv2next .pv2r{height:auto!important}.pv2next .pv2c{padding:30px 6px calc(10px + env(safe-area-inset-bottom,0px))!important}.pv2next .pv2art{width:64px;height:64px}
 </style>
 
 <div id="bg"><div class="halo"></div></div>
@@ -4300,12 +4373,18 @@ function adaptRes(ms){if(QUAL!=='auto'&&QUAL!=='high')return;if(performance.now(
  if(avg>hi&&PR>PMIN){np=Math.max(PMIN,PR-.15);adDown=pn}else if(FPSMAX===120&&VS<12&&avg>T*1.45&&PR<=PMIN+.01&&state!=='menu'){FPSMAX=60;adDown=pn}else if(QUAL==='auto'&&avg>hi&&!OLOFF&&state!=='menu'){OLOFF=true;adDown=pn}
  else if(pn-adDown>8000&&avg<T*1.12){if(OLOFF)OLOFF=false;else if(PR<PR_MAX)np=Math.min(PR_MAX,PR+.1)}
  if(Math.abs(np-PR)>.01){PR=np;resize()}}
+
+// retour visuel immédiat (le clic reste géré normalement)
+{let tdEl=null;const off=()=>{if(tdEl){tdEl.classList.remove('tdn');tdEl=null}};
+ document.addEventListener('pointerdown',e=>{const b=e.target.closest&&e.target.closest('button,.hbtn,[data-back]');if(!b||b.disabled)return;off();tdEl=b;b.classList.add('tdn')},{passive:true,capture:true});
+ ['pointerup','pointercancel','pointerleave','scroll','blur'].forEach(ev=>addEventListener(ev,()=>setTimeout(off,60),{passive:true,capture:true}));
+ document.addEventListener('touchstart',()=>{},{passive:true})}
 const RESEL=document.getElementById('res');
 function frame(){
  const resCv=state==='end'&&!RESEL.hidden;{const tt=performance.now();vsTick(tt);const cap=state==='menu'&&tab!=='home'&&!detailOpen?95:resCv?32:tt<homeWarm?30:1000/FPSMAX-1.6;if(tt-last<cap){requestAnimationFrame(frame);return}}
  earE=(player&&!player.alive&&specOn2)?specTarget():player;
  water.visible=state!=='menu';
- const t=performance.now(),dt=Math.min(.05,(t-last)/1000);if(!resCv&&(state!=='menu'||tab==='home'))adaptRes(t-last);last=t;now+=dt;
+ const t=performance.now(),dt=Math.min(.05,(t-last)/1000);if(!resCv&&state!=='menu')adaptRes(t-last);else if(state==='menu'&&PR!==PR_MAX){PR=PR_MAX;resize()};last=t;now+=dt;
  {const h8=$('#hand8'),hs=state==='count';if(h8.hidden===hs)h8.hidden=!hs}
  if(state==='count'&&!NET.hold){countT-=dt;const n=Math.ceil(countT-.6);if(n!==lastCount&&n>=0){lastCount=n;$('#count').innerHTML=`<span>${n>0?n:'GO !'}</span>`;n>0?sfx.tick():sfx.go()}
   if(countT<=.6){state='play';player.frozen=false;if(simOn)for(const e of ents)if(e&&e.bot)e.frozen=false;if(NET.role==='client'){try{NET.conn.send({t:'go'})}catch(_){}}setTimeout(()=>{$('#count').innerHTML=''},600)}}
@@ -4661,7 +4740,16 @@ function lobbyTick(dt){const L=sideLayout(),show=!detailOpen&&tab==='home';
   const fc=friendChars[i];if(fc){fc.g.visible=show;fc.g.position.set(g.position.x,.29,g.position.z);fc.g.scale.setScalar(2.2*L.s);fc.g.rotation.y=-sg*.35;animChar(fc,dt,false,now)}
   const rb=i?$('#rdyR'):$('#rdyL'),gf=groupInv[i];
   if(show&&fc&&gf){rb.hidden=false;rb.textContent=gf.ready?'PRÊT':'PAS PRÊT';rb.classList.toggle('on',!!gf.ready);pv.set(g.position.x,-.1,g.position.z+.9*L.s).project(cam);rb.style.left=((pv.x+1)/2*innerWidth/UIZ)+'px';rb.style.top=((1-pv.y)/2*innerHeight/UIZ)+'px'}else rb.hidden=true;
-  const b=i?$('#plusR'):$('#plusL');if(!show||fc){b.hidden=true;return}b.hidden=false;pv.set(g.position.x,1.7*L.s+.7,g.position.z).project(cam);b.style.left=((pv.x+1)/2*innerWidth/UIZ)+'px';b.style.top=((1-pv.y)/2*innerHeight/UIZ)+'px'})}
+  const b=i?$('#plusR'):$('#plusL'),ps=plusSpr(i);if(!show||fc){b.hidden=true;ps.visible=false;return}b.hidden=false;ps.visible=true;ps.position.set(g.position.x,1.7*L.s+.7,g.position.z);ps.scale.setScalar(1.3*Math.max(.75,L.s));pv.set(g.position.x,1.7*L.s+.7,g.position.z).project(cam);b.style.left=((pv.x+1)/2*innerWidth/UIZ)+'px';b.style.top=((1-pv.y)/2*innerHeight/UIZ)+'px'})}
+// « + » d'invitation dessinés dans la scène 3D : le héros du lobby passe devant
+const PLUSS=[];function plusSpr(i){if(PLUSS[i])return PLUSS[i];
+ if(!plusSpr.tex){const c=document.createElement('canvas');c.width=c.height=128;const x=c.getContext('2d');x.translate(64,64);x.rotate(-4*Math.PI/180);
+  const rr=(w,r)=>{x.beginPath();x.moveTo(-w+r,-w);x.arcTo(w,-w,w,w,r);x.arcTo(w,w,-w,w,r);x.arcTo(-w,w,-w,-w,r);x.arcTo(-w,-w,w,-w,r);x.closePath()};
+  x.fillStyle='rgba(0,34,135,.3)';x.save();x.translate(0,6);rr(52,18);x.fill();x.restore();
+  rr(52,18);x.fillStyle='rgba(255,255,255,.3)';x.fill();x.lineWidth=7;x.strokeStyle='rgba(255,255,255,.95)';x.stroke();
+  x.lineCap='round';x.lineWidth=24;x.strokeStyle='#0b0b19';x.beginPath();x.moveTo(0,-26);x.lineTo(0,26);x.moveTo(-26,0);x.lineTo(26,0);x.stroke();
+  x.lineWidth=12;x.strokeStyle='#ffffff';x.stroke();plusSpr.tex=new THREE.CanvasTexture(c)}
+ const m=new THREE.Sprite(new THREE.SpriteMaterial({map:plusSpr.tex,transparent:true,depthWrite:false}));m.renderOrder=-1;m.visible=false;S.add(m);return PLUSS[i]=m}
 function camMenu(asp,dt){
  if(detailOpen){const f=Math.max(1,.95/asp);tv.set(PD.x,2.1*f,PD.z+9*f);tl.set(PD.x,1.45,PD.z)}
  else if(asp<1){const d=Math.min(16,6.3/asp);tv.set(PD.x,3.4,PD.z+d);tl.set(PD.x,.9,PD.z-1.2)}
@@ -4705,7 +4793,7 @@ function updNav(){const nv=$('#bnav');if(!nv)return;const on=state==='menu'&&NAV
 let navAt=0,adSkip=0;
 function go(t){
  const pt=tab,prev=[...SCR].map(s=>$(s)).find(e=>e&&!e.hidden);const io=NAVT.indexOf(t),po=NAVT.indexOf(pt);document.documentElement.style.setProperty('--sdx',(io>=0&&po>=0&&io!==po?(io>po?1:-1):0)*46+'px');navAt=performance.now();
- if(t==='home'&&pt!=='home'){fpsAcc=fpsN=fpsT=0;adSkip=navAt+700;homeWarm=navAt+320}
+ if(t==='home'&&pt!=='home'){fpsAcc=fpsN=fpsT=0;adSkip=navAt+700;homeWarm=0}
  tab=t;closeAll();document.body.dataset.tab=t;document.body.dataset.r='home';setTimeout(updNav,0);
  const lob=t==='home';$('#home').hidden=!lob;$('#topbar').hidden=!lob;
  setStage(save.hero);
@@ -4848,10 +4936,10 @@ function shopJump(){}
 const GPB={app:!!window.KRBilling,ok:false,price:{},busy:0};const playId=r=>'gems_'+r.give.gems+'_pack';
 function playInit(){if(!GPB.app)return;try{KRBilling.query(JSON.stringify(RESS.filter(r=>r.price&&r.price.eur).map(playId)))}catch(_){}}
 window.krPrices=m=>{GPB.n=Object.keys(m||{}).length;GPB.price=m||{};GPB.ok=Object.keys(GPB.price).length>0;RESS.forEach(r=>{const pp=GPB.price[playId(r)];if(pp&&r.price&&r.price.eur)r.price.eur=pp});if(tab==='shop')renderShop()};
-function playBuy(r){if(GPB.busy)return;GPB.busy=1;setTimeout(()=>GPB.busy=0,4000);try{KRBilling.buy(playId(r))}catch(_){GPB.busy=0}}
-window.krPurchase=(id,tok)=>{GPB.busy=0;try{save.playTok=save.playTok||[];if(save.playTok.includes(tok))return;save.playTok.push(tok);if(save.playTok.length>60)save.playTok.shift()}catch(_){}
+function playBuy(r){if(GPB.busy)return;GPB.busy=1;clearTimeout(GPB.to);GPB.to=setTimeout(()=>{if(GPB.busy){GPB.busy=0;banner('ACHAT INDISPONIBLE',2200)}},12000);try{KRBilling.buy(playId(r))}catch(_){GPB.busy=0;banner('ACHAT INDISPONIBLE',2000)}}
+window.krPurchase=(id,tok)=>{GPB.busy=0;clearTimeout(GPB.to);try{save.playTok=save.playTok||[];if(save.playTok.includes(tok))return;save.playTok.push(tok);if(save.playTok.length>60)save.playTok.shift()}catch(_){}
  const r=RESS.find(q=>playId(q)===id);if(!r)return;save.gems+=r.give.gems||0;save.coins+=r.give.coins||0;persist();try{sfx.up()}catch(_){}if(tab==='shop')renderShop();updTop();try{rwFly(document.querySelector('#sShop')?.getBoundingClientRect()||{left:innerWidth/2,top:innerHeight/2,width:0,height:0},r.give)}catch(_){}banner('+'+r.give.gems+' GEMMES !',2200)};
-window.krPurchaseFail=k=>{GPB.busy=0;if(k==='pending')banner('PAIEMENT EN ATTENTE',2200);else if(k==='unavailable')banner('ACHAT INDISPONIBLE',2000)};
+window.krPurchaseFail=k=>{GPB.busy=0;clearTimeout(GPB.to);if(k==='pending')banner('PAIEMENT EN ATTENTE',2200);else if(k==='unavailable')banner('ACHAT INDISPONIBLE',2000)};
 setTimeout(playInit,1500);
 let WEBPAY=false;
 async function webBuy(r){if(!AUTH.tok){showLogin('Connecte-toi pour acheter des gemmes.');return}if(GPB.busy)return;GPB.busy=1;banner('OUVERTURE DU PAIEMENT…');
@@ -4899,7 +4987,7 @@ function renderMissions(){
   save.missions.forEach(m=>{if(m.done)rows+=`<div class="mq mqph" aria-hidden="true"><span class="mqwm"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.2 4.2L19 7" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="mqok"><span class="mqck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.2 4.2L19 7" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="mqtx s">VALIDÉE</span></span></div>`})}
  else ACH.forEach(a=>{const i=achTier(a),mx=i>=a.t.length,k=mx?a.t.length-1:i;rows+=mqRow(a.ic,a.d(a.t[k]),mx?a.t[k]:a.v(),a.t[k],achRw(a,k),mx?'done':a.v()>=a.t[k]?'ok':'',`data-ach="${a.k}"`)});
  const h=`<div class="mqtop"><span class="mqcur" id="mqCoin">${img('n_coin')}<b class="s">${fmt(save.coins)}</b></span><span class="mqcur" id="mqGem">${img('n_gem')}<b class="s">${fmt(save.gems)}</b></span></div>
- <button class="mqchest ${bon?'ok':''} ${save.mBonus===today()?'got':''}" data-mbonus><span class="mqcp">${img("p_calendar")}<span><i style="width:${tot?dn/tot*100:0}%"></i><em class="s">${dn}/${tot}</em></span></span><span class="mq3d" id="mq3d">${img('key_c2')}<span class="mqped"></span></span></button>
+ ${mqTab!=='day'?'':`<button class="mqchest ${bon?'ok':''} ${save.mBonus===today()?'got':''}" data-mbonus><span class="mqcp">${img("p_calendar")}<span><i style="width:${tot?dn/tot*100:0}%"></i><em class="s">${dn}/${tot}</em></span></span><span class="mq3d" id="mq3d">${img('key_c2')}<span class="mqped"></span></span></button>`}
  <div class="mqp"><div class="mqtabs ${mqTab==='perm'?'perm':''}"><button class="s ${mqTab==='day'?'on':''}" data-mqt="day">Quotidien</button><button class="s ${mqTab==='perm'?'on':''}" data-mqt="perm">Permanent</button></div>
  <div class="mqrows">${mqTab==='day'?`<p class="mqtime s">Nouvelles missions dans ${untilMidnight()}</p>`:''}${rows}</div></div>`;
  show('#sMissions',`<div class="sbody mqs">${h}</div>`);{const r=$('#sMissions .mq:not(.mqph)');if(r&&r.offsetHeight)window._mqh=r.offsetHeight;const sm=$('#sMissions');if(sm&&window._mqh)sm.style.setProperty('--mqh',window._mqh+'px')}mcMount()
@@ -4940,18 +5028,30 @@ function pvCell(r,col,l,st){const a=rewArt(r);
  const tag=st==='claim'?'<span class="pvt g s">RÉCUPÉRER</span>':st==='got'?`<span class="pvt k">${I.check}</span>`:`<span class="pvt l">${I.lock}</span>`;
  return `<button class="pvc ${col} ${st}" data-${col==='free'?'pf':'pp'}="${l}">${tag}${a.h}<b class="s">${a.l}</b></button>`}
 function renderPassV(){
- const L=passLevel(),x=(save.xp||0)%XP_LV,cl=passClaimable();let rows='';
- for(let l=1;l<=PASS_MAX;l++){const reach=l<=L;
-  const sp=save.passClaimedP.includes(l)?'got':(reach&&save.passPrem)?'claim':'locked';
-  const sf=save.passClaimed.includes(l)?'got':reach?'claim':'locked';
-  rows+=`<div class="pvr ${reach?'reach':''} ${l===L?'cur':''}" id="pvr${l}">${pvCell(passReward(l),'free',l,sf)}<span class="pvl"><span class="s">${l}</span></span>${pvCell(passRewardP(l),'prem',l,sp)}</div>`}
- const h=`<div class="pv"><div class="phd"><div><h3 class="s">SAISON 1</h3><small class="s">Fin dans ${untilMonthEnd()}</small></div><div class="pxp"><span class="tok">${I.star}</span><span class="pb"><b style="width:${L>=PASS_MAX?100:x/XP_LV*100}%"></b><em class="s">${L>=PASS_MAX?'MAX':`${x}/${XP_LV}`}</em></span><span class="plv s">${L}</span></div></div>
- ${save.passPrem?'':`<button class="btn btn-yellow pvprem" data-pbuy>ACTIVER LE PREMIUM · ${ico('gem')}${PASS_PRICE}</button>`}
- ${cl?`<button class="pvclaim s" data-pjump><b>${cl}</b>À RÉCUPÉRER</button>`:''}
- <div class="pvh s"><span>GRATUIT</span><span>PREMIUM</span></div><div class="pvrows">${rows}</div></div>`;
- show('#sPass',shead('PASSE')+`<div class="sbody">${h}</div>`);
- centerSoon('#sPass .sbody','#pvr'+L,'y','#sPass');
+ const L=passLevel(),x=(save.xp||0)%XP_LV,P=!!save.passPrem;let rows='';
+ const clock='<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5" fill="#fff" stroke="#0b0b19" stroke-width="2.6"/><path d="M12 6.5V12l3.6 2.2" fill="none" stroke="#0b0b19" stroke-width="2.6" stroke-linecap="round"/></svg>';
+ const crown='<svg viewBox="0 0 48 40"><path d="M5 12l10 9 9-15 9 15 10-9-4 22H9z" fill="#ffd21f" stroke="#0b0b19" stroke-width="3.4" stroke-linejoin="round"/><path d="M9 34h30" stroke="#0b0b19" stroke-width="3.4"/><path d="M24 17l4 5-4 5-4-5z" fill="#3aa0ff" stroke="#0b0b19" stroke-width="2.4" stroke-linejoin="round"/></svg>';
+ for(let l=1;l<=PASS_MAX;l++){rows+=pv2Row(l,L,P);if(l===L&&l<PASS_MAX)rows+='<div class="pv2cut"></div>'}
+ const h=`<div class="pv2"><div class="pv2top"><div class="pv2info"><div class="pv2pill">${clock}<b class="s">${untilMonthEnd()}</b></div>
+  <div class="pv2pill lv"><span class="pv2dia"><i class="s">${L}</i></span><span class="pv2bar"><i style="width:${L>=PASS_MAX?100:x/XP_LV*100}%"></i></span><b class="s">${L>=PASS_MAX?'MAX':`${x}/${XP_LV}`}</b></div></div>
+  <div class="pv2rib ${P?'on':''}">${crown}<b class="s">PASSE PREMIUM</b>${P?'<span class="pv2ok s">ACTIVÉ</span>':`<button class="pv2buy s" data-pbuy>${ico('gem')}${PASS_PRICE}</button>`}</div></div>
+  <div class="pv2h s"><span>GRATUIT</span><span>PREMIUM</span></div>
+  <div class="pv2rows">${rows}</div><div class="pv2next" id="pv2next" hidden></div></div>`;
+ show('#sPass',shead('PASSE')+`<div class="sbody pv2s">${h}</div>`);
+ const sb=$('#sPass .sbody');if(sb&&!sb._pv2){sb._pv2=1;sb.addEventListener('scroll',pv2Next,{passive:true})}
+ centerSoon('#sPass .sbody','#pvr'+L,'y','#sPass');requestAnimationFrame(pv2Next);
 }
+function pv2Cell(r,col,l,st){const a=rewArt(r);
+ const tag=st==='claim'?'<span class="pv2t g s">RÉCUPÉRER</span>':st==='got'?`<span class="pv2t k">${I.check}</span>`:col==='prem'&&!save.passPrem?`<span class="pv2t l">${I.lock}</span>`:'';
+ return `<button class="pv2c ${col} ${st}" data-${col==='free'?'pf':'pp'}="${l}">${tag}<span class="pv2art">${a.h}</span><b class="s">${a.l}</b></button>`}
+function pv2Row(l,L,P){const reach=l<=L;
+ const sp=save.passClaimedP.includes(l)?'got':(reach&&P)?'claim':'locked',sf=save.passClaimed.includes(l)?'got':reach?'claim':'locked';
+ return `<div class="pv2r ${reach?'reach':''} ${l%5===0?'big':''} ${l===L?'cur':''}" id="pvr${l}">${pv2Cell(passReward(l),'free',l,sf)}<span class="pv2l"><span class="s">${l}</span></span>${pv2Cell(passRewardP(l),'prem',l,sp)}</div>`}
+// bas de page : la prochaine grosse récompense sous l'écran reste visible
+function pv2Refresh(l){const r=document.getElementById('pvr'+l);if(!r||!r.classList.contains('pv2r'))return false;const t=document.createElement('template');t.innerHTML=pv2Row(l,passLevel(),!!save.passPrem);r.replaceWith(t.content.firstChild);const nx=$('#pv2next');if(nx){nx.dataset.l='';pv2Next()}$('#sPass')._h=null;return true}
+function pv2Next(){const sb=$('#sPass .sbody'),nx=$('#pv2next');if(!sb||!nx)return;const bot=sb.getBoundingClientRect().bottom-(nx.offsetHeight||110)*.6;let lv=0;
+ for(let l=5;l<=PASS_MAX;l+=5){const r=document.getElementById('pvr'+l);if(r&&r.getBoundingClientRect().top>bot){lv=l;break}}
+ if(!lv){if(!nx.hidden)nx.hidden=true;return}if(nx.dataset.l!==String(lv)){nx.dataset.l=lv;nx.innerHTML=pv2Row(lv,passLevel(),!!save.passPrem).replace(/id="pvr\d+"/,'')}if(nx.hidden)nx.hidden=false}
 let passRZ=0;addEventListener('resize',()=>{cancelAnimationFrame(passRZ);passRZ=requestAnimationFrame(()=>{if(tab==='pass'&&!$('#sPass').hidden)renderPass()})});
 
 function pcard(r,cls,attr,state){const a=rewArt(r);return `<button class="pcard ${cls} ${state}" style="--rb:${a.bg}" ${attr}>${a.h}<b class="s">${a.l}</b>${state==='got'?`<span class="ok">${I.check}</span>`:state==='locked'&&cls==='prem'?`<span class="lk">${I.lock}</span>`:''}</button>`}
@@ -4968,11 +5068,12 @@ function renderPass(){
  centerSoon('#pscroll','#sPass .pcol.cur','x','#sPass');
 }
 $('#sPass').addEventListener('click',e=>{const b=e.target.closest('button');if(!b||b.hasAttribute('data-back')||b.hasAttribute('data-homeb'))return;ac();
+ if(b.closest('.pv2next')&&(b.dataset.pf||b.dataset.pp)){const r=document.getElementById('pvr'+(b.dataset.pf||b.dataset.pp));if(r)r.scrollIntoView({block:'center',behavior:'smooth'});return}
  if(b.hasAttribute('data-pjump')){const c=$('#sPass .pvc.claim');if(c)c.scrollIntoView({block:'center',behavior:'smooth'});return}
  if(b.hasAttribute('data-pbuy')){if(save.gems<PASS_PRICE){sfx.tick();toast('Pas assez de gemmes');return}save.gems-=PASS_PRICE;save.passPrem=true;persist();sfx.win();banner('PASSE PREMIUM !');setTimeout(()=>$('#banner').innerHTML='',1300);renderPass();updTop();return}
  const L=passLevel();
- if(b.dataset.pf){const l=+b.dataset.pf;if(l>L){sfx.tick();toast(`Atteins le niveau ${l} du passe`);return}if(save.passClaimed.includes(l))return;save.passClaimed.push(l);const rr=b.getBoundingClientRect(),rw=passReward(l);grant(rw);renderPass();updTop();rwFly(rr,rw);return}
- if(b.dataset.pp){const l=+b.dataset.pp;if(!save.passPrem){sfx.tick();toast('Active le passe premium pour ces récompenses');return}if(l>L){sfx.tick();toast(`Atteins le niveau ${l} du passe`);return}if(save.passClaimedP.includes(l))return;save.passClaimedP.push(l);const rr=b.getBoundingClientRect(),rw=passRewardP(l);grant(rw);renderPass();updTop();rwFly(rr,rw)}
+ if(b.dataset.pf){const l=+b.dataset.pf;if(l>L){sfx.tick();toast(`Atteins le niveau ${l} du passe`);return}if(save.passClaimed.includes(l))return;save.passClaimed.push(l);const rr=b.getBoundingClientRect(),rw=passReward(l);grant(rw);pv2Refresh(l)||renderPass();updTop();rwFly(rr,rw);return}
+ if(b.dataset.pp){const l=+b.dataset.pp;if(!save.passPrem){sfx.tick();toast('Active le passe premium pour ces récompenses');return}if(l>L){sfx.tick();toast(`Atteins le niveau ${l} du passe`);return}if(save.passClaimedP.includes(l))return;save.passClaimedP.push(l);const rr=b.getBoundingClientRect(),rw=passRewardP(l);grant(rw);pv2Refresh(l)||renderPass();updTop();rwFly(rr,rw)}
 });
 
 // ROUTE DES TROPHÉES
