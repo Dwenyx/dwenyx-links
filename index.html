@@ -4606,7 +4606,7 @@ const endRot=e=>{if(!rot||e.pointerId!==rot.id)return;if(rot.moved<6&&detailChar
 cv.addEventListener('pointerup',endRot);cv.addEventListener('pointercancel',endRot);
 
 function setDot(id,n){const e=$('#'+id);if(!e)return;e.hidden=!n;e.textContent=n>9?'9+':n}
-function profSync(){return{action:'sync',hero:save.hero,stars:save.stars,x:{i:save.icon||('h:'+save.hero),t:save.title||'t0',w:save.wins||0,tw:save.teamWins||0,k:save.kills||0,g:save.games||0,hi:Math.max(save.hiStars||0,save.stars||0),l:accLv()[0]}}}
+function profSync(){return{action:'sync',prov:AUTH&&AUTH.prov?1:0,hero:save.hero,stars:save.stars,x:{i:save.icon||('h:'+save.hero),t:save.title||'t0',w:save.wins||0,tw:save.teamWins||0,k:save.kills||0,g:save.games||0,hi:Math.max(save.hiStars||0,save.stars||0),l:accLv()[0]}}}
 function accLv(x){if(x===undefined)x=save.accXp===undefined?(save.xp||0):save.accXp;let l=1,need=100;while(x>=need&&l<500){x-=need;l++;need=100+40*(l-1)}return[l,x,need]}
 function updTop(){
  roomRetrack();$('#mCo').textContent=fmt(save.coins);$('#mGe').textContent=fmt(save.gems);

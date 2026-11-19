@@ -32,7 +32,9 @@ export default async function handler(req, res) {
   if (!p) return res.status(404).json({ error: 'no-profile' });
 
   if (b.action === 'sync') {
-    const hero = packHero(b.hero, b.x), stars = Math.max(0, Math.min(1e6, b.stars | 0));
+    let hero = packHero(b.hero, b.x), stars = Math.max(0, Math.min(1e6, b.stars | 0));
+    // sauvegarde en mode secours : ne jamais faire baisser les stats publiques (elles servent à restaurer le joueur)
+    if (b.prov) { const o = splitHero(p.hero).x || {}, nx = Object.assign({}, b.x || {}); for (const k of ['w', 'tw', 'k', 'g', 'hi', 'l']) nx[k] = Math.max(+nx[k] || 0, +o[k] || 0); hero = packHero(b.hero, nx); stars = Math.max(stars, p.stars | 0); }
     await db('profiles?id=eq.' + p.id, { method: 'PATCH', body: { hero, stars } });
     return res.status(200).json({ ok: true });
   }

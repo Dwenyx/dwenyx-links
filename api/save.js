@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 import { verifyGoogle } from './_auth.js';
 import { storeReady, sbRead, sbWrite, blobRead } from './_store.js';
+import { dbReady, meProfile, splitHero } from './_db.js';
 
 const hashOf = sub => createHash('sha256').update('paint-clash:' + sub).digest('hex');
 
@@ -11,6 +12,20 @@ async function readBody(req) {
   return JSON.parse(raw || '{}');
 }
 
+// XP de compte minimale pour un niveau donné (même formule que le jeu)
+const xpFor = l => { let x = 0; for (let k = 1; k < l; k++) x += 100 + 40 * (k - 1); return x; };
+// secours : l'ancienne sauvegarde est illisible -> on remet au moins les stats publiques du profil (trophées, niveau, victoires…)
+async function profileRestore(sub, save) {
+  if (!dbReady()) return null;
+  let p = null; try { p = await meProfile(sub); } catch (_) { return null; }
+  if (!p) return null;
+  const { hero, x } = splitHero(p.hero), s = Object.assign({}, save || {}), mx = (k, v) => { if ((+v || 0) > (+s[k] || 0)) s[k] = +v; };
+  mx('stars', p.stars); mx('hiStars', Math.max(+x.hi || 0, +p.stars || 0)); mx('wins', x.w); mx('teamWins', x.tw); mx('kills', x.k); mx('games', x.g);
+  const ax = xpFor(Math.max(1, +x.l || 1)); if ((+s.accXp || 0) < ax) s.accXp = ax;
+  if (hero) { s.owned = Array.isArray(s.owned) ? s.owned.slice() : ['cubo', 'pepin']; if (!s.owned.includes(hero)) s.owned.push(hero); s.levels = Object.assign({}, s.levels || {}); if (!s.levels[hero]) s.levels[hero] = 1; }
+  if (typeof x.i === 'string' && !s.icon) s.icon = x.i; if (typeof x.t === 'string' && !s.title) s.title = x.t;
+  return s;
+}
 // score de progression, pour choisir la sauvegarde la plus avancée
 const prog = s => !s ? -1 : (+s.stars || 0) + 1000 * ((s.owned && s.owned.length) || 0) + 10 * (+s.games || 0) + (+s.passXp || +s.xp || 0);
 
@@ -42,7 +57,12 @@ export default async function handler(req, res) {
         try { await sbWrite(name, { save: doc.save, updatedAt: doc.updatedAt }); } catch (_) {}
       }
     }
-    return res.status(200).json({ save: (doc && doc.save) || null, updatedAt: (doc && doc.updatedAt) || 0, email: who.email, name: who.name, legacyDown });
+    // ancienne sauvegarde toujours illisible : on complète avec les stats du profil (une seule fois)
+    if ((legacyDown || (doc && doc.prov)) && !(doc && doc.restored)) {
+      const rs = await profileRestore(who.sub, doc && doc.save);
+      if (rs) { doc = { save: rs, updatedAt: Date.now(), prov: 1, restored: 1 }; try { await sbWrite(name, doc); } catch (_) {} legacyDown = true; }
+    }
+    return res.status(200).json({ save: (doc && doc.save) || null, updatedAt: (doc && doc.updatedAt) || 0, email: who.email, name: who.name, legacyDown: legacyDown || !!(doc && doc.prov) });
   }
 
   if (req.method === 'PUT' || req.method === 'POST') {
@@ -50,7 +70,7 @@ export default async function handler(req, res) {
     try { body = await readBody(req); } catch (e) { return res.status(400).json({ error: 'bad-body' }); }
     if (!body || typeof body.save !== 'object' || body.save === null) return res.status(400).json({ error: 'bad-body' });
     const doc = { save: body.save, updatedAt: Date.now() };
-    if (body.prov) doc.prov = 1; // écrit alors que l'ancienne sauvegarde était illisible
+    if (body.prov) { doc.prov = 1; doc.restored = 1; } // écrit alors que l'ancienne sauvegarde était illisible
     if (JSON.stringify(doc).length > 150000) return res.status(413).json({ error: 'too-big' });
     try { await sbWrite(name, doc); return res.status(200).json({ ok: true }); }
     catch (e) { console.error('save write', e.message); return res.status(502).json({ error: 'write-failed' }); }
