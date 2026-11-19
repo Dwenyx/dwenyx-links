@@ -78,20 +78,20 @@ body[data-r="3"] #bg{background:linear-gradient(#ee5a14,#ffd21f 62%)}
 button{font-family:var(--font);color:var(--white);cursor:pointer;border:0;background:none;padding:0}
 button:focus-visible,input:focus-visible{outline:3px solid var(--white);outline-offset:3px}
 .s{text-shadow:0 2px 0 var(--ink),2px 0 0 var(--ink),-2px 0 0 var(--ink),0 -2px 0 var(--ink),2px 2px 0 var(--ink),-2px 2px 0 var(--ink),2px -2px 0 var(--ink),-2px -2px 0 var(--ink),0 4px 0 var(--ink)}
-.btn{--img:url(ui/btn_blue.png?v=20);position:relative;border-style:solid;border-color:transparent;border-width:13px 15px 17px;border-image:var(--img) 30 34 38 34 fill stretch;background:none;padding:0 4px;min-height:52px;font-size:20px;color:#fff;transition:transform .08s,filter .08s;text-shadow:0 2px 0 var(--ink),2px 0 0 var(--ink),-2px 0 0 var(--ink),0 -2px 0 var(--ink),2px 2px 0 var(--ink),-2px 2px 0 var(--ink),2px -2px 0 var(--ink),-2px -2px 0 var(--ink),0 3px 0 var(--ink)}
+.btn{--img:url(ui/btn_blue.png?v=21);position:relative;border-style:solid;border-color:transparent;border-width:13px 15px 17px;border-image:var(--img) 30 34 38 34 fill stretch;background:none;padding:0 4px;min-height:52px;font-size:20px;color:#fff;transition:transform .08s,filter .08s;text-shadow:0 2px 0 var(--ink),2px 0 0 var(--ink),-2px 0 0 var(--ink),0 -2px 0 var(--ink),2px 2px 0 var(--ink),-2px 2px 0 var(--ink),2px -2px 0 var(--ink),-2px -2px 0 var(--ink),0 3px 0 var(--ink)}
 .btn:active,.btn.press{transform:translateY(3px) scale(.97);filter:brightness(.92)}
-.btn-blue{--img:url(ui/btn_blue.png?v=20)}
-.btn-green{--img:url(ui/btn_green.png?v=20)}
-.btn-yellow{--img:url(ui/btn_yellow.png?v=20)}
-.btn-red{--img:url(ui/btn_red.png?v=20)}
-.btn-grey{--img:url(ui/btn_grey.png?v=20)}
-.btn-premium{--img:url(ui/btn_pink.png?v=20)}
+.btn-blue{--img:url(ui/btn_blue.png?v=21)}
+.btn-green{--img:url(ui/btn_green.png?v=21)}
+.btn-yellow{--img:url(ui/btn_yellow.png?v=21)}
+.btn-red{--img:url(ui/btn_red.png?v=21)}
+.btn-grey{--img:url(ui/btn_grey.png?v=21)}
+.btn-premium{--img:url(ui/btn_pink.png?v=21)}
 .btn[disabled]{cursor:default}
-.btn[disabled]:not(.is-eq){--img:url(ui/btn_grey.png?v=20)}
+.btn[disabled]:not(.is-eq){--img:url(ui/btn_grey.png?v=21)}
 .btn[disabled]:active{transform:none;filter:none}
 .ib{width:58px;height:58px;background:center/contain no-repeat;flex:none;transition:transform .08s}
 .ib:active{transform:scale(.88)}
-.ib-x{background-image:url(ui/i_x.png?v=20)}
+.ib-x{background-image:url(ui/i_x.png?v=21)}
 img.u{width:100%;height:100%;object-fit:contain;display:block;pointer-events:none;-webkit-user-drag:none;user-select:none}
 .sqx{width:58px;height:58px;padding:0;display:grid;place-items:center;flex:none}
 .sqx svg{width:26px;height:26px}
@@ -180,7 +180,7 @@ body[data-r] .topbar{background:transparent!important;box-shadow:none!important}
 .perk svg{width:22px;height:22px}
 .up{position:absolute;right:-6px;top:-18px;width:38px;height:38px;z-index:1;animation:bob .8s ease-in-out infinite alternate}
 @keyframes bob{to{transform:translateY(-5px)}}
-.hcard.lock{background:url(ui/card_lock.png?v=20) center/100% 100% no-repeat;border:0;box-shadow:none}
+.hcard.lock{background:url(ui/card_lock.png?v=21) center/100% 100% no-repeat;border:0;box-shadow:none}
 .hcard.lock .lk{visibility:hidden}
 .hcard.lock .lk svg path:first-child{stroke:#9fb0d6}.hcard.lock .lk rect{fill:#c7d2ea}
 .hcard.lock .lk{width:46%;margin-top:6%}
@@ -1897,8 +1897,12 @@ html.wk .stitle .b1,html.wk .stitle .b2,html.wk .rtitle{-webkit-text-stroke:reve
 .mqok{width:34px;height:34px;display:grid;place-items:center}.mqok svg{width:34px;height:34px}
 /* couche d'effets */
 #fx{position:fixed;inset:0;z-index:80;pointer-events:none;overflow:hidden}
-.flyc{position:absolute;left:0;top:0;width:38px;height:38px;margin:-19px 0 0 -19px;perspective:160px;will-change:transform}
+.flyc{position:absolute;left:0;top:0;width:44px;height:44px;margin:-22px 0 0 -22px;perspective:160px;will-change:transform}
 .flyc i{display:block;width:100%;height:100%;animation:spinY .55s linear infinite}
+/* vraie rotation 3D des modèles pièce / gemme (24 images) + halo lumineux */
+.flyc i.spr{animation:sprR .62s steps(24) infinite;background:url(ui/spin_coin.png?v=21) 0 0/2400% 100% no-repeat;filter:drop-shadow(0 0 4px rgba(255,236,120,1)) drop-shadow(0 0 9px rgba(255,200,40,.85))}
+.flyc i.spr.sg{background-image:url(ui/spin_gem.png?v=21);filter:drop-shadow(0 0 4px rgba(190,255,150,1)) drop-shadow(0 0 9px rgba(60,255,110,.8))}
+@keyframes sprR{to{background-position:104.3478% 0}}
 .flyc img{width:100%;height:100%;filter:drop-shadow(0 3px 0 rgba(11,11,25,.35))}
 @keyframes spinY{to{transform:rotateY(360deg)}}
 .cft{position:absolute;left:0;top:0;will-change:transform}
@@ -2319,7 +2323,7 @@ html.wk .stitle .f{filter:drop-shadow(2.5px 0 0 #fff) drop-shadow(-2.5px 0 0 #ff
 #settings .mbox{gap:8px!important;padding:12px 16px!important}
 #settings .mbox h2{margin:0!important;line-height:1}
 /* chef du groupe : couronne au-dessus de sa tête */
-.podCrown{position:absolute;z-index:4;width:44px;height:36px;transform:translate(-50%,-100%);pointer-events:none;background:url(ui/p_crown.png?v=20) center/contain no-repeat;filter:drop-shadow(0 3px 0 rgba(0,0,40,.35));animation:crBob 1.6s ease-in-out infinite}
+.podCrown{position:absolute;z-index:4;width:44px;height:36px;transform:translate(-50%,-100%);pointer-events:none;background:url(ui/p_crown.png?v=21) center/contain no-repeat;filter:drop-shadow(0 3px 0 rgba(0,0,40,.35));animation:crBob 1.6s ease-in-out infinite}
 @keyframes crBob{0%,100%{margin-top:0}50%{margin-top:-6px}}
 .mchgTip{position:relative;margin-top:60px;display:flex;align-items:center;gap:8px;padding:8px 14px 8px 8px;border-radius:14px;background:linear-gradient(#ffe45a,#ffb21f);border:3px solid #0b0b19;box-shadow:0 4px 0 #0b0b19;color:#fff;font-size:15px;white-space:nowrap;animation:mtIn .35s cubic-bezier(.2,1.5,.4,1) both,mtOut .3s ease-in 2.2s forwards;pointer-events:none}
 .mchgTip img{width:28px;height:28px}.mchgTip b{font-weight:400;color:#fff7c2}
@@ -2450,20 +2454,20 @@ html.wk .stitle .f{filter:drop-shadow(2.5px 0 0 #fff) drop-shadow(-2.5px 0 0 #ff
   <div class="hudtop">
     <div class="hl">
       <div id="pctBox" class="pill s"><span class="dot"></span><span id="pct">0.0%</span></div>
-      <div id="killBox" class="pill s"><span class="ic"><img class="u" src="ui/n_skull.png?v=20" alt=""></span><span id="kills">0</span></div>
+      <div id="killBox" class="pill s"><span class="ic"><img class="u" src="ui/n_skull.png?v=21" alt=""></span><span id="kills">0</span></div>
       <div id="feed" class="s"></div>
     </div>
     <div id="timer" class="pill s">2:30</div>
     <ol id="lb" class="s"></ol>
   </div>
   <canvas id="mm" width="220" height="220" aria-label="Mini-carte"></canvas>
-  <div id="hint" class="s"><img class="tapimg" src="ui/glove.png?v=20" alt="">Glisse pour diriger · Reviens dans ta zone pour capturer</div>
+  <div id="hint" class="s"><img class="tapimg" src="ui/glove.png?v=21" alt="">Glisse pour diriger · Reviens dans ta zone pour capturer</div>
 </div>
 <div id="joy" hidden><div id="knob"></div></div>
 <div id="elims"></div>
 <div id="death" hidden></div>
 <div id="count" class="s"></div>
-<div id="hand8" hidden><svg viewBox="0 0 160 80" aria-hidden="true"><path class="h8t" pathLength="100" d="M80,40 C100,8 150,8 150,40 C150,72 100,72 80,40 C60,8 10,8 10,40 C10,72 60,72 80,40 Z"/></svg><img src="ui/glove.png?v=20" alt=""></div>
+<div id="hand8" hidden><svg viewBox="0 0 160 80" aria-hidden="true"><path class="h8t" pathLength="100" d="M80,40 C100,8 150,8 150,40 C150,72 100,72 80,40 C60,8 10,8 10,40 C10,72 60,72 80,40 Z"/></svg><img src="ui/glove.png?v=21" alt=""></div>
 <div id="banner" class="s"></div>
 <div id="toast"></div>
 
@@ -2533,8 +2537,8 @@ const I={
  chest:'<svg viewBox="0 0 48 48"><path d="M6 21c0-8 8-13 18-13s18 5 18 13z" fill="#ec8e2e" stroke="#122a6b" stroke-width="3" stroke-linejoin="round"/><rect x="6" y="21" width="36" height="19" rx="3" fill="#c96a1c" stroke="#122a6b" stroke-width="3"/><path d="M14 9.5V40M34 9.5V40" stroke="#9fb2d4" stroke-width="4"/><path d="M14 9.5V40M34 9.5V40" stroke="#122a6b" stroke-width="1.2" stroke-dasharray="0 6" stroke-linecap="round"/><rect x="19" y="22" width="10" height="11" rx="2" fill="#ffd21f" stroke="#122a6b" stroke-width="2.5"/><circle cx="24" cy="27" r="1.8" fill="#122a6b"/></svg>',
  gift:'<svg viewBox="0 0 48 48"><rect x="7" y="18" width="34" height="10" rx="2" fill="#ff5a63" stroke="#122a6b" stroke-width="3"/><rect x="10" y="28" width="28" height="15" fill="#ff8a90" stroke="#122a6b" stroke-width="3"/><path d="M24 18v25" stroke="#ffd21f" stroke-width="5"/><path d="M24 18c-6-9-14-6-10 0zM24 18c6-9 14-6 10 0z" fill="#ffd21f" stroke="#122a6b" stroke-width="2.5"/></svg>'
 };
-const IMGC=new Map();const imgKeep=n=>{if(IMGC.has(n))return;const i=new Image();i.decoding='async';i.src=`ui/${n}.png?v=20`;IMGC.set(n,i);if(i.decode)i.decode().catch(()=>{})};
-const img=n=>{imgKeep(n);const c=IMGC.get(n);return `<img class="u" src="ui/${n}.png?v=20" alt="" decoding="${c&&c.complete?'sync':'async'}">`};
+const IMGC=new Map();const imgKeep=n=>{if(IMGC.has(n))return;const i=new Image();i.decoding='async';i.src=`ui/${n}.png?v=21`;IMGC.set(n,i);if(i.decode)i.decode().catch(()=>{})};
+const img=n=>{imgKeep(n);const c=IMGC.get(n);return `<img class="u" src="ui/${n}.png?v=21" alt="" decoding="${c&&c.complete?'sync':'async'}">`};
 Object.assign(I,{coin:img('n_coin'),gem:img('n_gem'),star:img('star'),shop:img('nav_shop'),heroes:img('nav_deck'),missions:img('missions'),world:img('nav_portal'),play:img('nav_play'),chest:img('key_c1'),gift:img('key_c3'),lock:img('i_lock'),check:img('i_check'),x:img('i_x'),gear:img('i_info'),shield:img('p_shield'),bomb:img('p_bomb'),clap:img('p_clap'),calendar:img('p_calendar')});
 const ico=k=>`<span class="ic">${I[k]}</span>`;
 const stitle=t=>`<span class="stitle"><span class="b1">${t}</span><span class="b2">${t}</span><span class="f">${t}</span></span>`;
@@ -3919,7 +3923,7 @@ function updHud(){
  $('#kills').textContent=player.kills;drawMiniTex();
  const lbh=rows.map(e=>`<li class="${e===player?'me':''}"><i style="background:${hex(e.color)}"></i><span${e.team>=0?` style="color:${TEAMC[e.team]}"`:''}>${ord.indexOf(e)+1}. ${esc(e.name)}</span><b>${(val(e)/PTOT*100).toFixed(1)}%</b></li>`).join('');{const L=$('#lb');if(L._h!==lbh){L._h=lbh;L.innerHTML=lbh}}
 }
-const SKULL='<img class="fsk" src="ui/n_skull.png?v=20" alt="">';
+const SKULL='<img class="fsk" src="ui/n_skull.png?v=21" alt="">';
 const nm=e=>`<b style="color:${hex(e.color)}">${esc(e.name)}</b>`;
 function feedKill(k,v){const f=$('#feed'),d=document.createElement('div');d.className='fk';d.innerHTML=k?`${nm(k)}${SKULL}${nm(v)}`:`${SKULL}${nm(v)} <span>s'est pris sa traînée</span>`;if(k===player||v===player)d.classList.add('me');f.prepend(d);while(f.children.length>4)f.lastChild.remove();setTimeout(()=>{d.style.opacity=0;setTimeout(()=>d.remove(),400)},4200)}
 function elimToast(v){const w=$('#elims'),d=document.createElement('div');d.className='elim';d.innerHTML=`<span class="et">ÉLIMINÉ</span><span class="en">${esc(v.name)}</span>`;w.appendChild(d);while(w.children.length>3)w.firstChild.remove();setTimeout(()=>{d.classList.add('out');setTimeout(()=>d.remove(),350)},2400)}
@@ -4277,15 +4281,15 @@ function rollChest(id,extra){const r={coins:0,gems:0,hero:null,cards:[]};
  save.coins+=r.coins;save.gems+=r.gems;if(r.hero){save.owned.push(r.hero.id);save.levels[r.hero.id]=1}persist();return r}
 let chestR=null;
 function chestStage(k,title){const m=$('#chestM');m.dataset.k=k;$('#cTitle').innerHTML=stitle(title);$('#cRew').innerHTML='';$('#cOk').hidden=true;$('#cFlash').className='cflash';$('#cBurst').innerHTML='';m.hidden=false}
-function openChestOld(c,extra){CX.on=false;$('#cCv').hidden=true;$('#cOrbs').hidden=true;chestR=rollChest(c.id,extra);chestC=c;chestStage(c.id,c.n.toUpperCase());const im=$('#cImg');im.hidden=false;im.src='ui/'+c.img+'.png?v=20';im.className='cimg idle';$('#cHint').hidden=false;$('#cHint').textContent="Touche le coffre pour l'ouvrir !";sfx.tick()}
+function openChestOld(c,extra){CX.on=false;$('#cCv').hidden=true;$('#cOrbs').hidden=true;chestR=rollChest(c.id,extra);chestC=c;chestStage(c.id,c.n.toUpperCase());const im=$('#cImg');im.hidden=false;im.src='ui/'+c.img+'.png?v=21';im.className='cimg idle';$('#cHint').hidden=false;$('#cHint').textContent="Touche le coffre pour l'ouvrir !";sfx.tick()}
 let chestC=null;
 function chestBurst(r){const b=$('#cBurst'),bits=[];for(let i=0;i<14;i++)bits.push(i%3===0&&r.gems?'n_gem':i%5===0?'':'n_coin');
- b.innerHTML=bits.map((n,i)=>{const a=(i/bits.length)*Math.PI*2+Math.random()*.4,d=140+Math.random()*120;return n?`<img src="ui/${n}.png?v=20" style="--x:${Math.cos(a)*d}px;--y:${Math.sin(a)*d-60}px;--r:${(Math.random()*2-1)*260}deg;animation-delay:${Math.random()*.08}s" alt="">`:`<i style="--x:${Math.cos(a)*d}px;--y:${Math.sin(a)*d-60}px;--r:0deg"></i>`}).join('')}
+ b.innerHTML=bits.map((n,i)=>{const a=(i/bits.length)*Math.PI*2+Math.random()*.4,d=140+Math.random()*120;return n?`<img src="ui/${n}.png?v=21" style="--x:${Math.cos(a)*d}px;--y:${Math.sin(a)*d-60}px;--r:${(Math.random()*2-1)*260}deg;animation-delay:${Math.random()*.08}s" alt="">`:`<i style="--x:${Math.cos(a)*d}px;--y:${Math.sin(a)*d-60}px;--r:0deg"></i>`}).join('')}
 function countUpC(el,to,pre){const t0=performance.now(),d=700;const f=t=>{const k=Math.min(1,(t-t0)/d),v=Math.round(to*(1-Math.pow(1-k,3)));el.textContent=pre+fmt(v);if(k<1)requestAnimationFrame(f)};requestAnimationFrame(f)}
 $('#cImg').addEventListener('click',()=>{const im=$('#cImg');if(!chestR||!im.classList.contains('idle'))return;ac();
  im.className='cimg charge';$('#cHint').hidden=true;sfx.tick();setTimeout(()=>sfx.tick(),220);
- setTimeout(()=>{const r=chestR,c=chestC;$('#cFlash').className='cflash on';im.src='ui/'+c.open+'.png?v=20';im.className='cimg opened';sfx.win();sfx.kill();chestBurst(r);
-  const items=[];if(r.coins)items.push(`<div class="crw"><img src="ui/n_coin.png?v=20" alt=""><b class="s" data-n="${r.coins}">+0</b></div>`);if(r.gems)items.push(`<div class="crw g"><img src="ui/n_gem.png?v=20" alt=""><b class="s" data-n="${r.gems}">+0</b></div>`);if(r.hero)items.push(`<div class="crw h">${heroIcon(r.hero)}<b class="s">${esc(r.hero.name)}</b><small class="s">NOUVEAU HÉROS !</small></div>`);
+ setTimeout(()=>{const r=chestR,c=chestC;$('#cFlash').className='cflash on';im.src='ui/'+c.open+'.png?v=21';im.className='cimg opened';sfx.win();sfx.kill();chestBurst(r);
+  const items=[];if(r.coins)items.push(`<div class="crw"><img src="ui/n_coin.png?v=21" alt=""><b class="s" data-n="${r.coins}">+0</b></div>`);if(r.gems)items.push(`<div class="crw g"><img src="ui/n_gem.png?v=21" alt=""><b class="s" data-n="${r.gems}">+0</b></div>`);if(r.hero)items.push(`<div class="crw h">${heroIcon(r.hero)}<b class="s">${esc(r.hero.name)}</b><small class="s">NOUVEAU HÉROS !</small></div>`);
   setTimeout(()=>{$('#cRew').innerHTML=items.join('');$('#cRew').querySelectorAll('.crw').forEach((e,i)=>{e.style.animationDelay=(i*.18)+'s';const b=e.querySelector('b[data-n]');if(b)setTimeout(()=>countUpC(b,+b.dataset.n,'+'),i*180+200)});
    setTimeout(()=>{$('#cOk').hidden=false;refresh2()},400+items.length*180)},260)},700)});
 // ===== COFFRES 3D (gelée arrondie, améliorations au tap, ouverture) =====
@@ -4463,7 +4467,7 @@ function cxBurstOpen(){CX.st='open';CX.openT=performance.now();CX.landed2=0;CX.g
  sfx.win();sfx.kill();sfx.boom();if(navigator.vibrate&&save.vib!==false)try{navigator.vibrate([40,30,60])}catch(_){}
  $('#cFlash').className='cflash';void $('#cFlash').offsetWidth;$('#cFlash').className='cflash on';$('#cBeam').className='cbeam on open';
  setTimeout(()=>{try{confetti()}catch(_){}},140);
- const items=[];if(r.coins)items.push(`<div class="crw" data-k="coins" data-v="${r.coins}"><img src="ui/n_coin.png?v=20" alt=""><b class="s" data-n="${r.coins}">+0</b></div>`);if(r.gems)items.push(`<div class="crw g" data-k="gems" data-v="${r.gems}"><img src="ui/n_gem.png?v=20" alt=""><b class="s" data-n="${r.gems}">+0</b></div>`);
+ const items=[];if(r.coins)items.push(`<div class="crw" data-k="coins" data-v="${r.coins}"><img src="ui/n_coin.png?v=21" alt=""><b class="s" data-n="${r.coins}">+0</b></div>`);if(r.gems)items.push(`<div class="crw g" data-k="gems" data-v="${r.gems}"><img src="ui/n_gem.png?v=21" alt=""><b class="s" data-n="${r.gems}">+0</b></div>`);
  (r.cards||[]).forEach(cd=>{const h=HE(cd.id),l=save.levels[cd.id]||1,need=cardCost(l),hv=cardsOf(cd.id);items.push(`<div class="crw cardw">${heroIcon(h)}<b class="s">x${cd.n}</b><span class="cbar s"><i style="width:${Math.min(100,hv/need*100)}%"></i><em>${l>=MAXLV?'MAX':hv+'/'+need}</em></span></div>`)});
  if(r.hero)items.push(`<div class="crw h">${heroIcon(r.hero)}<b class="s">${esc(r.hero.name)}</b><small class="s">NOUVEAU HÉROS !</small></div>`);
  setTimeout(()=>{const R=$('#cRew');R.innerHTML=items.join('');const st=$('.cm .cstage').getBoundingClientRect(),src={left:st.left+st.width/2-30,top:st.top+st.height*.55-30,width:60,height:60};
@@ -4760,9 +4764,10 @@ function renderMissions(){
 /* ---- effets : pièces/gemmes qui volent + confettis ---- */
 function fxLayer(){let l=$('#fx');if(!l){l=document.createElement('div');l.id='fx';document.body.appendChild(l)}return l}
 function countTo(el,from,to,ms,delay){if(!el)return;el.textContent=fmt(from);setTimeout(()=>{const t0=performance.now();const f=()=>{const k=Math.min(1,(performance.now()-t0)/ms);el.textContent=fmt(Math.round(from+(to-from)*k));if(k<1&&el.isConnected)requestAnimationFrame(f)};f()},delay)}
+[ 'spin_coin','spin_gem'].forEach(n=>{const im=new Image();im.src='ui/'+n+'.png?v=21'});
 function flyReward(a,kind,amount,target){const t=target||$(kind==='gems'?'#gemPill':'#coinPill');if(!a||!t)return;const b=t.getBoundingClientRect(),L=fxLayer();
  const n=Math.min(14,Math.max(6,Math.round(amount/(kind==='gems'?2:70)))),x0=a.left+a.width/2,y0=a.top+a.height/2,x1=b.left+Math.min(24,b.width/2),y1=b.top+b.height/2;
- for(let i=0;i<n;i++){const e=document.createElement('span');e.className='flyc';e.innerHTML=`<i style="animation-delay:${-Math.random()*.5}s">${img(kind==='gems'?'n_gem':'n_coin')}</i>`;L.appendChild(e);
+ for(let i=0;i<n;i++){const e=document.createElement('span');e.className='flyc';e.innerHTML=`<i class="spr${kind==='gems'?' sg':''}" style="animation-delay:${-Math.random()*.6}s"></i>`;L.appendChild(e);
   const sx=(Math.random()-.5)*190,sy=(Math.random()-.5)*130-50;
   const an=e.animate([{transform:`translate(${x0}px,${y0}px) scale(.2)`,opacity:0},{transform:`translate(${x0+sx}px,${y0+sy}px) scale(1.2)`,opacity:1,offset:.32},{transform:`translate(${x0+sx*.9}px,${y0+sy*.9}px) scale(1.1)`,opacity:1,offset:.45},{transform:`translate(${x1}px,${y1}px) scale(.5)`,opacity:1}],{duration:950,delay:i*45,easing:'cubic-bezier(.45,0,.3,1)',fill:'both'});
   an.onfinish=()=>{e.remove();t.classList.remove('bump');void t.offsetWidth;t.classList.add('bump');coinTick(kind)}}}
