@@ -37,6 +37,12 @@ export default async function handler(req, res) {
     const b = await blobRead('saves/_health.json'); out.legacy = b.down ? 'down' : 'ok';
     return res.status(200).json(out);
   }
+  // sauvegarde de secours de toutes les stats publiques (aucune donnée renvoyée, juste le nombre)
+  if (req.query && req.query.backup && dbReady()) {
+    try { const { db } = await import('./_db.js'); const r = await db('profiles?select=id,sub_hash,name,tag,hero,stars&limit=10000');
+      const day = new Date().toISOString().slice(0, 10); await sbWrite('backup-profiles-' + day + '.json', { at: Date.now(), rows: r.data || [] });
+      return res.status(200).json({ ok: true, n: (r.data || []).length }); } catch (e) { return res.status(500).json({ error: 'backup' }); }
+  }
   const who = await verifyGoogle(req);
   if (who.error) return res.status(who.status).json({ error: who.error });
   if (!storeReady()) return res.status(503).json({ error: 'not-configured' });
