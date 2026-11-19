@@ -2297,6 +2297,9 @@ html.wk .stitle .f{filter:drop-shadow(2.5px 0 0 #fff) drop-shadow(-2.5px 0 0 #ff
 /* résultats en équipe : les coéquipiers qui rejouent s'affichent au-dessus de REJOUER */
 #res .rbtns:has(.rparty){display:grid!important;grid-template-columns:1fr 1fr;column-gap:12px;row-gap:6px;align-items:end}
 #res .rbtns .rparty{grid-column:1;grid-row:1;flex:none;margin:0;justify-content:center}
+/* espace entre les boutons de fin de partie */
+.res .rbtns{gap:22px!important;column-gap:22px!important;margin-top:14px!important}
+.res .rbtn{margin:0!important}
 #res .rbtns:has(.rparty) .rbtn.yel{grid-column:1;grid-row:2}#res .rbtns:has(.rparty) .rbtn.blu{grid-column:2;grid-row:2}
 /* coffre : la scène se réduit pour que toutes les récompenses tiennent à l'écran */
 .cm .cstage{min-height:min(112vw,42vh)!important;height:auto}
@@ -2808,7 +2811,7 @@ vec3 jelly(vec3 p){float h=clamp(p.y+0.5,0.0,1.4);float hh=h*h;
  p.x+=uWob*sin(p.y*7.0+uT*18.0)*0.03*h;p.z+=uWob*cos(p.y*6.0+uT*15.0)*0.03*h;return p;}
 `;
 // pre: code GLSL qui transforme q avant la gelée (clignement des yeux, regard)
-function jellyMat(base,J,push,pre){base.onBeforeCompile=s=>{Object.assign(s.uniforms,J);if(base.userData.frag)base.userData.frag(s);s.vertexShader=JELLY_VS+'\n'+s.vertexShader.replace('#include <begin_vertex>',`vec3 q=position${push?'+normal*'+push.toFixed(3):''};${pre||''}vec3 transformed=jelly(q);`)};base.customProgramCacheKey=()=>'jelly'+(push||0)+(pre||'')+(base.userData.frag?'soft':'')+(base.userData.key||'');return base}
+function jellyMat(base,J,push,pre){base.onBeforeCompile=s=>{Object.assign(s.uniforms,J);if(base.userData.frag)base.userData.frag(s);if(J.uAM)s.vertexShader=s.vertexShader.replace('#include <beginnormal_vertex>','vec3 objectNormal=normalize(mat3(uAM)*vec3(normal));\n#ifdef USE_TANGENT\nvec3 objectTangent=vec3(tangent.xyz);\n#endif');s.vertexShader=JELLY_VS+(J.uAM?'\nuniform mat4 uAM;':'')+'\n'+s.vertexShader.replace('#include <begin_vertex>',`vec3 q=position${push?'+normal*'+push.toFixed(3):''};${pre||''}vec3 transformed=jelly(q);`)};base.customProgramCacheKey=()=>'jelly'+(push||0)+(pre||'')+(base.userData.frag?'soft':'')+(base.userData.key||'');return base}
 // matière douce et brillante (pâte à modeler / bonbon) : dégradé lisse, reflet, bord lumineux
 function softMat(col,o={}){const c=new THREE.Color(col),m=new THREE.MeshPhongMaterial({color:c,emissive:c.clone().multiplyScalar(o.em==null?.32:o.em),specular:new THREE.Color(o.sp==null?0x3a3a3a:o.sp),shininess:o.sh||38});
  m.userData.frag=s=>{s.fragmentShader=s.fragmentShader.replace('#include <output_fragment>',`{vec3 vv=normalize(vViewPosition);float rim=pow(1.0-clamp(abs(dot(normalize(normal),vv)),0.0,1.0),2.6);outgoingLight=mix(outgoingLight,min(vec3(1.0),diffuseColor.rgb*1.25+0.22),rim*${(o.rim==null?.55:o.rim).toFixed(2)});}
@@ -3314,26 +3317,25 @@ const KMANIM={
 const _ka={d:new THREE.Vector3(),r:new THREE.Euler(),s:new THREE.Vector3(1,1,1)},_kq=new THREE.Quaternion(),_kp=new THREE.Vector3(),_km=new THREE.Matrix4();
 function kmTick(v,t,moving){const f=KMANIM[v.km];if(!f)return;const a=_ka,r={rz:0,ry:0,py:0,pz:0};a.d.set(0,0,0);a.r.set(0,0,0);a.s.set(1,1,1);f(t+v.ph,a,r,moving);
  if(v.ag){v.ag.rotation.set(0,r.ry,r.rz);v.ag.position.set(0,r.py,r.pz)}
- for(const n of v.kmN){_kq.setFromEuler(a.r);_kp.copy(n.p).add(a.d);n.o.matrix.compose(_kp,_kq,a.s).multiply(_km.makeTranslation(-n.p.x,-n.p.y,-n.p.z));n.o.matrixWorldNeedsUpdate=true}}
+ for(const n of v.kmN){_kq.setFromEuler(a.r);_kp.copy(n.p).add(a.d);n.m.compose(_kp,_kq,a.s).multiply(_km.makeTranslation(-n.p.x,-n.p.y,-n.p.z))}}
 function makeChar(h,label,me){
  const g=new THREE.Group(),inner=new THREE.Group();g.add(inner);inner.scale.setScalar(.86);
  const J={uSh:{value:new THREE.Vector2()},uSq:{value:0},uWob:{value:0},uT:{value:0},uBl:{value:1},uLk:{value:0}};
  const palm=new THREE.Group();palm.position.y=.5;let ag=null;if(h.km){ag=new THREE.Group();inner.add(ag);ag.add(palm)}else inner.add(palm);
  const add=(geo,mat)=>{const m=new THREE.Mesh(geo,mat);m.frustumCulled=false;palm.add(m);return m};
  const DN=h.look==='donut',BG=DN?donutGeo():null,FM=h.km?kmModel(h.km):FD[h.look]?foodModel(h.look):null,body=DN?BG.all:FM?(FM.stat||FM.all):JG.box;
- const KN=h.km?FM.anims.map(n=>{const o=new THREE.Group();o.matrixAutoUpdate=false;palm.add(o);return{o,p:n.p,g:n.g}}):[];
+ const AMP='q=(uAM*vec4(q,1.0)).xyz;',KN=h.km?FM.anims.map(n=>{const m=new THREE.Matrix4();return{m,p:n.p,g:n.g,J2:Object.assign({},J,{uAM:{value:m}})}}):[];
  if(DN){add(BG.dough,jellyMat(matte(0xf7c27a),J));add(BG.icing,jellyMat(matte(0xf59cd6),J));const sm=matte(0xffffff,{em:.06,rim:.2});sm.vertexColors=true;add(donutSpr(),jellyMat(sm,J))}
- else if(FM)FM.parts.forEach(p=>{const m=add(p.g,jellyMat(p.vc?kmMat(p.kind):matte(p.c),J));if(p.node>=0&&KN[p.node])KN[p.node].o.add(m)});
+ else if(FM)FM.parts.forEach(p=>{const n=p.node>=0?KN[p.node]:null;add(p.g,n?jellyMat(kmMat(p.kind),n.J2,0,AMP):jellyMat(p.vc?kmMat(p.kind):matte(p.c),J))});
  else add(JG.box,jellyMat(matte(h.color),J));
  const hull=add(body,jellyMat(new THREE.MeshBasicMaterial({color:0x0b0b19,side:THREE.BackSide}),J,.04));hull.visible=false;
  const BC=FM&&!h.km?FM.parts[0].c:h.color,DK=olDark(new THREE.Color(BC));const mk=add(body,jellyMat(new THREE.MeshBasicMaterial({color:DK}),J));mk.layers.set(3);
  if(DN){const m2=add(BG.spr,jellyMat(new THREE.MeshBasicMaterial({color:0xffffff}),J));m2.layers.set(3);add(BG.spr,jellyMat(new THREE.MeshBasicMaterial({color:0x0b0b19,side:THREE.BackSide}),J,.009))}
- KN.forEach(n=>{const hm=add(n.g,jellyMat(new THREE.MeshBasicMaterial({color:0x0b0b19,side:THREE.BackSide}),J,.04));hm.visible=false;n.o.add(hm);n.hull=hm;const mm=add(n.g,jellyMat(new THREE.MeshBasicMaterial({color:DK}),J));mm.layers.set(3);n.o.add(mm)});
- const EM=(c,pre)=>jellyMat(new THREE.MeshBasicMaterial({color:c}),J,0,pre);const nEye=palm.children.length;
+ KN.forEach(n=>{const hm=add(n.g,jellyMat(new THREE.MeshBasicMaterial({color:0x0b0b19,side:THREE.BackSide}),n.J2,.04,AMP));hm.visible=false;n.hull=hm;const mm=add(n.g,jellyMat(new THREE.MeshBasicMaterial({color:DK}),n.J2,0,AMP));mm.layers.set(3)});
+ const EN=FM&&FM.eyeNode>=0?KN[FM.eyeNode]:null,EM=(c,pre)=>EN?jellyMat(new THREE.MeshBasicMaterial({color:c}),EN.J2,0,(pre||'')+AMP):jellyMat(new THREE.MeshBasicMaterial({color:c}),J,0,pre);
  if(DN)palm.scale.setScalar(1.28);
  const EG=DN?donutEyes():FM?FM.eyes:JG;if(EG){const EP=eyePre(EG.ey),PP=eyePre(EG.ey,1,DN||!!FM);
  add(EG.eo,EM(DK.getHex(),EP));{const em=add(EG.eo,EM(DK.getHex(),EP));em.layers.set(3)}add(EG.eb,EM(0xbfe0ff,EP));add(EG.ew,EM(0xffffff,EP));add(EG.ep,EM(0x1d4b8f,PP));add(EG.es,EM(0xffffff,PP))}
- if(FM&&FM.eyeNode>=0&&KN[FM.eyeNode]){const tg=KN[FM.eyeNode].o;palm.children.slice(nEye).forEach(o=>{if(o.isMesh)tg.add(o)})}
  const hat=new THREE.Group();palm.add(hat);addHat(hat,h,0);hat.traverse(o=>{if(o.isMesh)o.layers.enable(1)});
  const shd=new THREE.Mesh(G.shadow,SHADOW);shd.rotation.x=-Math.PI/2;shd.position.y=.03;shd.scale.setScalar(.8);g.add(shd);
  if(label)g.add(nameSprite(label,me?'#ffd21f':'#ffffff'));
@@ -3575,10 +3577,10 @@ function splitFix(e,took){for(const oid of took.keys()){const o=ents[oid];if(!o|
   for(let c=0;c<TOT;c++)if(own[c]===oid&&LAB[c]!==keep){own[c]=-1;refresh(c,.25+Math.random()*.35,.9)}}}
 // on mange la zone d'un autre joueur : animation spéciale (tuiles qui retombent, éclats à sa couleur, onde de choc)
 function stealFx(e,vids,n,cells){const near=player&&Math.hypot(e.x-EAR().x,e.z-EAR().z)<26;
- if(near){const vc=vids.map(v=>ents[v]&&ents[v].color).filter(c=>c!=null);ringFx(e.x,e.z,e.color,4.2,.6);ringFx(e.x,e.z,0xffffff,2.8,.5,.08);if(vc[0]!=null)ringFx(e.x,e.z,vc[0],5.4,.75,.16);
+ if(near){const vc=vids.map(v=>ents[v]&&ents[v].color).filter(c=>c!=null);
   (cells||[]).forEach((c,i)=>{const col=vc[i%Math.max(1,vc.length)];burst(c%N+.5,1.3,((c/N)|0)+.5,col!=null?col:0xffffff,3,6);burst(c%N+.5,1.1,((c/N)|0)+.5,e.color,2,4)})}
- if(e===player){const names=vids.map(v=>ents[v]&&ents[v].name).filter(Boolean);floatText('VOLÉ ! +'+(n/PTOT*100).toFixed(1)+'%',e);banner(names.length?`TU MANGES LA ZONE DE ${names[0].toUpperCase()} !`:'ZONE VOLÉE !',1300);shake=Math.max(shake,.45);try{playS('steal',SV)||sfx.kill()}catch(_){}if(navigator.vibrate&&save.vib!==false)try{navigator.vibrate([20,40,30])}catch(_){}}
- else if(vids.includes(player&&player.id)){banner(`${e.name.toUpperCase()} MANGE TA ZONE !`,1300);shake=Math.max(shake,.3);try{sfx.out()}catch(_){}}}
+ if(e===player){const names=vids.map(v=>ents[v]&&ents[v].name).filter(Boolean);shake=Math.max(shake,.45);try{playS('steal',SV)||sfx.kill()}catch(_){}if(navigator.vibrate&&save.vib!==false)try{navigator.vibrate([20,40,30])}catch(_){}}
+ else if(vids.includes(player&&player.id)){shake=Math.max(shake,.3);try{sfx.out()}catch(_){}}}
 function enterCell(e,i,j){
  const c=ix(i,j),pc=e.ci!=null&&e.cj!=null?ix(e.ci,e.cj):-1;e.ci=i;e.cj=j;const t=trail[c];
  if(e===EAR())keyClick(.5);else if(player&&Math.abs(e.x-EAR().x)+Math.abs(e.z-EAR().z)<7)keyClick(.15);
@@ -4388,7 +4390,7 @@ function cxInit(){if(CX.r)return true;try{const cv=$('#cCv');CX.r=new THREE.WebG
 function cxRender(){olRender(CX.r,CX.s,CX.c,CX)}
 function olRender(r,S,C,H){if(!H.ol){const ol={rt:new THREE.WebGLRenderTarget(4,4),mat:OL.mat.clone(),scene:new THREE.Scene(),w:0,h:0};ol.mat.uniforms.tMask.value=ol.rt.texture;const q=new THREE.Mesh(new THREE.PlaneGeometry(2,2),ol.mat);q.frustumCulled=false;ol.scene.add(q);H.ol=ol}
  const ol=H.ol,w=r.domElement.width,h=r.domElement.height;if(ol.w!==w||ol.h!==h){ol.w=w;ol.h=h;ol.rt.setSize(w,h);ol.mat.uniforms.px.value.set(1/w,1/h);ol.mat.uniforms.thick.value=Math.max(1.2,1.5*r.getPixelRatio())}
- r.render(S,C);r.autoClear=false;r.setRenderTarget(ol.rt);r.setClearColor(0x000000,0);r.clear();olMask(r,S,C);C.layers.set(0);r.setRenderTarget(null);r.render(ol.scene,OL.cam);r.autoClear=true}
+ r.render(S,C);r.autoClear=false;r.setRenderTarget(ol.rt);r.setClearColor(0x000000,0);r.clear();olMask(r,S,C);C.layers.set(3);r.render(S,C);C.layers.set(0);r.setRenderTarget(null);r.render(ol.scene,OL.cam);r.autoClear=true}
 function cxHullMat(){const m=new THREE.MeshBasicMaterial({color:0x101a5c,side:THREE.BackSide});m.onBeforeCompile=s=>{s.vertexShader=s.vertexShader.replace('#include <begin_vertex>','vec3 transformed=position+normal*0.06;')};return m}
 function cxGlowTex(){const c=document.createElement('canvas');c.width=c.height=128;const x=c.getContext('2d'),g=x.createRadialGradient(64,64,0,64,64,64);g.addColorStop(0,'rgba(255,255,235,1)');g.addColorStop(.45,'rgba(255,236,140,.75)');g.addColorStop(1,'rgba(255,200,60,0)');x.fillStyle=g;x.fillRect(0,0,128,128);return new THREE.CanvasTexture(c)}
 function cxBeamTex(){const c=document.createElement('canvas');c.width=64;c.height=128;const x=c.getContext('2d'),g=x.createLinearGradient(0,128,0,0);g.addColorStop(0,'rgba(255,250,210,.95)');g.addColorStop(1,'rgba(255,230,120,0)');x.fillStyle=g;x.fillRect(0,0,64,128);const h=x.createLinearGradient(0,0,64,0);h.addColorStop(0,'rgba(0,0,0,1)');h.addColorStop(.5,'rgba(0,0,0,0)');h.addColorStop(1,'rgba(0,0,0,1)');x.globalCompositeOperation='destination-out';x.fillStyle=h;x.fillRect(0,0,64,128);return new THREE.CanvasTexture(c)}
