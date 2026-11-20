@@ -2514,6 +2514,11 @@ body[data-tab="home"] .halo,body:not([data-r]) .halo{opacity:0!important}
 
 
 .ri.pop .rc{animation:rpop .42s ease-out forwards!important}
+
+/* récompenses : pas de recul (propriété scale) au toucher */
+.pv2c:active,.pv2c,.rc:active,.pvc:active,.mqchest:active,[data-pf]:active,[data-pp]:active,[data-road]:active,[data-claim]:active,[data-ach]:active,[data-mbonus]:active{scale:none!important;translate:none!important}
+/* ligne jaune du niveau actuel visible au-dessus des récompenses */
+.pv2cut{position:relative;z-index:3;height:10px!important;margin:0!important;box-shadow:0 0 10px rgba(255,214,58,.7)}
 </style>
 
 <div id="bg"><div class="halo"></div></div>
