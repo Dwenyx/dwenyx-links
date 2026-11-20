@@ -1083,7 +1083,7 @@ input::placeholder{color:#8795ce!important;-webkit-text-fill-color:#8795ce}
 
 /* route : collecte */
 
-@keyframes rpop{0%{transform:scale(1)}35%{transform:scale(1.18) rotate(-3deg)}100%{transform:scale(1);filter:brightness(1.25)}}
+@keyframes rpop{0%{filter:brightness(1)}35%{filter:brightness(1.6)}100%{filter:brightness(1.25)}}
 .rfly{position:absolute;left:50%;top:40px;transform:translateX(-50%);font-size:26px;color:#ffff2d;pointer-events:none;animation:rfly .9s ease-out forwards;z-index:5}
 @keyframes rfly{to{transform:translate(-50%,-70px);opacity:0}}
 /* classement */
@@ -2510,8 +2510,10 @@ body[data-tab="home"] .halo,body:not([data-r]) .halo{opacity:0!important}
 
 /* récompenses : aucun effet d'enfoncement au toucher */
 .pv2c,.pv2c:active,.pv2c.tdn,.pv2c.press,.rc,.rc:active,.rc.tdn,.rc.press,.pvc,.pvc:active,.pvc.tdn,.pvc.press,.mqchest,.mqchest:active,.mqchest.tdn,.mqchest.press,
-[data-pf],[data-pp],[data-road],[data-mbonus],[data-claim],[data-ach],[data-claim]:active,[data-ach]:active,[data-pf]:active,[data-pp]:active{transform:none!important;filter:none!important;transition:none!important}
-.pv2c:active,.rc:active{box-shadow:inherit}
+[data-pf],[data-pp],[data-road],[data-mbonus],[data-claim],[data-ach],[data-claim]:active,[data-ach]:active,[data-pf]:active,[data-pp]:active{transform:none!important}
+
+
+.ri.pop .rc{animation:rpop .42s ease-out forwards!important}
 </style>
 
 <div id="bg"><div class="halo"></div></div>
@@ -5210,7 +5212,7 @@ function renderRoad(){if(innerHeight>innerWidth*1.1)return renderRoadV();
  if(roadKeep!==null){const k=roadKeep;roadKeep=null;requestAnimationFrame(()=>{const w=$('#rwrap');if(w)w.scrollLeft=k})}else centerSoon('#rwrap','#rwrap .rmark','x');
 }
 $('#sRoad').addEventListener('click',e=>{const b=e.target.closest('[data-road]');if(!b)return;ac();const t=+b.dataset.road,r=ROAD.find(x=>x.t===t);if(!r||save.roadClaimed.includes(t)||t>save.stars)return;
- const ri=b.closest('.ri'),w=$('#rwrap'),keep=w?(w.classList.contains('v')?w.scrollTop:w.scrollLeft):0;const tg=b.querySelector('.rtag');if(tg)tg.remove();b.removeAttribute('data-road');save.roadClaimed.push(t);
+ const ri=b.closest('.ri'),w=$('#rwrap'),keep=w?(w.classList.contains('v')?w.scrollTop:w.scrollLeft):0;const tg=b.querySelector('.rtag');if(tg)tg.remove();b.removeAttribute('data-road');ri.classList.add('pop');save.roadClaimed.push(t);
  const a=rewArt(r);if(!r.box&&!r.hero){const f=document.createElement('span');f.className='rfly s';f.innerHTML=`+${a.l}`;ri.appendChild(f)}
  const rr=b.getBoundingClientRect();setTimeout(()=>{grant(r);roadKeep=keep;renderRoad();updTop();rwFly(rr,r)},420)});
 let roadKeep=null;
